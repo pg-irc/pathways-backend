@@ -95,7 +95,7 @@ TEMPLATES = [
 
 PARLER_DEFAULT_LANGUAGE_CODE = 'en'
 PARLER_LANGUAGES = {
-    1: (
+    None: (
         {'code': 'en',},
         {'code': 'fr',},
         {'code': 'nl',},
