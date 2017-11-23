@@ -1,4 +1,8 @@
 from django.contrib import admin
+from parler.admin import TranslatableAdmin
 from service_providers import models
 
-admin.site.register(models.ServiceProvider)
+class ServiceProvidersAdmin(TranslatableAdmin):
+    pass
+
+admin.site.register(models.ServiceProvider, TranslatableAdmin)

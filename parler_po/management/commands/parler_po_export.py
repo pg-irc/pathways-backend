@@ -1,7 +1,10 @@
+from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand, CommandError
+from django.utils.translation import ugettext_lazy as _
 from parler.models import TranslatableModel
 import argparse
+import os
 import polib
 
 class Command(BaseCommand):
@@ -9,41 +12,60 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-o', '--pot-file',
-            type=argparse.FileType('w'),
-            default='-',
-            metavar='file'
+            'output_dir',
+            type=argparse_dir_type,
+            metavar='output'
         )
 
     def handle(self, *args, **options):
-        pot_file = options['pot_file']
+        # import ipdb; ipdb.set_trace()
+        output_dir = options['output_dir']
 
-        pot_data = polib.POFile()
-        pot_data.metadata = {
-            'Project-Id-Version': '1.0',
-            'Report-Msgid-Bugs-To': 'you@example.com',
-            'POT-Creation-Date': '2007-10-18 14:00+0100',
-            'PO-Revision-Date': '2007-10-18 14:00+0100',
-            'Last-Translator': 'you <you@example.com>',
-            'Language-Team': 'English <yourteam@example.com>',
-            'MIME-Version': '1.0',
-            'Content-Type': 'text/plain; charset=utf-8',
-            'Content-Transfer-Encoding': '8bit',
-        }
-
-        for model in self._translatable_models():
+        for (domain, model) in self._translatable_models():
             model_translations = self._get_model_translations(model)
             for (translation, po_entries) in model_translations:
-                # TODO: Write to LANG.po
-                pot_data.extend(po_entries)
-
-        pot_file.write(str(pot_data))
+                po_path = self._get_po_path(output_dir, domain, translation)
+                self._update_po_file(po_path, po_entries)
 
     def _translatable_models(self):
         for contenttype in ContentType.objects.all():
             model_class = contenttype.model_class()
             if issubclass(model_class, TranslatableModel):
-                yield model_class
+                domain = '.'.join([contenttype.app_label, contenttype.model])
+                yield (domain, model_class)
+
+    def _update_po_file(self, po_path, po_entries):
+        now = datetime.utcnow().isoformat()
+
+        # TODO: Should we export translations from the db, or use
+        #       po_file.merge against the pot file we have generated?
+
+        if os.path.exists(po_path):
+            po_file = polib.pofile(po_path, check_for_duplicates=True)
+        else:
+            po_file = polib.POFile()
+            po_file.metadata = {
+                'Project-Id-Version': '1.0',
+                'Report-Msgid-Bugs-To': 'you@example.com',
+                'POT-Creation-Date': now,
+                'MIME-Version': '1.0',
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Content-Transfer-Encoding': '8bit',
+            }
+
+        po_file.extend(po_entries)
+        po_file.save(po_path)
+
+    def _get_po_path(self, output_dir, domain, translation):
+        if translation:
+            # TODO: Make translation directory
+            po_name = '{}.po'.format(domain)
+            language_dir = os.path.join(output_dir, translation.language_code)
+            os.makedirs(language_dir, exist_ok=True)
+            return os.path.join(language_dir, po_name)
+        else:
+            pot_name = '{}.pot'.format(domain)
+            return os.path.join(output_dir, pot_name)
 
     def _get_model_translations(self, model):
         for instance in model.objects.all():
@@ -71,3 +93,24 @@ class Command(BaseCommand):
                 msgstr=msgstr,
                 occurrences=[(field_name, translatable.pk)]
             )
+
+def argparse_dir_type(dir_name):
+    dir_path = os.path.abspath(dir_name)
+
+    if os.path.exists(dir_path):
+        if not os.path.isdir(dir_path):
+            msg = _("The path {} must be a directory").format(dir_path)
+            raise argparse.ArgumentTypeError(msg)
+        elif not os.access(dir_path, os.W_OK):
+            msg = _("The directory {} must be writable").format(dir_path)
+            raise argparse.ArgumentTypeError(msg)
+        else:
+            return dir_path
+    else:
+        try:
+            os.makedirs(dir_path)
+        except OSError as e:
+            msg = _("The directory {} does not exist").format(dir_path)
+            raise argparse.ArgumentTypeError(msg)
+        else:
+            return dir_path
