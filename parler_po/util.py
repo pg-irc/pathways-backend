@@ -2,7 +2,6 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-import argparse
 import os
 import polib
 
@@ -38,27 +37,6 @@ class TranslationEntry(object):
             occurrences=[(self.translatable_id, self.field_id)]
         )
 
-def argparse_dir_type(dir_name):
-    dir_path = os.path.abspath(dir_name)
-
-    if os.path.exists(dir_path):
-        if not os.path.isdir(dir_path):
-            msg = _("The path {} must be a directory").format(dir_path)
-            raise argparse.ArgumentTypeError(msg)
-        elif not os.access(dir_path, os.W_OK):
-            msg = _("The directory {} must be writable").format(dir_path)
-            raise argparse.ArgumentTypeError(msg)
-        else:
-            return dir_path
-    else:
-        try:
-            os.makedirs(dir_path)
-        except OSError as e:
-            msg = _("The directory {} does not exist").format(dir_path)
-            raise argparse.ArgumentTypeError(msg)
-        else:
-            return dir_path
-
 def get_base_translation(translatable):
     if translatable.has_translation(PARLER_PO_BASE_LANGUAGE):
         return translatable.get_translation(PARLER_PO_BASE_LANGUAGE)
@@ -80,7 +58,7 @@ def new_pot_file():
 
     return pot_file
 
-def new_po_file(pot_file=None):
+def new_po_file(pot_file=None, language_code=None):
     now_str = datetime.utcnow().isoformat()
 
     po_file = polib.POFile()
@@ -89,8 +67,8 @@ def new_po_file(pot_file=None):
     if pot_file:
         po_file.metadata.update(pot_file.metadata)
 
+    po_file.metadata['Language'] = language_code
     po_file.metadata['PO-Revision-Date'] = now_str
-
     po_file.metadata['MIME-Version'] = '1.0'
     po_file.metadata['Content-Type'] = 'text/plain; charset=utf-8'
     po_file.metadata['Content-Transfer-Encoding'] = '8bit'

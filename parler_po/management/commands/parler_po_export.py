@@ -5,9 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 from parler.models import TranslatableModel
 import itertools
 
+from parler_po.argparse_dir import argparse_dir_type
 from parler_po.util import (
     TranslationEntry,
-    argparse_dir_type,
     content_type_id,
     get_base_translation,
     get_pot_path,
@@ -21,9 +21,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'output_dir',
-            type=argparse_dir_type,
-            metavar='output'
+            'translations_dir',
+            type=argparse_dir_type('w'),
+            metavar='directory'
+        )
+
         parser.add_argument(
             '-l', '--locale',
             type=str,
