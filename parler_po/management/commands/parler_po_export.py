@@ -17,30 +17,48 @@ from parler_po.util import (
 )
 
 class Command(BaseCommand):
-    help = 'Export PO files for all translatable content'
+    help = _("Export PO files for all translatable content")
 
     def add_arguments(self, parser):
         parser.add_argument(
             'output_dir',
             type=argparse_dir_type,
             metavar='output'
+        parser.add_argument(
+            '-l', '--locale',
+            type=str,
+            action='append'
+        )
+
+        parser.add_argument(
+            '--all-locales',
+            type=bool,
+            const=True,
+            nargs='?'
         )
 
     def handle(self, *args, **options):
-        output_dir = options['output_dir']
+        translations_dir = options['translations_dir']
+        locales_list = options['locale']
+        all_locales = options['all_locales']
 
         for model in self._translatable_models():
-            model_po_entries = self._get_model_po_entries(model)
+            if all_locales:
+                model_po_entries = self._model_po_entries(model)
+            elif locales_list:
+                model_po_entries = self._model_po_entries(model, locales=locales_list)
+            else:
+                model_po_entries = self._model_po_entries(model, locales=[])
 
             pot_entries = model_po_entries.pop(None, list())
-            pot_path = get_pot_path(output_dir, model)
+            pot_path = get_pot_path(translations_dir, model)
             pot_file = new_pot_file()
             pot_file.extend(pot_entries)
             pot_file.save(pot_path)
 
             for (language_code, po_entries) in model_po_entries.items():
-                po_path = get_po_path(output_dir, model, language_code)
-                po_file = new_po_file(pot_file=pot_file)
+                po_path = get_po_path(translations_dir, model, language_code)
+                po_file = new_po_file(pot_file=pot_file, language_code=language_code)
                 po_file.extend(po_entries)
                 po_file.merge(pot_file)
                 po_file.save(po_path)
@@ -51,11 +69,11 @@ class Command(BaseCommand):
             if issubclass(model_class, TranslatableModel):
                 yield model_class
 
-    def _get_model_po_entries(self, model):
+    def _model_po_entries(self, model, locales=None):
         model_po_entries = defaultdict(list)
 
         for instance in model.objects.all():
-            instance_po_entries = self._translatable_po_entries(instance)
+            instance_po_entries = self._translatable_po_entries(instance, locales)
             for (language_code, po_entries) in instance_po_entries:
                 model_po_entries[language_code].append(po_entries)
 
@@ -64,7 +82,7 @@ class Command(BaseCommand):
             for language_code, po_entries in model_po_entries.items()
         }
 
-    def _translatable_po_entries(self, translatable):
+    def _translatable_po_entries(self, translatable, locales=None):
         base_translation = get_base_translation(translatable)
 
         if base_translation:
@@ -73,7 +91,15 @@ class Command(BaseCommand):
                 base_translation
             )
             yield (None, pot_entries)
-            for translation in translatable.translations.all():
+
+            if locales is None:
+                translations_query = translatable.translations.all()
+            else:
+                translations_query = translatable.translations.filter(
+                    language_code__in=locales
+                )
+
+            for translation in translations_query:
                 po_entries = self._translation_po_entries(
                     translatable,
                     base_translation,
