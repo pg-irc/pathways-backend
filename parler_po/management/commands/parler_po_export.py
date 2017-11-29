@@ -111,7 +111,7 @@ class Command(BaseCommand):
                 )
                 yield (translation.language_code, po_entries)
         else:
-            msg = _("Ignoring \"{record}\": missing base translation").format(
+            msg = _("Skipping \"{record}\": missing base translation").format(
                 record=translatable
             )
             self.stderr.write(self.style.WARNING(msg))
