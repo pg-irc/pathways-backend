@@ -15,6 +15,27 @@ class TranslationEntry(object):
         self.msgid = msgid
         self.msgstr = msgstr
 
+    @classmethod
+    def from_po_entry(cls, po_entry):
+        for (instance_field_id, _lineno) in po_entry.occurrences:
+            yield cls._from_instance_field_id(
+                instance_field_id,
+                msgid=po_entry.msgid,
+                msgstr=po_entry.msgstr
+            )
+
+    @classmethod
+    def _from_instance_field_id(cls, instance_field_id, *args, **kwargs):
+        parts = instance_field_id.split('@', 3)
+        if len(parts) == 3:
+            (content_type_id, field_id, instance_pk) = parts
+            content_type = parse_content_type_id(content_type_id)
+            instance = content_type.get_object_for_this_type(pk=instance_pk)
+            return cls(instance, field_id, *args, **kwargs)
+        else:
+            msg = _("Invalid instance field id: {}").format(instance_field_id)
+            raise ValueError(msg)
+
     @property
     def content_type(self):
         return ContentType.objects.get_for_model(self.instance)
@@ -24,9 +45,10 @@ class TranslationEntry(object):
         return content_type_id(self.content_type)
 
     @property
-    def translatable_id(self):
-        return "{model}:{instance}".format(
+    def instance_field_id(self):
+        return "{model}@{field}@{instance}".format(
             model=self.content_type_id,
+            field=self.field_id,
             instance=self.instance.pk
         )
 
@@ -34,7 +56,7 @@ class TranslationEntry(object):
         return polib.POEntry(
             msgid=self.msgid,
             msgstr=self.msgstr,
-            occurrences=[(self.translatable_id, self.field_id)]
+            occurrences=[(self.instance_field_id, None)]
         )
 
 def get_base_translation(translatable):
@@ -92,3 +114,12 @@ def get_po_path(output_dir, model, language_code):
 
 def content_type_id(content_type):
     return '.'.join([content_type.app_label, content_type.model])
+
+def parse_content_type_id(content_type_id):
+    parts = content_type_id.split('.')
+    if len(parts) == 2:
+        (app_label, model) = parts
+        return ContentType.objects.get(app_label=app_label, model=model)
+    else:
+        msg = _("Invalid content type id: {}").format(content_type_id)
+        raise ValueError(msg)

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from parler.models import TranslatableModel
 import itertools
 
-from parler_po.argparse_dir import argparse_dir_type
+from parler_po.argparse_path import argparse_path_type
 from parler_po.util import (
     TranslationEntry,
     content_type_id,
@@ -22,18 +22,20 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             'translations_dir',
-            type=argparse_dir_type('w'),
+            type=argparse_path_type('dir', 'w'),
             metavar='directory'
         )
 
         parser.add_argument(
             '-l', '--locale',
+            dest='locales',
             type=str,
             action='append'
         )
 
         parser.add_argument(
             '--all-locales',
+            dest='all_locales',
             type=bool,
             const=True,
             nargs='?'
@@ -41,7 +43,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         translations_dir = options['translations_dir']
-        locales_list = options['locale']
+        locales_list = options['locales']
         all_locales = options['all_locales']
 
         for model in self._translatable_models():
@@ -112,7 +114,7 @@ class Command(BaseCommand):
             msg = _("Ignoring \"{record}\": missing base translation").format(
                 record=translatable
             )
-            self.stdout.write(self.style.WARNING(msg))
+            self.stderr.write(self.style.WARNING(msg))
 
     def _translation_po_entries(self, translatable, base_translation, translation=None):
         for field_id in base_translation.get_translated_fields():
