@@ -1,11 +1,13 @@
 from django.conf.urls import url, include
 from django.contrib import admin
+from organizations import viewsets as organizations_viewsets
 from service_providers import viewsets as service_providers_viewsets
 from rest_framework import routers
 
 def build_router():
     router = routers.DefaultRouter()
     router.register(r'^service-providers', service_providers_viewsets.ServiceProviderViewSet)
+    router.register(r'^organizations', organizations_viewsets.OrganizationViewSet)
     return router
 
 # pylint: disable=invalid-name
