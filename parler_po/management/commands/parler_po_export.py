@@ -6,7 +6,7 @@ from parler.models import TranslatableModel
 import itertools
 
 from parler_po.argparse_path import argparse_path_type
-from parler_po.util import (
+from parler_po.translation_entry import (
     TranslationEntry,
     content_type_id,
     get_base_translation,
@@ -111,7 +111,7 @@ class Command(BaseCommand):
                 )
                 yield (translation.language_code, po_entries)
         else:
-            msg = _("Skipping \"{record}\": missing base translation").format(
+            msg = _("Skipping \"{record}\": Missing base translation").format(
                 record=translatable
             )
             self.stderr.write(self.style.WARNING(msg))

@@ -52,12 +52,33 @@ class TranslationEntry(object):
             instance=self.instance.pk
         )
 
+    @property
+    def model(self):
+        return self.instance.translations.model
+
     def as_po_entry(self):
         return polib.POEntry(
             msgid=self.msgid,
             msgstr=self.msgstr,
             occurrences=[(self.instance_field_id, None)]
         )
+
+    def get_translation(self, language_code):
+        base_translation = get_base_translation(self.instance)
+
+        try:
+            translation = self.instance.get_translation(language_code)
+        except self.model.DoesNotExist:
+            self.instance.create_translation(language_code)
+            translation = self.instance.get_translation(language_code)
+
+        base_msgid = getattr(base_translation, self.field_id)
+
+        if base_msgid != self.msgid:
+            msg = _("Incorrect msgid")
+            raise ValueError(msg)
+        else:
+            return translation
 
 def get_base_translation(translatable):
     if translatable.has_translation(PARLER_PO_BASE_LANGUAGE):
