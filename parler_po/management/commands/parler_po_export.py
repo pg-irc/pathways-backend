@@ -36,9 +36,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--all-locales',
             dest='all_locales',
-            type=bool,
-            const=True,
-            nargs='?'
+            action='store_true'
         )
 
     def handle(self, *args, **options):

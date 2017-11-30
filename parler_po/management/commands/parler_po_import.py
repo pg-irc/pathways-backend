@@ -22,20 +22,27 @@ class Command(BaseCommand):
             metavar='po_file'
         )
 
+        parser.add_argument(
+            '-R', '--recursive',
+            dest='recursive',
+            action='store_true'
+        )
+
     def handle(self, *args, **options):
         po_paths = options['po_paths']
+        recursive = options['recursive']
 
         for po_path in po_paths:
             if os.path.isfile(po_path):
                 self._import_po_file(po_path)
             elif os.path.isdir(po_path):
-                self._import_translations_dir(po_path)
+                self._import_translations_dir(po_path, recursive=recursive)
 
-    def _import_translations_dir(self, translations_dir):
+    def _import_translations_dir(self, translations_dir, recursive=False):
         po_path_search = os.path.join(
             glob.escape(translations_dir), '**', '*.po'
         )
-        for po_path in glob.iglob(po_path_search, recursive=True):
+        for po_path in glob.iglob(po_path_search, recursive=recursive):
             self._import_po_file(po_path)
 
     def _import_po_file(self, po_path):
