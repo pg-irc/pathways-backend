@@ -63,8 +63,11 @@ class TranslationEntry(object):
             occurrences=[(self.instance_field_id, None)]
         )
 
+    def get_base_translation(self):
+        return get_base_translation(self.instance)
+
     def get_translation(self, language_code):
-        base_translation = get_base_translation(self.instance)
+        base_translation = self.get_base_translation()
 
         try:
             translation = self.instance.get_translation(language_code)

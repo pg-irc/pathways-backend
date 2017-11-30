@@ -64,6 +64,8 @@ class Command(BaseCommand):
     def _import_translation_entry(self, translation_entry, language_code, import_progress):
         import_key = (translation_entry.content_type_id, language_code)
 
+        base_translation = translation_entry.get_base_translation()
+
         try:
             translation = translation_entry.get_translation(language_code)
         except ValueError as error:
@@ -78,12 +80,15 @@ class Command(BaseCommand):
             current_msgstr = getattr(translation, field_id)
             new_msgstr = translation_entry.msgstr
 
-            if new_msgstr != current_msgstr:
+            if translation == base_translation:
+                # Never update the base translation from a po file
+                import_progress.add_skip(import_key)
+            elif new_msgstr == current_msgstr:
+                import_progress.add_skip(import_key)
+            else:
                 setattr(translation, field_id, new_msgstr)
                 translation.save()
                 import_progress.add_new(import_key)
-            else:
-                import_progress.add_skip(import_key)
 
     def _print_import_progress(self, import_progress, ending='\n'):
         msg = str(import_progress)
