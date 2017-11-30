@@ -1,7 +1,8 @@
 from collections import defaultdict
 from django.core.management.base import BaseCommand, CommandError
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext as __
 import argparse
 import glob
 import os
@@ -11,7 +12,7 @@ from parler_po.argparse_path import argparse_path_type
 from parler_po.translation_entry import TranslationEntry
 
 class Command(BaseCommand):
-    help = _("Import a set of PO files with new content translations")
+    help = _("Import the given PO files with new content translations")
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -121,12 +122,30 @@ class ImportProgress(object):
 
     def _format_model_counts(self):
         for (model, counts) in self._counts.items():
-            total = counts[None]
-            new = counts[self.PROGRESS_NEW]
-            success = counts[self.PROGRESS_NEW] + counts[self.PROGRESS_SKIP]
-            yield _("{model}: {success} / {total} (+{new})").format(
-                    model=model,
-                    success=success,
-                    total=total,
-                    new=new
+            numbers_list = []
+
+            total_count = counts[None]
+            numbers_list.append(
+                str(total_count)
+            )
+
+            new_count = counts[self.PROGRESS_NEW]
+            if new_count:
+                numbers_list.append(
+                    __("({} new)", "({} new)", new_count).format(
+                        new_count
+                    )
                 )
+
+            error_count = counts[self.PROGRESS_ERROR]
+            if error_count:
+                numbers_list.append(
+                    __("({} error)", "({} errors)", error_count).format(
+                        error_count
+                    )
+                )
+
+            yield _("{model}: {numbers}").format(
+                model=model,
+                numbers=" ".join(numbers_list)
+            )

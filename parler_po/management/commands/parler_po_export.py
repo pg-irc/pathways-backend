@@ -1,7 +1,7 @@
 from collections import defaultdict
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from parler.models import TranslatableModel
 import itertools
 
