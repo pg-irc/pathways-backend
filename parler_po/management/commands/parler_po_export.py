@@ -6,9 +6,8 @@ from parler.models import TranslatableModel
 import itertools
 
 from parler_po.argparse_path import argparse_path_type
-from parler_po.translation_entry import (
-    TranslationEntry,
-    content_type_id,
+from parler_po.translation_entry import TranslationEntry
+from parler_po.util import (
     get_base_translation,
     get_pot_path,
     get_po_path,

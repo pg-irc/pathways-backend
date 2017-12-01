@@ -53,10 +53,14 @@ class Command(BaseCommand):
         language_code = po_file.metadata.get('Language')
 
         if language_code:
-            translation_entries = self._translation_entries_for_po_file(po_file)
             import_progress = ImportProgress()
+            translation_entries = self._translation_entries_for_po_file(
+                po_file
+            )
             for translation_entry in translation_entries:
-                self._import_translation_entry(translation_entry, language_code, import_progress)
+                self._import_translation_entry(
+                    translation_entry, language_code, import_progress
+                )
                 self._print_import_progress(import_progress, ending='\r')
             self._print_import_progress(import_progress)
         else:
@@ -67,7 +71,19 @@ class Command(BaseCommand):
 
     def _translation_entries_for_po_file(self, po_file):
         for po_entry in po_file:
-            yield from TranslationEntry.from_po_entry(po_entry)
+            for occurrence in po_entry.occurrences:
+                try:
+                    translation_entry = TranslationEntry.from_po_entry(
+                        po_entry, occurrence
+                    )
+                except Exception as error:
+                    msg = ("Skipping \"{occurrence}\": {error}").format(
+                        occurrence=":".join(n for n in occurrence if n),
+                        error=error
+                    )
+                    self.stderr.write(self.style.WARNING(msg))
+                else:
+                    yield translation_entry
 
     def _import_translation_entry(self, translation_entry, language_code, import_progress):
         import_key = (translation_entry.content_type_id, language_code)
