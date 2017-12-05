@@ -109,6 +109,8 @@ PARLER_LANGUAGES = {
     }
 }
 
+PARLER_PO_CONTACT = 'translations@example.com'
+
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
@@ -159,8 +161,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
-
-# PO file export
-
-PARLER_PO_CONTACT = 'translations@example.com'
