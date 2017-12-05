@@ -117,7 +117,8 @@ class Command(BaseCommand):
         for field_id in base_translation.get_translated_fields():
             msgid = getattr(base_translation, field_id)
             msgstr = getattr(translation, field_id) if translation else ""
-            translation_entry = TranslationEntry(
-                translatable, field_id, msgid, msgstr
-            )
-            yield translation_entry.as_po_entry()
+            if msgid:
+                translation_entry = TranslationEntry(
+                    translatable, field_id, msgid, msgstr
+                )
+                yield translation_entry.as_po_entry()
