@@ -11,6 +11,8 @@ class TestTranslatable(TranslatableModel):
         app_label = 'parlerpo'
         managed = False
 
+    static = models.CharField(max_length=100)
+
     translations = TranslatedFields(
         foo=models.CharField(max_length=100)
     )
@@ -39,13 +41,25 @@ class CreateTranslationEntryTests(TestCase):
 
         self.assertEquals(str(translation_entry), 'parlerpo.testtranslatable@foo@1')
 
-    def test_create_with_not_translatable(self):
+    def test_create_not_translatable(self):
         not_translatable = TestNotTranslatable()
 
         create_entry_fn = lambda: TranslationEntry(not_translatable, 'foo', 'bar', 'baz')
         self.assertRaises(TypeError, create_entry_fn)
 
-    def test_from_po_entry(self):
+    def test_create_with_static_field(self):
+        translatable = TestTranslatable()
+
+        create_entry_fn = lambda: TranslationEntry(translatable, 'static', 'bar', 'baz')
+        self.assertRaises(ValueError, create_entry_fn)
+
+    def test_create_with_invalid_field(self):
+        translatable = TestTranslatable()
+
+        create_entry_fn = lambda: TranslationEntry(translatable, 'not_a_field', 'bar', 'baz')
+        self.assertRaises(ValueError, create_entry_fn)
+
+    def test_create_from_po_entry(self):
         translatable = TestTranslatable()
         translatable.id = 1
 
@@ -69,7 +83,7 @@ class CreateTranslationEntryTests(TestCase):
         self.assertEquals(translation_entry.msgid, 'bar')
         self.assertEquals(translation_entry.msgstr, 'baz')
 
-    def test_from_po_entry_with_not_translatable(self):
+    def test_create_not_translatable_from_po_entry(self):
         translatable = TestNotTranslatable()
         translatable.id = 1
 

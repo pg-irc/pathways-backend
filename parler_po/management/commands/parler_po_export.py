@@ -8,7 +8,6 @@ import itertools
 from parler_po.argparse_path import argparse_path_type
 from parler_po.translation_entry import TranslationEntry
 from parler_po.util import (
-    get_base_translation,
     build_pot_path,
     build_po_path,
     new_pot_file,
@@ -84,41 +83,44 @@ class Command(BaseCommand):
         }
 
     def _translatable_po_entries(self, translatable, locales=None):
-        base_translation = get_base_translation(translatable)
+        pot_entries = self._translation_po_entries(
+            translatable, None
+        )
+        yield (None, pot_entries)
 
-        if base_translation:
-            pot_entries = self._translation_po_entries(
-                translatable,
-                base_translation
-            )
-            yield (None, pot_entries)
-
-            if locales is None:
-                translations_query = translatable.translations.all()
-            else:
-                translations_query = translatable.translations.filter(
-                    language_code__in=locales
-                )
-
-            for translation in translations_query:
-                po_entries = self._translation_po_entries(
-                    translatable,
-                    base_translation,
-                    translation=translation
-                )
-                yield (translation.language_code, po_entries)
+        if locales is None:
+            translations_query = translatable.translations.all()
         else:
-            msg = _("Skipping \"{record}\": Missing base translation").format(
-                record=translatable
+            translations_query = translatable.translations.filter(
+                language_code__in=locales
             )
-            self.stderr.write(self.style.WARNING(msg))
 
-    def _translation_po_entries(self, translatable, base_translation, translation=None):
-        for field_id in base_translation.get_translated_fields():
-            msgid = getattr(base_translation, field_id)
-            msgstr = getattr(translation, field_id) if translation else ""
-            if msgid:
-                translation_entry = TranslationEntry(
-                    translatable, field_id, msgid, msgstr
-                )
-                yield translation_entry.as_po_entry()
+        for translation in translations_query:
+            po_entries = self._translation_po_entries(
+                translatable, translation
+            )
+            yield (translation.language_code, po_entries)
+
+    def _translation_po_entries(self, translatable, translation):
+        fields_list = translatable.translations.model.get_translated_fields()
+
+        for field_id in fields_list:
+            translation_entry = TranslationEntry.from_translation(
+                translatable,
+                translation,
+                field_id
+            )
+
+            try:
+                po_entry = translation_entry.as_po_entry()
+            except Exception as error:
+                if translation_entry.msgstr:
+                    msg = "Skipping \"{translation_entry}\": {error}".format(
+                        translation_entry=translation_entry,
+                        error=error
+                    )
+                    self.stderr.write(self.style.WARNING(msg))
+                else:
+                    pass
+            else:
+                yield po_entry

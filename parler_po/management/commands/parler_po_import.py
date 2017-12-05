@@ -77,7 +77,7 @@ class Command(BaseCommand):
                         po_entry, occurrence
                     )
                 except Exception as error:
-                    msg = ("Skipping \"{occurrence}\": {error}").format(
+                    msg = "Skipping \"{occurrence}\": {error}".format(
                         occurrence=":".join(n for n in occurrence if n),
                         error=error
                     )
@@ -86,34 +86,22 @@ class Command(BaseCommand):
                     yield translation_entry
 
     def _import_translation_entry(self, translation_entry, language_code, import_progress):
-        import_group = self._get_import_group(
-            translation_entry,
-            language_code
-        )
+        import_group = self._get_import_group(translation_entry, language_code)
 
         try:
-            translation = translation_entry.get_translation(language_code)
-        except ValueError as error:
-            msg = _("Skipping \"{field}\": {error}").format(
-                field=translation_entry,
+            translation, modified = translation_entry.as_translation(language_code)
+        except Exception as error:
+            msg = _("Skipping \"{translation_entry}\": {error}").format(
+                translation_entry=translation_entry,
                 error=error
             )
             self.stderr.write(self.style.WARNING(msg))
             import_progress.add_error(import_group)
         else:
-            field_id = translation_entry.field_id
-            current_msgstr = getattr(translation, field_id)
-            new_msgstr = translation_entry.msgstr
-
-            if translation == translation_entry.base_translation:
-                # Never update the base translation from a po file
-                import_progress.add_skip(import_group)
-            elif new_msgstr == current_msgstr:
-                import_progress.add_skip(import_group)
-            else:
-                setattr(translation, field_id, new_msgstr)
-                translation.save()
+            if modified:
                 import_progress.add_new(import_group)
+            else:
+                import_progress.add_skip(import_group)
 
     def _print_import_progress(self, import_progress, ending='\n'):
         msg = str(import_progress)
