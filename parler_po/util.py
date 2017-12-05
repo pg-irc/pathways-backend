@@ -46,22 +46,22 @@ def new_po_file(pot_file=None, language_code=None):
 
     return po_file
 
-def get_pot_path(output_dir, model):
+def build_pot_path(output_dir, model):
     content_type = ContentType.objects.get_for_model(model)
-    domain = content_type_id(content_type)
+    domain = build_content_type_id(content_type)
     pot_name = '{}.pot'.format(domain)
     os.makedirs(output_dir, exist_ok=True)
     return os.path.join(output_dir, pot_name)
 
-def get_po_path(output_dir, model, language_code):
+def build_po_path(output_dir, model, language_code):
     content_type = ContentType.objects.get_for_model(model)
-    domain = content_type_id(content_type)
+    domain = build_content_type_id(content_type)
     po_name = '{}.po'.format(domain)
     language_dir = os.path.join(output_dir, language_code, 'LC_MESSAGES')
     os.makedirs(language_dir, exist_ok=True)
     return os.path.join(language_dir, po_name)
 
-def content_type_id(content_type):
+def build_content_type_id(content_type):
     return '.'.join([content_type.app_label, content_type.model])
 
 def parse_content_type_id(content_type_id):
@@ -71,4 +71,24 @@ def parse_content_type_id(content_type_id):
         return ContentType.objects.get(app_label=app_label, model=model)
     else:
         msg = _("Invalid content type id: {}").format(content_type_id)
+        raise ValueError(msg)
+
+def build_instance_field_id(instance, field_id):
+    content_type = ContentType.objects.get_for_model(instance)
+    content_type_id = build_content_type_id(content_type)
+    return "{model}@{field}@{instance}".format(
+        model=content_type_id,
+        field=field_id,
+        instance=instance.pk
+    )
+
+def parse_instance_field_id(instance_field_id):
+    parts = instance_field_id.split('@', 3)
+    if len(parts) == 3:
+        (content_type_id, field_id, instance_pk) = parts
+        content_type = parse_content_type_id(content_type_id)
+        instance = content_type.get_object_for_this_type(pk=instance_pk)
+        return (instance, field_id)
+    else:
+        msg = _("Invalid instance field id: {}").format(instance_field_id)
         raise ValueError(msg)

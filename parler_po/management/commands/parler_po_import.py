@@ -86,37 +86,41 @@ class Command(BaseCommand):
                     yield translation_entry
 
     def _import_translation_entry(self, translation_entry, language_code, import_progress):
-        import_key = (translation_entry.content_type_id, language_code)
-
-        base_translation = translation_entry.get_base_translation()
+        import_group = self._get_import_group(
+            translation_entry,
+            language_code
+        )
 
         try:
             translation = translation_entry.get_translation(language_code)
         except ValueError as error:
             msg = _("Skipping \"{field}\": {error}").format(
-                field=translation_entry.instance_field_id,
+                field=translation_entry,
                 error=error
             )
             self.stderr.write(self.style.WARNING(msg))
-            import_progress.add_error(import_key)
+            import_progress.add_error(import_group)
         else:
             field_id = translation_entry.field_id
             current_msgstr = getattr(translation, field_id)
             new_msgstr = translation_entry.msgstr
 
-            if translation == base_translation:
+            if translation == translation_entry.base_translation:
                 # Never update the base translation from a po file
-                import_progress.add_skip(import_key)
+                import_progress.add_skip(import_group)
             elif new_msgstr == current_msgstr:
-                import_progress.add_skip(import_key)
+                import_progress.add_skip(import_group)
             else:
                 setattr(translation, field_id, new_msgstr)
                 translation.save()
-                import_progress.add_new(import_key)
+                import_progress.add_new(import_group)
 
     def _print_import_progress(self, import_progress, ending='\n'):
         msg = str(import_progress)
         self.stderr.write(self.style.SUCCESS(import_progress), ending=ending)
+
+    def _get_import_group(self, translation_entry, language_code):
+        return (translation_entry.instance.__class__, language_code)
 
 class ImportProgress(object):
     PROGRESS_ERROR = 0
@@ -124,19 +128,23 @@ class ImportProgress(object):
     PROGRESS_SKIP = 2
 
     def __init__(self):
+        self._totals = defaultdict(int)
         self._counts = defaultdict(lambda: defaultdict(int))
 
-    def add_error(self, key):
-        self._counts[key][None] += 1
-        self._counts[key][self.PROGRESS_ERROR] += 1
+    def add_total(self, group):
+        self._totals[group] += 1
 
-    def add_new(self, key):
-        self._counts[key][None] += 1
-        self._counts[key][self.PROGRESS_NEW] += 1
+    def add_error(self, group):
+        self.add_total(group)
+        self._counts[group][self.PROGRESS_ERROR] += 1
 
-    def add_skip(self, key):
-        self._counts[key][None] += 1
-        self._counts[key][self.PROGRESS_SKIP] += 1
+    def add_new(self, group):
+        self.add_total(group)
+        self._counts[group][self.PROGRESS_NEW] += 1
+
+    def add_skip(self, group):
+        self.add_total(group)
+        self._counts[group][self.PROGRESS_SKIP] += 1
 
     def __str__(self):
         return " | ".join(
@@ -147,7 +155,7 @@ class ImportProgress(object):
         for (model, counts) in self._counts.items():
             numbers_list = []
 
-            total_count = counts[None]
+            total_count = self._totals[model]
             numbers_list.append(
                 str(total_count)
             )

@@ -9,8 +9,8 @@ from parler_po.argparse_path import argparse_path_type
 from parler_po.translation_entry import TranslationEntry
 from parler_po.util import (
     get_base_translation,
-    get_pot_path,
-    get_po_path,
+    build_pot_path,
+    build_po_path,
     new_pot_file,
     new_po_file
 )
@@ -52,13 +52,13 @@ class Command(BaseCommand):
                 model_po_entries = self._model_po_entries(model, locales=[])
 
             pot_entries = model_po_entries.pop(None, list())
-            pot_path = get_pot_path(translations_dir, model)
+            pot_path = build_pot_path(translations_dir, model)
             pot_file = new_pot_file()
             pot_file.extend(pot_entries)
             pot_file.save(pot_path)
 
             for (language_code, po_entries) in model_po_entries.items():
-                po_path = get_po_path(translations_dir, model, language_code)
+                po_path = build_po_path(translations_dir, model, language_code)
                 po_file = new_po_file(pot_file=pot_file, language_code=language_code)
                 po_file.extend(po_entries)
                 po_file.merge(pot_file)
