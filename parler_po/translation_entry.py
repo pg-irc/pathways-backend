@@ -42,14 +42,18 @@ class TranslationEntry(object):
         )
 
     @classmethod
-    def from_translation(cls, translatable, translation, field_id):
-        base_translation = get_base_translation(translatable)
+    def from_translation(cls, translation, field_id):
+        base_translation = get_base_translation(translation.master)
 
-        msgid = getattr(base_translation, field_id, "")
-        msgstr = getattr(translation, field_id, "")
+        if base_translation:
+            msgid = getattr(base_translation, field_id, '')
+        else:
+            msgid = ''
+
+        msgstr = getattr(translation, field_id, '')
 
         return cls(
-            translatable,
+            translation.master,
             field_id,
             msgid=msgid,
             msgstr=msgstr
@@ -72,14 +76,13 @@ class TranslationEntry(object):
             raise ValueError("Invalid msgid")
 
         if language_code != base_translation.language_code:
-            translation, modified = _update_translation(
+            translation = _update_translation(
                 self.instance, language_code, self.field_id, self.msgstr
             )
         else:
             translation = None
-            modified = False
 
-        return (translation, modified)
+        return translation
 
 def _instance_is_translatable_model(instance):
     return isinstance(instance, TranslatableModel)
@@ -102,9 +105,5 @@ def _update_translation(translatable, language_code, field_id, msgstr):
 
     if translation:
         setattr(translation, field_id, msgstr)
-        modified = translation.is_modified
-        translation.save()
-    else:
-        modified = False
 
-    return (translation, modified)
+    return translation

@@ -8,6 +8,7 @@ import itertools
 from parler_po.argparse_path import argparse_path_type
 from parler_po.translation_entry import TranslationEntry
 from parler_po.util import (
+    get_base_translation,
     build_pot_path,
     build_po_path,
     new_pot_file,
@@ -83,10 +84,11 @@ class Command(BaseCommand):
         }
 
     def _translatable_po_entries(self, translatable, locales=None):
-        pot_entries = self._translation_po_entries(
-            translatable, None
-        )
-        yield (None, pot_entries)
+        base_translation = get_base_translation(translatable)
+
+        if base_translation:
+            pot_entries = self._translation_po_entries(base_translation, strip_msgstr=True)
+            yield (None, pot_entries)
 
         if locales is None:
             translations_query = translatable.translations.all()
@@ -96,17 +98,14 @@ class Command(BaseCommand):
             )
 
         for translation in translations_query:
-            po_entries = self._translation_po_entries(
-                translatable, translation
-            )
+            po_entries = self._translation_po_entries(translation)
             yield (translation.language_code, po_entries)
 
-    def _translation_po_entries(self, translatable, translation):
-        fields_list = translatable.translations.model.get_translated_fields()
+    def _translation_po_entries(self, translation, strip_msgstr=False):
+        fields_list = translation.get_translated_fields()
 
         for field_id in fields_list:
             translation_entry = TranslationEntry.from_translation(
-                translatable,
                 translation,
                 field_id
             )
@@ -123,4 +122,6 @@ class Command(BaseCommand):
                 else:
                     pass
             else:
+                if strip_msgstr:
+                    po_entry.msgstr = ''
                 yield po_entry

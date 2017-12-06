@@ -89,7 +89,7 @@ class Command(BaseCommand):
         import_group = self._get_import_group(translation_entry, language_code)
 
         try:
-            translation, modified = translation_entry.as_translation(language_code)
+            translation = translation_entry.as_translation(language_code)
         except Exception as error:
             msg = _("Skipping \"{translation_entry}\": {error}").format(
                 translation_entry=translation_entry,
@@ -98,8 +98,9 @@ class Command(BaseCommand):
             self.stderr.write(self.style.WARNING(msg))
             import_progress.add_error(import_group)
         else:
-            if modified:
+            if translation and translation.is_modified:
                 import_progress.add_new(import_group)
+                translation.save()
             else:
                 import_progress.add_skip(import_group)
 

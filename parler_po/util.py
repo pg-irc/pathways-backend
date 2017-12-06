@@ -9,9 +9,9 @@ PARLER_PO_BASE_LANGUAGE = getattr(settings, 'PARLER_PO_BASE_LANGUAGE', 'en')
 PARLER_PO_CONTACT = getattr(settings, 'PARLER_PO_CONTACT', None)
 
 def get_base_translation(translatable):
-    if translatable.has_translation(PARLER_PO_BASE_LANGUAGE):
+    try:
         return translatable.get_translation(PARLER_PO_BASE_LANGUAGE)
-    else:
+    except translatable.translations.model.DoesNotExist:
         return None
 
 def new_pot_file():
