@@ -1,7 +1,8 @@
-import logging
-from organizations.models import Organization
-from locations.models import Location
 from django.utils import translation
+from locations.models import Location
+from organizations.models import Organization
+from taxonomies.models import Taxonomy
+import logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -9,12 +10,16 @@ class ImportCounters:
     def __init__(self):
         self.organization_count = 0
         self.location_count = 0
+        self.taxonomy_count = 0
 
     def count_organization(self):
         self.organization_count += 1
 
     def count_location(self):
         self.location_count += 1
+
+    def count_taxonomy(self):
+        self.taxonomy_count += 1
 
 def save_records_to_database(organizations):
     translation.activate('en')
@@ -55,4 +60,14 @@ def build_location_active_record(record):
     active_record.latitude = record.spatial_location.latitude if has_location else None
     active_record.longitude = record.spatial_location.longitude if has_location else None
     active_record.description = record.description
+    return active_record
+
+def save_taxonomies(taxonomies, counters):
+    for taxonomy in taxonomies:
+        active_record = build_taxonomy_active_record(taxonomy)
+        active_record.save()
+        counters.count_taxonomy()
+
+def build_taxonomy_active_record(record):
+    active_record = Taxonomy.objects.get_unique_term(record.vocabulary, record.name)
     return active_record

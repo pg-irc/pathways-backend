@@ -1,10 +1,14 @@
-import logging
-import xml.etree.ElementTree as etree
-from urllib import parse as urlparse
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
+from urllib import parse as urlparse
+import itertools
+import logging
+import re
+import xml.etree.ElementTree as etree
 
 LOGGER = logging.getLogger(__name__)
+
+BC211_JSON_RE = r"(\w+)\:\'([^\']+)\'"
 
 def read_records_from_file(file):
     xml = file.read()
@@ -14,6 +18,13 @@ def parse(xml_data_as_string):
     root_xml = etree.fromstring(xml_data_as_string)
     agencies = root_xml.findall('Agency')
     return map(parse_agency, agencies)
+
+    # all_taxonomies_xml = root_xml.findall('Agency/Site/SiteService/Taxonomy')
+    # result.taxonomies = set(
+    #     itertools.chain.from_iterable(
+    #         map(parse_taxonomies, all_taxonomies_xml)
+    #     )
+    # )
 
 def parse_agency(agency):
     id = parse_agency_key(agency)
@@ -92,3 +103,36 @@ def parse_spatial_location_if_defined(site):
     if latitude is None or longitude is None:
         return None
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
+
+def parse_taxonomies(taxonomy_xml):
+    code_element = taxonomy_xml.find('Code')
+
+    if code_element is None:
+        return
+    else:
+        code_str = code_element.text
+
+    if not code_str:
+        return
+
+    if is_bc211_taxonomy(code_str):
+        yield from parse_bc211_taxonomy(code_str)
+    else:
+        yield from parse_airs_taxonomy(code_str)
+
+def is_bc211_taxonomy(code_str):
+    return code_str.startswith('{')
+
+def parse_bc211_taxonomy(code_str):
+    groups = re.findall(BC211_JSON_RE, code_str)
+    for (vocabulary, name) in groups:
+        yield models.Taxonomy(
+            vocabulary='bc211-{}'.format(vocabulary),
+            name=name
+        )
+
+def parse_airs_taxonomy(code_str):
+    yield models.Taxonomy(
+        vocabulary='airs',
+        name=code_str
+    )

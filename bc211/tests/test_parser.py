@@ -48,7 +48,7 @@ class BC211ParserTests(unittest.TestCase):
         locations_from_first_organization = list(organizations[0].locations)
         self.assertEqual(len(organizations), 16)
         self.assertEqual(len(locations_from_first_organization), 1)
-
+        # TODO: Count taxonomy terms from first location
 
 class OrganizationParserTests(unittest.TestCase):
     def setUp(self):
