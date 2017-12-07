@@ -6,12 +6,25 @@ from django.utils.translation import ugettext_lazy as _
 from common.models import RequiredCharField
 
 
+class TaxonomyManager(models.Manager):
+    def get_unique_term(self, vocabulary, name):
+        vocabulary = slugify(vocabulary)
+        name = slugify(name)
+
+        try:
+            return self.get(vocabulary=vocabulary, name=name)
+        except self.model.DoesNotExist:
+            return self.model(vocabulary=vocabulary, name=name)
+
+
 class Taxonomy(models.Model):
     vocabulary = RequiredCharField(max_length=200, validators=[validate_slug])
     name = RequiredCharField(max_length=200, validators=[validate_slug])
 
+    objects = TaxonomyManager()
+
     class Meta:
-        verbose_name = "vocabulary"
+        verbose_name = "taxonomy"
         verbose_name_plural = "taxonomies"
         unique_together = ('vocabulary', 'name')
 
