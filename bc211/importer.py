@@ -10,6 +10,7 @@ class ImportCounters:
     def __init__(self):
         self.organization_count = 0
         self.location_count = 0
+        self.service_count = 0
         self.taxonomy_count = 0
 
     def count_organization(self):
@@ -17,6 +18,9 @@ class ImportCounters:
 
     def count_location(self):
         self.location_count += 1
+
+    def count_service(self):
+        self.service_count += 1
 
     def count_taxonomy(self):
         self.taxonomy_count += 1
@@ -50,6 +54,7 @@ def save_locations(locations, counters):
         active_record.save()
         counters.count_location()
         LOGGER.info('Imported location: %s %s', location.id, location.name)
+        save_services(location.services, counters)
 
 def build_location_active_record(record):
     active_record = Location()
@@ -62,11 +67,18 @@ def build_location_active_record(record):
     active_record.description = record.description
     return active_record
 
+def save_services(services, counters):
+    for service in services:
+        # Don't save services themselves for now.
+        counters.count_service()
+        save_taxonomies(service.taxonomies, counters)
+
 def save_taxonomies(taxonomies, counters):
     for taxonomy in taxonomies:
         active_record = build_taxonomy_active_record(taxonomy)
         active_record.save()
         counters.count_taxonomy()
+        LOGGER.info('Imported taxonomy: %s %s', taxonomy.vocabulary, taxonomy.name)
 
 def build_taxonomy_active_record(record):
     active_record = Taxonomy.objects.get_unique_term(record.vocabulary, record.name)
