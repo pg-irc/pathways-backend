@@ -59,7 +59,7 @@ class TestTaxonomyModel(TestCase):
         with self.assertRaises(exceptions.ValidationError):
             taxonomy.full_clean()
 
-    def test_vocabulary_is_not_unique(self):
+    def test_saving_two_taxonomies_with_same_vocabulary_and_different_name(self):
         vocabulary = 'the_vocabulary'
         name_1 = 'the_name_1'
         name_2 = 'the_name_2'
@@ -74,7 +74,7 @@ class TestTaxonomyModel(TestCase):
 
         self.assertNotEqual(taxonomy1.pk, taxonomy2.pk)
 
-    def test_name_is_not_unique(self):
+    def test_saving_two_taxonomies_with_same_name_and_different_vocabulary(self):
         vocabulary_1 = 'the_vocabulary_1'
         vocabulary_2 = 'the_vocabulary_2'
         name = 'the_name'
@@ -89,18 +89,13 @@ class TestTaxonomyModel(TestCase):
 
         self.assertNotEqual(taxonomy1.pk, taxonomy2.pk)
 
-    def test_vocabulary_and_name_are_unique(self):
+    def test_saving_two_taxonomies_with_same_name_and_vocabulary_fails_with_integrity_error(self):
         vocabulary = 'the_vocabulary'
         name = 'the_name'
 
-        taxonomy1 = TaxonomyBuilder().build()
-        taxonomy1.vocabulary = vocabulary
-        taxonomy1.name = name
+        taxonomy1 = TaxonomyBuilder().with_vocabulary(vocabulary).with_name(name).build()
         taxonomy1.save()
 
-        taxonomy2 = TaxonomyBuilder().build()
-        taxonomy2.vocabulary = vocabulary
-        taxonomy2.name = name
-
+        taxonomy2 = TaxonomyBuilder().with_vocabulary(vocabulary).with_name(name).build()
         with self.assertRaises(IntegrityError):
             taxonomy2.save()
