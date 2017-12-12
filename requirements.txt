@@ -14,6 +14,8 @@ parse==1.8.2
 parse-type==0.4.2
 polib==1.1.0
 pylint==1.7.4
+pylint-django==0.7.2
+pylint-plugin-utils==0.2.6
 pytz==2017.3
 six==1.11.0
 wrapt==1.10.11
