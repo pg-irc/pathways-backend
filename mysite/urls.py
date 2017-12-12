@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from organizations.viewsets import OrganizationViewSet
 from locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
+from search.viewsets import SearchViewSet
 from rest_framework import routers
 
 def build_router():
@@ -9,6 +10,7 @@ def build_router():
     router.register(r'^organizations', OrganizationViewSet)
     router.register(r'^organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations', LocationViewSetUnderOrganizations, 'location')
     router.register(r'^locations', LocationViewSet, 'location')
+    router.register(r'^search', SearchViewSet)
     return router
 
 # pylint: disable=invalid-name
