@@ -75,11 +75,13 @@ def save_services(services, counters):
 
 def save_taxonomies(taxonomies, counters):
     for taxonomy in taxonomies:
-        active_record = build_taxonomy_active_record(taxonomy)
-        active_record.save()
-        counters.count_taxonomy()
-        LOGGER.info('Imported taxonomy: %s %s', taxonomy.vocabulary, taxonomy.name)
+        if save_taxonomy(taxonomy):
+            counters.count_taxonomy()
+            LOGGER.info('Imported taxonomy: %s %s', taxonomy.vocabulary, taxonomy.name)
 
-def build_taxonomy_active_record(record):
-    active_record = Taxonomy.objects.get_unique_term(record.vocabulary, record.name)
-    return active_record
+def save_taxonomy(record):
+    active_record, created = Taxonomy.objects.get_or_create(
+        vocabulary=record.vocabulary,
+        name=record.name
+    )
+    return created

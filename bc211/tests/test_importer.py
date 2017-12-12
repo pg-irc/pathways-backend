@@ -73,4 +73,4 @@ class FullDataImportTests(TestCase):
         self.assertEqual(self.return_value.location_count, 40)
 
     def test_returns_number_of_taxonomies_imported(self):
-        self.assertEqual(self.return_value.taxonomy_count, 552)
+        self.assertEqual(self.return_value.taxonomy_count, 134)
