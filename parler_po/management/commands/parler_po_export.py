@@ -6,6 +6,7 @@ from parler.models import TranslatableModel
 import itertools
 
 from parler_po.argparse_path import argparse_path_type
+from parler_po.exceptions import TranslationEntryError
 from parler_po.translation_entry import TranslationEntry
 from parler_po.util import (
     get_base_translation,
@@ -67,7 +68,7 @@ class Command(BaseCommand):
     def _translatable_models(self):
         for content_type in ContentType.objects.all():
             model_class = content_type.model_class()
-            if issubclass(model_class, TranslatableModel):
+            if model_class and issubclass(model_class, TranslatableModel):
                 yield model_class
 
     def _model_po_entries(self, model, locales=None):
@@ -105,23 +106,23 @@ class Command(BaseCommand):
         fields_list = translation.get_translated_fields()
 
         for field_id in fields_list:
-            translation_entry = TranslationEntry.from_translation(
-                translation,
-                field_id
-            )
-
             try:
-                po_entry = translation_entry.as_po_entry()
-            except Exception as error:
-                if translation_entry.msgstr:
-                    msg = "Skipping \"{translation_entry}\": {error}".format(
-                        translation_entry=translation_entry,
+                translation_entry = TranslationEntry.from_translation(
+                    translation,
+                    field_id
+                )
+            except TranslationEntryError as error:
+                if getattr(translation, field_id, None):
+                    msg = "Skipping \"{translation} - {field_id}\": {error}".format(
+                        translation=translation.master,
+                        field_id=field_id,
                         error=error
                     )
                     self.stderr.write(self.style.WARNING(msg))
                 else:
                     pass
             else:
+                po_entry = translation_entry.as_po_entry()
                 if strip_msgstr:
                     po_entry.msgstr = ''
                 yield po_entry

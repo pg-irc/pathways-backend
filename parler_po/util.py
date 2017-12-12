@@ -84,7 +84,7 @@ def build_instance_field_id(instance, field_id):
 
 def parse_instance_field_id(instance_field_id):
     parts = instance_field_id.split('@', 3)
-    if len(parts) == 3:
+    if len(parts) == 3 and all(parts):
         (content_type_id, field_id, instance_pk) = parts
         content_type = parse_content_type_id(content_type_id)
         instance = content_type.get_object_for_this_type(pk=instance_pk)

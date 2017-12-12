@@ -9,6 +9,7 @@ import os
 import polib
 
 from parler_po.argparse_path import argparse_path_type
+from parler_po.exceptions import TranslationEntryError, ProtectedTranslationError
 from parler_po.translation_entry import TranslationEntry
 
 class Command(BaseCommand):
@@ -76,7 +77,7 @@ class Command(BaseCommand):
                     translation_entry = TranslationEntry.from_po_entry(
                         po_entry, occurrence
                     )
-                except Exception as error:
+                except TranslationEntryError as error:
                     msg = "Skipping \"{occurrence}\": {error}".format(
                         occurrence=":".join(n for n in occurrence if n),
                         error=error
@@ -89,18 +90,12 @@ class Command(BaseCommand):
         import_group = self._get_import_group(translation_entry, language_code)
 
         try:
-            translation = translation_entry.as_translation(language_code)
-        except Exception as error:
-            msg = _("Skipping \"{translation_entry}\": {error}").format(
-                translation_entry=translation_entry,
-                error=error
-            )
-            self.stderr.write(self.style.WARNING(msg))
-            import_progress.add_error(import_group)
+            modified = translation_entry.save_translation(language_code)
+        except ProtectedTranslationError as error:
+            import_progress.add_skip(import_group)
         else:
-            if translation and translation.is_modified:
+            if modified:
                 import_progress.add_new(import_group)
-                translation.save()
             else:
                 import_progress.add_skip(import_group)
 
@@ -109,7 +104,7 @@ class Command(BaseCommand):
         self.stderr.write(self.style.SUCCESS(import_progress), ending=ending)
 
     def _get_import_group(self, translation_entry, language_code):
-        return (translation_entry.instance.__class__, language_code)
+        return (translation_entry.model, language_code)
 
 class ImportProgress(object):
     PROGRESS_ERROR = 0
