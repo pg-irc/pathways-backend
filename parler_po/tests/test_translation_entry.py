@@ -233,7 +233,7 @@ class ValidTranslationEntryTests(TestCase):
         self.assertEquals(translation.master, self.translatable)
         self.assertEquals(translation.foo, self.TRANSLATION_MSGSTR)
 
-        translation.save.assert_called_once()
+        translation.save.assert_called_once_with()
 
     def test_save_translation__base_translation(self):
         with self.assertRaises(ProtectedTranslationError):
