@@ -6,8 +6,8 @@ from parler.models import TranslatableModel
 import itertools
 
 from parler_po.argparse_path import argparse_path_type
-from parler_po.exceptions import TranslationEntryError
-from parler_po.translation_entry import TranslationEntry
+from parler_po.exceptions import TranslatableStringError
+from parler_po.translatable_string import TranslatableString
 from parler_po.util import (
     get_base_translation,
     build_pot_path,
@@ -75,7 +75,7 @@ class Command(BaseCommand):
         model_po_entries = defaultdict(list)
 
         for instance in model.objects.all():
-            instance_po_entries = self._translatable_po_entries(instance, locales)
+            instance_po_entries = self._po_entries_for_translatable_instance(instance, locales)
             for (language_code, po_entries) in instance_po_entries:
                 model_po_entries[language_code].append(po_entries)
 
@@ -84,34 +84,37 @@ class Command(BaseCommand):
             for language_code, po_entries in model_po_entries.items()
         }
 
-    def _translatable_po_entries(self, translatable, locales=None):
-        base_translation = get_base_translation(translatable)
+    def _po_entries_for_translatable_instance(self, instance, locales=None):
+        # TODO: Move this somewhere else.
+        #       Raise an error if instance is not a translatable model.
+
+        base_translation = get_base_translation(instance)
 
         if base_translation:
-            pot_entries = self._translation_po_entries(base_translation, strip_msgstr=True)
+            pot_entries = self._po_entries_for_translation(base_translation, strip_msgstr=True)
             yield (None, pot_entries)
 
         if locales is None:
-            translations_query = translatable.translations.all()
+            translations_query = instance.translations.all()
         else:
-            translations_query = translatable.translations.filter(
+            translations_query = instance.translations.filter(
                 language_code__in=locales
             )
 
         for translation in translations_query:
-            po_entries = self._translation_po_entries(translation)
+            po_entries = self._po_entries_for_translation(translation)
             yield (translation.language_code, po_entries)
 
-    def _translation_po_entries(self, translation, strip_msgstr=False):
+    def _po_entries_for_translation(self, translation, strip_msgstr=False):
         fields_list = translation.get_translated_fields()
 
         for field_id in fields_list:
             try:
-                translation_entry = TranslationEntry.from_translation(
+                translatable_string = TranslatableString.from_translation(
                     translation,
                     field_id
                 )
-            except TranslationEntryError as error:
+            except TranslatableStringError as error:
                 if getattr(translation, field_id, None):
                     self.stderr.write(
                         _("Skipping \"{translation} - {field_id}\": {error}").format(
@@ -123,7 +126,7 @@ class Command(BaseCommand):
                 else:
                     pass
             else:
-                po_entry = translation_entry.as_po_entry()
+                po_entry = translatable_string.as_po_entry()
                 if strip_msgstr:
                     po_entry.msgstr = ''
                 yield po_entry

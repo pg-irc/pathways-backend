@@ -6,9 +6,9 @@ import os
 import polib
 
 from parler_po.argparse_path import argparse_path_type
-from parler_po.exceptions import TranslationEntryError, ProtectedTranslationError
+from parler_po.exceptions import TranslatableStringError, ProtectedTranslationError
 from parler_po.import_progress import ImportProgress
-from parler_po.translation_entry import TranslationEntry
+from parler_po.translatable_string import TranslatableString
 
 class Command(BaseCommand):
     help = _("Import the given PO files with new content translations")
@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def _import_po_file(self, po_path):
         self.stdout.write(
-            _("Importing {file}").format(
+            _("{file}:").format(
                 file=po_path
             )
         )
@@ -59,9 +59,9 @@ class Command(BaseCommand):
             translation_entries = self._translation_entries_for_po_file(
                 po_file
             )
-            for translation_entry in translation_entries:
-                self._import_translation_entry(
-                    translation_entry, language_code, import_progress
+            for translatable_string in translation_entries:
+                self._import_translatable_string(
+                    translatable_string, language_code, import_progress
                 )
                 self._print_import_progress(import_progress, ending='\r')
             self._print_import_progress(import_progress)
@@ -76,10 +76,10 @@ class Command(BaseCommand):
         for po_entry in po_file:
             for occurrence in po_entry.occurrences:
                 try:
-                    translation_entry = TranslationEntry.from_po_entry(
+                    translatable_string = TranslatableString.from_po_entry(
                         po_entry, occurrence
                     )
-                except TranslationEntryError as error:
+                except TranslatableStringError as error:
                     self.stderr.write(
                         _("Skipping \"{occurrence}\": {error}").format(
                             occurrence=":".join(n for n in occurrence if n),
@@ -87,13 +87,13 @@ class Command(BaseCommand):
                         )
                     )
                 else:
-                    yield translation_entry
+                    yield translatable_string
 
-    def _import_translation_entry(self, translation_entry, language_code, import_progress):
-        import_group = self._get_import_group(translation_entry, language_code)
+    def _import_translatable_string(self, translatable_string, language_code, import_progress):
+        import_group = self._get_import_group(translatable_string, language_code)
 
         try:
-            modified = translation_entry.save_translation(language_code)
+            modified = translatable_string.save_translation(language_code)
         except ProtectedTranslationError as error:
             import_progress.add_skip(import_group)
         else:
@@ -107,5 +107,5 @@ class Command(BaseCommand):
         if progress_str:
             self.stderr.write(import_progress, ending=ending)
 
-    def _get_import_group(self, translation_entry, language_code):
-        return (translation_entry.model, language_code)
+    def _get_import_group(self, translatable_string, language_code):
+        return (translatable_string.model, language_code)

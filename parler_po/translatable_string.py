@@ -17,7 +17,7 @@ from parler_po.util import (
     parse_instance_field_id
 )
 
-class TranslationEntry(object):
+class TranslatableString(object):
     def __init__(self, instance, field_id, msgid, msgstr):
         if not _instance_is_translatable_model(instance):
             raise ModelNotTranslatableError(instance.__class__)
@@ -95,7 +95,7 @@ class TranslationEntry(object):
         if language_code == self._base_translation.language_code:
             raise ProtectedTranslationError()
 
-        return _update_translation(
+        return _update_translation_for_translatable_instance(
             self._instance, language_code, self._field_id, self._msgstr
         )
 
@@ -105,23 +105,23 @@ def _instance_is_translatable_model(instance):
 def _instance_has_translatable_field(instance, field_id):
     return field_id in instance.translations.model.get_translated_fields()
 
-def _update_translation(translatable, language_code, field_id, msgstr):
+def _update_translation_for_translatable_instance(instance, language_code, field_id, msgstr):
     try:
-        translation = translatable.get_translation(language_code)
-    except translatable.translations.model.DoesNotExist as error:
+        translation = instance.get_translation(language_code)
+    except instance.translations.model.DoesNotExist as error:
         if msgstr:
-            translatable.create_translation(language_code)
-            translation = translatable.get_translation(language_code)
+            instance.create_translation(language_code)
+            translation = instance.get_translation(language_code)
         else:
             translation = None
 
     # TODO: If msgstr is blank, should we fall back to the base language? Or
     #       should we expect translators to do that in their PO files?
 
-    if translation:
+    if translation and getattr(translation, field_id, None) != msgstr:
         setattr(translation, field_id, msgstr)
-        is_modified = translation.is_modified
         translation.save()
+        is_modified = True
     else:
         is_modified = False
 
