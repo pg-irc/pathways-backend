@@ -1,8 +1,5 @@
-from collections import defaultdict
-from django.core.management.base import BaseCommand, CommandError
-from django.db import models
+from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
-from django.utils.translation import ungettext as __
 import argparse
 import glob
 import os
@@ -10,6 +7,7 @@ import polib
 
 from parler_po.argparse_path import argparse_path_type
 from parler_po.exceptions import TranslationEntryError, ProtectedTranslationError
+from parler_po.import_progress import ImportProgress
 from parler_po.translation_entry import TranslationEntry
 
 class Command(BaseCommand):
@@ -47,8 +45,11 @@ class Command(BaseCommand):
             self._import_po_file(po_path)
 
     def _import_po_file(self, po_path):
-        msg = _("Importing {}").format(po_path)
-        self.stderr.write(self.style.SUCCESS(msg))
+        self.stdout.write(
+            _("Importing {file}").format(
+                file=po_path
+            )
+        )
 
         po_file = polib.pofile(po_path)
         language_code = po_file.metadata.get('Language')
@@ -65,10 +66,11 @@ class Command(BaseCommand):
                 self._print_import_progress(import_progress, ending='\r')
             self._print_import_progress(import_progress)
         else:
-            msg = _("Skipping \"{file}\": No language metadata").format(
-                file=po_path
+            self.stderr.write(
+                _("Skipping \"{file}\": No language metadata").format(
+                    file=po_path
+                )
             )
-            self.stderr.write(self.style.WARNING(msg))
 
     def _translation_entries_for_po_file(self, po_file):
         for po_entry in po_file:
@@ -78,11 +80,12 @@ class Command(BaseCommand):
                         po_entry, occurrence
                     )
                 except TranslationEntryError as error:
-                    msg = "Skipping \"{occurrence}\": {error}".format(
-                        occurrence=":".join(n for n in occurrence if n),
-                        error=error
+                    self.stderr.write(
+                        _("Skipping \"{occurrence}\": {error}").format(
+                            occurrence=":".join(n for n in occurrence if n),
+                            error=error
+                        )
                     )
-                    self.stderr.write(self.style.WARNING(msg))
                 else:
                     yield translation_entry
 
@@ -100,67 +103,9 @@ class Command(BaseCommand):
                 import_progress.add_skip(import_group)
 
     def _print_import_progress(self, import_progress, ending='\n'):
-        msg = str(import_progress)
-        self.stderr.write(self.style.SUCCESS(import_progress), ending=ending)
+        progress_str = str(import_progress)
+        if progress_str:
+            self.stderr.write(import_progress, ending=ending)
 
     def _get_import_group(self, translation_entry, language_code):
         return (translation_entry.model, language_code)
-
-class ImportProgress(object):
-    PROGRESS_ERROR = 0
-    PROGRESS_NEW = 1
-    PROGRESS_SKIP = 2
-
-    def __init__(self):
-        self._totals = defaultdict(int)
-        self._counts = defaultdict(lambda: defaultdict(int))
-
-    def add_total(self, group):
-        self._totals[group] += 1
-
-    def add_error(self, group):
-        self.add_total(group)
-        self._counts[group][self.PROGRESS_ERROR] += 1
-
-    def add_new(self, group):
-        self.add_total(group)
-        self._counts[group][self.PROGRESS_NEW] += 1
-
-    def add_skip(self, group):
-        self.add_total(group)
-        self._counts[group][self.PROGRESS_SKIP] += 1
-
-    def __str__(self):
-        return " | ".join(
-            self._format_model_counts()
-        )
-
-    def _format_model_counts(self):
-        for (model, counts) in self._counts.items():
-            numbers_list = []
-
-            total_count = self._totals[model]
-            numbers_list.append(
-                str(total_count)
-            )
-
-            new_count = counts[self.PROGRESS_NEW]
-            if new_count:
-                numbers_list.append(
-                    __("({} new)", "({} new)", new_count).format(
-                        new_count
-                    )
-                )
-
-            error_count = counts[self.PROGRESS_ERROR]
-            if error_count:
-                numbers_list.append(
-                    __("({} error)", "({} errors)", error_count).format(
-                        error_count
-                    )
-                )
-
-            yield _("{model}: {numbers}").format(
-                model=model,
-                numbers=" ".join(numbers_list)
-            )

@@ -113,12 +113,13 @@ class Command(BaseCommand):
                 )
             except TranslationEntryError as error:
                 if getattr(translation, field_id, None):
-                    msg = "Skipping \"{translation} - {field_id}\": {error}".format(
-                        translation=translation.master,
-                        field_id=field_id,
-                        error=error
+                    self.stderr.write(
+                        _("Skipping \"{translation} - {field_id}\": {error}").format(
+                            translation=translation.master,
+                            field_id=field_id,
+                            error=error
+                        )
                     )
-                    self.stderr.write(self.style.WARNING(msg))
                 else:
                     pass
             else:
