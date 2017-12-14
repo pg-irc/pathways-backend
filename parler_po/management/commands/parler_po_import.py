@@ -56,10 +56,10 @@ class Command(BaseCommand):
 
         if language_code:
             import_progress = ImportProgress()
-            translation_entries = self._translation_entries_for_po_file(
+            translatable_strings = self._translatable_strings_for_po_file(
                 po_file
             )
-            for translatable_string in translation_entries:
+            for translatable_string in translatable_strings:
                 self._import_translatable_string(
                     translatable_string, language_code, import_progress
                 )
@@ -72,22 +72,16 @@ class Command(BaseCommand):
                 )
             )
 
-    def _translation_entries_for_po_file(self, po_file):
+    def _translatable_strings_for_po_file(self, po_file):
+        errors_list = []
+
         for po_entry in po_file:
-            for occurrence in po_entry.occurrences:
-                try:
-                    translatable_string = TranslatableString.from_po_entry(
-                        po_entry, occurrence
-                    )
-                except ParlerPOError as error:
-                    self.stderr.write(
-                        _("Skipping \"{occurrence}\": {error}").format(
-                            occurrence=":".join(n for n in occurrence if n),
-                            error=error
-                        )
-                    )
-                else:
-                    yield translatable_string
+            yield from TranslatableString.all_from_po_entry(
+                po_entry, errors_out=errors_list
+            )
+
+        for error in errors_list:
+            self.stderr.write(error)
 
     def _import_translatable_string(self, translatable_string, language_code, import_progress):
         import_group = self._get_import_group(translatable_string, language_code)

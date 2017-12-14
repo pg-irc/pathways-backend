@@ -23,8 +23,9 @@ class Command(BaseCommand):
 
         parser.add_argument(
             '-l', '--locale',
-            dest='locales',
+            dest='locales_list',
             type=str,
+            default=[],
             action='append'
         )
 
@@ -36,16 +37,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         translations_dir = options['translations_dir']
-        locales_list = options['locales']
+        locales_list = options['locales_list']
         all_locales = options['all_locales']
 
+        locales_to_process = None if all_locales else locales_list
+
         for model in all_translatable_models():
-            if all_locales:
-                model_po_entries = self._model_po_entries(model)
-            elif locales_list:
-                model_po_entries = self._model_po_entries(model, locales=locales_list)
-            else:
-                model_po_entries = self._model_po_entries(model, locales=[])
+            model_po_entries = self._po_entries_for_translatable_model(model, locales_to_process)
 
             pot_entries = model_po_entries.pop(None, list())
             pot_file = create_pot_file(
@@ -63,7 +61,7 @@ class Command(BaseCommand):
                     pot_file
                 )
 
-    def _model_po_entries(self, model, locales=None):
+    def _po_entries_for_translatable_model(self, model, locales=None):
         model_po_entries = defaultdict(list)
 
         for instance in model.objects.all():
@@ -77,9 +75,6 @@ class Command(BaseCommand):
         }
 
     def _po_entries_for_translatable_instance(self, instance, locales=None):
-        # TODO: Move this somewhere else.
-        #       Raise an error if instance is not a translatable model.
-
         base_translation = get_base_translation(instance)
 
         if base_translation:
@@ -98,27 +93,14 @@ class Command(BaseCommand):
             yield (translation.language_code, po_entries)
 
     def _po_entries_for_translation(self, translation, strip_msgstr=False):
-        fields_list = translation.get_translated_fields()
+        errors_list = []
 
-        for field_id in fields_list:
-            try:
-                translatable_string = TranslatableString.from_translation(
-                    translation,
-                    field_id
-                )
-            except ParlerPOError as error:
-                if getattr(translation, field_id, None):
-                    self.stderr.write(
-                        _("Skipping \"{translation} - {field_id}\": {error}").format(
-                            translation=translation.master,
-                            field_id=field_id,
-                            error=error
-                        )
-                    )
-                else:
-                    pass
-            else:
-                po_entry = translatable_string.as_po_entry()
-                if strip_msgstr:
-                    po_entry.msgstr = ''
-                yield po_entry
+        translatable_strings = TranslatableString.all_from_translation(
+            translation, errors_out=errors_list
+        )
+
+        for translatable_string in translatable_strings:
+            yield translatable_string.as_po_entry(strip_msgstr)
+
+        for error in errors_list:
+            self.stderr.write(error)

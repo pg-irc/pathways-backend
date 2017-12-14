@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext as _
 from parler.models import TranslatableModel
 import polib
 
@@ -64,6 +65,21 @@ class TranslatableString(object):
         )
 
     @classmethod
+    def all_from_po_entry(cls, po_entry, errors_out=[]):
+        for occurrence in po_entry.occurrences:
+            try:
+                translatable_string = cls.from_po_entry(po_entry, occurrence)
+            except ParlerPOError as error:
+                errors_out.append(
+                    _("Skipping \"{occurrence}\": {error}").format(
+                        occurrence=":".join(n for n in occurrence if n),
+                        error=error
+                    )
+                )
+            else:
+                yield translatable_string
+
+    @classmethod
     def from_translation(cls, translation, field_id):
         base_translation = get_base_translation(translation.master)
 
@@ -82,19 +98,28 @@ class TranslatableString(object):
         )
 
     @classmethod
-    def all_from_translation(cls, translation):
+    def all_from_translation(cls, translation, errors_out=[]):
         for field_id in translation.get_translated_fields():
             try:
                 translatable_string = cls.from_translation(translation, field_id)
-            except MissingMsgidError:
-                pass
+            except MissingMsgidError as error:
+                if getattr(translation, field_id, None):
+                    errors_out.append(
+                        _("Skipping \"{translation} - {field_id}\": {error}").format(
+                            translation=translation.master,
+                            field_id=field_id,
+                            error=error
+                        )
+                    )
+                else:
+                    pass
             else:
                 yield translatable_string
 
-    def as_po_entry(self):
+    def as_po_entry(self, strip_msgstr=True):
         return polib.POEntry(
             msgid=self._msgid,
-            msgstr=self._msgstr,
+            msgstr=self._msgstr if not strip_msgstr else '',
             occurrences=[(self._instance_field_id, None)]
         )
 
