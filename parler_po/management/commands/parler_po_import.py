@@ -5,7 +5,7 @@ import glob
 import os
 import polib
 
-from parler_po.argparse_path import argparse_path_type
+from parler_po.argparse_path import ArgparsePathType
 from parler_po.exceptions import ParlerPOError, ProtectedTranslationError
 from parler_po.import_progress import ImportProgress
 from parler_po.translatable_string import TranslatableString
@@ -17,7 +17,7 @@ class Command(BaseCommand):
         parser.add_argument(
             'po_paths',
             nargs='+',
-            type=argparse_path_type(file_type=None, mode='w'),
+            type=ArgparsePathType(file_type=None, mode='w'),
             metavar='po_file'
         )
 

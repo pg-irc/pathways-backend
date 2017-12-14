@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from parler.models import TranslatableModel
 import itertools
 
-from parler_po.argparse_path import argparse_path_type
+from parler_po.argparse_path import ArgparsePathType
 from parler_po.exceptions import ParlerPOError
 from parler_po.po_file import create_po_file, create_pot_file
 from parler_po.queries import all_translatable_models, get_base_translation
@@ -17,7 +17,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             'translations_dir',
-            type=argparse_path_type('dir', 'w'),
+            type=ArgparsePathType('dir', 'w'),
             metavar='directory'
         )
 
