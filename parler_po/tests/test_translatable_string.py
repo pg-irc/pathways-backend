@@ -24,7 +24,7 @@ class TestTranslatable(TranslatableModel):
     static = models.CharField(max_length=100)
 
     translations = TranslatedFields(
-        foo=models.CharField(max_length=100)
+        translated_field=models.CharField(max_length=100)
     )
 
     # Crude hack to mock TranslatableModel database operations
@@ -56,95 +56,81 @@ class TestNotTranslatable(models.Model):
         managed = False
 
 class CreateTranslatableStringTests(TestCase):
-    def test_create__translatable(self):
+    def test_create_with_translatable_model(self):
         translatable = TestTranslatable()
         translatable.id = 1
 
         base_translation = translatable.get_translation('en')
-        base_translation.foo = 'bar'
+        base_translation.translated_field = 'translation_msgid'
 
-        translatable_string = TranslatableString(translatable, 'foo', 'bar', 'baz')
+        translatable_string = TranslatableString(translatable, 'translated_field', 'translation_msgid', 'translation_msgstr')
 
         self.assertEquals(translatable_string._instance, translatable)
-        self.assertEquals(translatable_string._field_id, 'foo')
-        self.assertEquals(translatable_string._msgid, 'bar')
-        self.assertEquals(translatable_string._msgstr, 'baz')
+        self.assertEquals(translatable_string._field_id, 'translated_field')
+        self.assertEquals(translatable_string._msgid, 'translation_msgid')
+        self.assertEquals(translatable_string._msgstr, 'translation_msgstr')
 
-        self.assertEquals(str(translatable_string), 'parlerpo.testtranslatable@foo@1')
+        self.assertEquals(str(translatable_string), 'parlerpo.testtranslatable@translated_field@1')
 
-    def test_create__not_translatable(self):
+    def test_create_with_not_translatable_model_raises_error(self):
         not_translatable = TestNotTranslatable()
 
         with self.assertRaises(ModelNotTranslatableError):
-            TranslatableString(not_translatable, 'foo', 'bar', 'baz')
+            TranslatableString(not_translatable, 'translated_field', 'translation_msgid', 'translation_msgstr')
 
-    def test_create__static_field(self):
+    def test_create_with_not_translatable_field_raises_error(self):
         translatable = TestTranslatable()
 
         with self.assertRaises(FieldNotTranslatableError):
-            TranslatableString(translatable, 'static', 'bar', 'baz')
+            TranslatableString(translatable, 'static', 'translation_msgid', 'translation_msgstr')
 
-    def test_create__invalid_field(self):
+    def test_create_with_invalid_field_raises_error(self):
         translatable = TestTranslatable()
 
         with self.assertRaises(FieldNotTranslatableError):
-            TranslatableString(translatable, 'not_a_field', 'bar', 'baz')
+            TranslatableString(translatable, 'not_a_field', 'translation_msgid', 'translation_msgstr')
 
-    def test_create__invalid_msgid(self):
+    def test_create_without_msgid_raises_error(self):
         translatable = TestTranslatable()
         translatable.id = 1
-        translatable.foo = 'not_bar'
-
-        with self.assertRaises(InvalidMsgidError):
-            TranslatableString(translatable, 'foo', 'bar', 'baz')
-
-    def test_create__missing_msgid(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-        translatable.foo = ''
+        translatable.translated_field = ''
 
         with self.assertRaises(MissingMsgidError):
-            TranslatableString(translatable, 'foo', '', 'baz')
+            TranslatableString(translatable, 'translated_field', '', 'translation_msgstr')
+
+    def test_create_with_different_msgid_from_base_translation_raises_error(self):
+        translatable = TestTranslatable()
+        translatable.id = 1
+        translatable.translated_field = 'translation_msgid'
+
+        with self.assertRaises(InvalidMsgidError):
+            TranslatableString(translatable, 'translated_field', 'not_translation_msgid', 'translation_msgstr')
 
     def test_create_from_po_entry(self):
         translatable = TestTranslatable()
         translatable.id = 1
 
         base_translation = translatable.get_translation('en')
-        base_translation.foo = 'bar'
+        base_translation.translated_field = 'translation_msgid'
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
-            ('parlerpo.testtranslatable@foo@1', None)
+            ('parlerpo.testtranslatable@translated_field@1', None)
         ]
-        po_entry.msgid = 'bar'
-        po_entry.msgstr = 'baz'
+        po_entry.msgid = 'translation_msgid'
+        po_entry.msgstr = 'translation_msgstr'
 
         with patch('parler_po.translatable_string.parse_instance_field_id') as parse_instance_field_id:
-            parse_instance_field_id.return_value = (translatable, 'foo')
+            parse_instance_field_id.return_value = (translatable, 'translated_field')
             translatable_string = TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
-            parse_instance_field_id.assert_called_once_with('parlerpo.testtranslatable@foo@1')
+            parse_instance_field_id.assert_called_once_with('parlerpo.testtranslatable@translated_field@1')
 
         self.assertEquals(translatable_string._instance, translatable)
-        self.assertEquals(translatable_string._field_id, 'foo')
-        self.assertEquals(translatable_string._msgid, 'bar')
-        self.assertEquals(translatable_string._msgstr, 'baz')
+        self.assertEquals(translatable_string._field_id, 'translated_field')
+        self.assertEquals(translatable_string._msgid, 'translation_msgid')
+        self.assertEquals(translatable_string._msgstr, 'translation_msgstr')
 
-    def test_create_from_nonexistent_po_entry_occurrence(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        po_entry = polib.POEntry()
-        po_entry.occurrences = [
-            ('parlerpo.testtranslatable@foo@1000', None)
-        ]
-        po_entry.msgid = 'bar'
-        po_entry.msgstr = 'baz'
-
-        with self.assertRaises(MasterInstanceLookupError):
-            TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
-
-    def test_create_from_invalid_po_entry_occurrence(self):
+    def test_create_from_po_entry_with_invalid_occurrence_format_raise_error(self):
         translatable = TestTranslatable()
         translatable.id = 1
 
@@ -152,25 +138,39 @@ class CreateTranslatableStringTests(TestCase):
         po_entry.occurrences = [
             ('bad format', None)
         ]
-        po_entry.msgid = 'bar'
-        po_entry.msgstr = 'baz'
+        po_entry.msgid = 'translation_msgid'
+        po_entry.msgstr = 'translation_msgstr'
 
         with self.assertRaises(MasterInstanceLookupError):
             TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
 
-    def test_create_from_po_entry__not_translatable(self):
+    def test_create_from_po_entry_with_nonexistent_master_instance_raises_error(self):
+        translatable = TestTranslatable()
+        translatable.id = 1
+
+        po_entry = polib.POEntry()
+        po_entry.occurrences = [
+            ('parlerpo.testtranslatable@translated_field@1000', None)
+        ]
+        po_entry.msgid = 'translation_msgid'
+        po_entry.msgstr = 'translation_msgstr'
+
+        with self.assertRaises(MasterInstanceLookupError):
+            TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
+
+    def test_create_from_po_entry_with_not_translatable_master_instance_raises_error(self):
         translatable = TestNotTranslatable()
         translatable.id = 1
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
-            ('parlerpo.testnottranslatable@foo@1', None)
+            ('parlerpo.testnottranslatable@translated_field@1', None)
         ]
-        po_entry.msgid = 'bar'
-        po_entry.msgstr = 'baz'
+        po_entry.msgid = 'translation_msgid'
+        po_entry.msgstr = 'translation_msgstr'
 
         with patch('parler_po.translatable_string.parse_instance_field_id') as parse_instance_field_id:
-            parse_instance_field_id.return_value = (translatable, 'foo')
+            parse_instance_field_id.return_value = (translatable, 'translated_field')
             with self.assertRaises(ModelNotTranslatableError):
                 TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
 
@@ -179,55 +179,50 @@ class CreateTranslatableStringTests(TestCase):
         translatable.id = 1
 
         base_translation = translatable.get_translation(BASE_LANGUAGE)
-        base_translation.foo = 'bar'
+        base_translation.translated_field = 'translation_msgid'
 
         translation = translatable.get_translation('fr')
-        translation.foo = 'baz'
+        translation.translated_field = 'translation_msgstr'
 
-        translatable_string = TranslatableString.from_translation(translation, 'foo')
+        translatable_string = TranslatableString.from_translation(translation, 'translated_field')
 
         self.assertEquals(translatable_string._instance, translatable)
-        self.assertEquals(translatable_string._field_id, 'foo')
-        self.assertEquals(translatable_string._msgid, 'bar')
-        self.assertEquals(translatable_string._msgstr, 'baz')
+        self.assertEquals(translatable_string._field_id, 'translated_field')
+        self.assertEquals(translatable_string._msgid, 'translation_msgid')
+        self.assertEquals(translatable_string._msgstr, 'translation_msgstr')
 
-    def test_create_from_translation__missing_msgid(self):
+    def test_create_from_translation_with_missing_msgid_raises_error(self):
         translatable = TestTranslatable()
         translatable.id = 1
 
         base_translation = translatable.get_translation(BASE_LANGUAGE)
-        base_translation.foo = ''
+        base_translation.translated_field = ''
 
         translation = translatable.get_translation('fr')
-        translation.foo = 'baz'
+        translation.translated_field = 'translation_msgstr'
 
         with self.assertRaises(MissingMsgidError):
-            TranslatableString.from_translation(translation, 'foo')
+            TranslatableString.from_translation(translation, 'translated_field')
 
 class ValidTranslatableStringTests(TestCase):
-    TRANSLATION_FIELD = 'foo'
-    TRANSLATION_MSGID = 'bar'
-    TRANSLATION_MSGSTR = 'baz'
-    TRANSLATABLE_ID = 1
-
     def setUp(self):
         self.translatable = TestTranslatable()
-        self.translatable.id = self.TRANSLATABLE_ID
+        self.translatable.id = 1
 
         self.base_translation = self.translatable.get_translation(BASE_LANGUAGE)
-        self.base_translation.foo = self.TRANSLATION_MSGID
+        self.base_translation.translated_field = 'translation_msgid'
 
         self.translatable_string = TranslatableString(
-            self.translatable, self.TRANSLATION_FIELD, self.TRANSLATION_MSGID, self.TRANSLATION_MSGSTR
+            self.translatable, 'translated_field', 'translation_msgid', 'translation_msgstr'
         )
 
     def test_as_po_entry(self):
         po_entry = self.translatable_string.as_po_entry()
 
-        self.assertEquals(po_entry.msgid, self.TRANSLATION_MSGID)
-        self.assertEquals(po_entry.msgstr, self.TRANSLATION_MSGSTR)
+        self.assertEquals(po_entry.msgid, 'translation_msgid')
+        self.assertEquals(po_entry.msgstr, 'translation_msgstr')
         self.assertEquals(po_entry.occurrences, [
-            ('parlerpo.testtranslatable@{}@{}'.format(self.TRANSLATION_FIELD, self.TRANSLATABLE_ID), None)
+            ('parlerpo.testtranslatable@{}@{}'.format('translated_field', 1), None)
         ])
 
     def test_save_new_translation(self):
@@ -238,9 +233,9 @@ class ValidTranslatableStringTests(TestCase):
 
         self.assertTrue(modified)
         self.assertEquals(translation.master, self.translatable)
-        self.assertEquals(translation.foo, self.TRANSLATION_MSGSTR)
+        self.assertEquals(translation.translated_field, 'translation_msgstr')
 
-    def test_save_translation_without_changes(self):
+    def test_save_translation_without_changes_returns_false(self):
         self.translatable_string.save_translation('fr')
         translation = self.translatable.get_translation('fr')
         translation.save.reset_mock()
@@ -250,7 +245,7 @@ class ValidTranslatableStringTests(TestCase):
         translation.save.assert_not_called()
         self.assertFalse(modified)
 
-    def test_save_translation__base_translation(self):
+    def test_save_translation_with_base_translation_raises_error(self):
         with self.assertRaises(ProtectedTranslationError):
             self.translatable_string.save_translation(BASE_LANGUAGE)
 

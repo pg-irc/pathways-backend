@@ -116,7 +116,7 @@ class TranslatableString(object):
             else:
                 yield translatable_string
 
-    def as_po_entry(self, strip_msgstr=True):
+    def as_po_entry(self, strip_msgstr=False):
         return polib.POEntry(
             msgid=self._msgid,
             msgstr=self._msgstr if not strip_msgstr else '',
