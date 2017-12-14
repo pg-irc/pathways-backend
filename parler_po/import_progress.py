@@ -32,10 +32,11 @@ class ImportProgress(object):
         )
 
     def _format_model_counts(self):
-        for (model, counts) in self._counts.items():
+        for (group, counts) in self._counts.items():
+            group_hash, group_name = group
             numbers_list = []
 
-            total_count = self._totals[model]
+            total_count = self._totals[group]
             numbers_list.append(
                 str(total_count)
             )
@@ -56,7 +57,7 @@ class ImportProgress(object):
                     )
                 )
 
-            yield _("{model}: {numbers}").format(
-                model=model,
+            yield _("{group}: {numbers}").format(
+                group=group_name,
                 numbers=" ".join(numbers_list)
             )

@@ -102,4 +102,9 @@ class Command(BaseCommand):
             self.stderr.write(progress_str, ending=ending)
 
     def _get_import_group(self, translatable_string, language_code):
-        return (translatable_string.model, language_code)
+        group_hash = (translatable_string.model, language_code)
+        group_name = "{model} ({language})".format(
+            model=translatable_string.model.__name__,
+            language=language_code
+        )
+        return (group_hash, group_name)
