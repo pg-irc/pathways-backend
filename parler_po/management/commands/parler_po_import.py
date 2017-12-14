@@ -6,7 +6,7 @@ import os
 import polib
 
 from parler_po.argparse_path import argparse_path_type
-from parler_po.exceptions import TranslatableStringError, ProtectedTranslationError
+from parler_po.exceptions import ParlerPOError, ProtectedTranslationError
 from parler_po.import_progress import ImportProgress
 from parler_po.translatable_string import TranslatableString
 
@@ -79,7 +79,7 @@ class Command(BaseCommand):
                     translatable_string = TranslatableString.from_po_entry(
                         po_entry, occurrence
                     )
-                except TranslatableStringError as error:
+                except ParlerPOError as error:
                     self.stderr.write(
                         _("Skipping \"{occurrence}\": {error}").format(
                             occurrence=":".join(n for n in occurrence if n),
@@ -105,7 +105,7 @@ class Command(BaseCommand):
     def _print_import_progress(self, import_progress, ending='\n'):
         progress_str = str(import_progress)
         if progress_str:
-            self.stderr.write(import_progress, ending=ending)
+            self.stderr.write(progress_str, ending=ending)
 
     def _get_import_group(self, translatable_string, language_code):
         return (translatable_string.model, language_code)

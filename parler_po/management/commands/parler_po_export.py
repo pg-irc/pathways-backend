@@ -6,15 +6,10 @@ from parler.models import TranslatableModel
 import itertools
 
 from parler_po.argparse_path import argparse_path_type
-from parler_po.exceptions import TranslatableStringError
+from parler_po.exceptions import ParlerPOError
+from parler_po.po_file import create_po_file, create_pot_file
+from parler_po.queries import all_translatable_models, get_base_translation
 from parler_po.translatable_string import TranslatableString
-from parler_po.util import (
-    get_base_translation,
-    build_pot_path,
-    build_po_path,
-    new_pot_file,
-    new_po_file
-)
 
 class Command(BaseCommand):
     help = _("Export PO files for all translatable content")
@@ -44,7 +39,7 @@ class Command(BaseCommand):
         locales_list = options['locales']
         all_locales = options['all_locales']
 
-        for model in self._translatable_models():
+        for model in all_translatable_models():
             if all_locales:
                 model_po_entries = self._model_po_entries(model)
             elif locales_list:
@@ -53,23 +48,20 @@ class Command(BaseCommand):
                 model_po_entries = self._model_po_entries(model, locales=[])
 
             pot_entries = model_po_entries.pop(None, list())
-            pot_path = build_pot_path(translations_dir, model)
-            pot_file = new_pot_file()
-            pot_file.extend(pot_entries)
-            pot_file.save(pot_path)
+            pot_file = create_pot_file(
+                translations_dir,
+                model,
+                pot_entries
+            )
 
             for (language_code, po_entries) in model_po_entries.items():
-                po_path = build_po_path(translations_dir, model, language_code)
-                po_file = new_po_file(pot_file=pot_file, language_code=language_code)
-                po_file.extend(po_entries)
-                po_file.merge(pot_file)
-                po_file.save(po_path)
-
-    def _translatable_models(self):
-        for content_type in ContentType.objects.all():
-            model_class = content_type.model_class()
-            if model_class and issubclass(model_class, TranslatableModel):
-                yield model_class
+                create_po_file(
+                    translations_dir,
+                    model,
+                    po_entries,
+                    language_code,
+                    pot_file
+                )
 
     def _model_po_entries(self, model, locales=None):
         model_po_entries = defaultdict(list)
@@ -114,7 +106,7 @@ class Command(BaseCommand):
                     translation,
                     field_id
                 )
-            except TranslatableStringError as error:
+            except ParlerPOError as error:
                 if getattr(translation, field_id, None):
                     self.stderr.write(
                         _("Skipping \"{translation} - {field_id}\": {error}").format(

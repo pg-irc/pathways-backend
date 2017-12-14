@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 from parler.models import TranslatableModel
-import logging
 import polib
 
 from parler_po.exceptions import (
@@ -9,23 +8,21 @@ from parler_po.exceptions import (
     MasterInstanceLookupError,
     MissingMsgidError,
     ModelNotTranslatableError,
+    ParlerPOError,
     ProtectedTranslationError
 )
-from parler_po.util import (
-    get_base_translation,
-    build_instance_field_id,
-    parse_instance_field_id
-)
+from parler_po.field_ids import build_instance_field_id, parse_instance_field_id
+from parler_po.queries import get_base_translation, is_translatable_model
 
 class TranslatableString(object):
     def __init__(self, instance, field_id, msgid, msgstr):
-        if not _instance_is_translatable_model(instance):
+        if not is_translatable_model(instance.__class__):
             raise ModelNotTranslatableError(instance.__class__)
+
+        base_translation = get_base_translation(instance)
 
         if not _instance_has_translatable_field(instance, field_id):
             raise FieldNotTranslatableError(field_id)
-
-        base_translation = get_base_translation(instance)
 
         if not msgid:
             raise MissingMsgidError()
@@ -56,7 +53,7 @@ class TranslatableString(object):
 
         try:
             instance, field_id = parse_instance_field_id(instance_field_id)
-        except (ObjectDoesNotExist, ValueError) as error:
+        except ParlerPOError as error:
             raise MasterInstanceLookupError(error)
 
         return cls(
@@ -84,6 +81,16 @@ class TranslatableString(object):
             msgstr=msgstr
         )
 
+    @classmethod
+    def all_from_translation(cls, translation):
+        for field_id in translation.get_translated_fields():
+            try:
+                translatable_string = cls.from_translation(translation, field_id)
+            except MissingMsgidError:
+                pass
+            else:
+                yield translatable_string
+
     def as_po_entry(self):
         return polib.POEntry(
             msgid=self._msgid,
@@ -98,9 +105,6 @@ class TranslatableString(object):
         return _update_translation_for_translatable_instance(
             self._instance, language_code, self._field_id, self._msgstr
         )
-
-def _instance_is_translatable_model(instance):
-    return isinstance(instance, TranslatableModel)
 
 def _instance_has_translatable_field(instance, field_id):
     return field_id in instance.translations.model.get_translated_fields()

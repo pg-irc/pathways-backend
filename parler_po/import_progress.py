@@ -1,4 +1,5 @@
 from collections import defaultdict
+from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext
 
 class ImportProgress(object):
