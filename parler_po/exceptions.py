@@ -27,7 +27,7 @@ class MissingMsgidError(ParlerPOError):
 
 class InvalidMsgidError(ParlerPOError):
     def __init__(self):
-        message = "Provided msgid does not match the base translation."
+        message = "Provided msgid is different from the base translation."
         super().__init__(message)
 
 class ProtectedTranslationError(ParlerPOError):

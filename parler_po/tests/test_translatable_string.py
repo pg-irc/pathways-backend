@@ -74,8 +74,8 @@ class CreateTranslatableStringTests(TestCase):
 
         self.assertEquals(translatable_string._instance, translatable)
         self.assertEquals(translatable_string._field_id, 'translated_field_1')
-        self.assertEquals(translatable_string._msgid, 'translation_msgid_1')
-        self.assertEquals(translatable_string._msgstr, 'translation_msgstr_1')
+        self.assertEquals(translatable_string._source_str, 'translation_msgid_1')
+        self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
 
         self.assertEquals(str(translatable_string), 'parlerpo.testtranslatable@translated_field_1@1')
 
@@ -134,8 +134,8 @@ class CreateTranslatableStringTests(TestCase):
 
         self.assertEquals(translatable_string._instance, translatable)
         self.assertEquals(translatable_string._field_id, 'translated_field_1')
-        self.assertEquals(translatable_string._msgid, 'translation_msgid_1')
-        self.assertEquals(translatable_string._msgstr, 'translation_msgstr_1')
+        self.assertEquals(translatable_string._source_str, 'translation_msgid_1')
+        self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
 
     def test_create_from_po_entry_with_invalid_occurrence_format_raise_error(self):
         translatable = TestTranslatable()
@@ -221,8 +221,8 @@ class CreateTranslatableStringTests(TestCase):
 
         self.assertEquals(translatable_string._instance, translatable)
         self.assertEquals(translatable_string._field_id, 'translated_field_1')
-        self.assertEquals(translatable_string._msgid, 'translation_msgid_1')
-        self.assertEquals(translatable_string._msgstr, 'translation_msgstr_1')
+        self.assertEquals(translatable_string._source_str, 'translation_msgid_1')
+        self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
 
     def test_create_from_translation_with_missing_msgid_raises_error(self):
         translatable = TestTranslatable()

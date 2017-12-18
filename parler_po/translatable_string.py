@@ -16,7 +16,7 @@ from parler_po.field_ids import build_instance_field_id, parse_instance_field_id
 from parler_po.queries import get_base_translation, is_translatable_model
 
 class TranslatableString(object):
-    def __init__(self, instance, field_id, msgid, msgstr):
+    def __init__(self, instance, field_id, source_str, translated_str):
         if not is_translatable_model(instance.__class__):
             raise ModelNotTranslatableError(instance.__class__)
 
@@ -25,16 +25,16 @@ class TranslatableString(object):
         if not _instance_has_translatable_field(instance, field_id):
             raise FieldNotTranslatableError(field_id)
 
-        if not msgid:
+        if not source_str:
             raise MissingMsgidError()
 
-        if msgid != getattr(base_translation, field_id):
+        if source_str != getattr(base_translation, field_id):
             raise InvalidMsgidError()
 
         self._instance = instance
         self._field_id = field_id
-        self._msgid = msgid
-        self._msgstr = msgstr
+        self._source_str = source_str
+        self._translated_str = translated_str
         self._base_translation = base_translation
 
     @property
@@ -60,8 +60,8 @@ class TranslatableString(object):
         return cls(
             instance,
             field_id,
-            msgid=po_entry.msgid,
-            msgstr=po_entry.msgstr
+            source_str=po_entry.msgid,
+            translated_str=po_entry.msgstr
         )
 
     @classmethod
@@ -84,17 +84,17 @@ class TranslatableString(object):
         base_translation = get_base_translation(translation.master)
 
         if base_translation:
-            msgid = getattr(base_translation, field_id, '')
+            source_str = getattr(base_translation, field_id, '')
         else:
-            msgid = ''
+            source_str = ''
 
-        msgstr = getattr(translation, field_id, '')
+        translated_str = getattr(translation, field_id, '')
 
         return cls(
             translation.master,
             field_id,
-            msgid=msgid,
-            msgstr=msgstr
+            source_str=source_str,
+            translated_str=translated_str
         )
 
     @classmethod
@@ -118,8 +118,8 @@ class TranslatableString(object):
 
     def as_po_entry(self, strip_msgstr=False):
         return polib.POEntry(
-            msgid=self._msgid,
-            msgstr=self._msgstr if not strip_msgstr else '',
+            msgid=self._source_str,
+            msgstr=self._translated_str if not strip_msgstr else '',
             occurrences=[(self._instance_field_id, None)]
         )
 
@@ -128,27 +128,27 @@ class TranslatableString(object):
             raise ProtectedTranslationError()
 
         return _update_translation_for_translatable_instance(
-            self._instance, language_code, self._field_id, self._msgstr
+            self._instance, language_code, self._field_id, self._translated_str
         )
 
 def _instance_has_translatable_field(instance, field_id):
     return field_id in instance.translations.model.get_translated_fields()
 
-def _update_translation_for_translatable_instance(instance, language_code, field_id, msgstr):
+def _update_translation_for_translatable_instance(instance, language_code, field_id, translated_str):
     try:
         translation = instance.get_translation(language_code)
     except instance.translations.model.DoesNotExist as error:
-        if msgstr:
+        if translated_str:
             instance.create_translation(language_code)
             translation = instance.get_translation(language_code)
         else:
             translation = None
 
-    # TODO: If msgstr is blank, should we fall back to the base language? Or
+    # TODO: If translated_str is blank, should we fall back to the base language? Or
     #       should we expect translators to do that in their PO files?
 
-    if translation and getattr(translation, field_id, None) != msgstr:
-        setattr(translation, field_id, msgstr)
+    if translation and getattr(translation, field_id, None) != translated_str:
+        setattr(translation, field_id, translated_str)
         translation.save()
         is_modified = True
     else:
