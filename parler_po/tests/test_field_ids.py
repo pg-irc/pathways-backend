@@ -27,8 +27,7 @@ class TestModel(models.Model):
 
 class TestFieldIdWithValidInstance(TestCase):
     def setUp(self):
-        self.instance = TestModel()
-        self.instance.pk = 1
+        self.instance = TestModel(id=1)
 
         self.content_type = MagicMock()
         self.content_type.app_label = 'parlerpo'

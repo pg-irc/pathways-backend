@@ -1,8 +1,6 @@
 from django.test import TestCase
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import call, patch
 
-from django.db import models
-from parler.models import TranslatableModel, TranslatedFields
 from parler_po.exceptions import (
     FieldNotTranslatableError,
     InvalidMsgidError,
@@ -11,64 +9,15 @@ from parler_po.exceptions import (
     ModelNotTranslatableError,
     ProtectedTranslationError
 )
+from parler_po.tests.helpers import TestTranslatable, TestNotTranslatable
 from parler_po.translatable_string import TranslatableString
 import polib
 
-BASE_LANGUAGE = 'en'
-
-class TestTranslatable(TranslatableModel):
-    class Meta:
-        app_label = 'parlerpo'
-        managed = False
-
-    static = models.CharField(max_length=100)
-
-    translations = TranslatedFields(
-        translated_field_1=models.CharField(max_length=100),
-        translated_field_2=models.CharField(max_length=100),
-        translated_field_3=models.CharField(max_length=100)
-    )
-
-    # Crude hack to mock TranslatableModel database operations
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._mock_translations_dict = {}
-
-    def get_translation(self, language_code):
-        translation = self._mock_translations_dict.get(language_code)
-
-        if not translation:
-            translation = MagicMock()
-            translation.master = self
-            translation.language_code = language_code
-            translation.get_translated_fields.return_value = [
-                'translated_field_1',
-                'translated_field_2',
-                'translated_field_3'
-            ]
-            self._mock_translations_dict[language_code] = translation
-
-        return translation
-
-    def create_translation(self, language_code):
-        self.get_translation(language_code)
-
-    def has_translation(self, language_code):
-        return language_code in self._mock_translations_dict
-
-class TestNotTranslatable(models.Model):
-    class Meta:
-        app_label = 'parlerpo'
-        managed = False
-
 class CreateTranslatableStringTests(TestCase):
     def test_create_with_translatable_model(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        base_translation = translatable.get_translation('en')
-        base_translation.translated_field_1 = 'translation_msgid_1'
+        translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1='translation_msgid_1'
+        )
 
         translatable_string = TranslatableString(translatable, 'translated_field_1', 'translation_msgid_1', 'translation_msgstr_1')
 
@@ -98,27 +47,21 @@ class CreateTranslatableStringTests(TestCase):
             TranslatableString(translatable, 'not_a_field', 'translation_msgid_1', 'translation_msgstr_1')
 
     def test_create_without_msgid_raises_error(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-        translatable.translated_field_1 = ''
+        translatable = TestTranslatable(id=1, translated_field_1='')
 
         with self.assertRaises(MissingMsgidError):
             TranslatableString(translatable, 'translated_field_1', '', 'translation_msgstr_1')
 
     def test_create_with_different_msgid_from_base_translation_raises_error(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-        translatable.translated_field_1 = 'translation_msgid_1'
+        translatable = TestTranslatable(id=1, translated_field_1='translated_msgid_1')
 
         with self.assertRaises(InvalidMsgidError):
             TranslatableString(translatable, 'translated_field_1', 'not_translation_msgid_1', 'translation_msgstr_1')
 
     def test_create_from_po_entry(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        base_translation = translatable.get_translation('en')
-        base_translation.translated_field_1 = 'translation_msgid_1'
+        translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1='translation_msgid_1'
+        )
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
@@ -138,8 +81,7 @@ class CreateTranslatableStringTests(TestCase):
         self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
 
     def test_create_from_po_entry_with_invalid_occurrence_format_raise_error(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
+        translatable = TestTranslatable(id=1)
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
@@ -152,8 +94,7 @@ class CreateTranslatableStringTests(TestCase):
             TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
 
     def test_create_from_po_entry_with_nonexistent_master_instance_raises_error(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
+        translatable = TestTranslatable(id=1)
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
@@ -166,8 +107,7 @@ class CreateTranslatableStringTests(TestCase):
             TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
 
     def test_create_from_po_entry_with_not_translatable_master_instance_raises_error(self):
-        translatable = TestNotTranslatable()
-        translatable.id = 1
+        translatable = TestNotTranslatable(id=1)
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
@@ -182,11 +122,9 @@ class CreateTranslatableStringTests(TestCase):
                 TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
 
     def test_all_from_po_entry(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        base_translation = translatable.get_translation('en')
-        base_translation.translated_field_1 = 'translation_msgid_1'
+        translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1='translation_msgid_1'
+        )
 
         po_entry = polib.POEntry()
         po_entry.occurrences = [
@@ -208,15 +146,13 @@ class CreateTranslatableStringTests(TestCase):
         self.assertEqual(len(results_list), 1)
 
     def test_create_from_translation(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        base_translation = translatable.get_translation(BASE_LANGUAGE)
-        base_translation.translated_field_1 = 'translation_msgid_1'
+        translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1='translation_msgid_1'
+        ).with_translation(
+            'fr', translated_field_1='translation_msgstr_1'
+        )
 
         translation = translatable.get_translation('fr')
-        translation.translated_field_1 = 'translation_msgstr_1'
-
         translatable_string = TranslatableString.from_translation(translation, 'translated_field_1')
 
         self.assertEquals(translatable_string._instance, translatable)
@@ -225,29 +161,27 @@ class CreateTranslatableStringTests(TestCase):
         self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
 
     def test_create_from_translation_with_missing_msgid_raises_error(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        base_translation = translatable.get_translation(BASE_LANGUAGE)
-        base_translation.translated_field_1 = ''
+        translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1=''
+        ).with_translation(
+            'fr', translated_field_1='translation_msgstr_1'
+        )
 
         translation = translatable.get_translation('fr')
-        translation.translated_field_1 = 'translation_msgstr_1'
 
         with self.assertRaises(MissingMsgidError):
             TranslatableString.from_translation(translation, 'translated_field_1')
 
     def test_all_from_translation(self):
-        translatable = TestTranslatable()
-        translatable.id = 1
-
-        base_translation = translatable.get_translation(BASE_LANGUAGE)
-        base_translation.translated_field_1 = 'translation_msgid_1'
-        base_translation.translated_field_1 = 'translation_msgid_2'
-        base_translation.translated_field_1 = 'translation_msgid_3'
+        translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1='translation_msgid_1',
+            translated_field_2='translation_msgid_2',
+            translated_field_3='translation_msgid_3'
+        ).with_translation(
+            'fr', translated_field_1='translation_msgstr_1'
+        )
 
         translation = translatable.get_translation('fr')
-        translation.translated_field_1 = 'translation_msgstr_1'
 
         with patch.object(TranslatableString, 'from_translation') as from_translation:
             errors_list = []
@@ -266,12 +200,10 @@ class CreateTranslatableStringTests(TestCase):
 
 class ValidTranslatableStringTests(TestCase):
     def setUp(self):
-        self.translatable = TestTranslatable()
-        self.translatable.id = 1
-
-        self.base_translation = self.translatable.get_translation(BASE_LANGUAGE)
-        self.base_translation.translated_field_1 = 'translation_msgid_1'
-
+        self.translatable = TestTranslatable(id=1).with_base_translation(
+            translated_field_1='translation_msgid_1'
+        )
+        self.base_translation = self.translatable.get_base_translation()
         self.translatable_string = TranslatableString(
             self.translatable, 'translated_field_1', 'translation_msgid_1', 'translation_msgstr_1'
         )
@@ -306,7 +238,11 @@ class ValidTranslatableStringTests(TestCase):
         self.assertFalse(modified)
 
     def test_save_translation_with_base_translation_raises_error(self):
+        base_language = self.base_translation.language_code
+
+        self.assertEquals(base_language, 'en')
+
         with self.assertRaises(ProtectedTranslationError):
-            self.translatable_string.save_translation(BASE_LANGUAGE)
+            self.translatable_string.save_translation(base_language)
 
         self.base_translation.save.assert_not_called()
