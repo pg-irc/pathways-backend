@@ -9,7 +9,7 @@ from parler_po.exceptions import (
     ModelNotTranslatableError,
     ProtectedTranslationError
 )
-from parler_po.tests.helpers import TestTranslatable, TestNotTranslatable
+from parler_po.tests.models import TestTranslatable, TestNotTranslatable
 from parler_po.translatable_string import TranslatableString
 import polib
 

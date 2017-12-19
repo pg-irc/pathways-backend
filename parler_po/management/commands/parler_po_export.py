@@ -22,28 +22,28 @@ class Command(BaseCommand):
         )
 
         parser.add_argument(
-            '-l', '--locale',
-            dest='locales_list',
+            '-l', '--language',
+            dest='languages_list',
             type=str,
             default=[],
             action='append'
         )
 
         parser.add_argument(
-            '--all-locales',
-            dest='all_locales',
+            '--all-languages',
+            dest='all_languages',
             action='store_true'
         )
 
     def handle(self, *args, **options):
         translations_dir = options['translations_dir']
-        locales_list = options['locales_list']
-        all_locales = options['all_locales']
+        languages_list = options['languages_list']
+        all_languages = options['all_languages']
 
-        locales_to_process = None if all_locales else locales_list
+        languages_to_process = None if all_languages else languages_list
 
         for model in all_translatable_models():
-            model_po_entries = self._po_entries_for_translatable_model(model, locales_to_process)
+            model_po_entries = self._po_entries_for_translatable_model(model, languages_to_process)
 
             pot_entries = model_po_entries.pop(None, list())
             pot_file = create_pot_file(
@@ -61,11 +61,11 @@ class Command(BaseCommand):
                     pot_file
                 )
 
-    def _po_entries_for_translatable_model(self, model, locales=None):
+    def _po_entries_for_translatable_model(self, model, languages=None):
         model_po_entries = defaultdict(list)
 
         for instance in model.objects.all():
-            instance_po_entries = self._po_entries_for_translatable_instance(instance, locales)
+            instance_po_entries = self._po_entries_for_translatable_instance(instance, languages)
             for (language_code, po_entries) in instance_po_entries:
                 model_po_entries[language_code].append(po_entries)
 
@@ -74,18 +74,18 @@ class Command(BaseCommand):
             for language_code, po_entries in model_po_entries.items()
         }
 
-    def _po_entries_for_translatable_instance(self, instance, locales=None):
+    def _po_entries_for_translatable_instance(self, instance, languages=None):
         base_translation = get_base_translation(instance)
 
         if base_translation:
             pot_entries = self._po_entries_for_translation(base_translation, strip_msgstr=True)
             yield (None, pot_entries)
 
-        if locales is None:
+        if languages is None:
             translations_query = instance.translations.all()
         else:
             translations_query = instance.translations.filter(
-                language_code__in=locales
+                language_code__in=languages
             )
 
         for translation in translations_query:
