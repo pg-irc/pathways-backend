@@ -47,6 +47,9 @@ class TestTranslatable(TranslatableModel):
                 'translated_field_2',
                 'translated_field_3'
             ]
+            translation.translated_field_1 = ''
+            translation.translated_field_2 = ''
+            translation.translated_field_3 = ''
             self._mock_translations_dict[language_code] = translation
 
         return translation

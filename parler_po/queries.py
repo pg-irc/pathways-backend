@@ -3,11 +3,9 @@ from django.contrib.contenttypes.models import ContentType
 
 from parler.models import TranslatableModel
 
-PARLER_PO_BASE_LANGUAGE = getattr(settings, 'PARLER_PO_BASE_LANGUAGE', 'en')
-
 def get_base_translation(instance):
     try:
-        return instance.get_translation(PARLER_PO_BASE_LANGUAGE)
+        return instance.get_translation(_get_default_base_language())
     except instance.translations.model.DoesNotExist:
         return None
 
@@ -19,3 +17,6 @@ def all_translatable_models():
 
 def is_translatable_model(model):
     return issubclass(model, TranslatableModel)
+
+def _get_default_base_language():
+    return getattr(settings, 'PARLER_PO_BASE_LANGUAGE', 'en')

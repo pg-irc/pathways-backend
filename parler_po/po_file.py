@@ -4,8 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 import os
 import polib
 
-PARLER_PO_CONTACT = getattr(settings, 'PARLER_PO_CONTACT', None)
-
 def create_pot_file(output_dir, model, po_entries):
     pot_path = _build_pot_path(output_dir, model)
     pot_file = _new_pot_file()
@@ -28,7 +26,7 @@ def _new_pot_file():
     pot_file.metadata = dict()
 
     pot_file.metadata['Project-Id-Version'] = '1.0'
-    pot_file.metadata['Report-Msgid-Bugs-To'] = PARLER_PO_CONTACT
+    pot_file.metadata['Report-Msgid-Bugs-To'] = _get_default_po_contact()
     pot_file.metadata['POT-Creation-Date'] = now_str
     pot_file.metadata['MIME-Version'] = '1.0'
     pot_file.metadata['Content-Type'] = 'text/plain; charset=utf-8'
@@ -70,3 +68,6 @@ def _build_po_path(output_dir, model, language_code):
 
 def _po_domain_for_content_type(content_type):
     return '.'.join([content_type.app_label, content_type.model])
+
+def _get_default_po_contact():
+    return getattr(settings, 'PARLER_PO_CONTACT', None)
