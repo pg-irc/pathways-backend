@@ -36,11 +36,11 @@ class TestFieldIdWithValidInstance(TestCase):
 
     def test_build_instance_field_id(self):
         instance_field_id = build_instance_field_id(self.instance, 'test_model_field')
-        self.assertEquals(instance_field_id, 'parlerpo.testmodel@test_model_field@1')
+        self.assertEqual(instance_field_id, 'parlerpo.testmodel@test_model_field@1')
 
     def test_build_instance_field_id_with_any_field(self):
         instance_field_id = build_instance_field_id(self.instance, 'not_a_test_model_field')
-        self.assertEquals(instance_field_id, 'parlerpo.testmodel@not_a_test_model_field@1')
+        self.assertEqual(instance_field_id, 'parlerpo.testmodel@not_a_test_model_field@1')
 
     def test_parse_instance_field_id(self):
         with patch('parler_po.field_ids._parse_content_type_id') as parse_content_type_id:
@@ -56,8 +56,8 @@ class TestFieldIdWithValidInstance(TestCase):
 
             instance, field_id = result
 
-            self.assertEquals(instance, self.instance)
-            self.assertEquals(field_id, 'test_model_field')
+            self.assertEqual(instance, self.instance)
+            self.assertEqual(field_id, 'test_model_field')
 
     def test_parse_instance_field_id_with_invalid_value_raises_error(self):
         with self.assertRaises(InvalidInstanceFieldIDError):
@@ -77,7 +77,7 @@ class TestFieldIdWithValidInstance(TestCase):
 
     def test_build_content_type_id(self):
         result = _build_content_type_id(self.content_type)
-        self.assertEquals(result, 'parlerpo.testmodel')
+        self.assertEqual(result, 'parlerpo.testmodel')
 
     def test_parse_content_type_id(self):
         with patch('parler_po.field_ids.ContentType.objects.get') as content_type_get:
@@ -87,7 +87,7 @@ class TestFieldIdWithValidInstance(TestCase):
 
             content_type_get.assert_called_once_with(app_label='parlerpo', model='testmodel')
 
-        self.assertEquals(result, self.content_type)
+        self.assertEqual(result, self.content_type)
 
     def test_parse_content_type_id_with_invalid_value_raises_error(self):
         with self.assertRaises(InvalidContentTypeIDError):

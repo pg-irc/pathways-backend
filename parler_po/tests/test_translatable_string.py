@@ -21,12 +21,12 @@ class CreateTranslatableStringTests(TestCase):
 
         translatable_string = TranslatableString(translatable, 'translated_field_1', 'translation_msgid_1', 'translation_msgstr_1')
 
-        self.assertEquals(translatable_string._instance, translatable)
-        self.assertEquals(translatable_string._field_id, 'translated_field_1')
-        self.assertEquals(translatable_string._source_str, 'translation_msgid_1')
-        self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
+        self.assertEqual(translatable_string._instance, translatable)
+        self.assertEqual(translatable_string._field_id, 'translated_field_1')
+        self.assertEqual(translatable_string._source_str, 'translation_msgid_1')
+        self.assertEqual(translatable_string._translated_str, 'translation_msgstr_1')
 
-        self.assertEquals(str(translatable_string), 'parlerpo.testtranslatable@translated_field_1@1')
+        self.assertEqual(str(translatable_string), 'parlerpo.testtranslatable@translated_field_1@1')
 
     def test_create_with_not_translatable_model_raises_error(self):
         not_translatable = TestNotTranslatable()
@@ -75,10 +75,10 @@ class CreateTranslatableStringTests(TestCase):
             translatable_string = TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
             parse_instance_field_id.assert_called_once_with('parlerpo.testtranslatable@translated_field_1@1')
 
-        self.assertEquals(translatable_string._instance, translatable)
-        self.assertEquals(translatable_string._field_id, 'translated_field_1')
-        self.assertEquals(translatable_string._source_str, 'translation_msgid_1')
-        self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
+        self.assertEqual(translatable_string._instance, translatable)
+        self.assertEqual(translatable_string._field_id, 'translated_field_1')
+        self.assertEqual(translatable_string._source_str, 'translation_msgid_1')
+        self.assertEqual(translatable_string._translated_str, 'translation_msgstr_1')
 
     def test_create_from_po_entry_with_invalid_occurrence_format_raise_error(self):
         translatable = TestTranslatable(id=1)
@@ -137,7 +137,7 @@ class CreateTranslatableStringTests(TestCase):
             errors_list = []
             results_iter = TranslatableString.all_from_po_entry(po_entry, errors_out=errors_list)
             results_list = [n for n in results_iter]
-            self.assertEquals(from_po_entry.call_count, 1)
+            self.assertEqual(from_po_entry.call_count, 1)
             from_po_entry.assert_has_calls([
                 call(po_entry, po_entry.occurrences[0])
             ])
@@ -155,10 +155,10 @@ class CreateTranslatableStringTests(TestCase):
         translation = translatable.get_translation('fr')
         translatable_string = TranslatableString.from_translation(translation, 'translated_field_1')
 
-        self.assertEquals(translatable_string._instance, translatable)
-        self.assertEquals(translatable_string._field_id, 'translated_field_1')
-        self.assertEquals(translatable_string._source_str, 'translation_msgid_1')
-        self.assertEquals(translatable_string._translated_str, 'translation_msgstr_1')
+        self.assertEqual(translatable_string._instance, translatable)
+        self.assertEqual(translatable_string._field_id, 'translated_field_1')
+        self.assertEqual(translatable_string._source_str, 'translation_msgid_1')
+        self.assertEqual(translatable_string._translated_str, 'translation_msgstr_1')
 
     def test_create_from_translation_with_missing_msgid_raises_error(self):
         translatable = TestTranslatable(id=1).with_base_translation(
@@ -187,7 +187,7 @@ class CreateTranslatableStringTests(TestCase):
             errors_list = []
             results_iter = TranslatableString.all_from_translation(translation, errors_out=errors_list)
             results_list = [n for n in results_iter]
-            self.assertEquals(from_translation.call_count, 3)
+            self.assertEqual(from_translation.call_count, 3)
             from_translation.assert_has_calls([
                 call(translation, 'translated_field_1'),
                 call(translation, 'translated_field_2'),
@@ -211,9 +211,9 @@ class ValidTranslatableStringTests(TestCase):
     def test_as_po_entry(self):
         po_entry = self.translatable_string.as_po_entry()
 
-        self.assertEquals(po_entry.msgid, 'translation_msgid_1')
-        self.assertEquals(po_entry.msgstr, 'translation_msgstr_1')
-        self.assertEquals(po_entry.occurrences, [
+        self.assertEqual(po_entry.msgid, 'translation_msgid_1')
+        self.assertEqual(po_entry.msgstr, 'translation_msgstr_1')
+        self.assertEqual(po_entry.occurrences, [
             ('parlerpo.testtranslatable@{}@{}'.format('translated_field_1', 1), None)
         ])
 
@@ -224,8 +224,8 @@ class ValidTranslatableStringTests(TestCase):
         translation.save.assert_called_once_with()
 
         self.assertTrue(modified)
-        self.assertEquals(translation.master, self.translatable)
-        self.assertEquals(translation.translated_field_1, 'translation_msgstr_1')
+        self.assertEqual(translation.master, self.translatable)
+        self.assertEqual(translation.translated_field_1, 'translation_msgstr_1')
 
     def test_save_translation_without_changes_returns_false(self):
         self.translatable_string.save_translation('fr')
@@ -240,7 +240,7 @@ class ValidTranslatableStringTests(TestCase):
     def test_save_translation_with_base_translation_raises_error(self):
         base_language = self.base_translation.language_code
 
-        self.assertEquals(base_language, 'en')
+        self.assertEqual(base_language, 'en')
 
         with self.assertRaises(ProtectedTranslationError):
             self.translatable_string.save_translation(base_language)

@@ -1,0 +1,188 @@
+from django.core.management import CommandError, call_command
+from django.test import TestCase, override_settings
+
+from parler_po.tests.helpers import OrganizationBuilder
+from tempfile import NamedTemporaryFile, TemporaryDirectory
+import io
+import os
+import polib
+
+TEST_PARLER_PO_CONTACT = 'test_parler_po_import@example.com'
+
+class ParlerPOImportCommandTests(TestCase):
+    def test_requires_directory_argument(self):
+        with self.assertRaisesRegex(CommandError, 'Error: the following arguments are required: po_file'):
+            call_command('parler_po_import')
+
+class ParlerPOImportTestsWithBaseTranslations(TestCase):
+    def setUp(self):
+        self.translatable_objects = [
+            OrganizationBuilder(id='one').with_base_translation(
+                name='organization_one_translation_name_msgid'
+            ).with_translation(
+                'fr', name='organization_one_translation_name_msgstr_fr'
+            ).build(),
+            OrganizationBuilder(id='two').with_base_translation(
+                description='organization_two_translation_description_msgid'
+            ).with_translation(
+                'fr', description='organization_two_translation_description_msgstr_fr'
+            ).build(),
+            OrganizationBuilder(id='three').with_base_translation(
+                name='organization_three_translation_name_msgid',
+                description='organization_three_translation_description_msgid'
+            ).build()
+        ]
+
+        self.out_dir = TemporaryDirectory()
+
+    def test_import_po_file_with_no_language_reports_error(self):
+        po_file = polib.POFile()
+
+        po_file_path = os.path.join(self.out_dir.name, 'organizations.organization.po')
+        po_file.save(po_file_path)
+
+        stdout, stderr = _run_parler_po_import(po_file_path)
+
+        self.assertIn("Skipping \"{}\": No language metadata".format(po_file_path), stderr.getvalue())
+
+    def test_import_po_file_keeps_existing_translations(self):
+        self._import_po_entries('fr', [])
+
+        master = self.translatable_objects[0]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, 'organization_one_translation_name_msgstr_fr')
+        self.assertEqual(translation.description, '')
+
+        master = self.translatable_objects[1]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, '')
+        self.assertEqual(translation.description, 'organization_two_translation_description_msgstr_fr')
+
+        master = self.translatable_objects[2]
+        with self.assertRaises(master.translations.model.DoesNotExist):
+            master.get_translation('fr')
+            translation.refresh_from_db()
+
+    def test_import_po_file_with_updated_translation(self):
+        self._import_po_entries('fr', [
+            polib.POEntry(
+                occurrences=[('organizations.organization@name@one', '')],
+                msgid='organization_one_translation_name_msgid',
+                msgstr='organization_one_translation_name_msgstr_fr_2'
+            )
+        ])
+
+        master = self.translatable_objects[0]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, 'organization_one_translation_name_msgstr_fr_2')
+
+    def test_import_po_file_with_new_translation_entry(self):
+        self._import_po_entries('fr', [
+            polib.POEntry(
+                occurrences=[('organizations.organization@name@three', '')],
+                msgid='organization_three_translation_name_msgid',
+                msgstr='organization_three_translation_name_msgstr_fr'
+            )
+        ])
+
+        master = self.translatable_objects[0]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, 'organization_one_translation_name_msgstr_fr')
+        self.assertEqual(translation.description, '')
+
+        master = self.translatable_objects[1]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, '')
+        self.assertEqual(translation.description, 'organization_two_translation_description_msgstr_fr')
+
+        master = self.translatable_objects[2]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, 'organization_three_translation_name_msgstr_fr')
+        self.assertEqual(translation.description, '')
+
+    def test_import_po_file_with_new_language(self):
+        self._import_po_entries('es', [
+            polib.POEntry(
+                occurrences=[('organizations.organization@name@one', '')],
+                msgid='organization_one_translation_name_msgid',
+                msgstr='organization_one_translation_name_msgstr_es'
+            )
+        ])
+
+        master = self.translatable_objects[0]
+        translation = master.get_translation('es')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, 'organization_one_translation_name_msgstr_es')
+        self.assertEqual(translation.description, '')
+
+        master = self.translatable_objects[1]
+        with self.assertRaises(master.translations.model.DoesNotExist):
+            master.get_translation('es')
+
+        master = self.translatable_objects[2]
+        with self.assertRaises(master.translations.model.DoesNotExist):
+            master.get_translation('es')
+
+    def test_import_po_file_with_invalid_msgids(self):
+        self._import_po_entries('fr', [
+            polib.POEntry(
+                occurrences=[('organizations.organization@name@one', '')],
+                msgid='not_the_msgid',
+                msgstr='should_not_be_set'
+            )
+        ])
+
+        master = self.translatable_objects[0]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, 'organization_one_translation_name_msgstr_fr')
+        self.assertEqual(translation.description, '')
+
+    def test_import_po_file_skips_errors(self):
+        self._import_po_entries('fr', [
+            polib.POEntry(
+                occurrences=[('organizations.organization@name@one', '')],
+                msgid='not_the_msgid',
+                msgstr='should_not_be_set'
+            ),
+            polib.POEntry(
+                occurrences=[('not_a_field_id', '')],
+                msgid='not_the_msgid',
+                msgstr='should_not_be_set'
+            ),
+            polib.POEntry(
+                occurrences=[('organizations.organization@description@two', '')],
+                msgid='organization_two_translation_description_msgid',
+                msgstr='organization_two_translation_description_msgstr_fr_2'
+            )
+        ])
+
+        master = self.translatable_objects[1]
+        translation = master.get_translation('fr')
+        translation.refresh_from_db()
+        self.assertEqual(translation.name, '')
+        self.assertEqual(translation.description, 'organization_two_translation_description_msgstr_fr_2')
+
+    def _import_po_entries(self, language, po_entries):
+        po_file = polib.POFile()
+        po_file.metadata['Language'] = language
+
+        for po_entry in po_entries:
+            po_file.append(po_entry)
+
+        po_file_path = os.path.join(self.out_dir.name, 'organizations.organization.po')
+        po_file.save(po_file_path)
+
+        return _run_parler_po_import(po_file_path)
+
+def _run_parler_po_import(*args, **kwargs):
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    call_command('parler_po_import', *args, **kwargs, stdout=stdout, stderr=stderr)
+    return stdout, stderr

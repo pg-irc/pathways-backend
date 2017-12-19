@@ -3,6 +3,7 @@ from django.test import TestCase, override_settings
 
 from parler_po.tests.helpers import OrganizationBuilder
 from tempfile import NamedTemporaryFile, TemporaryDirectory
+import io
 import os
 import polib
 
@@ -11,12 +12,12 @@ TEST_PARLER_PO_CONTACT = 'test_parler_po_export@example.com'
 class ParlerPOExportCommandTests(TestCase):
     def test_requires_directory_argument(self):
         with self.assertRaisesRegex(CommandError, 'Error: the following arguments are required: directory'):
-            call_command('parler_po_export')
+            _run_parler_po_export()
 
     def test_requires_a_directory_not_a_file(self):
         out_file = NamedTemporaryFile()
         with self.assertRaisesRegex(CommandError, 'Error: argument directory: The path {} must be a directory'.format(out_file.name)):
-            call_command('parler_po_export', out_file.name)
+            _run_parler_po_export(out_file.name)
 
 class ParlerPOExportTestsWithBaseTranslations(TestCase):
     def setUp(self):
@@ -24,7 +25,7 @@ class ParlerPOExportTestsWithBaseTranslations(TestCase):
             OrganizationBuilder(id='one').with_base_translation(
                 name='organization_one_translation_name_msgid'
             ).with_translation(
-                'fr', name='organization_one_translation_nam_msgstr_fr'
+                'fr', name='organization_one_translation_name_msgstr_fr'
             ).build(),
             OrganizationBuilder(id='two').with_base_translation(
                 description='organization_two_translation_description_msgid'
@@ -138,7 +139,7 @@ class ParlerPOExportTestsWithBaseTranslations(TestCase):
                         ('organizations.organization@name@one', '')
                     ],
                     msgid='organization_one_translation_name_msgid',
-                    msgstr='organization_one_translation_nam_msgstr_fr'
+                    msgstr='organization_one_translation_name_msgstr_fr'
                 ),
                 polib.POEntry(
                     occurrences=[
@@ -203,4 +204,7 @@ def _po_entry_to_dict(po_entry):
 
 @override_settings(PARLER_PO_CONTACT=TEST_PARLER_PO_CONTACT)
 def _run_parler_po_export(*args, **kwargs):
-    call_command('parler_po_export', *args, **kwargs)
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    call_command('parler_po_export', *args, **kwargs, stdout=stdout, stderr=stderr)
+    return stdout, stderr
