@@ -40,14 +40,14 @@ class TestSpatialLocation(unittest.TestCase):
 
 class TestTaxonomyTerm(unittest.TestCase):
     def test_can_create(self):
-        taxonomy_term = dtos.TaxonomyTerm(vocabulary='vocabulary', name='name')
-        self.assertEqual(taxonomy_term.vocabulary, 'vocabulary')
+        taxonomy_term = dtos.TaxonomyTerm(taxonomy_id='taxonomy_id', name='name')
+        self.assertEqual(taxonomy_term.taxonomy_id, 'taxonomy_id')
         self.assertEqual(taxonomy_term.name, 'name')
 
-    def test_throws_on_missing_vocabulary(self):
+    def test_throws_on_missing_taxonomy_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.TaxonomyTerm(name='name')
 
     def test_throws_on_missing_name(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
-            dtos.TaxonomyTerm(vocabulary='vocabulary')
+            dtos.TaxonomyTerm(taxonomy_id='taxonomy_id')

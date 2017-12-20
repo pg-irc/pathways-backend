@@ -5,15 +5,15 @@ from django.utils.translation import ugettext_lazy as _
 from common.models import RequiredCharField
 
 class TaxonomyTerm(models.Model):
-    vocabulary = RequiredCharField(max_length=200, validators=[validate_slug])
+    taxonomy_id = RequiredCharField(max_length=200, validators=[validate_slug])
     name = RequiredCharField(max_length=200, validators=[validate_slug])
 
     class Meta:
         verbose_name = _("taxonomy term")
         verbose_name_plural = _("taxonomy terms")
-        unique_together = ('vocabulary', 'name')
+        unique_together = ('taxonomy_id', 'name')
 
     def __str__(self):
-        return _("{name} in {vocabulary}").format(
-            name=self.name, vocabulary=self.vocabulary
+        return _("{name} in {taxonomy_id}").format(
+            name=self.name, taxonomy_id=self.taxonomy_id
         )

@@ -151,10 +151,10 @@ def is_bc211_taxonomy_term(code_str):
 
 def parse_bc211_taxonomy_term(code_str):
     groups = re.findall(BC211_JSON_RE, code_str)
-    for (vocabulary, name) in groups:
-        full_vocabulary = 'bc211-{}'.format(vocabulary)
-        yield dtos.TaxonomyTerm(vocabulary=full_vocabulary, name=name)
+    for (taxonomy_id, name) in groups:
+        full_taxonomy_id = 'bc211-{}'.format(taxonomy_id)
+        yield dtos.TaxonomyTerm(taxonomy_id=full_taxonomy_id, name=name)
 
 def parse_airs_taxonomy_term(code_str):
-    vocabulary = 'airs'
-    yield dtos.TaxonomyTerm(vocabulary=vocabulary, name=code_str)
+    taxonomy_id = 'airs'
+    yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)

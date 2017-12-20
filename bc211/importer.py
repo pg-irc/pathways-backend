@@ -77,11 +77,11 @@ def save_taxonomy_terms(taxonomy_terms, counters):
     for taxonomy_term in taxonomy_terms:
         if save_taxonomy_term(taxonomy_term):
             counters.count_taxonomy_term()
-            LOGGER.info('Imported taxonomy term: %s %s', taxonomy_term.vocabulary, taxonomy_term.name)
+            LOGGER.info('Imported taxonomy term: %s %s', taxonomy_term.taxonomy_id, taxonomy_term.name)
 
 def save_taxonomy_term(record):
     active_record, created = TaxonomyTerm.objects.get_or_create(
-        vocabulary=record.vocabulary,
+        taxonomy_id=record.taxonomy_id,
         name=record.name
     )
     return created

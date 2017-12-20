@@ -33,5 +33,5 @@ class Service:
 
 class TaxonomyTerm:
     def __init__(self, **kwargs):
-        self.vocabulary = validate.required_slug('vocabulary', kwargs)
+        self.taxonomy_id = validate.required_slug('taxonomy_id', kwargs)
         self.name = validate.required_slug('name', kwargs)
