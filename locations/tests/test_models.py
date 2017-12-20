@@ -3,12 +3,14 @@ from django.test import TestCase
 from django.core import exceptions
 from django.db import utils as django_utils
 from locations import models
-from locations.tests.helpers import LocationBuilder
+from locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
 from organizations.tests.helpers import OrganizationBuilder
+from services.tests.helpers import ServiceBuilder
 
-def validate_save_and_reload(location):
-    location.save()
-    return models.Location.objects.get()
+def validate_save_and_reload(instance):
+    instance.save()
+    instance.refresh_from_db()
+    return instance
 
 class TestLocationModel(TestCase):
     def setUp(self):
@@ -135,3 +137,34 @@ class TestLocationModel(TestCase):
     def assert_description_in_language_equals(self, location, language, expected_text):
         location.set_current_language(language)
         self.assertEqual(location.description, expected_text)
+
+class TestServiceLocationModel(TestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().build()
+        self.organization.save()
+
+        self.service = ServiceBuilder(self.organization).build()
+        self.service.save()
+
+        self.location = LocationBuilder(self.organization).build()
+        self.location.save()
+
+    def test_has_service_field(self):
+        service_location = ServiceLocationBuilder(self.service, self.location).build()
+        service_location_from_db = validate_save_and_reload(service_location)
+        self.assertEqual(service_location_from_db.service, self.service)
+
+    def test_service_cannot_be_none(self):
+        service_location = ServiceLocationBuilder(None, self.location).build()
+        with self.assertRaises(exceptions.ValidationError):
+            service_location.full_clean()
+
+    def test_has_location_field(self):
+        service_location = ServiceLocationBuilder(self.service, self.location).build()
+        service_location_from_db = validate_save_and_reload(service_location)
+        self.assertEqual(service_location_from_db.location, self.location)
+
+    def test_location_cannot_be_none(self):
+        service_location = ServiceLocationBuilder(self.service, None).build()
+        with self.assertRaises(exceptions.ValidationError):
+            service_location.full_clean()

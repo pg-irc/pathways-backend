@@ -38,3 +38,20 @@ class LocationBuilder:
         result.longitude = self.longitude
         result.description = self.description
         return result
+
+class ServiceLocationBuilder:
+    def __init__(self, service, location):
+        self.service = service
+        self.location = location
+        self.description = 'default description'
+
+    def with_description(self, description):
+        self.description = description
+        return self
+
+    def build(self):
+        result = models.ServiceLocation()
+        result.service = self.service
+        result.location = self.location
+        result.description = self.description
+        return result
