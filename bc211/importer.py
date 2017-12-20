@@ -1,7 +1,7 @@
 from django.utils import translation
 from locations.models import Location
 from organizations.models import Organization
-from taxonomies.models import Taxonomy
+from taxonomies.models import TaxonomyTerm
 import logging
 
 LOGGER = logging.getLogger(__name__)
@@ -11,7 +11,7 @@ class ImportCounters:
         self.organization_count = 0
         self.location_count = 0
         self.service_count = 0
-        self.taxonomy_count = 0
+        self.taxonomy_term_count = 0
 
     def count_organization(self):
         self.organization_count += 1
@@ -22,8 +22,8 @@ class ImportCounters:
     def count_service(self):
         self.service_count += 1
 
-    def count_taxonomy(self):
-        self.taxonomy_count += 1
+    def count_taxonomy_term(self):
+        self.taxonomy_term_count += 1
 
 def save_records_to_database(organizations):
     translation.activate('en')
@@ -71,16 +71,16 @@ def save_services(services, counters):
     for service in services:
         # Don't save services themselves for now.
         counters.count_service()
-        save_taxonomies(service.taxonomies, counters)
+        save_taxonomy_terms(service.taxonomy_terms, counters)
 
-def save_taxonomies(taxonomies, counters):
-    for taxonomy in taxonomies:
-        if save_taxonomy(taxonomy):
-            counters.count_taxonomy()
-            LOGGER.info('Imported taxonomy: %s %s', taxonomy.vocabulary, taxonomy.name)
+def save_taxonomy_terms(taxonomy_terms, counters):
+    for taxonomy_term in taxonomy_terms:
+        if save_taxonomy_term(taxonomy_term):
+            counters.count_taxonomy_term()
+            LOGGER.info('Imported taxonomy term: %s %s', taxonomy_term.vocabulary, taxonomy_term.name)
 
-def save_taxonomy(record):
-    active_record, created = Taxonomy.objects.get_or_create(
+def save_taxonomy_term(record):
+    active_record, created = TaxonomyTerm.objects.get_or_create(
         vocabulary=record.vocabulary,
         name=record.name
     )

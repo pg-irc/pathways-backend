@@ -4,13 +4,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from common.models import RequiredCharField
 
-class Taxonomy(models.Model):
+class TaxonomyTerm(models.Model):
     vocabulary = RequiredCharField(max_length=200, validators=[validate_slug])
     name = RequiredCharField(max_length=200, validators=[validate_slug])
 
     class Meta:
-        verbose_name = "taxonomy"
-        verbose_name_plural = "taxonomies"
+        verbose_name = _("taxonomy term")
+        verbose_name_plural = _("taxonomy terms")
         unique_together = ('vocabulary', 'name')
 
     def __str__(self):

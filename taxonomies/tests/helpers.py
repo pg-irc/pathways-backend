@@ -1,6 +1,6 @@
 from taxonomies import models
 
-class TaxonomyBuilder:
+class TaxonomyTermBuilder:
     def __init__(self):
         self.vocabulary = 'default_vocabulary'
         self.name = 'default name'
@@ -14,7 +14,7 @@ class TaxonomyBuilder:
         return self
 
     def build(self):
-        result = models.Taxonomy()
+        result = models.TaxonomyTerm()
         result.vocabulary = self.vocabulary
         result.name = self.name
         return result

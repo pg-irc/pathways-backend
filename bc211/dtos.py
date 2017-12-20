@@ -29,9 +29,9 @@ class Service:
         self.id = validate.required_string('id', kwargs)
         self.name = validate.required_string('name', kwargs)
         self.site_id = validate.required_string('site_id', kwargs)
-        self.taxonomies = kwargs['taxonomies']
+        self.taxonomy_terms = kwargs['taxonomy_terms']
 
-class Taxonomy:
+class TaxonomyTerm:
     def __init__(self, **kwargs):
         self.vocabulary = validate.required_slug('vocabulary', kwargs)
         self.name = validate.required_slug('name', kwargs)

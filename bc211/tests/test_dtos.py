@@ -37,3 +37,17 @@ class TestSpatialLocation(unittest.TestCase):
     def test_throws_on_longitude_not_a_number(self):
         with self.assertRaises(exceptions.InvalidFloatXmlParseException):
             dtos.SpatialLocation(latitude='123.456', longitude='foo')
+
+class TestTaxonomyTerm(unittest.TestCase):
+    def test_can_create(self):
+        taxonomy_term = dtos.TaxonomyTerm(vocabulary='vocabulary', name='name')
+        self.assertEqual(taxonomy_term.vocabulary, 'vocabulary')
+        self.assertEqual(taxonomy_term.name, 'name')
+
+    def test_throws_on_missing_vocabulary(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.TaxonomyTerm(name='name')
+
+    def test_throws_on_missing_name(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.TaxonomyTerm(vocabulary='vocabulary')

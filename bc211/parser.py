@@ -113,9 +113,9 @@ class ServiceParser:
 def parse_service(service, site_id):
     id = parse_service_id(service)
     name = parse_service_name(service)
-    taxonomies = parse_service_taxonomies(service, id)
+    taxonomy_terms = parse_service_taxonomy_terms(service, id)
     LOGGER.info('Parsed service: %s %s', id, name)
-    return dtos.Service(id=id, name=name, site_id=site_id, taxonomies=taxonomies)
+    return dtos.Service(id=id, name=name, site_id=site_id, taxonomy_terms=taxonomy_terms)
 
 def parse_service_id(service):
     return parse_required_field(service, 'Key')
@@ -123,38 +123,38 @@ def parse_service_id(service):
 def parse_service_name(service):
     return parse_required_field(service, 'Name')
 
-def parse_service_taxonomies(service, service_id):
-    taxonomies = service.findall('Taxonomy')
+def parse_service_taxonomy_terms(service, service_id):
+    taxonomy_terms = service.findall('Taxonomy')
     return itertools.chain.from_iterable(
-        map(ServiceTaxonomyParser(service_id), taxonomies)
+        map(ServiceTaxonomyTermParser(service_id), taxonomy_terms)
     )
 
-class ServiceTaxonomyParser:
+class ServiceTaxonomyTermParser:
     def __init__(self, service_id):
         self.service_id = service_id
 
-    def __call__(self, service_taxonomy):
-        return parse_service_taxonomy(service_taxonomy, self.service_id)
+    def __call__(self, service_taxonomy_term):
+        return parse_service_taxonomy_term(service_taxonomy_term, self.service_id)
 
-def parse_service_taxonomy(service_taxonomy, service_id):
-    code = parse_required_field(service_taxonomy, 'Code')
+def parse_service_taxonomy_term(service_taxonomy_term, service_id):
+    code = parse_required_field(service_taxonomy_term, 'Code')
 
-    LOGGER.info('Parsed taxonomy: %s %s', id, code)
+    LOGGER.info('Parsed taxonomy term: %s %s', id, code)
 
-    if code and is_bc211_taxonomy(code):
-        yield from parse_bc211_taxonomy(code)
+    if code and is_bc211_taxonomy_term(code):
+        yield from parse_bc211_taxonomy_term(code)
     elif code:
-        yield from parse_airs_taxonomy(code)
+        yield from parse_airs_taxonomy_term(code)
 
-def is_bc211_taxonomy(code_str):
+def is_bc211_taxonomy_term(code_str):
     return code_str.startswith('{')
 
-def parse_bc211_taxonomy(code_str):
+def parse_bc211_taxonomy_term(code_str):
     groups = re.findall(BC211_JSON_RE, code_str)
     for (vocabulary, name) in groups:
         full_vocabulary = 'bc211-{}'.format(vocabulary)
-        yield dtos.Taxonomy(vocabulary=full_vocabulary, name=name)
+        yield dtos.TaxonomyTerm(vocabulary=full_vocabulary, name=name)
 
-def parse_airs_taxonomy(code_str):
+def parse_airs_taxonomy_term(code_str):
     vocabulary = 'airs'
-    yield dtos.Taxonomy(vocabulary=vocabulary, name=code_str)
+    yield dtos.TaxonomyTerm(vocabulary=vocabulary, name=code_str)
