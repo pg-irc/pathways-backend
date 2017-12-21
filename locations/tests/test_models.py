@@ -150,21 +150,21 @@ class TestServiceLocationModel(TestCase):
         self.location.save()
 
     def test_has_service_field(self):
-        service_location = ServiceLocationBuilder(self.service, self.location).build()
-        service_location_from_db = validate_save_and_reload(service_location)
+        service_at_location = ServiceLocationBuilder(self.service, self.location).build()
+        service_location_from_db = validate_save_and_reload(service_at_location)
         self.assertEqual(service_location_from_db.service, self.service)
 
     def test_service_cannot_be_none(self):
-        service_location = ServiceLocationBuilder(None, self.location).build()
+        service_at_location = ServiceLocationBuilder(None, self.location).build()
         with self.assertRaises(exceptions.ValidationError):
-            service_location.full_clean()
+            service_at_location.full_clean()
 
     def test_has_location_field(self):
-        service_location = ServiceLocationBuilder(self.service, self.location).build()
-        service_location_from_db = validate_save_and_reload(service_location)
+        service_at_location = ServiceLocationBuilder(self.service, self.location).build()
+        service_location_from_db = validate_save_and_reload(service_at_location)
         self.assertEqual(service_location_from_db.location, self.location)
 
     def test_location_cannot_be_none(self):
-        service_location = ServiceLocationBuilder(self.service, None).build()
+        service_at_location = ServiceLocationBuilder(self.service, None).build()
         with self.assertRaises(exceptions.ValidationError):
-            service_location.full_clean()
+            service_at_location.full_clean()

@@ -100,8 +100,8 @@ class TestServiceModel(TestCase):
         location = LocationBuilder(self.organization).build()
         location_from_db = validate_save_and_reload(location)
 
-        service_location = ServiceLocationBuilder(service, location).build()
-        validate_save_and_reload(service_location)
+        service_at_location = ServiceLocationBuilder(service, location).build()
+        validate_save_and_reload(service_at_location)
 
         self.assertEqual(service.locations.first(), location)
 

@@ -8,7 +8,7 @@ from common.models import ValidateOnSaveMixin, RequiredCharField
 class Location(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    services = models.ManyToManyField(Service, related_name='locations', through='ServiceLocation')
+    services = models.ManyToManyField(Service, related_name='locations', through='ServiceAtLocation')
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     translations = TranslatedFields(
@@ -29,12 +29,9 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
         if latitude_is_null != longitude_is_null:
             raise_mismatch_exception(latitude_is_null, longitude_is_null)
 
-class ServiceLocation(ValidateOnSaveMixin, TranslatableModel):
+class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    translations = TranslatedFields(
-        description=models.TextField(blank=True, null=True)
-    )
 
 def raise_mismatch_exception(latitude_is_null, longitude_is_null):
     message = make_mismatch_message(latitude_is_null, longitude_is_null)

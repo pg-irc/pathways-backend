@@ -10,8 +10,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='services')
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
-        description=models.TextField(blank=True, null=True),
-        location_description=models.TextField(blank=True, null=True)
+        description=models.TextField(blank=True, null=True)
     )
 
     def __str__(self):
