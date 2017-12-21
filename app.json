@@ -1,0 +1,39 @@
+{
+  "name": "pathways-backend",
+  "description": "This file contains settings for review apps on heroku, these are heroku apps that spin up from PRs on github",
+  "scripts": {
+  },
+  "env": {
+    "DJANGO_AWS_STORAGE_BUCKET_NAME": {
+      "required": true
+    },
+    "DJANGO_MAILGUN_API_KEY": {
+      "required": true
+    },
+    "DJANGO_SECRET_KEY": {
+      "required": true
+    },
+    "DJANGO_SERVER_EMAIL": {
+      "required": true
+    },
+    "DJANGO_SETTINGS_MODULE": {
+      "required": true
+    },
+    "MAILGUN_SENDER_DOMAIN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
