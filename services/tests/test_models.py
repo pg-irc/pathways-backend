@@ -93,7 +93,7 @@ class TestServiceModel(TestCase):
         self.assert_description_in_language_equals(service_from_db, 'en', 'In English')
         self.assert_description_in_language_equals(service_from_db, 'fr', 'En français')
 
-    def test_location_is_first_service_location(self):
+    def test_has_locations_attribute(self):
         service = ServiceBuilder(self.organization).build()
         service_from_db = validate_save_and_reload(service)
 
@@ -101,15 +101,15 @@ class TestServiceModel(TestCase):
         location_from_db = validate_save_and_reload(location)
 
         service_location = ServiceLocationBuilder(service, location).build()
-        service_location_from_db = validate_save_and_reload(service_location)
+        validate_save_and_reload(service_location)
 
-        self.assertEqual(service.location, location)
+        self.assertEqual(service.locations.first(), location)
 
-    def test_location_is_none_if_no_service_location_exists(self):
+    def test_locations_is_empty_if_no_service_location_exists(self):
         service = ServiceBuilder(self.organization).build()
         service_from_db = validate_save_and_reload(service)
 
-        self.assertEqual(service.location, None)
+        self.assertEqual(service.locations.count(), 0)
 
     def set_description_in_language(self, service, language, text):
         service.set_current_language(language)

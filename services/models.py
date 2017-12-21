@@ -16,11 +16,3 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
 
     def __str__(self):
         return self.name
-
-    @cached_property
-    def location(self):
-        return self.locations.first()
-
-    @cached_property
-    def location_id(self):
-        return self.location.id if self.location else None
