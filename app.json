@@ -1,9 +1,14 @@
 {
-  "name": "pathways-backend",
   "description": "This file contains settings for review apps on heroku, these are heroku apps that spin up from PRs on github",
   "scripts": {
   },
   "env": {
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
+    "HEROKU_PARENT_APP_NAME": {
+      "required": true
+    },
     "DJANGO_AWS_STORAGE_BUCKET_NAME": {
       "required": true
     },
