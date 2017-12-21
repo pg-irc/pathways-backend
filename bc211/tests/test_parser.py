@@ -46,9 +46,12 @@ class BC211ParserTests(unittest.TestCase):
         xml = file_open_for_reading.read()
         organizations = list(parser.parse(xml))
         locations_from_first_organization = list(organizations[0].locations)
+        services_from_first_location = list(locations_from_first_organization[0].services)
+        taxonomy_terms_from_first_service = list(services_from_first_location[0].taxonomy_terms)
         self.assertEqual(len(organizations), 16)
         self.assertEqual(len(locations_from_first_organization), 1)
-
+        self.assertEqual(len(services_from_first_location), 1)
+        self.assertEqual(len(taxonomy_terms_from_first_service), 27)
 
 class OrganizationParserTests(unittest.TestCase):
     def setUp(self):

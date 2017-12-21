@@ -41,6 +41,7 @@ LOCAL_APPS = [
     'locations.apps.LocationsConfig',
     'organizations.apps.OrganizationsConfig',
     'services.apps.ServicesConfig',
+    'taxonomies.apps.TaxonomiesConfig',
     'search.apps.SearchConfig',
     'users.apps.UsersConfig',
 ]
