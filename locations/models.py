@@ -30,8 +30,14 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
             raise_mismatch_exception(latitude_is_null, longitude_is_null)
 
 class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '\"{service}\" at \"{location}\"'.format(
+            service=self.service,
+            location=self.location
+        )
 
 def raise_mismatch_exception(latitude_is_null, longitude_is_null):
     message = make_mismatch_message(latitude_is_null, longitude_is_null)

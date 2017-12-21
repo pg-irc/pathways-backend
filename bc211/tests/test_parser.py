@@ -27,6 +27,16 @@ MINIMAL_211_DATA_SET = '''
                 <Latitude>123.456</Latitude>
                 <Longitude>-154.321</Longitude>
             </SpatialLocation>
+            <SiteService>
+                <Key>the service key</Key>
+                <Name>the service name</Name>
+                <Description>the service description</Description>
+            </SiteService>
+            <SiteService>
+                <Key>the second service key</Key>
+                <Name>the second service name</Name>
+                <Description>the second service description</Description>
+            </SiteService>
         </Site>
         <Site>
             <Key>the second site key</Key>
@@ -36,6 +46,11 @@ MINIMAL_211_DATA_SET = '''
                 <Latitude>123.456</Latitude>
                 <Longitude>-154.321</Longitude>
             </SpatialLocation>
+            <SiteService>
+                <Key>the second site's service key</Key>
+                <Name>the second site's service name</Name>
+                <Description>the second site's service description</Description>
+            </SiteService>
         </Site>
     </Agency>
 </Source>'''
@@ -52,6 +67,7 @@ class BC211ParserTests(unittest.TestCase):
         self.assertEqual(len(locations_from_first_organization), 1)
         self.assertEqual(len(services_from_first_location), 1)
         self.assertEqual(len(taxonomy_terms_from_first_service), 27)
+
 
 class OrganizationParserTests(unittest.TestCase):
     def setUp(self):
@@ -140,3 +156,41 @@ class LocationParserTests(unittest.TestCase):
                          self.organization_id_passed_to_parser)
         self.assertEqual(self.from_minimal_data.organization_id,
                          self.organization_id_passed_to_parser)
+
+
+class ServiceParserTests(unittest.TestCase):
+    def setUp(self):
+        root = etree.fromstring(open(REAL_211_DATA_SET, 'r').read())
+        self.organization_id_passed_to_parser = 'the organization id'
+        self.site_id_passed_to_parser = 'the site id'
+        self.from_real_data = parser.parse_service(
+            root.find('Agency/Site/SiteService'),
+            self.organization_id_passed_to_parser,
+            self.site_id_passed_to_parser
+        )
+        root = etree.fromstring(MINIMAL_211_DATA_SET)
+        self.from_minimal_data = parser.parse_service(
+            root.find('Agency/Site/SiteService'),
+            self.organization_id_passed_to_parser,
+            self.site_id_passed_to_parser
+        )
+
+    def test_can_parse_name(self):
+        self.assertEqual(self.from_real_data.name, 'Langley Child Development Centre')
+        self.assertEqual(self.from_minimal_data.name, 'the service name')
+
+    def test_can_parse_description(self):
+        self.assertEqual(self.from_real_data.description[:30], 'Provides inclusive, family-cen')
+        self.assertEqual(self.from_minimal_data.description, 'the service description')
+
+    def test_sets_the_organization_id(self):
+        self.assertEqual(self.from_real_data.organization_id,
+                         self.organization_id_passed_to_parser)
+        self.assertEqual(self.from_minimal_data.organization_id,
+                         self.organization_id_passed_to_parser)
+
+    def test_sets_the_site_id(self):
+        self.assertEqual(self.from_real_data.site_id,
+                         self.site_id_passed_to_parser)
+        self.assertEqual(self.from_minimal_data.site_id,
+                         self.site_id_passed_to_parser)

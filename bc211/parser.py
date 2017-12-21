@@ -77,7 +77,7 @@ def parse_site(site, organization_id):
     name = parse_site_name(site)
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
-    services = parse_services(site, id)
+    services = parse_services(site, organization_id, id)
     LOGGER.info('Parsed location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
@@ -99,29 +99,36 @@ def parse_spatial_location_if_defined(site):
         return None
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
 
-def parse_services(site, site_id):
+def parse_services(site, organization_id, site_id):
     services = site.findall('SiteService')
-    return map(ServiceParser(site_id), services)
+    return map(ServiceParser(organization_id, site_id), services)
 
 class ServiceParser:
-    def __init__(self, site_id):
+    def __init__(self, organization_id, site_id):
+        self.organization_id = organization_id
         self.site_id = site_id
 
     def __call__(self, service):
-        return parse_service(service, self.site_id)
+        return parse_service(service, self.organization_id, self.site_id)
 
-def parse_service(service, site_id):
+def parse_service(service, organization_id, site_id):
     id = parse_service_id(service)
     name = parse_service_name(service)
+    description = parse_service_description(service)
     taxonomy_terms = parse_service_taxonomy_terms(service, id)
     LOGGER.info('Parsed service: %s %s', id, name)
-    return dtos.Service(id=id, name=name, site_id=site_id, taxonomy_terms=taxonomy_terms)
+    return dtos.Service(id=id, name=name, organization_id=organization_id,
+                        site_id=site_id, description=description,
+                        taxonomy_terms=taxonomy_terms)
 
 def parse_service_id(service):
     return parse_required_field(service, 'Key')
 
 def parse_service_name(service):
     return parse_required_field(service, 'Name')
+
+def parse_service_description(service):
+    return parse_required_field(service, 'Description')
 
 def parse_service_taxonomy_terms(service, service_id):
     taxonomy_terms = service.findall('Taxonomy')
