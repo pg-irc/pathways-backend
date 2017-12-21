@@ -6,6 +6,7 @@
 .venv-local/
 .venv-test/
 .venv-production/
+.coverage
 main/media/
 main/static/css/
 staticfiles/
