@@ -1,5 +1,12 @@
 [run]
-include = main/*
+include = bc211/*,
+          common/*,
+          locations/*,
+          main/*,
+          organizations/*,
+          parler_po/*,
+          search/*,
+          users/*,
 omit = *migrations*, *tests*
 plugins =
     django_coverage_plugin
