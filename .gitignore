@@ -2,10 +2,8 @@
 *sqlite3
 .vscode/
 .cache/
-.venv/
-.venv-local/
-.venv-test/
-.venv-production/
+.venv*/
+.env
 .coverage
 main/media/
 main/static/css/
