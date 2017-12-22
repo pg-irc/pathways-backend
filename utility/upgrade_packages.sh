@@ -12,19 +12,19 @@ handle_command_line_argument() {
     if [[ $1 = 'local' ]]
     then
         REQUIREMENTS='requirements/local.txt'
-        CONFIG='config.settings.local'
+        SETTINGS='config.settings.local'
         VENV_PATH='.venv-upgrade-local'
 
     elif [[ $1 = 'test' ]]
     then
         REQUIREMENTS='requirements/test.txt'
-        CONFIG='config.settings.test'
-        VENV_PATH='.venv-upgrade-production'
+        SETTINGS='config.settings.test'
+        VENV_PATH='.venv-upgrade-test'
 
     elif [[ $1 = 'production' ]]
     then
         REQUIREMENTS='requirements/production.txt'
-        CONFIG='config.settings.production'
+        SETTINGS='config.settings.production'
         VENV_PATH='.venv-upgrade-production'
 
     else
@@ -54,7 +54,7 @@ install_packages_in_clean_environment()
 }
 
 run_tests() {
-    export DJANGO_SETTINGS_MODULE=$CONFIG
+    export DJANGO_SETTINGS_MODULE=$SETTINGS
     python manage.py test
 }
 
@@ -62,7 +62,7 @@ print_summary_message_to_standard_out() {
     echo
     echo "Execute"
     echo
-    echo "   deactivate && source $VENV_PATH/bin/activate && export DJANGO_SETTINGS_MODULE=$CONFIG"
+    echo "   deactivate && source $VENV_PATH/bin/activate && export DJANGO_SETTINGS_MODULE=$SETTINGS"
     echo
     echo "and perform whatever manual testing is needed"
     echo "before checking in changes in requirements/"
