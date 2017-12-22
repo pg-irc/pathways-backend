@@ -1,7 +1,5 @@
 #!/bin/bash
 
-VENV_PATH='venv-upgrade'
-
 main() {
     handle_command_line_argument $1
     upgrade_requirement_files
@@ -15,16 +13,19 @@ handle_command_line_argument() {
     then
         REQUIREMENTS='requirements/local.txt'
         CONFIG='config.settings.local'
+        VENV_PATH='.venv-upgrade-local'
 
     elif [[ $1 = 'test' ]]
     then
         REQUIREMENTS='requirements/test.txt'
         CONFIG='config.settings.test'
+        VENV_PATH='.venv-upgrade-production'
 
     elif [[ $1 = 'production' ]]
     then
         REQUIREMENTS='requirements/production.txt'
         CONFIG='config.settings.production'
+        VENV_PATH='.venv-upgrade-production'
 
     else
         echo "Specify local, test or production"
