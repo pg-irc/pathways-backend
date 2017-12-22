@@ -11,7 +11,7 @@ class MasterInstanceLookupError(ParlerPOError):
 class ModelNotTranslatableError(ParlerPOError):
     def __init__(self, model):
         self.model = model
-        message = "{} is not a TranslatableModel.".format(model.__name__)
+        message = "{} is not a TranslatableModel.".format(model)
         super().__init__(message)
 
 class FieldNotTranslatableError(ParlerPOError):
