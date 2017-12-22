@@ -1,16 +1,16 @@
 # Local development dependencies go here
 -r base.txt
 
-docker==2.6.1
-docker-compose==1.17.1
+docker==2.7.0
+docker-compose==1.18.0
 
 coverage==4.4.2
 django-coverage-plugin==1.5.0
 
 Sphinx==1.6.5
-django-extensions==1.9.7
-Werkzeug==0.12.2
-django-test-plus==1.0.20
+django-extensions==1.9.8
+Werkzeug==0.13
+django-test-plus==1.0.21
 factory-boy==2.9.2
 
 django-debug-toolbar==1.9.1
