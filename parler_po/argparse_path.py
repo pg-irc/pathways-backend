@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
+from pathlib import Path
 import argparse
 import functools
 import os
@@ -20,38 +21,38 @@ class ArgparsePathType(object):
             *args, file_type=self._file_type, mode_flags=mode_flags
         )
 
-def _path_type_fn(path, file_type=None, mode_flags=set()):
-    full_path = os.path.abspath(path)
+def _path_type_fn(path_str, file_type=None, mode_flags=set()):
+    path = Path(path_str)
 
-    if os.path.exists(full_path):
-        if file_type == 'file' and not os.path.isfile(full_path):
+    if path.exists():
+        if file_type == 'file' and not path.is_file():
             raise argparse.ArgumentTypeError(
                 _("The path {} must be a file").format(path)
             )
-        elif file_type == 'dir' and not os.path.isdir(full_path):
+        elif file_type == 'dir' and not path.is_dir():
             raise argparse.ArgumentTypeError(
                 _("The path {} must be a directory").format(path)
             )
-        elif os.R_OK in mode_flags and not os.access(full_path, os.R_OK):
+        elif os.R_OK in mode_flags and not os.access(path, os.R_OK):
             raise argparse.ArgumentTypeError(
                 _("The path {} must be readable").format(path)
             )
-        elif os.W_OK in mode_flags and not os.access(full_path, os.W_OK):
+        elif os.W_OK in mode_flags and not os.access(path, os.W_OK):
             raise argparse.ArgumentTypeError(
                 _("The path {} must be writable").format(path)
             )
-        elif os.X_OK in mode_flags and not os.access(full_path, os.X_OK):
+        elif os.X_OK in mode_flags and not os.access(path, os.X_OK):
             raise argparse.ArgumentTypeError(
                 _("The path {} must be executable").format(path)
             )
         else:
-            return full_path
+            return path
     else:
         try:
-            os.makedirs(full_path)
-        except OSError as e:
+            path.mkdir(parents=True)
+        except FileNotFoundError as error:
             raise argparse.ArgumentTypeError(
-                _("The path {} does not exist").format(path)
+                _("Error creating {}: {}").format(path, error)
             )
         else:
-            return full_path
+            return path
