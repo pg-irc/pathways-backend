@@ -65,11 +65,13 @@ By default the local settings are used. To use other settings, use the environme
 
 ## Running tests on Travis and locally
 
-Travis runs the tests using the settings in `config.settings.test`, against postgres using the accont "postgres" with empty password, creating a database called "test_db". To run the same tests locally, create a postgres user and a database called "test_db" owned by that user, and specify the postgres account using environment variables `POSTGRES_USER` and `POSTGRES_PASSWORD`, e.g. as follows:
+Travis runs the tests using the settings in `config.settings.test`, against postgres using the accont "postgres" with empty password, creating a database called "test_db". To run the same tests locally, create a postgres user and a database called "test_db" owned by that user, and specify the postgres account using environment variables `POSTGRES_USER` and `POSTGRES_PASSWORD`, either on the command line:
 
 ```
 DJANGO_SETTINGS_MODULE=config.settings.test POSTGRES_USER=test_user POSTGRES_PASSWORD='the_password' python manage.py test
 ```
+
+or put these settings in a file called .env (use env.example as a template) and `export DJANGO_READ_DOT_ENV_FILE=True` to make sure the file is read.
 
 ## Getting started with Heroku
 
