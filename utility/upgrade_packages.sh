@@ -6,13 +6,20 @@ if [[ $1 = 'local' ]]
 then
     REQUIREMENTS='requirements/local.txt'
     CONFIG='config.settings.local'
+elif [[ $1 = 'test' ]]
+then
+    REQUIREMENTS='requirements/test.txt'
+    CONFIG='config.settings.test'
+elif [[ $1 = 'production' ]]
+then
+    REQUIREMENTS='requirements/production.txt'
+    CONFIG='config.settings.production'
 fi
 
 echo "Interactive upgrade of packages in $REQUIREMENTS"
-#echo "*********************************************************************"
 pur -r $REQUIREMENTS -i
 
-echo "Installing upgraded requirements from $REQUIREMENTS in $ENVIRONMENT"
+echo "Installing requirements from $REQUIREMENTS in clean environment $ENVIRONMENT"
 rm -rf $ENVIRONMENT
 python3 -m venv $ENVIRONMENT
 source $ENVIRONMENT/bin/activate
@@ -20,4 +27,7 @@ pip install -r $REQUIREMENTS
 export DJANGO_SETTINGS_MODULE=$CONFIG
 python manage.py test
 
-# echo 'Please source venv-upgrade/bin/activate and test manually and check in changes if all looks good'
+echo "Execute"
+echo " source $ENVIRONMENT/bin/activate"
+echo "and then perform whatever manual testing is needed"
+echo "before checking in changed in requirements/."
