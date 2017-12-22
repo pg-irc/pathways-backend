@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENVIRONMENT='venv-upgrade'
+VENV_PATH='venv-upgrade'
 
 main() {
     handle_command_line_argument $1
@@ -45,10 +45,10 @@ print_message() {
 
 install_packages_in_clean_environment()
 {
-    print_message "Installing requirements from $REQUIREMENTS in clean environment $ENVIRONMENT"
-    rm -rf $ENVIRONMENT
-    python3 -m venv $ENVIRONMENT
-    source $ENVIRONMENT/bin/activate
+    print_message "Installing requirements from $REQUIREMENTS in clean environment $VENV_PATH"
+    rm -rf $VENV_PATH
+    python3 -m venv $VENV_PATH
+    source $VENV_PATH/bin/activate
     pip install -r $REQUIREMENTS
 }
 
@@ -61,8 +61,7 @@ print_summary_message_to_standard_out() {
     echo
     echo "Execute"
     echo
-    echo "   source $ENVIRONMENT/bin/activate"
-    echo "   export DJANGO_SETTINGS_MODULE=$CONFIG"
+    echo "   deactivate && source $VENV_PATH/bin/activate && export DJANGO_SETTINGS_MODULE=$CONFIG"
     echo
     echo "and perform whatever manual testing is needed"
     echo "before checking in changes in requirements/"
