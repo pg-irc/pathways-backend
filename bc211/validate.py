@@ -1,9 +1,16 @@
 from bc211 import exceptions
+from django.utils.text import slugify
 
 def required_string(field, values):
     value = values.get(field)
     if isinstance(value, str):
         return value
+    raise exceptions.MissingRequiredFieldXmlParseException(field)
+
+def required_slug(field, values):
+    value = values.get(field)
+    if isinstance(value, str):
+        return slugify(value)
     raise exceptions.MissingRequiredFieldXmlParseException(field)
 
 def optional_string(field, values):

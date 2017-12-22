@@ -1,10 +1,14 @@
-import logging
-import xml.etree.ElementTree as etree
-from urllib import parse as urlparse
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
+from urllib import parse as urlparse
+import itertools
+import logging
+import re
+import xml.etree.ElementTree as etree
 
 LOGGER = logging.getLogger(__name__)
+
+BC211_JSON_RE = r"(\w+)\:\'([^\']+)\'"
 
 def read_records_from_file(file):
     xml = file.read()
@@ -73,9 +77,11 @@ def parse_site(site, organization_id):
     name = parse_site_name(site)
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
+    services = parse_services(site, id)
     LOGGER.info('Parsed location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
-                         description=description, spatial_location=spatial_location)
+                         description=description, spatial_location=spatial_location,
+                         services=services)
 
 def parse_site_id(site):
     return parse_required_field(site, 'Key')
@@ -92,3 +98,63 @@ def parse_spatial_location_if_defined(site):
     if latitude is None or longitude is None:
         return None
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
+
+def parse_services(site, site_id):
+    services = site.findall('SiteService')
+    return map(ServiceParser(site_id), services)
+
+class ServiceParser:
+    def __init__(self, site_id):
+        self.site_id = site_id
+
+    def __call__(self, service):
+        return parse_service(service, self.site_id)
+
+def parse_service(service, site_id):
+    id = parse_service_id(service)
+    name = parse_service_name(service)
+    taxonomy_terms = parse_service_taxonomy_terms(service, id)
+    LOGGER.info('Parsed service: %s %s', id, name)
+    return dtos.Service(id=id, name=name, site_id=site_id, taxonomy_terms=taxonomy_terms)
+
+def parse_service_id(service):
+    return parse_required_field(service, 'Key')
+
+def parse_service_name(service):
+    return parse_required_field(service, 'Name')
+
+def parse_service_taxonomy_terms(service, service_id):
+    taxonomy_terms = service.findall('Taxonomy')
+    return itertools.chain.from_iterable(
+        map(ServiceTaxonomyTermParser(service_id), taxonomy_terms)
+    )
+
+class ServiceTaxonomyTermParser:
+    def __init__(self, service_id):
+        self.service_id = service_id
+
+    def __call__(self, service_taxonomy_term):
+        return parse_service_taxonomy_term(service_taxonomy_term, self.service_id)
+
+def parse_service_taxonomy_term(service_taxonomy_term, service_id):
+    code = parse_required_field(service_taxonomy_term, 'Code')
+
+    LOGGER.info('Parsed taxonomy term: %s %s', id, code)
+
+    if code and is_bc211_taxonomy_term(code):
+        yield from parse_bc211_taxonomy_term(code)
+    elif code:
+        yield from parse_airs_taxonomy_term(code)
+
+def is_bc211_taxonomy_term(code_str):
+    return code_str.startswith('{')
+
+def parse_bc211_taxonomy_term(code_str):
+    groups = re.findall(BC211_JSON_RE, code_str)
+    for (taxonomy_id, name) in groups:
+        full_taxonomy_id = 'bc211-{}'.format(taxonomy_id)
+        yield dtos.TaxonomyTerm(taxonomy_id=full_taxonomy_id, name=name)
+
+def parse_airs_taxonomy_term(code_str):
+    taxonomy_id = 'airs'
+    yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)

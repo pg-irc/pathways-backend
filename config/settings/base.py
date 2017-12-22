@@ -40,6 +40,7 @@ LOCAL_APPS = [
     'polls.apps.PollsConfig',
     'locations.apps.LocationsConfig',
     'organizations.apps.OrganizationsConfig',
+    'taxonomies.apps.TaxonomiesConfig',
     'search.apps.SearchConfig',
     'users.apps.UsersConfig',
 ]
