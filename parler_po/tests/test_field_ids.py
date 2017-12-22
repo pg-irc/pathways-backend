@@ -16,8 +16,6 @@ from parler_po.field_ids import (
     _parse_content_type_id
 )
 
-BASE_LANGUAGE = 'en'
-
 class TestModel(models.Model):
     class Meta:
         app_label = 'parlerpo'

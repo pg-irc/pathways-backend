@@ -2,28 +2,20 @@ from organizations.models import Organization
 
 BASE_LANGUAGE = 'en'
 
-class OrganizationBuilder(object):
-    model = Organization
+def add_base_translation(instance, **fields):
+    return add_translation(instance, BASE_LANGUAGE, **fields)
 
-    def __init__(self, **kwargs):
-        self.instance = self.model(**kwargs)
-        self.instance.save()
+def add_translation(instance, language_code, **fields):
+    instance.save()
 
-    def with_base_translation(self, **fields):
-        return self.with_translation(BASE_LANGUAGE, **fields)
+    if not instance.has_translation(language_code):
+        instance.create_translation(language_code)
 
-    def with_translation(self, language_code, **fields):
-        if not self.instance.has_translation(language_code):
-            self.instance.create_translation(language_code)
+    translation = instance.get_translation(language_code)
 
-        translation = self.instance.get_translation(language_code)
+    for field_name, value in fields.items():
+        setattr(translation, field_name, value)
 
-        for field_name, value in fields.items():
-            setattr(translation, field_name, value)
+    translation.save()
 
-        translation.save()
-
-        return self
-
-    def build(self):
-        return self.instance
+    return translation

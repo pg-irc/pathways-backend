@@ -1,7 +1,8 @@
 from django.core.management import CommandError, call_command
 from django.test import TestCase, override_settings
 
-from parler_po.tests.helpers import OrganizationBuilder
+from organizations.tests.helpers import OrganizationBuilder
+from parler_po.tests.helpers import add_base_translation, add_translation
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 import io
 import os
@@ -21,21 +22,31 @@ class ParlerPOExportCommandTests(TestCase):
 
 class ParlerPOExportTestsWithBaseTranslations(TestCase):
     def setUp(self):
+        organization_1 = OrganizationBuilder().with_id('one').build()
+        add_base_translation(
+            organization_1, name='organization_one_translation_name_msgid', description=''
+        )
+        add_translation(
+            organization_1, 'fr', name='organization_one_translation_name_msgstr_fr'
+        )
+
+        organization_2 = OrganizationBuilder().with_id('two').build()
+        add_base_translation(
+            organization_2, name='', description='organization_two_translation_description_msgid'
+        )
+        add_translation(
+            organization_2, 'fr', description='organization_two_translation_description_msgstr_fr'
+        )
+
+        organization_3 = OrganizationBuilder().with_id('three').build()
+        add_base_translation(
+            organization_3, name='organization_three_translation_name_msgid', description='organization_three_translation_description_msgid'
+        )
+
         self.translatable_objects = [
-            OrganizationBuilder(id='one').with_base_translation(
-                name='organization_one_translation_name_msgid'
-            ).with_translation(
-                'fr', name='organization_one_translation_name_msgstr_fr'
-            ).build(),
-            OrganizationBuilder(id='two').with_base_translation(
-                description='organization_two_translation_description_msgid'
-            ).with_translation(
-                'fr', description='organization_two_translation_description_msgstr_fr'
-            ).build(),
-            OrganizationBuilder(id='three').with_base_translation(
-                name='organization_three_translation_name_msgid',
-                description='organization_three_translation_description_msgid'
-            ).build()
+            organization_1,
+            organization_2,
+            organization_3
         ]
 
         self.out_dir = TemporaryDirectory()
