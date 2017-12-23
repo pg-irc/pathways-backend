@@ -3,6 +3,7 @@
 # Code analysis tools
 coverage==4.4.2
 django-coverage-plugin==1.5.0
+flake8==3.5.0 # pyup: != 2.6.0
 
 # Debug tools
 django-extensions==1.9.8
@@ -14,13 +15,6 @@ Werkzeug==0.13
 docker==2.7.0
 docker-compose==1.18.0
 pur==4.0.3
-
-# Test libraries TODO move to test.txt
-django-test-plus==1.0.21
-pytest-django==3.1.2
-pytest-sugar==0.9.0
-# TOOD remove
-factory-boy==2.9.2
 
 # documentation, TODO remove
 Sphinx==1.6.5
