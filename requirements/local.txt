@@ -1,5 +1,4 @@
-# Local development dependencies go here
--r base.txt
+-r test.txt
 
 docker==2.7.0
 docker-compose==1.18.0
