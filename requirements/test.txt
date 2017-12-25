@@ -4,3 +4,5 @@
 django-test-plus==1.0.21
 pytest-django==3.1.2
 pytest-sugar==0.9.0
+behave==1.2.5
+behave-django==1.0.0

@@ -4,6 +4,8 @@
 coverage==4.4.2
 django-coverage-plugin==1.5.0
 flake8==3.5.0 # pyup: != 2.6.0
+pylint==1.8.1
+mccabe==0.6.1
 
 # Debug tools
 django-extensions==1.9.8
@@ -18,8 +20,3 @@ pur==4.0.3
 
 # documentation, TODO remove
 Sphinx==1.6.5
-
-
-
-
-
