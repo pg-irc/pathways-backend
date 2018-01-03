@@ -9,6 +9,9 @@ def get_base_translation(instance):
     except instance.translations.model.DoesNotExist:
         return None
 
+def _get_default_base_language():
+    return getattr(settings, 'PARLER_PO_BASE_LANGUAGE', 'en')
+
 def all_translatable_models():
     for content_type in ContentType.objects.all():
         model_class = content_type.model_class()
@@ -17,6 +20,3 @@ def all_translatable_models():
 
 def is_translatable_model(model):
     return issubclass(model, TranslatableModel)
-
-def _get_default_base_language():
-    return getattr(settings, 'PARLER_PO_BASE_LANGUAGE', 'en')

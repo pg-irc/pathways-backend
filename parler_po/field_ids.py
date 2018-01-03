@@ -37,6 +37,14 @@ def parse_instance_field_id(instance_field_id):
     else:
         return (instance, field_id)
 
+def build_model_id(model):
+    content_type = ContentType.objects.get_for_model(model)
+    return _build_content_type_id(content_type)
+
+def parse_model_id(model_id):
+    content_type = _parse_content_type_id(model_id)
+    return content_type.model_class()
+
 def _build_content_type_id(content_type):
     return '.'.join([content_type.app_label, content_type.model])
 

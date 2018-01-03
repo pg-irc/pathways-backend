@@ -131,6 +131,20 @@ class TranslatableString(object):
             self._instance, language_code, self._field_id, self._translated_str
         )
 
+def all_model_base_strings(model, **kwargs):
+    for instance in model.objects.all():
+        base_translation = get_base_translation(instance)
+        yield from TranslatableString.all_from_translation(base_translation, **kwargs)
+
+def all_model_translated_strings(model, language, **kwargs):
+    for instance in model.objects.all():
+        try:
+            translation = instance.get_translation(language)
+        except instance.translations.model.DoesNotExist:
+            pass
+        else:
+            yield from TranslatableString.all_from_translation(translation, **kwargs)
+
 def _instance_has_translatable_field(instance, field_id):
     return field_id in instance.translations.model.get_translated_fields()
 

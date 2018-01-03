@@ -12,7 +12,7 @@ TEST_PARLER_PO_CONTACT = 'test_parler_po_import@example.com'
 
 class ParlerPOImportCommandTests(TestCase):
     def test_requires_directory_argument(self):
-        with self.assertRaisesRegex(CommandError, 'Error: the following arguments are required: po_file'):
+        with self.assertRaisesRegex(CommandError, 'Error: the following arguments are required: file'):
             call_command('parler_po_import')
 
 class ParlerPOImportTestsWithBaseTranslations(TestCase):
@@ -54,7 +54,7 @@ class ParlerPOImportTestsWithBaseTranslations(TestCase):
 
         stdout, stderr = _run_parler_po_import(po_file_path)
 
-        self.assertIn("Skipping \"{}\": No language metadata".format(po_file_path), stderr.getvalue())
+        self.assertIn("Skipping file: No language metadata", stderr.getvalue())
 
     def test_import_po_file_keeps_existing_translations(self):
         self._import_po_entries('fr', [])

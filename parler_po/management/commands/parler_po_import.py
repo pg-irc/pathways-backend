@@ -1,12 +1,10 @@
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 import argparse
-import glob
-import os
 import polib
+import sys
 
-from parler_po.argparse_path import ArgparsePathType
-from parler_po.exceptions import ParlerPOError, ProtectedTranslationError
+from parler_po.exceptions import ProtectedTranslationError
 from parler_po.import_progress import ImportProgress
 from parler_po.translatable_string import TranslatableString
 
@@ -15,61 +13,35 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'po_paths',
-            nargs='+',
-            type=ArgparsePathType(file_type=None, mode='w'),
-            metavar='po_file'
-        )
-
-        parser.add_argument(
-            '-R', '--recursive',
-            dest='recursive',
-            action='store_true'
+            'file',
+            type=argparse.FileType('r'),
+            default=sys.stdin
         )
 
     def handle(self, *args, **options):
-        po_paths = options['po_paths']
-        recursive = options['recursive']
+        in_file = options['file']
 
-        for po_path in po_paths:
-            if os.path.isfile(po_path):
-                self._import_po_file(po_path)
-            elif os.path.isdir(po_path):
-                self._import_translations_dir(po_path, recursive=recursive)
+        self._import_po_file(in_file)
 
-    def _import_translations_dir(self, translations_dir, recursive=False):
-        po_path_search = os.path.join(
-            glob.escape(translations_dir), '**', '*.po'
-        )
-        for po_path in glob.iglob(po_path_search, recursive=recursive):
-            self._import_po_file(po_path)
+    def _import_po_file(self, in_file):
+        po_file = polib.pofile(in_file.read())
 
-    def _import_po_file(self, po_path):
-        self.stdout.write(
-            _("{file}:").format(
-                file=po_path
-            )
-        )
+        language = po_file.metadata.get('Language')
 
-        po_file = polib.pofile(po_path)
-        language_code = po_file.metadata.get('Language')
-
-        if language_code:
+        if language:
             import_progress = ImportProgress()
             translatable_strings = self._translatable_strings_for_po_file(
                 po_file
             )
             for translatable_string in translatable_strings:
                 self._import_translatable_string(
-                    translatable_string, language_code, import_progress
+                    translatable_string, language, import_progress
                 )
                 self._print_import_progress(import_progress, ending='\r')
             self._print_import_progress(import_progress)
         else:
             self.stderr.write(
-                _("Skipping \"{file}\": No language metadata").format(
-                    file=po_path
-                )
+                _("Skipping file: No language metadata")
             )
 
     def _translatable_strings_for_po_file(self, po_file):
@@ -83,11 +55,11 @@ class Command(BaseCommand):
         for error in errors_list:
             self.stderr.write(error)
 
-    def _import_translatable_string(self, translatable_string, language_code, import_progress):
-        import_group = self._get_import_group(translatable_string, language_code)
+    def _import_translatable_string(self, translatable_string, language, import_progress):
+        import_group = self._get_import_group(translatable_string, language)
 
         try:
-            modified = translatable_string.save_translation(language_code)
+            modified = translatable_string.save_translation(language)
         except ProtectedTranslationError as error:
             import_progress.add_skip(import_group)
         else:
@@ -101,10 +73,10 @@ class Command(BaseCommand):
         if progress_str:
             self.stderr.write(progress_str, ending=ending)
 
-    def _get_import_group(self, translatable_string, language_code):
-        group_hash = (translatable_string.model, language_code)
+    def _get_import_group(self, translatable_string, language):
+        group_hash = (translatable_string.model, language)
         group_name = "{model} ({language})".format(
             model=translatable_string.model.__name__,
-            language=language_code
+            language=language
         )
         return (group_hash, group_name)

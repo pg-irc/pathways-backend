@@ -1,106 +1,86 @@
-from collections import defaultdict
-from django.contrib.contenttypes.models import ContentType
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext as _
-from parler.models import TranslatableModel
-import itertools
+import argparse
+import sys
 
-from parler_po.argparse_path import ArgparsePathType
 from parler_po.exceptions import ParlerPOError
-from parler_po.po_file import create_po_file, create_pot_file
-from parler_po.queries import all_translatable_models, get_base_translation
-from parler_po.translatable_string import TranslatableString
+from parler_po.po_file import create_po_file_for_model, create_pot_file_for_model
+from parler_po.queries import all_translatable_models
+from parler_po.field_ids import build_model_id, parse_model_id
 
 class Command(BaseCommand):
-    help = _("Export PO files for all translatable content")
+    help = _("Export a PO file for a translatable model")
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'translations_dir',
-            type=ArgparsePathType('dir', 'w'),
-            metavar='directory'
+            '--file',
+            dest='file',
+            nargs='?',
+            type=argparse.FileType('w'),
+            default=sys.stdout
         )
 
-        parser.add_argument(
-            '-l', '--language',
-            dest='languages_list',
-            type=str,
-            default=[],
-            action='append'
+        model_group = parser.add_mutually_exclusive_group(required=True)
+
+        model_group.add_argument(
+            'model',
+            nargs='*',
+            default=[]
         )
 
-        parser.add_argument(
-            '--all-languages',
-            dest='all_languages',
+        model_group.add_argument(
+            '--list-models',
+            dest='list_models',
             action='store_true'
         )
 
-    def handle(self, *args, **options):
-        translations_dir = options['translations_dir']
-        languages_list = options['languages_list']
-        all_languages = options['all_languages']
+        type_group = parser.add_mutually_exclusive_group()
 
-        languages_to_process = None if all_languages else languages_list
-
-        for model in all_translatable_models():
-            model_po_entries = self._po_entries_for_translatable_model(model, languages_to_process)
-
-            pot_entries = model_po_entries.pop(None, list())
-            pot_file = create_pot_file(
-                translations_dir,
-                model,
-                pot_entries
-            )
-
-            for (language_code, po_entries) in model_po_entries.items():
-                create_po_file(
-                    translations_dir,
-                    model,
-                    po_entries,
-                    language_code,
-                    pot_file
-                )
-
-    def _po_entries_for_translatable_model(self, model, languages=None):
-        model_po_entries = defaultdict(list)
-
-        for instance in model.objects.all():
-            instance_po_entries = self._po_entries_for_translatable_instance(instance, languages)
-            for (language_code, po_entries) in instance_po_entries:
-                model_po_entries[language_code].append(po_entries)
-
-        return {
-            language_code: itertools.chain.from_iterable(po_entries)
-            for language_code, po_entries in model_po_entries.items()
-        }
-
-    def _po_entries_for_translatable_instance(self, instance, languages=None):
-        base_translation = get_base_translation(instance)
-
-        if base_translation:
-            pot_entries = self._po_entries_for_translation(base_translation, strip_msgstr=True)
-            yield (None, pot_entries)
-
-        if languages is None:
-            translations_query = instance.translations.all()
-        else:
-            translations_query = instance.translations.filter(
-                language_code__in=languages
-            )
-
-        for translation in translations_query:
-            po_entries = self._po_entries_for_translation(translation)
-            yield (translation.language_code, po_entries)
-
-    def _po_entries_for_translation(self, translation, strip_msgstr=False):
-        errors_list = []
-
-        translatable_strings = TranslatableString.all_from_translation(
-            translation, errors_out=errors_list
+        type_group.add_argument(
+            '-l', '--language',
+            dest='language'
         )
 
-        for translatable_string in translatable_strings:
-            yield translatable_string.as_po_entry(strip_msgstr)
+        type_group.add_argument(
+            '-t', '--pot',
+            dest='language',
+            const=None,
+            action='store_const'
+        )
+
+    def handle(self, *args, **options):
+        model_ids = options['model']
+        list_models = options['list_models']
+        language = options['language']
+        out_file = options['file']
+
+        if model_ids:
+            self.export_model_list(model_ids, language, out_file)
+        elif list_models:
+            self.list_models()
+
+    def export_model_list(self, model_ids, language, out_file):
+        for model_id in model_ids:
+            self.export_model(model_id, language, out_file)
+
+    def export_model(self, model_id, language, out_file):
+        try:
+            model = parse_model_id(model_id)
+        except ParlerPOError as error:
+            raise CommandError(error)
+
+        errors_list = []
+
+        if language is None:
+            po_file = create_pot_file_for_model(model, errors_out=errors_list)
+        else:
+            po_file = create_po_file_for_model(model, language, errors_out=errors_list)
 
         for error in errors_list:
             self.stderr.write(error)
+
+        out_file.write(str(po_file))
+
+    def list_models(self):
+        for model in all_translatable_models():
+            self.stdout.write(build_model_id(model))

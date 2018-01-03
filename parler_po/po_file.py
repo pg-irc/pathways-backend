@@ -4,19 +4,26 @@ from django.contrib.contenttypes.models import ContentType
 import os
 import polib
 
-def create_pot_file(output_dir, model, po_entries):
-    pot_path = _build_pot_path(output_dir, model)
+from parler_po.translatable_string import all_model_base_strings, all_model_translated_strings
+
+def create_pot_file_for_model(model, **kwargs):
     pot_file = _new_pot_file()
-    pot_file.extend(po_entries)
-    pot_file.save(pot_path)
+
+    translatable_strings = all_model_base_strings(model, **kwargs)
+    for translatable_string in translatable_strings:
+        po_entry = translatable_string.as_po_entry(strip_msgstr=True)
+        pot_file.append(po_entry)
+
     return pot_file
 
-def create_po_file(output_dir, model, po_entries, language_code, pot_file):
-    po_path = _build_po_path(output_dir, model, language_code)
-    po_file = _new_po_file(pot_file=pot_file, language_code=language_code)
-    po_file.extend(po_entries)
-    po_file.merge(pot_file)
-    po_file.save(po_path)
+def create_po_file_for_model(model, language, **kwargs):
+    po_file = _new_po_file(language)
+
+    translatable_strings = all_model_translated_strings(model, language, **kwargs)
+    for translatable_string in translatable_strings:
+        po_entry = translatable_string.as_po_entry(strip_msgstr=False)
+        po_file.append(po_entry)
+
     return po_file
 
 def _new_pot_file():
@@ -34,40 +41,19 @@ def _new_pot_file():
 
     return pot_file
 
-def _new_po_file(pot_file=None, language_code=None):
+def _new_po_file(language=None):
     now_str = datetime.utcnow().isoformat()
 
     po_file = polib.POFile()
     po_file.metadata = dict()
 
-    if pot_file:
-        po_file.metadata.update(pot_file.metadata)
-
-    po_file.metadata['Language'] = language_code
+    po_file.metadata['Language'] = language
     po_file.metadata['PO-Revision-Date'] = now_str
     po_file.metadata['MIME-Version'] = '1.0'
     po_file.metadata['Content-Type'] = 'text/plain; charset=utf-8'
     po_file.metadata['Content-Transfer-Encoding'] = '8bit'
 
     return po_file
-
-def _build_pot_path(output_dir, model):
-    content_type = ContentType.objects.get_for_model(model)
-    domain = _po_domain_for_content_type(content_type)
-    pot_name = '{}.pot'.format(domain)
-    os.makedirs(output_dir, exist_ok=True)
-    return os.path.join(output_dir, pot_name)
-
-def _build_po_path(output_dir, model, language_code):
-    content_type = ContentType.objects.get_for_model(model)
-    domain = _po_domain_for_content_type(content_type)
-    po_name = '{}.po'.format(domain)
-    language_dir = os.path.join(output_dir, language_code, 'LC_MESSAGES')
-    os.makedirs(language_dir, exist_ok=True)
-    return os.path.join(language_dir, po_name)
-
-def _po_domain_for_content_type(content_type):
-    return '.'.join([content_type.app_label, content_type.model])
 
 def _get_default_po_contact():
     return getattr(settings, 'PARLER_PO_CONTACT', None)
