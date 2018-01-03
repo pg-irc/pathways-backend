@@ -65,11 +65,33 @@ By default the local settings are used. To use other settings, use the environme
 
 ## Running tests on Travis and locally
 
-Travis runs the tests using the settings in `config.settings.test`, against postgres using the accont "postgres" with empty password, creating a database called "test_db". To run the same tests locally, create a postgres user and a database called "test_db" owned by that user, and specify the postgres account using environment variables `POSTGRES_USER` and `POSTGRES_PASSWORD`, e.g. as follows:
+Travis runs the tests using the settings in `config.settings.test`, against postgres using the accont "postgres" with empty password, creating a database called "test_db". To run the same tests locally, create a postgres user and a database called "test_db" owned by that user, and specify the postgres account using environment variables `POSTGRES_USER` and `POSTGRES_PASSWORD`, either on the command line:
 
 ```
 DJANGO_SETTINGS_MODULE=config.settings.test POSTGRES_USER=test_user POSTGRES_PASSWORD='the_password' python manage.py test
 ```
+
+or put these settings in a file called .env (use env.example as a template) and `export DJANGO_READ_DOT_ENV_FILE=True` to make sure the file is read.
+
+## Upgrading packages
+
+There is a utility script that may be used to update the python packages. Before using it, it may be a good idea to make sure that you have a correct environment based off of the requirements for the _local_ environment.
+
+```
+deactivate
+rm -r .venv-local/
+python3 -m venv .venv-local
+source ./.venv-local/bin/activate
+pip install -r requirements/local.txt
+```
+
+Then run the upgrade script for either local, rest or production environment, e.g.:
+
+```
+./utility/upgrade_packages.sh production
+```
+
+You will be prompted to decide which of the possible upgrades you will take (this is using [pur](https://pypi.python.org/pypi/pur) in interactive mode), the requirement files are updated and a new environment is created using the new packages for use in testing before the upgrades are committed.
 
 ## Getting started with Heroku
 
