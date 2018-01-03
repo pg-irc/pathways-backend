@@ -4,12 +4,12 @@ import argparse
 import polib
 import sys
 
-from parler_po.exceptions import ProtectedTranslationError
-from parler_po.import_progress import ImportProgress
-from parler_po.translatable_string import TranslatableString
+from content_translation_tools.exceptions import ProtectedTranslationError
+from content_translation_tools.import_progress import ImportProgress
+from content_translation_tools.translatable_string import TranslatableString
 
 class Command(BaseCommand):
-    help = _("Import the given PO files with new content translations")
+    help = _("Import a PO file with new content translations")
 
     def add_arguments(self, parser):
         parser.add_argument(

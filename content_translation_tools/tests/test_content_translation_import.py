@@ -2,20 +2,20 @@ from django.core.management import CommandError, call_command
 from django.test import TestCase
 
 from organizations.tests.helpers import OrganizationBuilder
-from parler_po.tests.helpers import add_base_translation, add_translation
+from content_translation_tools.tests.helpers import add_base_translation, add_translation
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 import io
 import os
 import polib
 
-TEST_PARLER_PO_CONTACT = 'test_parler_po_import@example.com'
+TEST_PARLER_PO_CONTACT = 'test_content_translation_import@example.com'
 
-class ParlerPOImportCommandTests(TestCase):
+class ContentTranslationToolsImportCommandTests(TestCase):
     def test_requires_directory_argument(self):
         with self.assertRaisesRegex(CommandError, 'Error: the following arguments are required: file'):
-            call_command('parler_po_import')
+            call_command('content_translation_import')
 
-class ParlerPOImportTestsWithBaseTranslations(TestCase):
+class ContentTranslationToolsImportTestsWithBaseTranslations(TestCase):
     def setUp(self):
         organization_1 = OrganizationBuilder().with_id('one').build()
         add_base_translation(
@@ -52,7 +52,7 @@ class ParlerPOImportTestsWithBaseTranslations(TestCase):
         po_file_path = os.path.join(self.out_dir.name, 'organizations.organization.po')
         po_file.save(po_file_path)
 
-        stdout, stderr = _run_parler_po_import(po_file_path)
+        stdout, stderr = _run_content_translation_import(po_file_path)
 
         self.assertIn("Skipping file: No language metadata", stderr.getvalue())
 
@@ -190,10 +190,10 @@ class ParlerPOImportTestsWithBaseTranslations(TestCase):
         po_file_path = os.path.join(self.out_dir.name, 'organizations.organization.po')
         po_file.save(po_file_path)
 
-        return _run_parler_po_import(po_file_path)
+        return _run_content_translation_import(po_file_path)
 
-def _run_parler_po_import(*args, **kwargs):
+def _run_content_translation_import(*args, **kwargs):
     stdout = io.StringIO()
     stderr = io.StringIO()
-    call_command('parler_po_import', *args, **kwargs, stdout=stdout, stderr=stderr)
+    call_command('content_translation_import', *args, **kwargs, stdout=stdout, stderr=stderr)
     return stdout, stderr

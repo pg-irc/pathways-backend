@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 import os
 import polib
 
-from parler_po.translatable_string import all_model_base_strings, all_model_translated_strings
+from content_translation_tools.translatable_string import all_model_base_strings, all_model_translated_strings
 
 def create_pot_file_for_model(model, **kwargs):
     pot_file = _new_pot_file()

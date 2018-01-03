@@ -4,5 +4,5 @@ from unittest.mock import MagicMock
 
 class TestNotTranslatable(models.Model):
     class Meta:
-        app_label = 'parlerpo'
+        app_label = 'contenttranslationtools'
         managed = False

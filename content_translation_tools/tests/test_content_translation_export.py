@@ -4,18 +4,18 @@ from unittest.mock import call, patch
 
 from organizations.models import Organization
 from organizations.tests.helpers import OrganizationBuilder
-from parler_po.tests.helpers import add_base_translation, add_translation
+from content_translation_tools.tests.helpers import add_base_translation, add_translation
 import io
 import polib
 
-TEST_PARLER_PO_CONTACT = 'test_parler_po_export@example.com'
+TEST_PARLER_PO_CONTACT = 'test_content_translation_export@example.com'
 
-class ParlerPOExportCommandTests(TestCase):
+class ContentTranslationToolsExportCommandTests(TestCase):
     def test_requires_model_argument(self):
         with self.assertRaisesRegex(CommandError, 'Error: one of the arguments model --list-models is required'):
-            _run_parler_po_export()
+            _run_content_translation_export()
 
-class ParlerPOExportTestsWithBaseTranslations(TestCase):
+class ContentTranslationToolsExportTestsWithBaseTranslations(TestCase):
     def setUp(self):
         organization_1 = OrganizationBuilder().with_id('one').build()
         add_base_translation(
@@ -45,14 +45,14 @@ class ParlerPOExportTestsWithBaseTranslations(TestCase):
         ]
 
     def test_lists_translatable_models(self):
-        with patch('parler_po.management.commands.parler_po_export.all_translatable_models') as all_translatable_models:
+        with patch('content_translation_tools.management.commands.content_translation_export.all_translatable_models') as all_translatable_models:
             all_translatable_models.return_value = [Organization]
-            stdout, stderr = _run_parler_po_export('--list-models')
+            stdout, stderr = _run_content_translation_export('--list-models')
             self.assertEqual(stdout.getvalue(), 'organizations.organization\n')
 
     def test_exports_pot_file_for_testtranslatable(self):
         out_file = io.StringIO()
-        _run_parler_po_export('organizations.organization', file=out_file, language=None)
+        _run_content_translation_export('organizations.organization', file=out_file, language=None)
 
         self._assert_po_data(
             out_file.getvalue(),
@@ -93,7 +93,7 @@ class ParlerPOExportTestsWithBaseTranslations(TestCase):
 
     def test_exports_single_language_for_testtranslatable(self):
         out_file = io.StringIO()
-        _run_parler_po_export('organizations.organization', file=out_file, language='fr')
+        _run_content_translation_export('organizations.organization', file=out_file, language='fr')
 
         self._assert_po_data(
             out_file.getvalue(),
@@ -143,8 +143,8 @@ def _po_entry_to_dict(po_entry):
     }
 
 @override_settings(PARLER_PO_CONTACT=TEST_PARLER_PO_CONTACT)
-def _run_parler_po_export(*args, **kwargs):
+def _run_content_translation_export(*args, **kwargs):
     stdout = io.StringIO()
     stderr = io.StringIO()
-    call_command('parler_po_export', *args, **kwargs, stdout=stdout, stderr=stderr)
+    call_command('content_translation_export', *args, **kwargs, stdout=stdout, stderr=stderr)
     return stdout, stderr

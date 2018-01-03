@@ -3,17 +3,17 @@ from django.utils.translation import ugettext as _
 from parler.models import TranslatableModel
 import polib
 
-from parler_po.exceptions import (
+from content_translation_tools.exceptions import (
     FieldNotTranslatableError,
     InvalidMsgidError,
     MasterInstanceLookupError,
     MissingMsgidError,
     ModelNotTranslatableError,
-    ParlerPOError,
+    ContentTranslationToolsError,
     ProtectedTranslationError
 )
-from parler_po.field_ids import build_instance_field_id, parse_instance_field_id
-from parler_po.queries import get_base_translation, is_translatable_model
+from content_translation_tools.field_ids import build_instance_field_id, parse_instance_field_id
+from content_translation_tools.queries import get_base_translation, is_translatable_model
 
 class TranslatableString(object):
     def __init__(self, instance, field_id, source_str, translated_str):
@@ -54,7 +54,7 @@ class TranslatableString(object):
 
         try:
             instance, field_id = parse_instance_field_id(instance_field_id)
-        except ParlerPOError as error:
+        except ContentTranslationToolsError as error:
             raise MasterInstanceLookupError(error)
 
         return cls(
@@ -69,7 +69,7 @@ class TranslatableString(object):
         for occurrence in po_entry.occurrences:
             try:
                 translatable_string = cls.from_po_entry(po_entry, occurrence)
-            except ParlerPOError as error:
+            except ContentTranslationToolsError as error:
                 errors_out.append(
                     _("Skipping \"{occurrence}\": {error}").format(
                         occurrence=":".join(n for n in occurrence if n),

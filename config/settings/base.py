@@ -43,7 +43,7 @@ LOCAL_APPS = [
     'taxonomies.apps.TaxonomiesConfig',
     'search.apps.SearchConfig',
     'users.apps.UsersConfig',
-    'parler_po.apps.ParlerPOConfig'
+    'content_translation_tools.apps.ContentTranslationToolsConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

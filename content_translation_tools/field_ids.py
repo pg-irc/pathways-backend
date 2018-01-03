@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 
-from parler_po.exceptions import (
+from content_translation_tools.exceptions import (
     ContentTypeDoesNotExistError,
     InvalidContentTypeIDError,
     InvalidInstanceFieldIDError,

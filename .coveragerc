@@ -4,7 +4,7 @@ include = bc211/*,
           locations/*,
           main/*,
           organizations/*,
-          parler_po/*,
+          content_translation_tools/*,
           search/*,
           users/*,
 omit = *migrations*, *tests*

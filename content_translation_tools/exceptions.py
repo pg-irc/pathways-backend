@@ -1,56 +1,57 @@
-class ParlerPOError(Exception):
+class ContentTranslationToolsError(Exception):
     pass
 
-class FieldIDError(ParlerPOError):
+class FieldIDError(ContentTranslationToolsError):
     pass
 
-class MasterInstanceLookupError(ParlerPOError):
+class MasterInstanceLookupError(ContentTranslationToolsError):
     def __init__(self, message):
         super().__init__(message)
 
-class ModelNotTranslatableError(ParlerPOError):
+class ModelNotTranslatableError(ContentTranslationToolsError):
     def __init__(self, model):
         self.model = model
-        message = "{} is not a TranslatableModel.".format(model)
+        model_name = getattr(model, '__name__', str(model))
+        message = "{} is not a TranslatableModel.".format(model_name)
         super().__init__(message)
 
-class FieldNotTranslatableError(ParlerPOError):
+class FieldNotTranslatableError(ContentTranslationToolsError):
     def __init__(self, field_id):
         self.field_id = field_id
         message = "{} is not a translatable field.".format(field_id)
         super().__init__(message)
 
-class MissingMsgidError(ParlerPOError):
+class MissingMsgidError(ContentTranslationToolsError):
     def __init__(self):
         message = "Missing msgid."
         super().__init__(message)
 
-class InvalidMsgidError(ParlerPOError):
+class InvalidMsgidError(ContentTranslationToolsError):
     def __init__(self):
         message = "Provided msgid is different from the base translation."
         super().__init__(message)
 
-class ProtectedTranslationError(ParlerPOError):
+class ProtectedTranslationError(ContentTranslationToolsError):
     def __init__(self):
         message = "The base translation can not be modified."
         super().__init__(message)
 
-class InvalidContentTypeIDError(ParlerPOError):
+class InvalidContentTypeIDError(ContentTranslationToolsError):
     def __init__(self):
         message = "Invalid content type id."
         super().__init__(message)
 
-class ContentTypeDoesNotExistError(ParlerPOError):
+class ContentTypeDoesNotExistError(ContentTranslationToolsError):
     def __init__(self):
-        message = "Content type matching id does not exist"
+        message = "Content type matching id does not exist."
         super().__init__(message)
 
-class InvalidInstanceFieldIDError(ParlerPOError):
+class InvalidInstanceFieldIDError(ContentTranslationToolsError):
     def __init__(self):
         message = "Invalid instance field id."
         super().__init__(message)
 
-class ModelInstanceDoesNotExistError(ParlerPOError):
+class ModelInstanceDoesNotExistError(ContentTranslationToolsError):
     def __init__(self):
         message = "Model instance matching id does not exist."
         super().__init__(message)

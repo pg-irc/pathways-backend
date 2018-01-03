@@ -3,10 +3,10 @@ from django.utils.translation import ugettext as _
 import argparse
 import sys
 
-from parler_po.exceptions import ParlerPOError
-from parler_po.po_file import create_po_file_for_model, create_pot_file_for_model
-from parler_po.queries import all_translatable_models
-from parler_po.field_ids import build_model_id, parse_model_id
+from content_translation_tools.exceptions import ContentTranslationToolsError
+from content_translation_tools.po_file import create_po_file_for_model, create_pot_file_for_model
+from content_translation_tools.queries import all_translatable_models
+from content_translation_tools.field_ids import build_model_id, parse_model_id
 
 class Command(BaseCommand):
     help = _("Export a PO file for a translatable model")
@@ -66,7 +66,7 @@ class Command(BaseCommand):
     def export_model(self, model_id, language, out_file):
         try:
             model = parse_model_id(model_id)
-        except ParlerPOError as error:
+        except ContentTranslationToolsError as error:
             raise CommandError(error)
 
         errors_list = []
