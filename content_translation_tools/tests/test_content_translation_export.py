@@ -1,8 +1,7 @@
 from django.core.management import CommandError, call_command
 from django.test import TestCase, override_settings
-from unittest.mock import call, patch
+from unittest.mock import call
 
-from organizations.models import Organization
 from organizations.tests.helpers import OrganizationBuilder
 from content_translation_tools.tests.helpers import add_base_translation, add_translation
 import io
@@ -12,8 +11,20 @@ TEST_PARLER_PO_CONTACT = 'test_content_translation_export@example.com'
 
 class ContentTranslationToolsExportCommandTests(TestCase):
     def test_requires_model_argument(self):
-        with self.assertRaisesRegex(CommandError, 'Error: one of the arguments model --list-models is required'):
+        with self.assertRaisesRegex(CommandError, 'Error: the following arguments are required: model'):
             _run_content_translation_export()
+
+    def test_raises_error_if_model_id_is_invalid(self):
+        with self.assertRaisesRegex(CommandError, 'Invalid content type id.'):
+            _run_content_translation_export('invalid type id')
+
+    def test_raises_error_if_content_type_does_not_exist(self):
+        with self.assertRaisesRegex(CommandError, 'Content type matching id does not exist.'):
+            _run_content_translation_export('not_an_application.not_a_model')
+
+    def test_raises_error_if_content_type_is_not_translatable(self):
+        with self.assertRaisesRegex(CommandError, 'User is not a TranslatableModel.'):
+            _run_content_translation_export('users.user')
 
 class ContentTranslationToolsExportTestsWithBaseTranslations(TestCase):
     def setUp(self):
@@ -43,12 +54,6 @@ class ContentTranslationToolsExportTestsWithBaseTranslations(TestCase):
             organization_2,
             organization_3
         ]
-
-    def test_lists_translatable_models(self):
-        with patch('content_translation_tools.management.commands.content_translation_export.all_translatable_models') as all_translatable_models:
-            all_translatable_models.return_value = [Organization]
-            stdout, stderr = _run_content_translation_export('--list-models')
-            self.assertEqual(stdout.getvalue(), 'organizations.organization\n')
 
     def test_exports_pot_file_for_testtranslatable(self):
         out_file = io.StringIO()
