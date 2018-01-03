@@ -54,7 +54,7 @@ class ContentTranslationToolsImportTestsWithBaseTranslations(TestCase):
 
         stdout, stderr = _run_content_translation_import(po_file_path)
 
-        self.assertIn("Skipping file: No language metadata", stderr.getvalue())
+        self.assertIn('Skipping file: No language metadata', stderr.getvalue())
 
     def test_import_po_file_keeps_existing_translations(self):
         self._import_po_entries('fr', [])

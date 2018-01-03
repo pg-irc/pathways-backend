@@ -9,7 +9,7 @@ from content_translation_tools.import_progress import ImportProgress
 from content_translation_tools.translatable_string import TranslatableString
 
 class Command(BaseCommand):
-    help = _("Import a PO file with new content translations")
+    help = _('Import a PO file with new content translations')
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -41,7 +41,7 @@ class Command(BaseCommand):
             self._print_import_progress(import_progress)
         else:
             self.stderr.write(
-                _("Skipping file: No language metadata")
+                _('Skipping file: No language metadata')
             )
 
     def _translatable_strings_for_po_file(self, po_file):
@@ -75,7 +75,7 @@ class Command(BaseCommand):
 
     def _get_import_group(self, translatable_string, language):
         group_hash = (translatable_string.model, language)
-        group_name = "{model} ({language})".format(
+        group_name = '{model} ({language})'.format(
             model=translatable_string.model.__name__,
             language=language
         )
