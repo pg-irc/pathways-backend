@@ -7,7 +7,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='6_nmfhb8jto6u=!h3*s+@84#rf51=3cx$
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test_db',
+        'NAME': env('POSTGRES_DATABASE', default='test_db'),
         'USER': env('POSTGRES_USER', default='postgres'),
         'PASSWORD': env('POSTGRES_PASSWORD', default=''),
         'ATOMIC_REQUESTS': True

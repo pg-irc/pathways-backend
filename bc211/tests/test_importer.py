@@ -1,9 +1,10 @@
-import logging
-from django.test import TestCase
-from bc211.parser import read_records_from_file
 from bc211.importer import save_records_to_database
-from organizations.models import Organization
+from bc211.parser import read_records_from_file
+from django.test import TestCase
 from locations.models import Location
+from organizations.models import Organization
+from taxonomies.models import TaxonomyTerm
+import logging
 
 logging.disable(logging.ERROR)
 
@@ -59,6 +60,7 @@ class FullDataImportTests(TestCase):
         self.return_value = save_records_to_database(read_records_from_file(file))
         self.all_locations = Location.objects.all()
         self.all_organizations = Organization.objects.all()
+        self.all_taxonomy_terms = TaxonomyTerm.objects.all()
 
     def test_can_import_multiple_organizations(self):
         self.assertEqual(len(self.all_organizations), 16)
@@ -66,8 +68,14 @@ class FullDataImportTests(TestCase):
     def test_can_import_multiple_locations(self):
         self.assertEqual(len(self.all_locations), 40)
 
+    def test_can_import_multiple_taxonomy_terms(self):
+        self.assertEqual(len(self.all_taxonomy_terms), 134)
+
     def test_returns_number_of_organizations_imported(self):
         self.assertEqual(self.return_value.organization_count, 16)
 
     def test_returns_number_of_locations_imported(self):
         self.assertEqual(self.return_value.location_count, 40)
+
+    def test_returns_number_of_taxonomy_terms_imported(self):
+        self.assertEqual(self.return_value.taxonomy_term_count, 134)

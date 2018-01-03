@@ -54,6 +54,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
         'django.template.loaders.filesystem.Loader', 'django.template.loaders.app_directories.Loader', ]),
 ]
 
+# URL format postgres://user:password@host/dbname
 DATABASES = {
     'default': env.db('DATABASE_URL')
 }

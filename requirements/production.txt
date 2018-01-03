@@ -2,8 +2,6 @@
 #	production that aren't in development.
 -r base.txt
 
-
-
 # WSGI Handler
 # ------------------------------------------------
 gevent==1.2.2
@@ -11,7 +9,7 @@ gunicorn==19.7.1
 
 # Static and Media Storage
 # ------------------------------------------------
-boto3==1.4.7
+boto3==1.5.5
 django-storages==1.6.5
 
 
@@ -21,6 +19,4 @@ django-anymail==1.2
 
 # Raven is the Sentry client
 # --------------------------
-raven==6.3.0
-
-
+raven==6.4.0

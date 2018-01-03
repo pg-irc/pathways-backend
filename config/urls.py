@@ -11,10 +11,10 @@ from rest_framework import routers
 
 def build_router():
     router = routers.DefaultRouter()
-    router.register(r'^organizations', OrganizationViewSet)
-    router.register(r'^organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations', LocationViewSetUnderOrganizations, 'location')
-    router.register(r'^locations', LocationViewSet, 'location')
-    router.register(r'^search', SearchViewSet)
+    router.register(r'organizations', OrganizationViewSet, base_name='organization')
+    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations', LocationViewSetUnderOrganizations, base_name='organization-location')
+    router.register(r'locations', LocationViewSet, base_name='location')
+    router.register(r'search', SearchViewSet, base_name='search')
     return router
 
 urlpatterns = [
