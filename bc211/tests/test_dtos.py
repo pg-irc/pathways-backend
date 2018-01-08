@@ -10,6 +10,7 @@ class TestOrganization(unittest.TestCase):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.Organization(id='id')
 
+
 class TestLocation(unittest.TestCase):
     def test_throws_on_missing_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
@@ -37,6 +38,32 @@ class TestSpatialLocation(unittest.TestCase):
     def test_throws_on_longitude_not_a_number(self):
         with self.assertRaises(exceptions.InvalidFloatXmlParseException):
             dtos.SpatialLocation(latitude='123.456', longitude='foo')
+
+
+class TestService(unittest.TestCase):
+    def test_can_create(self):
+        service = dtos.Service(id='id', name='name', organization_id='organization_id', site_id='site_id', description='description')
+        self.assertEqual(service.id, 'id')
+        self.assertEqual(service.name, 'name')
+        self.assertEqual(service.organization_id, 'organization_id')
+        self.assertEqual(service.site_id, 'site_id')
+        self.assertEqual(service.description, 'description')
+
+    def test_throws_on_missing_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.TaxonomyTerm(name='name', organization_id='organization_id', site_id='site_id', description='description')
+
+    def test_throws_on_missing_name(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.TaxonomyTerm(id='id', organization_id='organization_id', site_id='site_id', description='description')
+
+    def test_throws_on_missing_organization_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.TaxonomyTerm(id='id', name='name', site_id='site_id', description='description')
+
+    def test_throws_on_missing_site_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.TaxonomyTerm(id='id', name='name', organization_id='organization_id', description='description')
 
 class TestTaxonomyTerm(unittest.TestCase):
     def test_can_create(self):

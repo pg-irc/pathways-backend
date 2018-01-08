@@ -2,11 +2,13 @@ from django.db import models
 from django.core import exceptions, validators
 from parler.models import TranslatableModel, TranslatedFields
 from organizations.models import Organization
+from services.models import Service
 from common.models import ValidateOnSaveMixin, RequiredCharField
 
 class Location(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    services = models.ManyToManyField(Service, related_name='locations', through='ServiceAtLocation')
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     translations = TranslatedFields(
@@ -26,6 +28,16 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
         longitude_is_null = self.longitude is None
         if latitude_is_null != longitude_is_null:
             raise_mismatch_exception(latitude_is_null, longitude_is_null)
+
+class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '\"{service}\" at \"{location}\"'.format(
+            service=self.service,
+            location=self.location
+        )
 
 def raise_mismatch_exception(latitude_is_null, longitude_is_null):
     message = make_mismatch_message(latitude_is_null, longitude_is_null)

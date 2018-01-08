@@ -1,6 +1,7 @@
 from django.utils import translation
-from locations.models import Location
+from locations.models import Location, ServiceAtLocation
 from organizations.models import Organization
+from services.models import Service
 from taxonomies.models import TaxonomyTerm
 import logging
 
@@ -11,6 +12,7 @@ class ImportCounters:
         self.organization_count = 0
         self.location_count = 0
         self.service_count = 0
+        self.service_at_location_count = 0
         self.taxonomy_term_count = 0
 
     def count_organization(self):
@@ -21,6 +23,9 @@ class ImportCounters:
 
     def count_service(self):
         self.service_count += 1
+
+    def count_service_at_location(self):
+        self.service_at_location_count += 1
 
     def count_taxonomy_term(self):
         self.taxonomy_term_count += 1
@@ -67,11 +72,34 @@ def build_location_active_record(record):
     active_record.description = record.description
     return active_record
 
+def build_service_active_record(record):
+    active_record = Service()
+    active_record.id = record.id
+    active_record.name = record.name
+    active_record.organization_id = record.organization_id
+    active_record.description = record.description
+    return active_record
+
+def build_service_at_location_active_record(record):
+    active_record = ServiceAtLocation()
+    active_record.service_id = record.id
+    active_record.location_id = record.site_id
+    return active_record
+
 def save_services(services, counters):
     for service in services:
-        # Don't save services themselves for now.
+        active_record = build_service_active_record(service)
+        active_record.save()
         counters.count_service()
+        LOGGER.info('Imported service: %s %s', service.id, service.name)
+        save_service_at_location(service, counters)
         save_taxonomy_terms(service.taxonomy_terms, counters)
+
+def save_service_at_location(service, counters):
+    active_record = build_service_at_location_active_record(service)
+    active_record.save()
+    counters.count_service_at_location()
+    LOGGER.info('Imported service at location: %s %s', service.id, service.site_id)
 
 def save_taxonomy_terms(taxonomy_terms, counters):
     for taxonomy_term in taxonomy_terms:
