@@ -1,9 +1,9 @@
 from common.models import ValidateOnSaveMixin, RequiredCharField
 from django.core import validators
 from django.db import models
-from django.utils.functional import cached_property
 from organizations.models import Organization
 from parler.models import TranslatableModel, TranslatedFields
+from taxonomies.models import TaxonomyTerm
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
@@ -11,6 +11,10 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
         description=models.TextField(blank=True, null=True)
+    )
+    taxonomyTerms = models.ManyToManyField(
+        TaxonomyTerm,
+        db_table='services_service_taxonomy_terms'
     )
 
     def __str__(self):
