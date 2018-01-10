@@ -146,7 +146,7 @@ class ServiceTaxonomyTermParser:
 def parse_service_taxonomy_term(service_taxonomy_term, service_id):
     code = parse_required_field(service_taxonomy_term, 'Code')
 
-    LOGGER.info('Parsed taxonomy term: %s %s', id, code)
+    LOGGER.debug('Parsed taxonomy term: %s', code)
 
     if code and is_bc211_taxonomy_term(code):
         yield from parse_bc211_taxonomy_term(code)
