@@ -44,6 +44,7 @@ LOCAL_APPS = [
     'taxonomies.apps.TaxonomiesConfig',
     'search.apps.SearchConfig',
     'users.apps.UsersConfig',
+    'content_translation_tools.apps.ContentTranslationToolsConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -171,6 +172,8 @@ PARLER_LANGUAGES = {
         'hide_untranslated': False,
     }
 }
+
+PARLER_PO_CONTACT = 'translations@peacegeeks.org'
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

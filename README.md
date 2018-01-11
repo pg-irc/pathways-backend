@@ -129,6 +129,28 @@ docker-compose -f compose-local.yml up
 
 and check out http://localhost:8000/ to see if it worked. See https://cookiecutter-django.readthedocs.io/en/latest/developing-locally-docker.html for more details.
 
+## Translations
+
+Certain content is translatable, using [django-parler](http://django-parler.readthedocs.io/). The *content_translation_tools* module provides management commands to export translatable strings as POT files, and import their translations from PO files.
+
+List available translatable models:
+
+    ./manage.py content_translation_list_models
+
+Create a POT file for a particular translatable model:
+
+    ./manage.py content_translation_export organizations.organization > organization.pot
+
+Or create a PO file with a model's current French translations:
+
+    ./manage.py content_translation_export organizations.organization --language=fr > fr/organization.po
+
+The resulting files can be edited in an application such as [GTranslator](https://wiki.gnome.org/Apps/Gtranslator) or [Poedit](https://poedit.net/).
+
+After a translation file has been modified, you can import it again:
+
+    ./manage.py content_translation_import fr/organization.po
+
 ## Development
 
 ### Null and django blank

@@ -12,6 +12,7 @@ django-cors-headers==2.1.0
 django-parler==1.9.1
 djangorestframework==3.7.7
 awesome-slugify==1.6.5
+polib==1.1.0
 
 # authentication, TODO remove
 argon2-cffi==16.3.0
