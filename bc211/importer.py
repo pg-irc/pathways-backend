@@ -107,8 +107,9 @@ def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters)
             taxonomy_id=taxonomy_term.taxonomy_id,
             name=taxonomy_term.name
         )
-        counters.count_taxonomy_term()
+        if created:
+            counters.count_taxonomy_term()
         LOGGER.info('Imported taxonomy term: %s %s', taxonomy_term.taxonomy_id, taxonomy_term.name)
         service_active_record.taxonomy_terms.add(taxonomy_term_active_record)
-        service_active_record.save()
         LOGGER.info('Added taxonomy term: %s to Service: %s', taxonomy_term.name, service_active_record.name)
+    service_active_record.save()

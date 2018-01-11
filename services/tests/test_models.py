@@ -124,18 +124,18 @@ class TestServiceModel(TestCase):
         service = validate_save_and_reload(ServiceBuilder(self.organization).build())
         taxonomy_term = validate_save_and_reload(TaxonomyTermBuilder().build())
 
-        service.taxonomyTerms.add(taxonomy_term)
+        service.taxonomy_terms.add(taxonomy_term)
 
-        self.assertEqual(service.taxonomyTerms.first(), taxonomy_term)
+        self.assertEqual(service.taxonomy_terms.first(), taxonomy_term)
 
     def test_can_remove_taxonomy_term(self):
         service = validate_save_and_reload(ServiceBuilder(self.organization).build())
         taxonomy_term_one = validate_save_and_reload(TaxonomyTermBuilder().with_name('one').build())
         taxonomy_term_two = validate_save_and_reload(TaxonomyTermBuilder().with_name('two').build())
 
-        service.taxonomyTerms.add(taxonomy_term_one)
-        service.taxonomyTerms.add(taxonomy_term_two)
-        service.taxonomyTerms.remove(taxonomy_term_one)
+        service.taxonomy_terms.add(taxonomy_term_one)
+        service.taxonomy_terms.add(taxonomy_term_two)
+        service.taxonomy_terms.remove(taxonomy_term_one)
 
-        self.assertEqual(service.taxonomyTerms.count(), 1)
-        self.assertEqual(service.taxonomyTerms.first(), taxonomy_term_two)
+        self.assertEqual(service.taxonomy_terms.count(), 1)
+        self.assertEqual(service.taxonomy_terms.first(), taxonomy_term_two)
