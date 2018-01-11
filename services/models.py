@@ -12,7 +12,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         name=models.CharField(max_length=200),
         description=models.TextField(blank=True, null=True)
     )
-    taxonomyTerms = models.ManyToManyField(
+    taxonomy_terms = models.ManyToManyField(
         TaxonomyTerm,
         db_table='services_service_taxonomy_terms'
     )
