@@ -62,15 +62,13 @@ class ServiceImportTests(TestCase):
         self.all_services = Service.objects.all()
 
     def test_service_has_correct_taxonomy_terms(self):
-        financial_assistance_taxonomy_term_id = 39
-        funerals_taxonomy_term_id = 40
-        veterans_taxonomy_term_id = 41
         last_post_fund_service_id = 9487370
         expected_last_post_fund_service_taxonony_terms = [
-            self.all_taxonomy_terms.get(id=financial_assistance_taxonomy_term_id),
-            self.all_taxonomy_terms.get(id=funerals_taxonomy_term_id),
-            self.all_taxonomy_terms.get(id=veterans_taxonomy_term_id),
+            self.all_taxonomy_terms.get(taxonomy_id='bc211-what', name='financial-assistance'),
+            self.all_taxonomy_terms.get(taxonomy_id='bc211-why', name='funerals'),
+            self.all_taxonomy_terms.get(taxonomy_id='bc211-who', name='veterans'),
         ]
+
         last_post_fund_service = self.all_services.get(id=last_post_fund_service_id)
         last_post_fund_service_taxonomy_terms = last_post_fund_service.taxonomy_terms.all()
 
