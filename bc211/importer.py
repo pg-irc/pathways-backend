@@ -103,13 +103,20 @@ def save_service_at_location(service, counters):
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
     for taxonomy_term in taxonomy_terms:
-        taxonomy_term_active_record, created = TaxonomyTerm.objects.get_or_create(
-            taxonomy_id=taxonomy_term.taxonomy_id,
-            name=taxonomy_term.name
+        taxonomy_term_active_record = build_taxonomy_term_active_record(
+            taxonomy_term,
+            counters
         )
-        if created:
-            counters.count_taxonomy_term()
-            LOGGER.info('Imported taxonomy term: %s %s', taxonomy_term.taxonomy_id, taxonomy_term.name)
         service_active_record.taxonomy_terms.add(taxonomy_term_active_record)
         LOGGER.info('Added taxonomy term: %s to Service: %s', taxonomy_term.name, service_active_record.name)
     service_active_record.save()
+
+def build_taxonomy_term_active_record(record, counters):
+    taxonomy_term_active_record, created = TaxonomyTerm.objects.get_or_create(
+        taxonomy_id=record.taxonomy_id,
+        name=record.name
+    )
+    if created:
+        counters.count_taxonomy_term()
+        LOGGER.info('Imported taxonomy term: %s %s', record.taxonomy_id, record.name)
+    return taxonomy_term_active_record
