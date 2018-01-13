@@ -119,23 +119,3 @@ class TestServiceModel(TestCase):
     def assert_description_in_language_equals(self, service, language, expected_text):
         service.set_current_language(language)
         self.assertEqual(service.description, expected_text)
-
-    def test_can_add_taxonomy_term(self):
-        service = validate_save_and_reload(ServiceBuilder(self.organization).build())
-        taxonomy_term = validate_save_and_reload(TaxonomyTermBuilder().build())
-
-        service.taxonomy_terms.add(taxonomy_term)
-
-        self.assertEqual(service.taxonomy_terms.first(), taxonomy_term)
-
-    def test_can_remove_taxonomy_term(self):
-        service = validate_save_and_reload(ServiceBuilder(self.organization).build())
-        taxonomy_term_one = validate_save_and_reload(TaxonomyTermBuilder().with_name('one').build())
-        taxonomy_term_two = validate_save_and_reload(TaxonomyTermBuilder().with_name('two').build())
-
-        service.taxonomy_terms.add(taxonomy_term_one)
-        service.taxonomy_terms.add(taxonomy_term_two)
-        service.taxonomy_terms.remove(taxonomy_term_one)
-
-        self.assertEqual(service.taxonomy_terms.count(), 1)
-        self.assertEqual(service.taxonomy_terms.first(), taxonomy_term_two)
