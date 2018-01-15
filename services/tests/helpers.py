@@ -30,7 +30,6 @@ class ServiceBuilder:
         result.name = self.name
         result.organization = self.organization
         result.description = self.description
-        if self.taxonomy_terms:
-            for taxonomy_term in self.taxonomy_terms:
-                result.taxonomy_terms.add(taxonomy_term)
+        for taxonomy_term in self.taxonomy_terms:
+            result.taxonomy_terms.add(taxonomy_term)
         return result

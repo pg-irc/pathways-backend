@@ -2,11 +2,9 @@ import unittest
 from django.test import TestCase
 from django.core import exceptions
 from django.db import utils as django_utils
-from services import models
 from services.tests.helpers import ServiceBuilder
 from organizations.tests.helpers import OrganizationBuilder
 from locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
-from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 def validate_save_and_reload(instance):
     instance.save()
