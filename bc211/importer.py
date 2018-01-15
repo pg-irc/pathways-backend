@@ -93,7 +93,7 @@ def save_services(services, counters):
         counters.count_service()
         LOGGER.info('Imported service: %s %s', service.id, service.name)
         save_service_at_location(service, counters)
-        save_taxonomy_terms(service.taxonomy_terms, counters)
+        save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
 def save_service_at_location(service, counters):
     active_record = build_service_at_location_active_record(service)
@@ -101,15 +101,22 @@ def save_service_at_location(service, counters):
     counters.count_service_at_location()
     LOGGER.info('Imported service at location: %s %s', service.id, service.site_id)
 
-def save_taxonomy_terms(taxonomy_terms, counters):
+def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
     for taxonomy_term in taxonomy_terms:
-        if save_taxonomy_term(taxonomy_term):
-            counters.count_taxonomy_term()
-            LOGGER.debug('Imported taxonomy term: %s %s', taxonomy_term.taxonomy_id, taxonomy_term.name)
+        taxonomy_term_active_record = build_taxonomy_term_active_record(
+            taxonomy_term,
+            counters
+        )
+        service_active_record.taxonomy_terms.add(taxonomy_term_active_record)
+        LOGGER.info('Added taxonomy term: %s to Service: %s', taxonomy_term.name, service_active_record.name)
+    service_active_record.save()
 
-def save_taxonomy_term(record):
-    active_record, created = TaxonomyTerm.objects.get_or_create(
+def build_taxonomy_term_active_record(record, counters):
+    taxonomy_term_active_record, created = TaxonomyTerm.objects.get_or_create(
         taxonomy_id=record.taxonomy_id,
         name=record.name
     )
-    return created
+    if created:
+        counters.count_taxonomy_term()
+        LOGGER.info('Imported taxonomy term: %s %s', record.taxonomy_id, record.name)
+    return taxonomy_term_active_record

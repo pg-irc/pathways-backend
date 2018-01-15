@@ -4,6 +4,7 @@ from django.test import TestCase
 from locations.models import Location
 from organizations.models import Organization
 from taxonomies.models import TaxonomyTerm
+from services.models import Service
 import logging
 
 logging.disable(logging.ERROR)
@@ -52,6 +53,26 @@ class OrganizationImportTests(TestCase):
 
     def test_can_import_email(self):
         self.assertEqual(self.organization.email, 'info@langleycdc.com')
+
+class ServiceImportTests(TestCase):
+    def setUp(self):
+        file = open(MULTI_AGENCY_FIXTURE, 'r')
+        save_records_to_database(read_records_from_file(file))
+        self.all_taxonomy_terms = TaxonomyTerm.objects.all()
+        self.all_services = Service.objects.all()
+
+    def test_service_has_correct_taxonomy_terms(self):
+        last_post_fund_service_id = 9487370
+        expected_last_post_fund_service_taxonony_terms = [
+            self.all_taxonomy_terms.get(taxonomy_id='bc211-what', name='financial-assistance'),
+            self.all_taxonomy_terms.get(taxonomy_id='bc211-why', name='funerals'),
+            self.all_taxonomy_terms.get(taxonomy_id='bc211-who', name='veterans'),
+        ]
+
+        last_post_fund_service = self.all_services.get(id=last_post_fund_service_id)
+        last_post_fund_service_taxonomy_terms = last_post_fund_service.taxonomy_terms.all()
+
+        self.assertCountEqual(last_post_fund_service_taxonomy_terms, expected_last_post_fund_service_taxonony_terms)
 
 
 class FullDataImportTests(TestCase):
