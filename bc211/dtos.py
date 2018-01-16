@@ -18,6 +18,7 @@ class Location:
         self.description = validate.optional_string('description', kwargs)
         self.spatial_location = validate.optional_object(SpatialLocation, 'spatial_location', kwargs)
         self.services = kwargs.get('services', [])
+        self.addresses = kwargs.get('addresses', [])
 
 
 class SpatialLocation:
@@ -40,3 +41,16 @@ class TaxonomyTerm:
     def __init__(self, **kwargs):
         self.taxonomy_id = validate.required_slug('taxonomy_id', kwargs)
         self.name = validate.required_slug('name', kwargs)
+
+class Address:
+    def __init__(self, **kwargs):
+        self.location_id = validate.required_string('location_id', kwargs)
+        self.line_1 = validate.required_string('line_1', kwargs)
+        self.line_2 = validate.optional_string('line_2', kwargs)
+        self.line_3 = validate.optional_string('line_3', kwargs)
+        self.line_4 = validate.optional_string('line_4', kwargs)
+        self.city = validate.required_string('city', kwargs)
+        self.state_province = validate.optional_string('state_province', kwargs)
+        self.postal_code = validate.optional_string('postal_code', kwargs)
+        self.country = validate.required_string('country', kwargs)
+        self.type = validate.required_string('type', kwargs)

@@ -78,10 +78,11 @@ def parse_site(site, organization_id):
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
     services = parse_services(site, organization_id, id)
-    LOGGER.debug('Location "%s" "%s"', id, name)
+    addresses = parse_addresses(site, id)
+    LOGGER.info('Parsed location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
-                         services=services)
+                         services=services, addresses=addresses)
 
 def parse_site_id(site):
     return parse_required_field(site, 'Key')
@@ -165,3 +166,6 @@ def parse_bc211_taxonomy_term(code_str):
 def parse_airs_taxonomy_term(code_str):
     taxonomy_id = 'airs'
     yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)
+
+def parse_addresses(site):
+

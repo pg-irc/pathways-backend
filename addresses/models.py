@@ -11,5 +11,8 @@ class Address(ValidateOnSaveMixin, models.Model):
     postal_code = models.CharField(max_length=200, blank=True, null=True)
     country = models.CharField(max_length=2)
 
+    class Meta:
+        unique_together = ('address', 'city')
+
 class AddressType(models.Model):
     type = models.CharField(max_length=200)
