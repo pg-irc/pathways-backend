@@ -24,12 +24,13 @@ class ServicesApiTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 2)
 
     def test_can_get_one_service(self):
-        service = ServiceBuilder(self.organization).with_description('The description').build()
+        service_id = 'the_service_id'
+        service = ServiceBuilder(self.organization).with_id(service_id).build()
         service.save()
-        url = '/v1/services/{0}/'.format(service.pk)
+        url = '/v1/services/{0}/'.format(service_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['description'], 'The description')
+        self.assertEqual(response.json()['id'], service_id)
 
     def test_cannot_post(self):
         url = '/v1/services/'
