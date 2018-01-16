@@ -5,8 +5,14 @@ import common.testhelpers.details as details
 details.set_random_seed_at_load_time()
 
 def a_string():
-    string_length = 32
-    return ''.join(random.choice(string.ascii_letters) for x in range(string_length))
+    string_length = 20
+    return ''.join(random.choice(string.ascii_lowercase) for x in range(string_length))
+
+def a_website_address():
+    return 'http://www.{0}.com'.format(a_string())
+
+def an_email_address():
+    return '{0}@{1}.com'.format(a_string(), a_string())
 
 def a_number():
     return random.randint(0, 1000)

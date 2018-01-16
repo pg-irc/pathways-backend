@@ -1,11 +1,12 @@
 from services import models
+from common.testhelpers.autofixtures import a_string
 
 class ServiceBuilder:
     def __init__(self, organization):
-        self.service_id = 'the_default_id'
+        self.service_id = a_string()
         self.organization = organization
-        self.name = 'default name'
-        self.description = 'default description'
+        self.name = a_string()
+        self.description = a_string()
         self.taxonomy_terms = []
 
     def with_id(self, service_id):

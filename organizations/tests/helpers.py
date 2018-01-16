@@ -1,12 +1,13 @@
 from organizations import models
+from common.testhelpers.autofixtures import a_string, a_website_address, an_email_address
 
 class OrganizationBuilder:
     def __init__(self):
-        self.organization_id = 'default_id'
-        self.name = 'default name'
-        self.description = 'default description'
-        self.website = 'http://www.example.com'
-        self.email = 'someone@example.com'
+        self.organization_id = a_string()
+        self.name = a_string()
+        self.description = a_string()
+        self.website = a_website_address()
+        self.email = an_email_address()
 
     def with_id(self, organization_id):
         self.organization_id = organization_id

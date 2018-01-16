@@ -1,9 +1,10 @@
 from taxonomies import models
+from common.testhelpers.autofixtures import a_string
 
 class TaxonomyTermBuilder:
     def __init__(self):
-        self.taxonomy_id = 'default_taxonomy_id'
-        self.name = 'default name'
+        self.taxonomy_id = a_string()
+        self.name = a_string()
 
     def with_taxonomy_id(self, taxonomy_id):
         self.taxonomy_id = taxonomy_id
