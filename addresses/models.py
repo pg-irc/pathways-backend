@@ -15,4 +15,4 @@ class Address(ValidateOnSaveMixin, models.Model):
         unique_together = ('address', 'city')
 
 class AddressType(models.Model):
-    type = models.CharField(max_length=200)
+    id = models.CharField(max_length=200, primary_key=True)
