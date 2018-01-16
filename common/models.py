@@ -1,5 +1,4 @@
 from django.db import models
-from django.core import validators
 
 class ValidateOnSaveMixin(object):
     """Database model mixin which calls full_clean() from save(), to help

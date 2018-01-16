@@ -6,8 +6,12 @@ from parler.models import TranslatableModel, TranslatedFields
 from taxonomies.models import TaxonomyTerm
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
-    id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='services')
+    id = RequiredCharField(primary_key=True,
+                           max_length=200,
+                           validators=[validators.validate_slug])
+    organization = models.ForeignKey(Organization,
+                                     on_delete=models.CASCADE,
+                                     related_name='services')
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
         description=models.TextField(blank=True, null=True)

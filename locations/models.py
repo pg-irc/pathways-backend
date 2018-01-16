@@ -6,9 +6,13 @@ from services.models import Service
 from common.models import ValidateOnSaveMixin, RequiredCharField
 
 class Location(ValidateOnSaveMixin, TranslatableModel):
-    id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
+    id = RequiredCharField(primary_key=True,
+                           max_length=200,
+                           validators=[validators.validate_slug])
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    services = models.ManyToManyField(Service, related_name='locations', through='ServiceAtLocation')
+    services = models.ManyToManyField(Service,
+                                      related_name='locations',
+                                      through='ServiceAtLocation')
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     translations = TranslatedFields(

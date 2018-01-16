@@ -17,10 +17,10 @@ class TestServiceModel(TestCase):
         self.organization.save()
 
     def test_has_id_field(self):
-        id = 'the_id'
-        service = ServiceBuilder(self.organization).with_id(id).build()
+        service_id = 'the_id'
+        service = ServiceBuilder(self.organization).with_id(service_id).build()
         service_from_db = validate_save_and_reload(service)
-        self.assertEqual(service_from_db.id, id)
+        self.assertEqual(service_from_db.id, service_id)
 
     def test_id_cannot_be_none(self):
         null_id = None
@@ -35,8 +35,8 @@ class TestServiceModel(TestCase):
             service.full_clean()
 
     def test_id_cannot_contain_space(self):
-        id = 'the id'
-        service = ServiceBuilder(self.organization).with_id(id).build()
+        service_id = 'the id'
+        service = ServiceBuilder(self.organization).with_id(service_id).build()
         with self.assertRaises(exceptions.ValidationError):
             service.full_clean()
 
@@ -94,10 +94,10 @@ class TestServiceModel(TestCase):
 
     def test_has_locations_attribute(self):
         service = ServiceBuilder(self.organization).build()
-        service_from_db = validate_save_and_reload(service)
+        validate_save_and_reload(service)
 
         location = LocationBuilder(self.organization).build()
-        location_from_db = validate_save_and_reload(location)
+        validate_save_and_reload(location)
 
         service_at_location = ServiceLocationBuilder(service, location).build()
         validate_save_and_reload(service_at_location)
@@ -108,7 +108,7 @@ class TestServiceModel(TestCase):
         service = ServiceBuilder(self.organization).build()
         service_from_db = validate_save_and_reload(service)
 
-        self.assertEqual(service.locations.count(), 0)
+        self.assertEqual(service_from_db.locations.count(), 0)
 
     def set_description_in_language(self, service, language, text):
         service.set_current_language(language)
