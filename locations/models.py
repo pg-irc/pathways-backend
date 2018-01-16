@@ -2,6 +2,7 @@ from django.db import models
 from django.core import exceptions, validators
 from parler.models import TranslatableModel, TranslatedFields
 from organizations.models import Organization
+from addresses.models import Address, AddressType
 from services.models import Service
 from common.models import ValidateOnSaveMixin, RequiredCharField
 
@@ -19,6 +20,7 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
         name=models.CharField(max_length=200),
         description=models.TextField(blank=True, null=True)
     )
+    addresses = models.ManyToManyField(Address, related_name='locations', through='AddressAtLocation')
 
     def __str__(self):
         return self.name
@@ -40,6 +42,17 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
     def __str__(self):
         return '\"{service}\" at \"{location}\"'.format(
             service=self.service,
+            location=self.location
+        )
+
+class AddressAtLocation(ValidateOnSaveMixin, models.Model):
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    address_type = models.ForeignKey(AddressType, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '\"{address}\" at \"{location}\"'.format(
+            address=self.address,
             location=self.location
         )
 
