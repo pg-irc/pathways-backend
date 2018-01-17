@@ -1,5 +1,5 @@
 from organizations import models
-from common.testhelpers.autofixtures import a_string, a_website_address, an_email_address
+from common.testhelpers.random_test_values import a_string, a_website_address, an_email_address
 
 class OrganizationBuilder:
     def __init__(self):

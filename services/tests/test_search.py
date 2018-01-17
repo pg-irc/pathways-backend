@@ -3,7 +3,7 @@ from rest_framework import status
 from services.tests.helpers import ServiceBuilder
 from organizations.tests.helpers import OrganizationBuilder
 from taxonomies.tests.helpers import TaxonomyTermBuilder
-from common.testhelpers.autofixtures import a_string
+from common.testhelpers.random_test_values import a_string
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):

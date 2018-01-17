@@ -1,5 +1,5 @@
 from services import models
-from common.testhelpers.autofixtures import a_string
+from common.testhelpers.random_test_values import a_string
 
 class ServiceBuilder:
     def __init__(self, organization):
