@@ -8,13 +8,17 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         query_params = self.request.query_params
-        queryset = models.Service.objects.all()
 
-        queryset = self.add_taxonomy_filter_if_given(query_params, queryset)
+        queryset = self.search(query_params)
 
         if not queryset.exists():
             raise Http404
 
+        return queryset
+
+    def search(self, query_params):
+        queryset = models.Service.objects.all()
+        queryset = self.add_taxonomy_filter_if_given(query_params, queryset)
         return queryset
 
     def add_taxonomy_filter_if_given(self, query_params, queryset):
