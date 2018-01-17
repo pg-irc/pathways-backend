@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from django.core.exceptions import SuspiciousOperation
+from django.http import Http404
 from services import models, serializers
 
 # pylint: disable=too-many-ancestors
@@ -10,6 +11,9 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = models.Service.objects.all()
 
         queryset = self.add_taxonomy_filter_if_given(query_params, queryset)
+
+        if not queryset.exists():
+            raise Http404
 
         return queryset
 
