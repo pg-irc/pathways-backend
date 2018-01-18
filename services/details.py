@@ -24,4 +24,6 @@ def raise_404_on_empty(queryset):
 
 def parse_full_text_search_terms(query_parameters):
     query_arguments = query_parameters.get('queries', None)
-    return query_arguments
+    if not query_arguments:
+        return None
+    return query_arguments.split(' ')

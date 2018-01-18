@@ -122,6 +122,17 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['description'], the_description)
 
+    def test_full_text_search_with_multiple_search_terms_returns_service_with_exact_match_on_name(self):
+        the_name = a_string()
+        service = ServiceBuilder(self.organization).with_name(the_name).create()
+
+        url = '/v1/services/?queries={0}+{1}+{2}'.format(a_string(), the_name, a_string())
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], the_name)
+
     def test_full_text_search_with_wrong_search_term_returns_404(self):
         service = ServiceBuilder(self.organization).create()
 
