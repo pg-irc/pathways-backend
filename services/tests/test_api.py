@@ -2,7 +2,7 @@ from rest_framework import test as rest_test
 from rest_framework import status
 from services.tests.helpers import ServiceBuilder
 from organizations.tests.helpers import OrganizationBuilder
-from common.testhelpers.random_test_values import *
+from common.testhelpers.random_test_values import a_string
 
 class ServicesApiTests(rest_test.APITestCase):
     def setUp(self):

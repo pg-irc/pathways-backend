@@ -5,7 +5,6 @@ from rest_framework import status
 from services.tests.helpers import ServiceBuilder
 from organizations.tests.helpers import OrganizationBuilder
 from taxonomies.tests.helpers import TaxonomyTermBuilder
-from common.testhelpers.random_test_values import a_string
 from services.viewsets import SearchParameters
 
 class SearchParametersTests(TestCase):
@@ -19,19 +18,19 @@ class SearchParametersTests(TestCase):
 
     def test_throws_on_too_many_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
-            parameters = SearchParameters({'taxonomy_term' : 'foo:bar:baz'})
+            SearchParameters({'taxonomy_term' : 'foo:bar:baz'})
 
     def test_throws_on_missing_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
-            parameters = SearchParameters({'taxonomy_term' : 'foobar'})
+            SearchParameters({'taxonomy_term' : 'foobar'})
 
     def test_throws_on_missing_taxonomy_id(self):
         with self.assertRaises(SuspiciousOperation):
-            parameters = SearchParameters({'taxonomy_term' : ':bar'})
+            SearchParameters({'taxonomy_term' : ':bar'})
 
     def test_throws_on_missing_taxonomy_term(self):
         with self.assertRaises(SuspiciousOperation):
-            parameters = SearchParameters({'taxonomy_term' : 'foo:'})
+            SearchParameters({'taxonomy_term' : 'foo:'})
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):
@@ -67,4 +66,3 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         url_with_plus_instead_of_colon = '/v1/services/?taxonomy_term=foobar'
         response = self.client.get(url_with_plus_instead_of_colon)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
