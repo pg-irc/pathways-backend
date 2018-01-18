@@ -51,18 +51,28 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['id'], service.id)
 
-    def test_search_with_wrong_taxonomic_argument_returns_404(self):
+    def test_search_with_wrong_taxonomy_id_returns_404(self):
         taxonomy_term = TaxonomyTermBuilder().build()
         taxonomy_term.save()
-        ServiceBuilder(self.organization).build().save()
+        wrong_taxonomy_term = TaxonomyTermBuilder().build()
+        wrong_taxonomy_term.save()
+        ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).build().save()
 
-        url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
+        url = '/v1/services/?taxonomy_term={0}:{1}'.format(wrong_taxonomy_term.taxonomy_id,
                                                            taxonomy_term.name)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_invalid_taxonomic_argument_returns_400(self):
-        url_with_plus_instead_of_colon = '/v1/services/?taxonomy_term=foobar'
-        response = self.client.get(url_with_plus_instead_of_colon)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_search_with_wrong_taxonomy_term_returns_404(self):
+        taxonomy_term = TaxonomyTermBuilder().build()
+        taxonomy_term.save()
+        wrong_taxonomy_term = TaxonomyTermBuilder().build()
+        wrong_taxonomy_term.save()
+        ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).build().save()
+
+        url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
+                                                           wrong_taxonomy_term.name)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
