@@ -170,3 +170,24 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_can_combine_taxonomic_search_and_full_text_search(self):
+        the_search_term = a_string()
+        the_name = the_search_term + a_string()
+        the_taxonomy_term = TaxonomyTermBuilder().create()
+
+        a_service = (ServiceBuilder(self.organization).
+                                                with_name(the_name).
+                                                with_taxonomy_terms([the_taxonomy_term]).
+                                                create())
+        ServiceBuilder(self.organization).with_taxonomy_terms([the_taxonomy_term]).create()
+        ServiceBuilder(self.organization).with_name(the_search_term + a_string()).create()
+
+        url = '/v1/services/?queries={0}&taxonomy_term={1}:{2}'.format(the_search_term,
+                                                                       the_taxonomy_term.taxonomy_id,
+                                                                       the_taxonomy_term.name)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], the_name)
