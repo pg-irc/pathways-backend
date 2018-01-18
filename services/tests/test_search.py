@@ -17,6 +17,11 @@ class SearchParametersTests(TestCase):
         parameters = SearchParameters({'taxonomy_term' : 'foo:bar'})
         self.assertEqual(parameters.taxonomy_term, 'bar')
 
+    def test_taxonomy_parameter_is_optional(self):
+        parameters = SearchParameters({})
+        self.assertIsNone(parameters.taxonomy_id)
+        self.assertIsNone(parameters.taxonomy_term)
+
     def test_throws_on_too_many_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
             SearchParameters({'taxonomy_term' : 'foo:bar:baz'})
@@ -32,6 +37,23 @@ class SearchParametersTests(TestCase):
     def test_throws_on_missing_taxonomy_term(self):
         with self.assertRaises(SuspiciousOperation):
             SearchParameters({'taxonomy_term' : 'foo:'})
+
+    def test_can_build_full_text_search_term(self):
+        parameters = SearchParameters({'queries' : 'foo'})
+        self.assertCountEqual(parameters.full_text_search_terms, ['foo'])
+
+    def test_full_text_search_term_is_optional(self):
+        parameters = SearchParameters({})
+        self.assertIsNone(parameters.full_text_search_terms)
+
+    # Django replaces + characters with space in URL parameter argument
+    def test_full_text_search_terms_are_split_on_space(self):
+        parameters = SearchParameters({'queries' : 'foo bar'})
+        self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
+
+    def test_full_text_search_terms_are_stripped_of_white_space(self):
+        parameters = SearchParameters({'queries' : '  foo   bar  '})
+        self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):
@@ -148,15 +170,3 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_full_text_search_ignores_leading_and_traling_whitespace_on_search_terms(self):
-        the_search_term = a_string()
-        the_name = a_string() + the_search_term + a_string()
-        service = ServiceBuilder(self.organization).with_name(the_name).create()
-
-        url = '/v1/services/?queries= {0} '.format(the_search_term)
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['name'], the_name)
