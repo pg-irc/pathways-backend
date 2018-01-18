@@ -75,21 +75,33 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
 
-    def test_full_text_search_returns_service_with_matching_name(self):
+    def test_full_text_search_returns_service_with_exact_match_on_name(self):
         the_name = a_string()
         service = ServiceBuilder(self.organization).with_name(the_name).create()
 
         url = '/v1/services/?queries={0}'.format(the_name)
         response = self.client.get(url)
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], the_name)
+
+    def test_full_text_search_returns_service_with_substring_match_on_name(self):
+        part_of_the_name = a_string()
+        the_name = part_of_the_name + a_string()
+        service = ServiceBuilder(self.organization).with_name(the_name).create()
+
+        url = '/v1/services/?queries={0}'.format(part_of_the_name)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], the_name)
 
     def test_full_text_search_with_wrong_search_term_returns_404(self):
-        the_wrong_name = a_string()
         service = ServiceBuilder(self.organization).create()
 
-        url = '/v1/services/?queries={0}'.format(the_wrong_name)
+        url = '/v1/services/?queries={0}'.format(a_string())
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

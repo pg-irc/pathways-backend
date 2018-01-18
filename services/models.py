@@ -43,6 +43,6 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     @staticmethod
     def add_full_text_search_filter_if_given(queryset, search_parameters):
         if search_parameters.full_text_search_terms:
-            queryset = queryset.filter(translations__name=search_parameters.full_text_search_terms)
+            queryset = queryset.filter(translations__name__contains=search_parameters.full_text_search_terms)
 
         return queryset
