@@ -14,5 +14,8 @@ def a_website_address():
 def an_email_address():
     return '{0}@{1}.com'.format(a_string(), a_string())
 
-def a_number():
+def an_integer():
     return random.randint(0, 1000)
+
+def a_float():
+    return float(an_integer())

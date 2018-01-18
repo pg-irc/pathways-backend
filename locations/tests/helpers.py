@@ -1,13 +1,14 @@
 from locations import models
+from common.testhelpers.random_test_values import a_string, a_float
 
 class LocationBuilder:
     def __init__(self, organization):
-        self.location_id = 'the_default_id'
+        self.location_id = a_string()
         self.organization = organization
-        self.name = 'default name'
-        self.latitude = 0.0
-        self.longitude = 0.0
-        self.description = 'default description'
+        self.name = a_string()
+        self.latitude = a_float()
+        self.longitude = a_float()
+        self.description = a_string()
 
     def with_id(self, location_id):
         self.location_id = location_id
@@ -40,7 +41,9 @@ class LocationBuilder:
         return result
 
     def create(self):
-        self.build().save()
+        result = self.build()
+        result.save()
+        return result
 
 class ServiceLocationBuilder:
     def __init__(self, service, location):
