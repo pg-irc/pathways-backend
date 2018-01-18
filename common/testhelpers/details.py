@@ -13,7 +13,8 @@ def get_seed_from_environment_variable():
 
 def get_default_seed():
     max_seed_value = 100000000000
-    return random.randint(0, max_seed_value)
+    seed_value = random.randint(0, max_seed_value)
+    return str(seed_value)
 
 def set_random_seed(seed):
     print('{0}={1}'.format(ENVIRONMENT_VARIABLE, seed))
