@@ -21,3 +21,7 @@ def raise_taxonomy_error():
 def raise_404_on_empty(queryset):
     if not queryset.exists():
         raise Http404
+
+def parse_full_text_search_terms(query_parameters):
+    query_arguments = query_parameters.get('queries', None)
+    return query_arguments

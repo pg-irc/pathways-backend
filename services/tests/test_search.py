@@ -2,10 +2,11 @@ from django.test import TestCase
 from django.core.exceptions import SuspiciousOperation
 from rest_framework import test as rest_test
 from rest_framework import status
-from services.tests.helpers import ServiceBuilder
+from common.testhelpers.random_test_values import a_string
 from organizations.tests.helpers import OrganizationBuilder
-from taxonomies.tests.helpers import TaxonomyTermBuilder
 from services.viewsets import SearchParameters
+from services.tests.helpers import ServiceBuilder
+from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 class SearchParametersTests(TestCase):
     def test_can_build_with_taxonomy_id(self):
@@ -34,14 +35,11 @@ class SearchParametersTests(TestCase):
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):
-        self.organization = OrganizationBuilder().build()
-        self.organization.save()
+        self.organization = OrganizationBuilder().create()
 
-    def test_search_with_taxonomic_argument_returns_service(self):
-        taxonomy_term = TaxonomyTermBuilder().build()
-        taxonomy_term.save()
-        service = ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).build()
-        service.save()
+    def test_taxonomy_search_returns_service(self):
+        taxonomy_term = TaxonomyTermBuilder().create()
+        service = ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
         url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
                                                            taxonomy_term.name)
@@ -51,11 +49,9 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['id'], service.id)
 
-    def test_search_with_wrong_taxonomy_id_returns_404(self):
-        taxonomy_term = TaxonomyTermBuilder().build()
-        taxonomy_term.save()
-        wrong_taxonomy_term = TaxonomyTermBuilder().build()
-        wrong_taxonomy_term.save()
+    def test_taxonomy_search_with_wrong_taxonomy_id_returns_404(self):
+        taxonomy_term = TaxonomyTermBuilder().create()
+        wrong_taxonomy_term = TaxonomyTermBuilder().create()
         ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
         url = '/v1/services/?taxonomy_term={0}:{1}'.format(wrong_taxonomy_term.taxonomy_id,
@@ -64,15 +60,36 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_search_with_wrong_taxonomy_term_returns_404(self):
-        taxonomy_term = TaxonomyTermBuilder().build()
-        taxonomy_term.save()
-        wrong_taxonomy_term = TaxonomyTermBuilder().build()
-        wrong_taxonomy_term.save()
+    def test_taxonomy_search_with_wrong_taxonomy_term_returns_404(self):
+        taxonomy_term = TaxonomyTermBuilder().create()
+        wrong_taxonomy_term = TaxonomyTermBuilder().create()
         ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
         url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
                                                            wrong_taxonomy_term.name)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class ServicesFullTextSearchTests(rest_test.APITestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().create()
+
+    def test_full_text_search_returns_service_with_matching_name(self):
+        the_name = a_string()
+        service = ServiceBuilder(self.organization).with_name(the_name).create()
+
+        url = '/v1/services/?queries={0}'.format(the_name)
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], the_name)
+
+    def test_full_text_search_with_wrong_search_term_returns_404(self):
+        the_wrong_name = a_string()
+        service = ServiceBuilder(self.organization).create()
+
+        url = '/v1/services/?queries={0}'.format(the_wrong_name)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
