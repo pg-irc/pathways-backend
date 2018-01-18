@@ -148,3 +148,15 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_full_text_search_ignores_leading_and_traling_whitespace_on_search_terms(self):
+        the_search_term = a_string()
+        the_name = a_string() + the_search_term + a_string()
+        service = ServiceBuilder(self.organization).with_name(the_name).create()
+
+        url = '/v1/services/?queries= {0} '.format(the_search_term)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], the_name)
