@@ -1,14 +1,16 @@
-from bc211 import dtos
-from bc211.exceptions import MissingRequiredFieldXmlParseException
-from urllib import parse as urlparse
 import itertools
 import logging
 import re
 import xml.etree.ElementTree as etree
+from urllib import parse as urlparse
+
+from bc211 import dtos
+from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
 BC211_JSON_RE = r"(\w+)\:\'([^\']+)\'"
+ADDRESS_LINE_RE = r"Line[0-9]"
 
 def read_records_from_file(file):
     xml = file.read()
@@ -167,5 +169,68 @@ def parse_airs_taxonomy_term(code_str):
     taxonomy_id = 'airs'
     yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)
 
-def parse_addresses(site):
+def parse_addresses(site, site_id):
+    addresses = []
+    physical_address = AddressParser(site_id)(site.find('PhysicalAddress'))
+    if physical_address:
+        addresses.append(physical_address)
+    mailing_address = AddressParser(site_id)(site.find('MailingAddress'))
+    if mailing_address:
+        addresses.append(mailing_address)
+    return addresses
 
+class AddressParser:
+    def __init__(self, site_id):
+        self.site_id = site_id
+
+    def __call__(self, address):
+        if etree.iselement(address):
+            return parse_address(address, self.site_id)
+
+
+def parse_address(address, site_id):
+    address_lines = parse_address_lines(address, site_id)
+    city = parse_city(address)
+    country = parse_country(address)
+    if address_lines and city and country:
+        address_type_id = parse_address_type_id(address)
+        state_province = parse_state_province(address)
+        postal_code = parse_postal_code(address)
+        return dtos.Address(location_id=site_id, address_lines=address_lines,
+                            city=city, state_province=state_province, postal_code=postal_code,
+                            country=country, address_type_id=address_type_id)
+
+def parse_address_lines(address, site_id):
+    # We need at least one Line tag in the address to provide a text value.
+    # Any Line value(s) parsed will be stored as the address field (separated by newlines) in the db.
+    address_line_tag_objects = filter(
+        lambda child, regex=ADDRESS_LINE_RE: re.match(regex, child.tag),
+        address.getchildren()
+    )
+    address_lines = (
+        [address_line_tag_object.text for
+         address_line_tag_object in
+         address_line_tag_objects if
+         address_line_tag_object.text]
+    )
+    if address_lines:
+        return '\n'.join(address_lines)
+    LOGGER.debug('Could NOT parse address for location: %s. Necessary address line(s) not found.', site_id)
+
+def parse_city(address):
+    return parse_required_field(address, 'City')
+
+def parse_country(address):
+    return parse_required_field(address, 'Country')
+
+def parse_address_type_id(address):
+    return {
+        'PhysicalAddress': 'physical_address',
+        'MailingAddress': 'postal_address',
+    }.get(address.tag, 'physical_address')
+
+def parse_state_province(address):
+    return parse_optional_field(address, 'State')
+
+def parse_postal_code(address):
+    return parse_optional_field(address, 'ZipCode')

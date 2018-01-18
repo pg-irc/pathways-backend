@@ -1,7 +1,9 @@
 import unittest
 import logging
 import xml.etree.ElementTree as etree
+
 from bc211 import parser
+from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 logging.disable(logging.ERROR)
 
@@ -53,6 +55,24 @@ MINIMAL_211_DATA_SET = '''
             </SiteService>
         </Site>
     </Agency>
+</Source>'''
+TEST_ADDRESS_SET = '''
+<Source>
+    <MailingAddress>
+        <Line1>Line1</Line1>
+        <Line2>Line2</Line2>
+        <City>City</City>
+        <Country>Country</Country>
+        <State>State</State>
+        <ZipCode>Code</ZipCode>
+    </MailingAddress>
+    <PhysicalAddress>
+        <Line1 />
+        <City>City</City>
+        <Country>Country</Country>
+        <State>State</State>
+        <ZipCode>Code</ZipCode>
+    </PhysicalAddress>
 </Source>'''
 
 class BC211ParserTests(unittest.TestCase):
@@ -194,3 +214,16 @@ class ServiceParserTests(unittest.TestCase):
                          self.site_id_passed_to_parser)
         self.assertEqual(self.from_minimal_data.site_id,
                          self.site_id_passed_to_parser)
+
+class AddressParserTests(unittest.TestCase):
+    def setUp(self):
+        self.root = etree.fromstring(TEST_ADDRESS_SET)
+        self.fake_site_id = '12345'
+
+    def test_only_parses_valid_addresses(self):
+        parsed_addresses = parser.parse_addresses(self.root, self.fake_site_id)
+        self.assertEqual(len(parsed_addresses), 1)
+
+    def test_parsed_address_lines_correctly_formatted(self):
+        address_lines = parser.parse_address_lines(self.root.find('MailingAddress'), self.fake_site_id)
+        self.assertEqual(address_lines, 'Line1\nLine2')
