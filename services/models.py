@@ -24,15 +24,17 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         return self.name
 
     @classmethod
-    def search(cls, search_parameters):
+    def get_queryset(cls, search_parameters):
         queryset = cls.objects.all()
-
-        if 'taxonomy_id' in search_parameters and 'taxonomy_term' in search_parameters:
-            queryset = cls.add_taxonomy_filter(queryset, search_parameters)
-
+        queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
         return queryset
 
     @staticmethod
-    def add_taxonomy_filter(queryset, search_parameters):
-        return (queryset.filter(taxonomy_terms__name=search_parameters['taxonomy_term']).
-                         filter(taxonomy_terms__taxonomy_id=search_parameters['taxonomy_id']))
+    def add_taxonomy_filter_if_given(queryset, search_parameters):
+        identifier = search_parameters.taxonomy_id
+        term = search_parameters.taxonomy_term
+
+        if identifier and term:
+            queryset = queryset.filter(taxonomy_terms__taxonomy_id=identifier,
+                                       taxonomy_terms__name=term)
+        return queryset

@@ -1,9 +1,37 @@
+from django.test import TestCase
+from django.core.exceptions import SuspiciousOperation
 from rest_framework import test as rest_test
 from rest_framework import status
 from services.tests.helpers import ServiceBuilder
 from organizations.tests.helpers import OrganizationBuilder
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_string
+from services.viewsets import SearchParameters
+
+class SearchParametersTests(TestCase):
+    def test_can_build_with_taxonomy_id(self):
+        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'})
+        self.assertEqual(parameters.taxonomy_id, 'foo')
+
+    def test_can_build_with_taxonomy_term(self):
+        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'})
+        self.assertEqual(parameters.taxonomy_term, 'bar')
+
+    def test_throws_on_too_many_field_separators(self):
+        with self.assertRaises(SuspiciousOperation):
+            parameters = SearchParameters({'taxonomy_term' : 'foo:bar:baz'})
+
+    def test_throws_on_missing_field_separators(self):
+        with self.assertRaises(SuspiciousOperation):
+            parameters = SearchParameters({'taxonomy_term' : 'foobar'})
+
+    def test_throws_on_missing_taxonomy_id(self):
+        with self.assertRaises(SuspiciousOperation):
+            parameters = SearchParameters({'taxonomy_term' : ':bar'})
+
+    def test_throws_on_missing_taxonomy_term(self):
+        with self.assertRaises(SuspiciousOperation):
+            parameters = SearchParameters({'taxonomy_term' : 'foo:'})
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):
@@ -35,17 +63,8 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_taxonomic_argument_with_wrong_separator_returns_400(self):
-        url_with_plus_instead_of_colon = '/v1/services/?taxonomy_term=foo+bar'
+    def test_invalid_taxonomic_argument_returns_400(self):
+        url_with_plus_instead_of_colon = '/v1/services/?taxonomy_term=foobar'
         response = self.client.get(url_with_plus_instead_of_colon)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_taxonomic_argument_with_missing_taxonomy_id_returns_400(self):
-        url_with_missing_taxonomy_id = '/v1/services/?taxonomy_term=:bar'
-        response = self.client.get(url_with_missing_taxonomy_id)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_taxonomic_argument_with_missing_taxonomy_term_returns_400(self):
-        url_with_missing_taxonomy_term = '/v1/services/?taxonomy_term=foo:'
-        response = self.client.get(url_with_missing_taxonomy_term)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
