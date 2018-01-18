@@ -26,9 +26,5 @@ def parse_full_text_search_terms(query_parameters):
     query_arguments = query_parameters.get('queries', None)
     if not query_arguments:
         return None
-    result = query_arguments.split(' ')
-    cleaned_result = []
-    for x in result:
-        if x:
-            cleaned_result.append(x)
-    return cleaned_result
+    search_terms = query_arguments.split(' ')
+    return [x.strip() for x in search_terms if x != '']
