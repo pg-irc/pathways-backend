@@ -34,3 +34,6 @@ class ServiceBuilder:
         for taxonomy_term in self.taxonomy_terms:
             result.taxonomy_terms.add(taxonomy_term)
         return result
+
+    def create(self):
+        self.build().save()

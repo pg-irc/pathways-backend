@@ -56,7 +56,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         taxonomy_term.save()
         wrong_taxonomy_term = TaxonomyTermBuilder().build()
         wrong_taxonomy_term.save()
-        ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).build().save()
+        ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
         url = '/v1/services/?taxonomy_term={0}:{1}'.format(wrong_taxonomy_term.taxonomy_id,
                                                            taxonomy_term.name)
@@ -69,7 +69,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         taxonomy_term.save()
         wrong_taxonomy_term = TaxonomyTermBuilder().build()
         wrong_taxonomy_term.save()
-        ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).build().save()
+        ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
         url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
                                                            wrong_taxonomy_term.name)

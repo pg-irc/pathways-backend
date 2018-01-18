@@ -37,3 +37,6 @@ class OrganizationBuilder:
         result.website = self.website
         result.email = self.email
         return result
+
+    def create(self):
+        self.build().save()

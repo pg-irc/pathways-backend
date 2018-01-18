@@ -18,8 +18,8 @@ class LocationsApiTests(rest_test.APITestCase):
         }
 
     def test_can_get_locations(self):
-        LocationBuilder(self.organization).with_id('First').build().save()
-        LocationBuilder(self.organization).with_id('Second').build().save()
+        LocationBuilder(self.organization).with_id('First').create()
+        LocationBuilder(self.organization).with_id('Second').create()
         url = '/v1/locations/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -53,8 +53,8 @@ class LocationsApiTests(rest_test.APITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_can_get_locations_for_organization(self):
-        LocationBuilder(self.organization).with_id('First').build().save()
-        LocationBuilder(self.organization).with_id('Second').build().save()
+        LocationBuilder(self.organization).with_id('First').create()
+        LocationBuilder(self.organization).with_id('Second').create()
         url = '/v1/organizations/{0}/locations/'.format(self.organization_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

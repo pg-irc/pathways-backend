@@ -39,6 +39,9 @@ class LocationBuilder:
         result.description = self.description
         return result
 
+    def create(self):
+        self.build().save()
+
 class ServiceLocationBuilder:
     def __init__(self, service, location):
         self.service = service
