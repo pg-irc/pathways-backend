@@ -8,37 +8,26 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         query_params = self.request.query_params
-
-        queryset = self.search(query_params)
+        search_parameters = self.build_search_parameters(query_params)
+        queryset = models.Service.search(search_parameters)
 
         if not queryset.exists():
             raise Http404
 
         return queryset
 
-    def search(self, query_params):
-        queryset = models.Service.objects.all()
-        queryset = self.add_taxonomy_filter_if_given(query_params, queryset)
-        return queryset
-
-    def add_taxonomy_filter_if_given(self, query_params, queryset):
+    def build_search_parameters(self, query_params):
+        taxonomy = None
+        term = None
         taxonomy_term = query_params.get('taxonomy_term', None)
         if taxonomy_term:
-            queryset = self.add_taxonomy_filter(queryset, taxonomy_term)
-        return queryset
+            if taxonomy_term.count(':') != 1:
+                self.raise_taxonomy_error()
+            taxonomy, term = taxonomy_term.split(':')
+            if taxonomy=='' or term=='':
+                self.raise_taxonomy_error()
 
-    def add_taxonomy_filter(self, queryset, parameter):
-        taxonomy, term = self.parse_taxonomy_parameter(parameter)
-        return (queryset.filter(taxonomy_terms__name=term).
-                         filter(taxonomy_terms__taxonomy_id=taxonomy))
-
-    def parse_taxonomy_parameter(self, parameter):
-        if parameter.count(':') != 1:
-            self.raise_taxonomy_error()
-        taxonomy, term = parameter.split(':')
-        if taxonomy=='' or term=='':
-            self.raise_taxonomy_error()
-        return taxonomy, term
+        return {'taxonomy_id' : taxonomy, 'taxonomy_term' : term}
 
     def raise_taxonomy_error(self):
         raise SuspiciousOperation('Invalid argument to taxonomy_term')
