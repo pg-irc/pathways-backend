@@ -203,15 +203,24 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
 
-    def test_can_order_by_name(self):
+    def test_can_order_by_field(self):
+        ServiceBuilder(self.organization).with_id('aaa').create()
+        ServiceBuilder(self.organization).with_id('ccc').create()
+        ServiceBuilder(self.organization).with_id('bbb').create()
+
+        response = self.client.get('/v1/services/?sort_by=id')
+
+        json = response.json()
+        self.assertLess(json[0]['id'], json[1]['id'])
+        self.assertLess(json[1]['id'], json[2]['id'])
+
+    def test_can_order_by_translated_field(self):
         ServiceBuilder(self.organization).with_name('aaa').create()
         ServiceBuilder(self.organization).with_name('ccc').create()
         ServiceBuilder(self.organization).with_name('bbb').create()
 
-        url = '/v1/services/?sort_by=translations__name'
-        response = self.client.get(url)
+        response = self.client.get('/v1/services/?sort_by=translations__name')
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.json()), 3)
-        self.assertLess(response.json()[0]['name'], response.json()[1]['name'])
-        self.assertLess(response.json()[1]['name'], response.json()[2]['name'])
+        json = response.json()
+        self.assertLess(json[0]['name'], json[1]['name'])
+        self.assertLess(json[1]['name'], json[2]['name'])

@@ -10,7 +10,6 @@ class SearchParameters:
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
-
     def get_queryset(self):
         query_parameters = self.request.query_params
         search_parameters = SearchParameters(query_parameters)
