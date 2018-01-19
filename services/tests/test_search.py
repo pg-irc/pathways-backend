@@ -204,9 +204,9 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.organization = OrganizationBuilder().create()
 
     def test_can_order_by_field(self):
-        ServiceBuilder(self.organization).with_id('aaa').create()
-        ServiceBuilder(self.organization).with_id('ccc').create()
-        ServiceBuilder(self.organization).with_id('bbb').create()
+        ServiceBuilder(self.organization).create()
+        ServiceBuilder(self.organization).create()
+        ServiceBuilder(self.organization).create()
 
         response = self.client.get('/v1/services/?sort_by=id')
 
@@ -215,12 +215,39 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertLess(json[1]['id'], json[2]['id'])
 
     def test_can_order_by_translated_field(self):
-        ServiceBuilder(self.organization).with_name('aaa').create()
-        ServiceBuilder(self.organization).with_name('ccc').create()
-        ServiceBuilder(self.organization).with_name('bbb').create()
+        ServiceBuilder(self.organization).create()
+        ServiceBuilder(self.organization).create()
+        ServiceBuilder(self.organization).create()
 
         response = self.client.get('/v1/services/?sort_by=translations__name')
 
         json = response.json()
         self.assertLess(json[0]['name'], json[1]['name'])
         self.assertLess(json[1]['name'], json[2]['name'])
+
+    def test_can_order_by_two_fields(self):
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+
+        ServiceBuilder(self.organization).with_description('ccc').create()
+        ServiceBuilder(self.organization).with_description('aaa').create()
+
+        url = '/v1/services/?sort_by=translations__description+translations__name'
+        response = self.client.get(url)
+
+        json = response.json()
+
+        first = json[0]
+        second = json[1]
+        third = json[2]
+        fourth = json[3]
+        fifth = json[4]
+
+        self.assertLess(first['description'], second['description'])
+        self.assertEqual(second['description'], third['description'])
+        self.assertEqual(third['description'], fourth['description'])
+        self.assertLess(fourth['description'], fifth['description'])
+
+        self.assertLess(second['name'], third['name'])
+        self.assertLess(third['name'], fourth['name'])

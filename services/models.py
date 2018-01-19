@@ -11,14 +11,11 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
                            max_length=200,
                            validators=[validators.validate_slug])
-
     organization = models.ForeignKey(Organization,
                                      on_delete=models.CASCADE,
                                      related_name='services')
-
     taxonomy_terms = models.ManyToManyField(TaxonomyTerm,
                                             db_table='services_service_taxonomy_terms')
-
     translations = TranslatedFields(name=models.CharField(max_length=200),
                                     description=models.TextField(blank=True, null=True))
 
@@ -60,4 +57,4 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     def add_sorting_and_paging_if_given(queryset, search_parameters):
         if not search_parameters.sort_by:
             return queryset
-        return queryset.order_by(search_parameters.sort_by)
+        return queryset.order_by(*search_parameters.sort_by)
