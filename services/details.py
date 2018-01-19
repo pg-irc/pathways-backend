@@ -25,6 +25,7 @@ def parse_full_text_search_terms(query_parameters):
     search_terms = query_arguments.split(' ')
     return [x.strip() for x in search_terms if x != '']
 
+
 class FilterBuilder:
     def __init__(self):
         self.filter = None
@@ -47,3 +48,7 @@ class FilterBuilder:
 
     def get_filter(self):
         return self.filter
+
+
+def parse_sorting_and_paging(query_parameters):
+    return query_parameters.get('sort_by', None)

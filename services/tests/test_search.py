@@ -181,11 +181,10 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
 
     def test_can_combine_taxonomic_search_and_full_text_search(self):
         the_search_term = a_string()
-        the_name = the_search_term + a_string()
         the_taxonomy_term = TaxonomyTermBuilder().create()
 
         a_service = (ServiceBuilder(self.organization).
-                                                with_name(the_name).
+                                                with_name(the_search_term + a_string()).
                                                 with_taxonomy_terms([the_taxonomy_term]).
                                                 create())
         ServiceBuilder(self.organization).with_taxonomy_terms([the_taxonomy_term]).create()
@@ -198,4 +197,21 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['name'], the_name)
+        self.assertEqual(response.json()[0]['name'], a_service.name)
+
+class ServicesSearchSortingAndPagination(rest_test.APITestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().create()
+
+    def test_can_order_by_name(self):
+        ServiceBuilder(self.organization).with_name('aaa').create()
+        ServiceBuilder(self.organization).with_name('ccc').create()
+        ServiceBuilder(self.organization).with_name('bbb').create()
+
+        url = '/v1/services/?sort_by=translations__name'
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 3)
+        self.assertLess(response.json()[0]['name'], response.json()[1]['name'])
+        self.assertLess(response.json()[1]['name'], response.json()[2]['name'])

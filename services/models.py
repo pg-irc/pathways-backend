@@ -30,6 +30,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         queryset = cls.objects.all()
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
         queryset = cls.add_full_text_search_filter_if_given(queryset, search_parameters)
+        queryset = cls.add_sorting_and_paging_if_given(queryset, search_parameters)
         return queryset
 
     @staticmethod
@@ -45,7 +46,6 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     @staticmethod
     def add_full_text_search_filter_if_given(queryset, search_parameters):
         search_terms = search_parameters.full_text_search_terms
-
         if not search_terms:
             return queryset
 
@@ -55,3 +55,9 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
                                 Q(translations__description__icontains=term))
 
         return queryset.filter(builder.get_filter())
+
+    @staticmethod
+    def add_sorting_and_paging_if_given(queryset, search_parameters):
+        if not search_parameters.sort_by:
+            return queryset
+        return queryset.order_by(search_parameters.sort_by)
