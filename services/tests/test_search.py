@@ -203,10 +203,12 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
 
+    def create_three_organizations(self):
+        for i in range(0, 3):
+            ServiceBuilder(self.organization).create()
+
     def test_can_order_by_field(self):
-        ServiceBuilder(self.organization).create()
-        ServiceBuilder(self.organization).create()
-        ServiceBuilder(self.organization).create()
+        self.create_three_organizations()
 
         response = self.client.get('/v1/services/?sort_by=id')
 
@@ -215,15 +217,31 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertLess(json[1]['id'], json[2]['id'])
 
     def test_can_order_by_translated_field(self):
-        ServiceBuilder(self.organization).create()
-        ServiceBuilder(self.organization).create()
-        ServiceBuilder(self.organization).create()
+        self.create_three_organizations()
 
         response = self.client.get('/v1/services/?sort_by=name')
 
         json = response.json()
         self.assertLess(json[0]['name'], json[1]['name'])
         self.assertLess(json[1]['name'], json[2]['name'])
+
+    def test_can_reverse_ordering(self):
+        self.create_three_organizations()
+
+        response = self.client.get('/v1/services/?sort_by=-id')
+
+        json = response.json()
+        self.assertGreater(json[0]['id'], json[1]['id'])
+        self.assertGreater(json[1]['id'], json[2]['id'])
+
+    def test_can_reverse_ordering_on_translated_field(self):
+        self.create_three_organizations()
+
+        response = self.client.get('/v1/services/?sort_by=-name')
+
+        json = response.json()
+        self.assertGreater(json[0]['name'], json[1]['name'])
+        self.assertGreater(json[1]['name'], json[2]['name'])
 
     def test_can_order_by_two_fields(self):
         ServiceBuilder(self.organization).with_description('bbb').create()
@@ -245,3 +263,24 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
 
         self.assertLess(second['name'], third['name'])
         self.assertLess(third['name'], fourth['name'])
+
+    def test_can_reverse_order_by_one_of_two_fields(self):
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+
+        ServiceBuilder(self.organization).with_description('ccc').create()
+        ServiceBuilder(self.organization).with_description('aaa').create()
+
+        response = self.client.get('/v1/services/?sort_by=description+-name')
+
+        first, second, third, fourth, fifth = response.json()
+
+        self.assertLess(first['description'], second['description'])
+        self.assertEqual(second['description'], third['description'])
+        self.assertEqual(third['description'], fourth['description'])
+        self.assertLess(fourth['description'], fifth['description'])
+
+        self.assertGreater(second['name'], third['name'])
+        self.assertGreater(third['name'], fourth['name'])
+

@@ -66,7 +66,12 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
 
     @classmethod
     def add_prefix_on_translated_fields(cls, argument):
-        # get_translated_fields()
-        if argument not in ['name', 'description']:
+        reverse_sort = argument[0:1] == '-'
+        stripped_argument = argument[1:] if reverse_sort else argument
+
+        translated_fields = ['name', 'description']
+        if stripped_argument not in translated_fields:
             return argument
-        return 'translations__' + argument
+
+        argument = 'translations__' + stripped_argument
+        return '-' + argument if reverse_sort else argument
