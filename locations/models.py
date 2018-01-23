@@ -16,11 +16,11 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
                                       through='ServiceAtLocation')
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
+    addresses = models.ManyToManyField(Address, related_name='locations', through='LocationAddress')
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
         description=models.TextField(blank=True, null=True)
     )
-    addresses = models.ManyToManyField(Address, related_name='locations', through='AddressAtLocation')
 
     def __str__(self):
         return self.name
@@ -45,13 +45,13 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
             location=self.location
         )
 
-class AddressAtLocation(ValidateOnSaveMixin, models.Model):
+class LocationAddress(ValidateOnSaveMixin, models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     address_type = models.ForeignKey(AddressType, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '\"{address}\" at \"{location}\"'.format(
+        return '\"{address}\" for \"{location}\"'.format(
             address=self.address,
             location=self.location
         )

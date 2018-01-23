@@ -1,19 +1,19 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from common.models import ValidateOnSaveMixin
+from common.models import ValidateOnSaveMixin, OptionalCharField, RequiredCharField
 
 
 class Address(ValidateOnSaveMixin, models.Model):
-    attention = models.CharField(max_length=200, blank=True, null=True)
+    attention = OptionalCharField(max_length=200)
     address = models.TextField()
-    city = models.CharField(max_length=200)
-    state_province = models.CharField(max_length=200, blank=True, null=True)
-    postal_code = models.CharField(max_length=200, blank=True, null=True)
-    country = models.CharField(max_length=2)
+    city = RequiredCharField(max_length=200)
+    state_province = OptionalCharField(max_length=200)
+    postal_code = OptionalCharField(max_length=200)
+    country = RequiredCharField(max_length=2)
 
     class Meta:
-        unique_together = ('address', 'city')
+        unique_together = ('attention', 'address', 'city', 'state_province', 'postal_code', 'country')
 
     def save(self, *args, **kwargs):
         try:
