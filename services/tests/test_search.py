@@ -219,7 +219,7 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         ServiceBuilder(self.organization).create()
         ServiceBuilder(self.organization).create()
 
-        response = self.client.get('/v1/services/?sort_by=translations__name')
+        response = self.client.get('/v1/services/?sort_by=name')
 
         json = response.json()
         self.assertLess(json[0]['name'], json[1]['name'])
@@ -233,16 +233,10 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_description('ccc').create()
         ServiceBuilder(self.organization).with_description('aaa').create()
 
-        url = '/v1/services/?sort_by=translations__description+translations__name'
+        url = '/v1/services/?sort_by=description+name'
         response = self.client.get(url)
 
-        json = response.json()
-
-        first = json[0]
-        second = json[1]
-        third = json[2]
-        fourth = json[3]
-        fifth = json[4]
+        first, second, third, fourth, fifth = response.json()
 
         self.assertLess(first['description'], second['description'])
         self.assertEqual(second['description'], third['description'])

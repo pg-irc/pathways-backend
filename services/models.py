@@ -53,8 +53,20 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
 
         return queryset.filter(builder.get_filter())
 
-    @staticmethod
-    def add_sorting_and_paging_if_given(queryset, search_parameters):
-        if not search_parameters.sort_by:
+    @classmethod
+    def add_sorting_and_paging_if_given(cls, queryset, search_parameters):
+        sort_arguments = search_parameters.sort_by 
+
+        if not sort_arguments:
             return queryset
-        return queryset.order_by(*search_parameters.sort_by)
+
+        sort_arguments = [cls.add_prefix_on_translated_fields(argument) for argument in sort_arguments]
+
+        return queryset.order_by(*sort_arguments)
+
+    @classmethod
+    def add_prefix_on_translated_fields(cls, argument):
+        # get_translated_fields()
+        if argument not in ['name', 'description']:
+            return argument
+        return 'translations__' + argument
