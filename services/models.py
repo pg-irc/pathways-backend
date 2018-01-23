@@ -51,11 +51,11 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         qs = None
         for term in search_terms:
             if not qs:
-                qs = (Q(translations__name__contains=term) |
-                      Q(translations__description__contains=term))
+                qs = (Q(translations__name__icontains=term) |
+                      Q(translations__description__icontains=term))
             else:
                 qs = (qs |
-                      Q(translations__name__contains=term) |
-                      Q(translations__description__contains=term))
+                      Q(translations__name__icontains=term) |
+                      Q(translations__description__icontains=term))
 
         return queryset.filter(qs)
