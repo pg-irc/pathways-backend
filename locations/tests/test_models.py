@@ -2,7 +2,6 @@ import unittest
 from django.test import TestCase
 from django.core import exceptions
 from django.db import utils as django_utils
-from locations import models
 from locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
 from organizations.tests.helpers import OrganizationBuilder
 from services.tests.helpers import ServiceBuilder
@@ -18,10 +17,10 @@ class TestLocationModel(TestCase):
         self.organization.save()
 
     def test_has_id_field(self):
-        id = 'the_id'
-        location = LocationBuilder(self.organization).with_id(id).build()
+        location_id = 'the_id'
+        location = LocationBuilder(self.organization).with_id(location_id).build()
         location_from_db = validate_save_and_reload(location)
-        self.assertEqual(location_from_db.id, id)
+        self.assertEqual(location_from_db.id, location_id)
 
     def test_id_cannot_be_none(self):
         null_id = None
@@ -36,8 +35,8 @@ class TestLocationModel(TestCase):
             location.full_clean()
 
     def test_id_cannot_contain_space(self):
-        id = 'the id'
-        location = LocationBuilder(self.organization).with_id(id).build()
+        location_id = 'the id'
+        location = LocationBuilder(self.organization).with_id(location_id).build()
         with self.assertRaises(exceptions.ValidationError):
             location.full_clean()
 
@@ -67,7 +66,7 @@ class TestLocationModel(TestCase):
         latitude = 123.456
         location = LocationBuilder(self.organization).with_latitude(latitude).build()
         location_from_db = validate_save_and_reload(location)
-        self.assertAlmostEquals(location_from_db.latitude, latitude)
+        self.assertAlmostEqual(location_from_db.latitude, latitude)
 
     def test_has_longitude(self):
         longitude = 234.567
@@ -81,8 +80,8 @@ class TestLocationModel(TestCase):
                     .with_longitude(None)
                     .build())
         location_from_db = validate_save_and_reload(location)
-        self.assertEquals(location_from_db.latitude, None)
-        self.assertEquals(location_from_db.longitude, None)
+        self.assertEqual(location_from_db.latitude, None)
+        self.assertEqual(location_from_db.longitude, None)
 
     def test_only_latitude_cannot_be_null(self):
         location = (LocationBuilder(self.organization)

@@ -7,29 +7,29 @@ def validate_save_and_reload(organization):
     organization.save()
     return models.Organization.objects.get()
 
-
+# pylint: disable=too-many-public-methods
 class TestOrganizationModel(TestCase):
     def test_has_id_field(self):
-        id = 'the_id'
-        organization = OrganizationBuilder().with_id(id).build()
+        organization_id = 'the_id'
+        organization = OrganizationBuilder().with_id(organization_id).build()
         organization_from_db = validate_save_and_reload(organization)
-        self.assertEqual(organization_from_db.id, id)
+        self.assertEqual(organization_from_db.id, organization_id)
 
     def test_id_cannot_be_none(self):
-        id = None
-        organization = OrganizationBuilder().with_id(id).build()
+        organization_id = None
+        organization = OrganizationBuilder().with_id(organization_id).build()
         with self.assertRaises(exceptions.ValidationError):
             organization.full_clean()
 
     def test_id_cannot_be_empty(self):
-        id = ''
-        organization = OrganizationBuilder().with_id(id).build()
+        organization_id = ''
+        organization = OrganizationBuilder().with_id(organization_id).build()
         with self.assertRaises(exceptions.ValidationError):
             organization.full_clean()
 
     def test_id_cannot_contain_space(self):
-        id = 'the id'
-        organization = OrganizationBuilder().with_id(id).build()
+        organization_id = 'the id'
+        organization = OrganizationBuilder().with_id(organization_id).build()
         with self.assertRaises(exceptions.ValidationError):
             organization.full_clean()
 

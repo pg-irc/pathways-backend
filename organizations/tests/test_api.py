@@ -14,8 +14,8 @@ class OrganizationsApiTests(rest_test.APITestCase):
         }
 
     def test_can_get_entities(self):
-        OrganizationBuilder().with_id('First').build().save()
-        OrganizationBuilder().with_id('Second').build().save()
+        OrganizationBuilder().with_id('First').create()
+        OrganizationBuilder().with_id('Second').create()
         url = '/v1/organizations/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

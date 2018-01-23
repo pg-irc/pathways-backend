@@ -1,15 +1,16 @@
 from services import models
+from common.testhelpers.random_test_values import a_string
 
 class ServiceBuilder:
     def __init__(self, organization):
-        self.id = 'the_default_id'
+        self.service_id = a_string()
         self.organization = organization
-        self.name = 'default name'
-        self.description = 'default description'
+        self.name = a_string()
+        self.description = a_string()
         self.taxonomy_terms = []
 
-    def with_id(self, id):
-        self.id = id
+    def with_id(self, service_id):
+        self.service_id = service_id
         return self
 
     def with_name(self, name):
@@ -26,10 +27,13 @@ class ServiceBuilder:
 
     def build(self):
         result = models.Service()
-        result.id = self.id
+        result.id = self.service_id
         result.name = self.name
         result.organization = self.organization
         result.description = self.description
         for taxonomy_term in self.taxonomy_terms:
             result.taxonomy_terms.add(taxonomy_term)
         return result
+
+    def create(self):
+        self.build().save()
