@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 class Pagination(PageNumberPagination):
     def __init__(self):
+        self.page_query_param = 'page'
         self.page_size_query_param = 'per_page'
         self.max_page_size = 100
 

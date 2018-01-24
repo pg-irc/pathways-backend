@@ -205,7 +205,10 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
 
     def create_many_services(self, count):
         for i in range(0, count):
-            ServiceBuilder(self.organization).create()
+            one_based_id = i + 1
+            id_as_string = str(one_based_id)
+            id_with_zero_prefix = ('00' + id_as_string)[-3:]
+            ServiceBuilder(self.organization).with_id(id_with_zero_prefix).create()
 
     def test_can_order_by_field(self):
         self.create_many_services(3)
@@ -289,34 +292,36 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         response = self.client.get('/v1/services/?per_page=3')
         self.assertEqual(len(response.json()), 3)
 
-    def test_page_number_defaults_to_one(self):
-        for id in range(1, 9):
-            id_string = 3 * str(id)
-            ServiceBuilder(self.organization).with_id(id_string).create()
-
-        sort_by = 'id'
-        per_page = 3
-        template = '/v1/services/?sort_by={sort_by}&per_page={per_page}'
-        url = template.format(sort_by=sort_by, per_page=per_page)
-        response = self.client.get(url)
-
-        self.assertEqual(len(response.json()), 3)
-        self.assertEqual(response.json()[0]['id'], '111')
-        self.assertEqual(response.json()[1]['id'], '222')
-        self.assertEqual(response.json()[2]['id'], '333')
-
     def test_can_specify_page_size_and_page_number(self):
-        for id in range(1, 9):
-            id_string = 3 * str(id)
-            ServiceBuilder(self.organization).with_id(id_string).create()
+        self.create_many_services(10)
 
-        sort_by = 'id'
-        per_page = 2
-        page = 3
-        template = '/v1/services/?sort_by={sort_by}&per_page={per_page}&page={page}'
-        url = template.format(sort_by=sort_by, per_page=per_page, page=page)
+        url = '/v1/services/?per_page=2&page=3'
         response = self.client.get(url)
 
         self.assertEqual(len(response.json()), 2)
-        self.assertEqual(response.json()[0]['id'], '555')
-        self.assertEqual(response.json()[1]['id'], '666')
+        self.assertEqual(response.json()[0]['id'], '005')
+        self.assertEqual(response.json()[1]['id'], '006')
+
+    def test_default_items_per_page_is_30(self):
+        self.create_many_services(31)
+
+        response = self.client.get('/v1/services/')
+
+        self.assertEqual(len(response.json()), 30)
+
+    def test_clamps_max_items_per_page_to_100(self):
+        self.create_many_services(101)
+
+        response = self.client.get('/v1/services/?per_page=101')
+
+        self.assertEqual(len(response.json()), 100)
+
+    def test_page_number_defaults_to_one(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=3')
+
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(response.json()[0]['id'], '001')
+        self.assertEqual(response.json()[1]['id'], '002')
+        self.assertEqual(response.json()[2]['id'], '003')
