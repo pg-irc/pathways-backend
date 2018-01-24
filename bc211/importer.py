@@ -1,10 +1,11 @@
+import logging
 from django.utils import translation
+from django.core.exceptions import ValidationError
 from locations.models import Location, ServiceAtLocation
 from organizations.models import Organization
 from services.models import Service
 from taxonomies.models import TaxonomyTerm
 from addresses.models import Address
-import logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -109,7 +110,7 @@ def save_service_at_location(service, counters):
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
     for taxonomy_term in taxonomy_terms:
-        taxonomy_term_active_record = build_and_save_taxonomy_term_active_record(
+        taxonomy_term_active_record = create_taxonomy_term_active_record(
             taxonomy_term,
             counters
         )
@@ -117,7 +118,7 @@ def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters)
         LOGGER.debug('Taxonomy term "%s" added to service "%s"', taxonomy_term.name, service_active_record.name)
     service_active_record.save()
 
-def build_and_save_taxonomy_term_active_record(record, counters):
+def create_taxonomy_term_active_record(record, counters):
     taxonomy_term_active_record, created = TaxonomyTerm.objects.get_or_create(
         taxonomy_id=record.taxonomy_id,
         name=record.name
@@ -129,17 +130,15 @@ def build_and_save_taxonomy_term_active_record(record, counters):
 
 def save_addresses(addresses, counters):
     for address in addresses:
-        active_record = build_and_save_address_active_record(address, counters)
+        active_record = create_address_active_record(address, counters)
 
-def build_and_save_address_active_record(record, counters):
+def create_address_active_record(record, counters):
     active_record, created = Address.objects.get_or_create(
         address=record.address_lines,
         city=record.city,
-        defaults={
-            'state_province': record.state_province,
-            'postal_code': record.postal_code,
-            'country': record.country
-        }
+        country=record.country,
+        state_province=record.state_province,
+        postal_code=record.postal_code
     )
     if created:
         counters.count_address()
