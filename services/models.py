@@ -19,6 +19,9 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     translations = TranslatedFields(name=models.CharField(max_length=200),
                                     description=models.TextField(blank=True, null=True))
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.name
 
@@ -28,7 +31,6 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
         queryset = cls.add_full_text_search_filter_if_given(queryset, search_parameters)
         queryset = cls.add_sorting_if_given(queryset, search_parameters)
-        queryset = cls.add_paging(queryset, search_parameters)
         return queryset
 
     @staticmethod
@@ -76,16 +78,3 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
 
         argument = 'translations__' + stripped_argument
         return '-' + argument if reverse_sort else argument
-
-    @classmethod
-    def add_paging(cls, queryset, search_parameters):
-        per_page = search_parameters.per_page
-
-        if not per_page:
-            return queryset
-
-        page = search_parameters.page or 1
-        start = (page - 1) * per_page
-        end = start + per_page
-
-        return queryset[start:end]

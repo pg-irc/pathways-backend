@@ -55,22 +55,6 @@ class SearchParametersTests(TestCase):
         parameters = SearchParameters({'search' : '  foo   bar  '})
         self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
 
-    def test_can_parse_per_page_argument(self):
-        parameters = SearchParameters({'per_page' : '2'})
-        self.assertEqual(parameters.per_page, 2)
-
-    def test_per_page_defaults_to_none(self):
-        parameters = SearchParameters({})
-        self.assertIsNone(parameters.per_page)
-
-    def test_can_parse_page_argument(self):
-        parameters = SearchParameters({'page' : '4'})
-        self.assertEqual(parameters.page, 4)
-
-    def test_page_defaults_to_none(self):
-        parameters = SearchParameters({})
-        self.assertIsNone(parameters.page)
-
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()

@@ -20,6 +20,9 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
         description=models.TextField(blank=True, null=True)
     )
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.name
 

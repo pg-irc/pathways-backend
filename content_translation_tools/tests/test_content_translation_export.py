@@ -74,13 +74,6 @@ class ContentTranslationToolsExportTestsWithBaseTranslations(TestCase):
                 ),
                 polib.POEntry(
                     occurrences=[
-                        ('organizations.organization@description@two', '')
-                    ],
-                    msgid='organization_two_translation_description_msgid',
-                    msgstr=''
-                ),
-                polib.POEntry(
-                    occurrences=[
                         ('organizations.organization@name@three', '')
                     ],
                     msgid='organization_three_translation_name_msgid',
@@ -91,6 +84,13 @@ class ContentTranslationToolsExportTestsWithBaseTranslations(TestCase):
                         ('organizations.organization@description@three', '')
                     ],
                     msgid='organization_three_translation_description_msgid',
+                    msgstr=''
+                ),
+                polib.POEntry(
+                    occurrences=[
+                        ('organizations.organization@description@two', '')
+                    ],
+                    msgid='organization_two_translation_description_msgid',
                     msgstr=''
                 )
             ]

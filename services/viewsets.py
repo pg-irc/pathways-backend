@@ -6,7 +6,7 @@ class SearchParameters:
     def __init__(self, query_parameters):
         self.taxonomy_id, self.taxonomy_term = details.parse_taxonomy_parameter(query_parameters)
         self.full_text_search_terms = details.parse_full_text_search_terms(query_parameters)
-        self.sort_by, self.per_page, self.page = details.parse_sorting_and_paging(query_parameters)
+        self.sort_by = details.parse_sorting(query_parameters)
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
