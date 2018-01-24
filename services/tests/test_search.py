@@ -55,6 +55,14 @@ class SearchParametersTests(TestCase):
         parameters = SearchParameters({'search' : '  foo   bar  '})
         self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
 
+    def test_can_parse_per_page_argument(self):
+        parameters = SearchParameters({'per_page' : '2'})
+        self.assertEqual(parameters.per_page, 2)
+
+    def test_per_page_defaults_to_none(self):
+        parameters = SearchParameters({})
+        self.assertIsNone(parameters.per_page)
+
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
@@ -203,12 +211,12 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
 
-    def create_three_organizations(self):
-        for i in range(0, 3):
+    def create_many_services(self, count):
+        for i in range(0, count):
             ServiceBuilder(self.organization).create()
 
     def test_can_order_by_field(self):
-        self.create_three_organizations()
+        self.create_many_services(3)
 
         response = self.client.get('/v1/services/?sort_by=id')
 
@@ -217,7 +225,7 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertLess(json[1]['id'], json[2]['id'])
 
     def test_can_order_by_translated_field(self):
-        self.create_three_organizations()
+        self.create_many_services(3)
 
         response = self.client.get('/v1/services/?sort_by=name')
 
@@ -226,7 +234,7 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertLess(json[1]['name'], json[2]['name'])
 
     def test_can_reverse_ordering(self):
-        self.create_three_organizations()
+        self.create_many_services(3)
 
         response = self.client.get('/v1/services/?sort_by=-id')
 
@@ -235,7 +243,7 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertGreater(json[1]['id'], json[2]['id'])
 
     def test_can_reverse_ordering_on_translated_field(self):
-        self.create_three_organizations()
+        self.create_many_services(3)
 
         response = self.client.get('/v1/services/?sort_by=-name')
 
@@ -284,3 +292,7 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertGreater(second['name'], third['name'])
         self.assertGreater(third['name'], fourth['name'])
 
+    def test_can_specify_page_size(self):
+        self.create_many_services(6)
+        response = self.client.get('/v1/services/?per_page=3')
+        self.assertEqual(len(response.json()), 3)

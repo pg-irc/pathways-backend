@@ -52,7 +52,12 @@ class FilterBuilder:
 
 def parse_sorting_and_paging(query_parameters):
     sort_arguments = query_parameters.get('sort_by', None)
-    if not sort_arguments:
-        return None
-    sort_terms = sort_arguments.split(' ')
-    return [x.strip() for x in sort_terms if x != '']
+    if sort_arguments:
+        sort_terms = sort_arguments.split(' ')
+        sort_arguments = [x.strip() for x in sort_terms if x != '']
+
+    per_page = query_parameters.get('per_page', None)
+    if per_page:
+        per_page = int(per_page) if per_page else None
+
+    return sort_arguments, per_page

@@ -27,7 +27,8 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         queryset = cls.objects.all()
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
         queryset = cls.add_full_text_search_filter_if_given(queryset, search_parameters)
-        queryset = cls.add_sorting_and_paging_if_given(queryset, search_parameters)
+        queryset = cls.add_sorting_if_given(queryset, search_parameters)
+        queryset = cls.add_paging(queryset, search_parameters)
         return queryset
 
     @staticmethod
@@ -54,8 +55,8 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         return queryset.filter(builder.get_filter())
 
     @classmethod
-    def add_sorting_and_paging_if_given(cls, queryset, search_parameters):
-        sort_arguments = search_parameters.sort_by 
+    def add_sorting_if_given(cls, queryset, search_parameters):
+        sort_arguments = search_parameters.sort_by
 
         if not sort_arguments:
             return queryset
@@ -75,3 +76,16 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
 
         argument = 'translations__' + stripped_argument
         return '-' + argument if reverse_sort else argument
+
+    @classmethod
+    def add_paging(cls, queryset, search_parameters):
+        page = 1
+        per_page = search_parameters.per_page
+
+        if not per_page:
+            return queryset
+
+        start = (page - 1) * per_page
+        end = start + per_page
+
+        return queryset[start:end]
