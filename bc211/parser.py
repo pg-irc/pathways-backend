@@ -9,9 +9,6 @@ from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
-BC211_JSON_RE = r"(\w+)\:\'([^\']+)\'"
-ADDRESS_LINE_RE = r"Line[0-9]"
-
 def read_records_from_file(file):
     xml = file.read()
     return parse(xml)
@@ -160,7 +157,8 @@ def is_bc211_taxonomy_term(code_str):
     return code_str.startswith('{')
 
 def parse_bc211_taxonomy_term(code_str):
-    groups = re.findall(BC211_JSON_RE, code_str)
+    bc211_json_re = r"(\w+)\:\'([^\']+)\'"
+    groups = re.findall(bc211_json_re, code_str)
     for (taxonomy_id, name) in groups:
         full_taxonomy_id = 'bc211-{}'.format(taxonomy_id)
         yield dtos.TaxonomyTerm(taxonomy_id=full_taxonomy_id, name=name)
@@ -203,8 +201,9 @@ def parse_address(address, site_id):
 def parse_address_lines(address, site_id):
     # We need at least one Line tag in the address to provide a text value.
     # Any Line value(s) parsed will be stored as the address field (separated by newlines) in the db.
+    address_line_re = r"Line[0-9]"
     address_line_tag_objects = filter(
-        lambda child, regex=ADDRESS_LINE_RE: re.match(regex, child.tag),
+        lambda child, regex=address_line_re: re.match(regex, child.tag),
         address.getchildren()
     )
     address_lines = (
