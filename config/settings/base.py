@@ -127,6 +127,11 @@ MEDIA_ROOT = str(APPS_DIR('media'))
 MEDIA_URL = '/media/'
 ROOT_URLCONF = 'config.urls'
 
+VERBOSE_LOGGING_WITH_INFO = {
+    'handlers': ['verbose-console'],
+    'level': 'INFO',
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -149,14 +154,16 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
         },
-        'bc211': {
-            'handlers': ['verbose-console'],
-            'level': 'DEBUG',
-        },
-        'polls': {
-            'handlers': ['verbose-console'],
-            'level': 'DEBUG',
-        },
+        'bc211': VERBOSE_LOGGING_WITH_INFO,
+        'common': VERBOSE_LOGGING_WITH_INFO,
+        'content_translation_tools': VERBOSE_LOGGING_WITH_INFO,
+        'locations': VERBOSE_LOGGING_WITH_INFO,
+        'organizations': VERBOSE_LOGGING_WITH_INFO,
+        'polls': VERBOSE_LOGGING_WITH_INFO,
+        'search': VERBOSE_LOGGING_WITH_INFO,
+        'services': VERBOSE_LOGGING_WITH_INFO,
+        'taxonomies': VERBOSE_LOGGING_WITH_INFO,
+        'users': VERBOSE_LOGGING_WITH_INFO,
     },
 }
 

@@ -41,7 +41,7 @@ def save_organizations(organizations, counters):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization()
-        LOGGER.info('Imported organization: %s %s', organization.id, organization.name)
+        LOGGER.info('Organization "%s" "%s"', organization.id, organization.name)
         save_locations(organization.locations, counters)
 
 def build_organization_active_record(record):
@@ -58,7 +58,7 @@ def save_locations(locations, counters):
         active_record = build_location_active_record(location)
         active_record.save()
         counters.count_location()
-        LOGGER.info('Imported location: %s %s', location.id, location.name)
+        LOGGER.info('Location "%s" "%s"', location.id, location.name)
         save_services(location.services, counters)
 
 def build_location_active_record(record):
@@ -91,7 +91,7 @@ def save_services(services, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.info('Imported service: %s %s', service.id, service.name)
+        LOGGER.info('Service "%s" "%s"', service.id, service.name)
         save_service_at_location(service, counters)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
@@ -99,7 +99,7 @@ def save_service_at_location(service, counters):
     active_record = build_service_at_location_active_record(service)
     active_record.save()
     counters.count_service_at_location()
-    LOGGER.info('Imported service at location: %s %s', service.id, service.site_id)
+    LOGGER.info('Service at location "%s" "%s"', service.id, service.site_id)
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
     for taxonomy_term in taxonomy_terms:
@@ -108,7 +108,7 @@ def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters)
             counters
         )
         service_active_record.taxonomy_terms.add(taxonomy_term_active_record)
-        LOGGER.info('Added taxonomy term: %s to Service: %s', taxonomy_term.name, service_active_record.name)
+        LOGGER.debug('Taxonomy term "%s" added to service "%s"', taxonomy_term.name, service_active_record.name)
     service_active_record.save()
 
 def build_taxonomy_term_active_record(record, counters):
@@ -118,5 +118,5 @@ def build_taxonomy_term_active_record(record, counters):
     )
     if created:
         counters.count_taxonomy_term()
-        LOGGER.info('Imported taxonomy term: %s %s', record.taxonomy_id, record.name)
+        LOGGER.debug('Taxonomy term "%s" "%s"', record.taxonomy_id, record.name)
     return taxonomy_term_active_record
