@@ -79,12 +79,12 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
 
     @classmethod
     def add_paging(cls, queryset, search_parameters):
-        page = 1
         per_page = search_parameters.per_page
 
         if not per_page:
             return queryset
 
+        page = search_parameters.page or 1
         start = (page - 1) * per_page
         end = start + per_page
 

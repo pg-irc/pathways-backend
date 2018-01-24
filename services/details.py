@@ -60,4 +60,8 @@ def parse_sorting_and_paging(query_parameters):
     if per_page:
         per_page = int(per_page) if per_page else None
 
-    return sort_arguments, per_page
+    page = query_parameters.get('page', None)
+    if page:
+        page = int(page) if page else None
+
+    return sort_arguments, per_page, page
