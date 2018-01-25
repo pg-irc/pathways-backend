@@ -39,8 +39,8 @@ MINIMAL_211_DATA_SET = '''
                 <Description>the second service description</Description>
             </SiteService>
             <MailingAddress>
-                <Line1>Line1</Line1>
                 <Line2>Line2</Line2>
+                <Line1>Line1</Line1>
                 <City>City</City>
                 <Country>Country</Country>
                 <State>State</State>
@@ -68,8 +68,8 @@ MINIMAL_211_DATA_SET = '''
                 <Description>the second site's service description</Description>
             </SiteService>
             <MailingAddress>
-                <Line1>Line1</Line1>
                 <Line2>Line2</Line2>
+                <Line1>Line1</Line1>
                 <City>City</City>
                 <Country>Country</Country>
                 <State>State</State>
