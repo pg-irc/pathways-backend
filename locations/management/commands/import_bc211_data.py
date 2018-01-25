@@ -22,10 +22,12 @@ class Command(BaseCommand):
 
         message_template = ('Successfully imported {0} organization(s), '
                             '{1} location(s), {2} service(s), '
-                            '{3} taxonomy term(s), and {4} address(es)')
+                            '{3} taxonomy term(s), {4} address(es), '
+                            'and {5} address type(s)')
         status_message = message_template.format(counts.organization_count,
                                                  counts.location_count,
                                                  counts.service_count,
                                                  counts.taxonomy_term_count,
-                                                 counts.address_count)
+                                                 counts.address_count,
+                                                 counts.address_type_count)
         self.stdout.write(self.style.SUCCESS(status_message))

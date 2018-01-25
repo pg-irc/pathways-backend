@@ -203,7 +203,6 @@ def parse_address_lines(address):
         if re.match("Line[2-9]", child.tag):
             address_line = parse_required_field(address, child.tag)
             address_lines.append(address_line)
-
     return '\n'.join(address_lines)
 
 def parse_city(address):
