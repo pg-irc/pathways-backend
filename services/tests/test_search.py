@@ -358,6 +358,38 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
 
         self.assertNotIn('rel="next"', link_header)
 
+    def test_includes_first_link_in_link_header(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=3')
+        link_header = response['Link']
+
+        self.assertIn('<http://testserver/v1/services/?per_page=2>; rel="first"', link_header)
+
+    def test_includes_no_first_link_for_first_page(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=1')
+        link_header = response['Link']
+
+        self.assertNotIn('rel="first"', link_header)
+
+    def test_includes_last_link_in_link_header(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=3')
+        link_header = response['Link']
+
+        self.assertIn('<http://testserver/v1/services/?page=5&per_page=2>; rel="last"', link_header)
+
+    def test_includes_no_last_link_for_last_page(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=5')
+        link_header = response['Link']
+
+        self.assertNotIn('rel="last"', link_header)
+
     def test_includes_no_Link_header_for_only_page(self):
         self.create_many_services(2)
 
