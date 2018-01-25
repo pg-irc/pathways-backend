@@ -12,6 +12,11 @@ class Pagination(PageNumberPagination):
         headers = self.build_link_headers()
         if headers:
             response['Link'] = headers
+
+        count = self.page.paginator.count
+        if count:
+            response['Count'] = count
+
         return response
 
     def build_link_headers(self):
