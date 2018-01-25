@@ -3,7 +3,6 @@ import logging
 import xml.etree.ElementTree as etree
 
 from bc211 import parser
-from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 logging.disable(logging.ERROR)
 
@@ -39,6 +38,21 @@ MINIMAL_211_DATA_SET = '''
                 <Name>the second service name</Name>
                 <Description>the second service description</Description>
             </SiteService>
+            <MailingAddress>
+                <Line1>Line1</Line1>
+                <Line2>Line2</Line2>
+                <City>City</City>
+                <Country>Country</Country>
+                <State>State</State>
+                <ZipCode>Code</ZipCode>
+            </MailingAddress>
+            <PhysicalAddress>
+                <Line1 />
+                <City>City</City>
+                <Country>Country</Country>
+                <State>State</State>
+                <ZipCode>Code</ZipCode>
+            </PhysicalAddress>
         </Site>
         <Site>
             <Key>the second site key</Key>
@@ -53,26 +67,23 @@ MINIMAL_211_DATA_SET = '''
                 <Name>the second site's service name</Name>
                 <Description>the second site's service description</Description>
             </SiteService>
+            <MailingAddress>
+                <Line1>Line1</Line1>
+                <Line2>Line2</Line2>
+                <City>City</City>
+                <Country>Country</Country>
+                <State>State</State>
+                <ZipCode>Code</ZipCode>
+            </MailingAddress>
+            <PhysicalAddress>
+                <Line1 />
+                <City>City</City>
+                <Country>Country</Country>
+                <State>State</State>
+                <ZipCode>Code</ZipCode>
+            </PhysicalAddress>
         </Site>
     </Agency>
-</Source>'''
-TEST_ADDRESS_SET = '''
-<Source>
-    <MailingAddress>
-        <Line1>Line1</Line1>
-        <Line2>Line2</Line2>
-        <City>City</City>
-        <Country>Country</Country>
-        <State>State</State>
-        <ZipCode>Code</ZipCode>
-    </MailingAddress>
-    <PhysicalAddress>
-        <Line1 />
-        <City>City</City>
-        <Country>Country</Country>
-        <State>State</State>
-        <ZipCode>Code</ZipCode>
-    </PhysicalAddress>
 </Source>'''
 
 class BC211ParserTests(unittest.TestCase):
@@ -217,13 +228,16 @@ class ServiceParserTests(unittest.TestCase):
 
 class AddressParserTests(unittest.TestCase):
     def setUp(self):
-        self.root = etree.fromstring(TEST_ADDRESS_SET)
-        self.fake_site_id = '12345'
+        root = etree.fromstring(MINIMAL_211_DATA_SET)
+        site = root.find('Agency/Site')
+        self.postal_address = site.find('MailingAddress')
+        self.physical_address = site.find('PhysicalAddress')
 
     def test_only_parses_valid_addresses(self):
-        parsed_addresses = parser.parse_addresses(self.root, self.fake_site_id)
-        self.assertEqual(len(parsed_addresses), 1)
+        parsed_address = parser.parse_address(self.physical_address,
+                                              '12345', 'physical_address')
+        self.assertEqual(parsed_address, None)
 
     def test_parsed_address_lines_correctly_formatted(self):
-        address_lines = parser.parse_address_lines(self.root.find('MailingAddress'), self.fake_site_id)
+        address_lines = parser.parse_address_lines(self.postal_address)
         self.assertEqual(address_lines, 'Line1\nLine2')

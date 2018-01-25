@@ -202,9 +202,11 @@ def parse_address_lines(address):
         lambda child, regex=address_line_re: re.match(regex, child.tag),
         address.getchildren()
     )
-    for line_tag in address_line_tags:
-        newline = parse_required_field(address, line_tag.tag)
-        address_lines.append(newline)
+
+    if address_line_tags:
+        for line_tag in address_line_tags:
+            address_line = parse_required_field(address, line_tag.tag)
+            address_lines.append(address_line)
 
     return '\n'.join(address_lines)
 
