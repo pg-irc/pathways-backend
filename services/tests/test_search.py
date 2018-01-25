@@ -325,3 +325,35 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
         self.assertEqual(response.json()[0]['id'], '001')
         self.assertEqual(response.json()[1]['id'], '002')
         self.assertEqual(response.json()[2]['id'], '003')
+
+    def test_includes_previous_link_in_link_header(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=2')
+        link_header = response['Link']
+
+        self.assertIn('<http://testserver/v1/services/?per_page=2>; rel="prev"', link_header)
+
+    def test_includes_no_previous_link_for_first_page(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2')
+        link_header = response['Link']
+
+        self.assertNotIn('rel="prev"', link_header)
+
+    def test_includes_next_link_in_link_header(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=2')
+        link_header = response['Link']
+
+        self.assertIn('<http://testserver/v1/services/?page=3&per_page=2>; rel="next"', link_header)
+
+    def test_includes_no_next_link_for_last_page(self):
+        self.create_many_services(10)
+
+        response = self.client.get('/v1/services/?per_page=2&page=5')
+        link_header = response['Link']
+
+        self.assertNotIn('rel="next"', link_header)

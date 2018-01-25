@@ -8,4 +8,16 @@ class Pagination(PageNumberPagination):
         self.max_page_size = 100
 
     def get_paginated_response(self, data):
-        return Response(data)
+        response = Response(data)
+        headers = self.build_link_headers()
+        if headers:
+            response['Link'] = headers
+        return response
+
+    def build_link_headers(self):
+        links = [('next', self.get_next_link()),
+                 ('prev', self.get_previous_link())]
+
+        headers = ['<{0}>; rel="{1}"'.format(url, name) for name, url in links if url]
+
+        return ', '.join(headers) if headers else None
