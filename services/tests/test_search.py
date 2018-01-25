@@ -358,6 +358,13 @@ class ServicesSearchSortingAndPagination(rest_test.APITestCase):
 
         self.assertNotIn('rel="next"', link_header)
 
+    def test_includes_no_Link_header_for_only_page(self):
+        self.create_many_services(2)
+
+        response = self.client.get('/v1/services/?per_page=2')
+
+        self.assertNotContains(response, 'Link')
+
     def test_includes_next_link_in_link_header(self):
         self.create_many_services(10)
 

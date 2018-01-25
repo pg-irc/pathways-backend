@@ -9,6 +9,7 @@ class Pagination(PageNumberPagination):
 
     def get_paginated_response(self, data):
         response = Response(data)
+
         headers = self.build_link_headers()
         if headers:
             response['Link'] = headers
