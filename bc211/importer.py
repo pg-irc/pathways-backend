@@ -66,7 +66,10 @@ def save_locations(locations, counters):
         counters.count_location()
         LOGGER.info('Location "%s" "%s"', location.id, location.name)
         save_services(location.services, counters)
-        save_addresses(location.addresses, counters)
+        if location.physical_address:
+            save_address(location.physical_address, counters)
+        if location.postal_address:
+            save_address(location.postal_address, counters)
 
 def build_location_active_record(record):
     active_record = Location()
@@ -128,9 +131,8 @@ def create_taxonomy_term_active_record(record, counters):
         LOGGER.debug('Taxonomy term "%s" "%s"', record.taxonomy_id, record.name)
     return taxonomy_term_active_record
 
-def save_addresses(addresses, counters):
-    for address in addresses:
-        active_record = create_address_active_record(address, counters)
+def save_address(address, counters):
+    active_record = create_address_active_record(address, counters)
 
 def create_address_active_record(record, counters):
     active_record, created = Address.objects.get_or_create(

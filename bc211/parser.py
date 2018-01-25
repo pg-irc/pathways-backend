@@ -77,11 +77,13 @@ def parse_site(site, organization_id):
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
     services = parse_services(site, organization_id, id)
-    addresses = parse_addresses(site, id)
+    physical_address = parse_physical_address(site, id)
+    postal_address = parse_postal_address(site, id)
     LOGGER.info('Parsed location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
-                         services=services, addresses=addresses)
+                         services=services, physical_address=physical_address,
+                         postal_address=postal_address)
 
 def parse_site_id(site):
     return parse_required_field(site, 'Key')
@@ -167,66 +169,50 @@ def parse_airs_taxonomy_term(code_str):
     taxonomy_id = 'airs'
     yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)
 
-def parse_addresses(site, site_id):
-    addresses = []
-    physical_address = AddressParser(site_id)(site.find('PhysicalAddress'))
-    if physical_address:
-        addresses.append(physical_address)
-    mailing_address = AddressParser(site_id)(site.find('MailingAddress'))
-    if mailing_address:
-        addresses.append(mailing_address)
-    return addresses
+def parse_physical_address(site, site_id):
+    type_id = 'physical_address'
+    return parse_address(site.find('PhysicalAddress'), site_id, type_id)
 
-class AddressParser:
-    def __init__(self, site_id):
-        self.site_id = site_id
+def parse_postal_address(site, site_id):
+    type_id = 'postal_address'
+    return parse_address(site.find('MailingAddress'), site_id, type_id)
 
-    def __call__(self, address):
-        if etree.iselement(address):
-            return parse_address(address, self.site_id)
-
-
-def parse_address(address, site_id):
-    address_lines = parse_address_lines(address, site_id)
+def parse_address(address, site_id, type_id):
+    address_lines = parse_address_lines(address)
     city = parse_city(address)
     country = parse_country(address)
-    if address_lines and city and country:
-        address_type_id = parse_address_type_id(address)
-        state_province = parse_state_province(address)
-        postal_code = parse_postal_code(address)
-        return dtos.Address(location_id=site_id, address_lines=address_lines,
-                            city=city, state_province=state_province, postal_code=postal_code,
-                            country=country, address_type_id=address_type_id)
+    if not address_lines or not city or not country:
+        LOGGER.debug('Unable to create address for location: %s. '
+                     'Missing required value(s)', site_id)
+        return None
+    address_type_id = type_id
+    state_province = parse_state_province(address)
+    postal_code = parse_postal_code(address)
+    return dtos.Address(location_id=site_id, address_lines=address_lines,
+                        city=city, state_province=state_province, postal_code=postal_code,
+                        country=country, address_type_id=address_type_id)
 
-def parse_address_lines(address, site_id):
-    # We need at least one Line tag in the address to provide a text value.
-    # Any Line value(s) parsed will be stored as the address field (separated by newlines) in the db.
-    address_line_re = r"Line[0-9]"
-    address_line_tag_objects = filter(
+def parse_address_lines(address):
+    line_1 = parse_required_field(address, 'Line1')
+    if not line_1:
+        return None
+    address_lines = [line_1]
+    address_line_re = r"Line[2-9]"
+    address_line_tags = filter(
         lambda child, regex=address_line_re: re.match(regex, child.tag),
         address.getchildren()
     )
-    address_lines = (
-        [address_line_tag_object.text for
-         address_line_tag_object in
-         address_line_tag_objects if
-         address_line_tag_object.text]
-    )
-    if address_lines:
-        return '\n'.join(address_lines)
-    LOGGER.debug('Could NOT parse address for location: %s. Necessary address line(s) not found.', site_id)
+    for line_tag in address_line_tags:
+        newline = parse_required_field(address, line_tag.tag)
+        address_lines.append(newline)
+
+    return '\n'.join(address_lines)
 
 def parse_city(address):
     return parse_required_field(address, 'City')
 
 def parse_country(address):
     return parse_required_field(address, 'Country')
-
-def parse_address_type_id(address):
-    return {
-        'PhysicalAddress': 'physical_address',
-        'MailingAddress': 'postal_address',
-    }.get(address.tag, 'physical_address')
 
 def parse_state_province(address):
     return parse_optional_field(address, 'State')
