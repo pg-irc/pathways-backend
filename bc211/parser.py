@@ -183,7 +183,8 @@ def parse_address(address, site_id, type_id):
     country = parse_country(address)
     if not address_lines or not city or not country:
         LOGGER.debug('Unable to create address for location: %s. '
-                     'Missing required value(s)', site_id)
+                     'Parsed %s for address, %s for city, and %s for country.',
+                     site_id, address_lines, city, country)
         return None
     address_type_id = type_id
     state_province = parse_state_province(address)
@@ -197,15 +198,10 @@ def parse_address_lines(address):
     if not line_1:
         return None
     address_lines = [line_1]
-    address_line_re = r"Line[2-9]"
-    address_line_tags = filter(
-        lambda child, regex=address_line_re: re.match(regex, child.tag),
-        address.getchildren()
-    )
-
-    if address_line_tags:
-        for line_tag in address_line_tags:
-            address_line = parse_required_field(address, line_tag.tag)
+    address_children = sorted(address.getchildren(), key=lambda child: child.tag)
+    for child in address_children:
+        if re.match("Line[2-9]", child.tag):
+            address_line = parse_required_field(address, child.tag)
             address_lines.append(address_line)
 
     return '\n'.join(address_lines)
