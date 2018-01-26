@@ -51,7 +51,7 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'common.pagination.Pagination',
+    'DEFAULT_PAGINATION_CLASS': 'common.view.Pagination',
     'PAGE_SIZE': 30
 }
 
