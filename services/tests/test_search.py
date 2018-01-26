@@ -1,4 +1,3 @@
-import re
 from django.test import TestCase
 from django.core.exceptions import SuspiciousOperation
 from rest_framework import test as rest_test

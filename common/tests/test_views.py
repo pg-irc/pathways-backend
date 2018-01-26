@@ -13,6 +13,22 @@ class TestPagination(rest_test.APITestCase):
             id_with_zero_prefix = ('00' + id_as_string)[-3:]
             ServiceBuilder(self.organization).with_id(id_with_zero_prefix).create()
 
+    def test_link_header_contains_links_to_pages(self):
+        get_name_from_rel = lambda rel: rel.strip()[5:-1]
+        strip_url = lambda url: url.strip()[1:-1]
+
+        self.create_many_services(10)
+        link_header = self.client.get('/v1/services/?per_page=2&page=3')['Link']
+
+        links = link_header.split(',')
+        urls_and_rels = [link.split(';') for link in links]
+        link_map = {get_name_from_rel(rel): strip_url(url) for (url, rel) in urls_and_rels}
+
+        self.assertNotRegex(link_map['first'], r'\bpage=')
+        self.assertRegex(link_map['prev'], r'\bpage=2\b')
+        self.assertRegex(link_map['next'], r'\bpage=4\b')
+        self.assertRegex(link_map['last'], r'\bpage=5\b')
+
     def test_link_header_elements_are_separated_by_comma(self):
         self.create_many_services(10)
 
@@ -48,7 +64,7 @@ class TestPagination(rest_test.APITestCase):
         one_link = link_header.split(',')[0]
         relation = one_link.split(';')[1]
 
-        self.assertRegex(relation.strip(), r'rel="\w+"')
+        self.assertRegex(relation.strip(), r'^rel="\w+"$')
 
     def test_includes_previous_link_in_link_header(self):
         self.create_many_services(10)
