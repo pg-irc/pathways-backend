@@ -54,7 +54,8 @@ class TestAddressModel(TestCase):
         self.assertEqual(address_from_db.postal_code, address.postal_code)
 
     def test_does_not_allow_duplicate_addresses(self):
-        address = AddressBuilder().create()
+        address = AddressBuilder().build()
         address_copy = copy(address)
+        address.save()
         with self.assertRaises(exceptions.ValidationError):
-            address_copy.create()
+            address_copy.save()

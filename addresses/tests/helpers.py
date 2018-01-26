@@ -46,4 +46,20 @@ class AddressBuilder:
 
     def create(self):
         self.build().save()
+
+
+class AddressTypeBuilder:
+    def __init__(self):
+        self.id = a_string()
+
+    def build(self):
+        result = models.AddressType()
+        result.id = self.id
+        return result
+
+    def with_id(self, address_type_id):
+        self.id = address_type_id
         return self
+
+    def create(self):
+        self.build().save()
