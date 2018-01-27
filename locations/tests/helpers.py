@@ -55,3 +55,19 @@ class ServiceLocationBuilder:
         result.service = self.service
         result.location = self.location
         return result
+
+class LocationAddressBuilder:
+    def __init__(self, address, location, address_type):
+        self.address = address
+        self.location = location
+        self.address_type = address_type
+
+    def build(self):
+        result = models.LocationAddress()
+        result.address = self.address
+        result.location = self.location
+        result.address_type = self.address_type
+        return result
+
+    def create(self):
+        self.build().save()
