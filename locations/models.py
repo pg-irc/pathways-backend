@@ -6,6 +6,7 @@ from addresses.models import Address, AddressType
 from services.models import Service
 from common.models import ValidateOnSaveMixin, RequiredCharField
 
+
 class Location(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
                            max_length=200,
@@ -35,6 +36,7 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
         if latitude_is_null != longitude_is_null:
             raise_mismatch_exception(latitude_is_null, longitude_is_null)
 
+
 class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
@@ -45,16 +47,26 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
             location=self.location
         )
 
+
 class LocationAddress(ValidateOnSaveMixin, models.Model):
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    address_type = models.ForeignKey(AddressType, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address,
+                                related_name='address_locations',
+                                on_delete=models.CASCADE)
+    location = models.ForeignKey(Location,
+                                 related_name='location_addresses',
+                                 on_delete=models.CASCADE)
+    address_type = models.ForeignKey(AddressType,
+                                     on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('location', 'address_type')
 
     def __str__(self):
         return '\"{address}\" for \"{location}\"'.format(
             address=self.address,
             location=self.location
         )
+
 
 def raise_mismatch_exception(latitude_is_null, longitude_is_null):
     message = make_mismatch_message(latitude_is_null, longitude_is_null)
