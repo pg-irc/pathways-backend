@@ -5,8 +5,8 @@ from addresses import models
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Address
-        fields = ('id', 'address', 'city', 'country',
-                  'attention', 'state_province', 'postal_code')
+        fields = ('id', 'attention', 'address', 'city',
+                  'state_province', 'postal_code', 'country')
 
 
 class AddressTypeSerializer(serializers.ModelSerializer):
