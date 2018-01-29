@@ -25,7 +25,7 @@ def parse_agency(agency):
     description = parse_agency_description(agency)
     website = parse_agency_website_with_prefix(agency)
     email = parse_agency_email(agency)
-    LOGGER.info('Parsed organization: %s %s', id, name)
+    LOGGER.debug('Organization "%s" "%s"', id, name)
     locations = parse_sites(agency, id)
     return dtos.Organization(id=id, name=name, description=description, website=website,
                              email=email, locations=locations)
@@ -78,7 +78,7 @@ def parse_site(site, organization_id):
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
     services = parse_services(site, organization_id, id)
-    LOGGER.info('Parsed location: %s %s', id, name)
+    LOGGER.debug('Location "%s" "%s"', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
                          services=services)
@@ -116,7 +116,7 @@ def parse_service(service, organization_id, site_id):
     name = parse_service_name(service)
     description = parse_service_description(service)
     taxonomy_terms = parse_service_taxonomy_terms(service, id)
-    LOGGER.info('Parsed service: %s %s', id, name)
+    LOGGER.debug('Service: "%s" "%s"', id, name)
     return dtos.Service(id=id, name=name, organization_id=organization_id,
                         site_id=site_id, description=description,
                         taxonomy_terms=taxonomy_terms)
@@ -146,7 +146,7 @@ class ServiceTaxonomyTermParser:
 def parse_service_taxonomy_term(service_taxonomy_term, service_id):
     code = parse_required_field(service_taxonomy_term, 'Code')
 
-    LOGGER.debug('Parsed taxonomy term: %s', code)
+    LOGGER.debug('Taxonomy term "%s"', code)
 
     if code and is_bc211_taxonomy_term(code):
         yield from parse_bc211_taxonomy_term(code)
