@@ -19,7 +19,7 @@ def raise_taxonomy_error():
     raise SuspiciousOperation('Invalid argument to taxonomy_term')
 
 def parse_full_text_search_terms(query_parameters):
-    query_arguments = query_parameters.get('queries', None)
+    query_arguments = query_parameters.get('search', None)
     if not query_arguments:
         return None
     search_terms = query_arguments.split(' ')

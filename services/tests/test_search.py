@@ -39,7 +39,7 @@ class SearchParametersTests(TestCase):
             SearchParameters({'taxonomy_term' : 'foo:'})
 
     def test_can_build_full_text_search_term(self):
-        parameters = SearchParameters({'queries' : 'foo'})
+        parameters = SearchParameters({'search' : 'foo'})
         self.assertCountEqual(parameters.full_text_search_terms, ['foo'])
 
     def test_full_text_search_term_is_optional(self):
@@ -48,11 +48,11 @@ class SearchParametersTests(TestCase):
 
     # Django replaces + characters with space in URL parameter argument
     def test_full_text_search_terms_are_split_on_space(self):
-        parameters = SearchParameters({'queries' : 'foo bar'})
+        parameters = SearchParameters({'search' : 'foo bar'})
         self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
 
     def test_full_text_search_terms_are_stripped_of_white_space(self):
-        parameters = SearchParameters({'queries' : '  foo   bar  '})
+        parameters = SearchParameters({'search' : '  foo   bar  '})
         self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
@@ -103,7 +103,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         the_name = a_string()
         service = ServiceBuilder(self.organization).with_name(the_name).create()
 
-        url = '/v1/services/?queries={0}'.format(the_name)
+        url = '/v1/services/?search={0}'.format(the_name)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -115,7 +115,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         the_name = part_of_the_name + a_string()
         service = ServiceBuilder(self.organization).with_name(the_name).create()
 
-        url = '/v1/services/?queries={0}'.format(part_of_the_name)
+        url = '/v1/services/?search={0}'.format(part_of_the_name)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -127,7 +127,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         the_search_term = 'foobar'
         service = ServiceBuilder(self.organization).with_name(the_name).create()
 
-        url = '/v1/services/?queries={0}'.format(the_search_term)
+        url = '/v1/services/?search={0}'.format(the_search_term)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -139,7 +139,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         the_description = part_of_the_description + a_string()
         service = ServiceBuilder(self.organization).with_description(the_description).create()
 
-        url = '/v1/services/?queries={0}'.format(part_of_the_description)
+        url = '/v1/services/?search={0}'.format(part_of_the_description)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -150,7 +150,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         the_name = a_string()
         service = ServiceBuilder(self.organization).with_name(the_name).create()
 
-        url = '/v1/services/?queries={0}+{1}+{2}'.format(a_string(), the_name, a_string())
+        url = '/v1/services/?search={0}+{1}+{2}'.format(a_string(), the_name, a_string())
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -160,7 +160,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
     def test_full_text_search_with_no_match_returns_empty_array(self):
         service = ServiceBuilder(self.organization).create()
 
-        url = '/v1/services/?queries={0}'.format(a_string())
+        url = '/v1/services/?search={0}'.format(a_string())
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -169,7 +169,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
     def test_full_text_search_ignores_empty_search_term(self):
         ServiceBuilder(self.organization).create()
 
-        url = '/v1/services/?queries={0}+{1}+{2}'.format('', a_string(), a_string())
+        url = '/v1/services/?search={0}+{1}+{2}'.format('', a_string(), a_string())
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -187,7 +187,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_taxonomy_terms([the_taxonomy_term]).create()
         ServiceBuilder(self.organization).with_name(the_search_term + a_string()).create()
 
-        url = '/v1/services/?queries={0}&taxonomy_term={1}:{2}'.format(the_search_term,
+        url = '/v1/services/?search={0}&taxonomy_term={1}:{2}'.format(the_search_term,
                                                                        the_taxonomy_term.taxonomy_id,
                                                                        the_taxonomy_term.name)
         response = self.client.get(url)
