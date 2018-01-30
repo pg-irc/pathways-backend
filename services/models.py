@@ -5,6 +5,7 @@ from django.db.models import Q
 from organizations.models import Organization
 from parler.models import TranslatableModel, TranslatedFields
 from taxonomies.models import TaxonomyTerm
+from services import details
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
@@ -48,14 +49,9 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         if not search_terms:
             return queryset
 
-        qs = None
+        builder = details.OrFilterBuilder()
         for term in search_terms:
-            if not qs:
-                qs = (Q(translations__name__icontains=term) |
-                      Q(translations__description__icontains=term))
-            else:
-                qs = (qs |
-                      Q(translations__name__icontains=term) |
-                      Q(translations__description__icontains=term))
+            builder.add(Q(translations__name__icontains=term))
+            builder.add(Q(translations__description__icontains=term))
 
-        return queryset.filter(qs)
+        return queryset.filter(builder.get_filter())

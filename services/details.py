@@ -24,3 +24,17 @@ def parse_full_text_search_terms(query_parameters):
         return None
     search_terms = query_arguments.split(' ')
     return [x.strip() for x in search_terms if x != '']
+
+
+class OrFilterBuilder:
+    def __init__(self):
+        self.queries = None
+    
+    def add(self, query):
+        if self.queries:
+            self.queries = self.queries | query
+        else:
+            self.queries = query
+
+    def get_filter(self):
+        return self.queries
