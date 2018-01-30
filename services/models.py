@@ -49,9 +49,9 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         if not search_terms:
             return queryset
 
-        builder = details.OrFilterBuilder()
+        builder = details.FilterBuilder()
         for term in search_terms:
-            builder.add(Q(translations__name__icontains=term))
-            builder.add(Q(translations__description__icontains=term))
+            builder.add_with_or(Q(translations__name__icontains=term),
+                                Q(translations__description__icontains=term))
 
         return queryset.filter(builder.get_filter())

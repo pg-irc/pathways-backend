@@ -25,16 +25,25 @@ def parse_full_text_search_terms(query_parameters):
     search_terms = query_arguments.split(' ')
     return [x.strip() for x in search_terms if x != '']
 
-
-class OrFilterBuilder:
+class FilterBuilder:
     def __init__(self):
-        self.queries = None
-    
-    def add(self, query):
-        if self.queries:
-            self.queries = self.queries | query
-        else:
-            self.queries = query
+        self.filter = None
+
+    def add_with_or(self, *filters):
+        new_filters = self.join_with_or(*filters)
+        self.filter = self.join_with_and(self.filter, new_filters)
+
+    def join_with_and(self, *filters):
+        result = None
+        for filter in filters:
+            result = result & filter if result else filter
+        return result
+
+    def join_with_or(self, *filters):
+        result = None
+        for filter in filters:
+            result = result | filter if result else filter
+        return result
 
     def get_filter(self):
-        return self.queries
+        return self.filter
