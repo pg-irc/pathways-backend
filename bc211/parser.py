@@ -182,9 +182,9 @@ def parse_address(address, site_id, type_id):
     city = parse_city(address)
     country = parse_country(address)
     if not address_lines or not city or not country:
-        LOGGER.debug('Unable to create address for location: %s. '
-                     'Parsed %s for address, %s for city, and %s for country.',
-                     site_id, address_lines, city, country)
+        LOGGER.warning('Unable to create address for location: "%s". '
+                       'Parsed "%s" for address, "%s" for city, and "%s" for country.',
+                       site_id, address_lines, city, country)
         return None
     address_type_id = type_id
     state_province = parse_state_province(address)
