@@ -14,7 +14,6 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         query_parameters = self.request.query_params
         search_parameters = SearchParameters(query_parameters)
         queryset = models.Service.get_queryset(search_parameters)
-        details.raise_404_on_empty(queryset)
         return queryset
 
     serializer_class = serializers.ServiceSerializer

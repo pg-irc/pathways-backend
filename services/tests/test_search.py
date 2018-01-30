@@ -71,7 +71,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['id'], service.id)
 
-    def test_taxonomy_search_with_wrong_taxonomy_id_returns_404(self):
+    def test_taxonomy_search_with_wrong_taxonomy_id_returns_empty_array(self):
         taxonomy_term = TaxonomyTermBuilder().create()
         wrong_taxonomy_term = TaxonomyTermBuilder().create()
         ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
@@ -80,9 +80,10 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
                                                            taxonomy_term.name)
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 0)
 
-    def test_taxonomy_search_with_wrong_taxonomy_term_returns_404(self):
+    def test_taxonomy_search_with_wrong_taxonomy_term_returns_empty_array(self):
         taxonomy_term = TaxonomyTermBuilder().create()
         wrong_taxonomy_term = TaxonomyTermBuilder().create()
         ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
@@ -91,7 +92,8 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
                                                            wrong_taxonomy_term.name)
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 0)
 
 class ServicesFullTextSearchTests(rest_test.APITestCase):
     def setUp(self):
@@ -155,13 +157,14 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], the_name)
 
-    def test_full_text_search_with_no_match_returns_404(self):
+    def test_full_text_search_with_no_match_returns_empty_array(self):
         service = ServiceBuilder(self.organization).create()
 
         url = '/v1/services/?queries={0}'.format(a_string())
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 0)
 
     def test_full_text_search_ignores_empty_search_term(self):
         ServiceBuilder(self.organization).create()
@@ -169,7 +172,8 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         url = '/v1/services/?queries={0}+{1}+{2}'.format('', a_string(), a_string())
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 0)
 
     def test_can_combine_taxonomic_search_and_full_text_search(self):
         the_search_term = a_string()

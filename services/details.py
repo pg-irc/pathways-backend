@@ -18,10 +18,6 @@ def build_valid_taxonomy_parameters(taxonomy_term):
 def raise_taxonomy_error():
     raise SuspiciousOperation('Invalid argument to taxonomy_term')
 
-def raise_404_on_empty(queryset):
-    if not queryset.exists():
-        raise Http404
-
 def parse_full_text_search_terms(query_parameters):
     query_arguments = query_parameters.get('queries', None)
     if not query_arguments:
