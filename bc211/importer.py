@@ -157,11 +157,7 @@ def create_address_type(address_type_id, counters):
     return active_record
 
 def create_location_address(location, address, address_type):
-    active_record, created = LocationAddress.objects.get_or_create(
-        address=address,
-        location=location,
-        address_type=address_type
-    )
-    if created:
-        LOGGER.info('Imported location address')
+    active_record = LocationAddress(address=address, location=location,
+                                    address_type=address_type).save()
+    LOGGER.info('Imported location address')
     return active_record
