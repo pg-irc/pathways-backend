@@ -3,7 +3,7 @@ from rest_framework import status
 from locations.tests.helpers import LocationBuilder, LocationAddressBuilder
 from locations.models import Location
 from organizations.tests.helpers import OrganizationBuilder
-from addresses.tests.helpers import AddressBuilder, AddressTypeBuilder
+from addresses.tests.helpers import AddressBuilder
 from addresses.models import Address, AddressType
 
 
@@ -94,11 +94,12 @@ class LocationsApiTests(rest_test.APITestCase):
     def location_has_address_of_type(self, address_type_id):
         LocationBuilder(self.organization).create()
         AddressBuilder().create()
-        AddressTypeBuilder().with_id(address_type_id).create()
+        address_type = AddressType(id=address_type_id)
+        address_type.save()
         LocationAddressBuilder(
             location=Location.objects.first(),
             address=Address.objects.first(),
-            address_type=AddressType.objects.first()
+            address_type=address_type
         ).create()
         url = '/v1/locations/'
         response = self.client.get(url)
