@@ -1,3 +1,4 @@
+import string
 from addresses import models
 from common.testhelpers.random_test_values import a_string
 
@@ -5,7 +6,7 @@ class AddressBuilder:
     def __init__(self):
         self.address = a_string()
         self.city = a_string()
-        self.country = 'CA'
+        self.country = a_string(2, string.ascii_uppercase)
         self.attention = a_string()
         self.state_province = a_string()
         self.postal_code = a_string()
