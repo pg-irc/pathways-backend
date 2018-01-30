@@ -29,9 +29,9 @@ class TestAddressModel(TestCase):
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.country, address.country)
 
-    def test_only_allow_two_character_country_fields(self):
-        country_field_value = a_string()
-        address = AddressBuilder().with_country(country_field_value).build()
+    def test_country_fields_cannot_exceed_two_characters(self):
+        three_character_string = a_string(3)
+        address = AddressBuilder().with_country(three_character_string).build()
         with self.assertRaises(exceptions.ValidationError):
             validate_save_and_reload(address)
 
