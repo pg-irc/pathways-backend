@@ -127,8 +127,12 @@ def create_taxonomy_term_active_record(record, counters):
 
 def create_address_for_location(location, address_dto, counters):
     address = create_address(address_dto, counters)
-    address_type = create_address_type(address_dto.address_type_id)
-    create_location_address(location, address, address_type)
+    address_type = AddressType.objects.get(pk=address_dto.address_type_id)
+    create_location_address(
+        location,
+        address,
+        address_type
+    )
 
 def create_address(address_dto, counters):
     active_record, created = Address.objects.get_or_create(
@@ -141,12 +145,6 @@ def create_address(address_dto, counters):
     if created:
         counters.count_address()
         LOGGER.info('Imported address: %s %s', active_record.id, active_record.address)
-    return active_record
-
-def create_address_type(address_type_id):
-    active_record, created = AddressType.objects.get_or_create(
-        id=address_type_id
-    )
     return active_record
 
 def create_location_address(location, address, address_type):

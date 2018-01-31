@@ -90,21 +90,12 @@ class AddressImportTests(TestCase):
         self.assertEqual(len(self.addresses), 1)
 
 class AddressTypeTests(TestCase):
-    def setUp(self):
-        file = open(ONE_AGENCY_FIXTURE, 'r')
-        records = read_records_from_file(file)
-        save_records_to_database(records)
-        self.address_types = AddressType.objects.all()
-
-    def test_can_import_address_type(self):
-        self.assertIsInstance(self.address_types.first(), AddressType)
-
     def test_imports_correct_address_types(self):
         expected_address_types = [
             AddressType(id='physical_address'),
             AddressType(id='postal_address')
         ]
-        self.assertCountEqual(self.address_types, expected_address_types)
+        self.assertCountEqual(AddressType.objects.all(), expected_address_types)
 
 
 class FullDataImportTests(TestCase):
