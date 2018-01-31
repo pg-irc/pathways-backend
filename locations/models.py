@@ -50,7 +50,6 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
 
 class LocationAddress(ValidateOnSaveMixin, models.Model):
     address = models.ForeignKey(Address,
-                                related_name='address_locations',
                                 on_delete=models.CASCADE)
     location = models.ForeignKey(Location,
                                  related_name='location_addresses',
