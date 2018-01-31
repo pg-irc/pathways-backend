@@ -135,6 +135,3 @@ class FullDataImportTests(TestCase):
 
     def test_returns_number_of_addresses_imported(self):
         self.assertEqual(self.return_value.address_count, 32)
-
-    def test_returns_number_of_address_types_imported(self):
-        self.assertEqual(self.return_value.address_type_count, 2)

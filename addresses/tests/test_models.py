@@ -1,15 +1,16 @@
 import string
+from copy import copy
 from django.test import TestCase
 from django.core import exceptions
 from common.testhelpers.random_test_values import a_string
 from addresses.tests.helpers import AddressBuilder
 from addresses.models import Address
-from copy import copy
 
 def validate_save_and_reload(instance):
     instance.save()
     instance.refresh_from_db()
     return instance
+
 
 class TestAddressModel(TestCase):
 

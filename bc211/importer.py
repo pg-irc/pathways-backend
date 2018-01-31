@@ -15,7 +15,6 @@ class ImportCounters:
         self.service_count = 0
         self.taxonomy_term_count = 0
         self.address_count = 0
-        self.address_type_count = 0
 
     def count_organization(self):
         self.organization_count += 1
@@ -31,9 +30,6 @@ class ImportCounters:
 
     def count_address(self):
         self.address_count += 1
-
-    def count_address_type(self):
-        self.address_type_count += 1
 
 def save_records_to_database(organizations):
     translation.activate('en')
@@ -131,7 +127,7 @@ def create_taxonomy_term_active_record(record, counters):
 
 def create_address_for_location(location, address_dto, counters):
     address = create_address(address_dto, counters)
-    address_type = create_address_type(address_dto.address_type_id, counters)
+    address_type = create_address_type(address_dto.address_type_id)
     create_location_address(location, address, address_type)
 
 def create_address(address_dto, counters):
@@ -147,13 +143,10 @@ def create_address(address_dto, counters):
         LOGGER.info('Imported address: %s %s', active_record.id, active_record.address)
     return active_record
 
-def create_address_type(address_type_id, counters):
+def create_address_type(address_type_id):
     active_record, created = AddressType.objects.get_or_create(
         id=address_type_id
     )
-    if created:
-        counters.count_address_type()
-        LOGGER.info('Imported address type: %s ', active_record.id)
     return active_record
 
 def create_location_address(location, address, address_type):
