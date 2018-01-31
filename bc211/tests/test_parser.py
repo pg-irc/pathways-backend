@@ -39,15 +39,15 @@ MINIMAL_211_DATA_SET = '''
                 <Description>the second service description</Description>
             </SiteService>
             <MailingAddress>
-                <Line2>Line2</Line2>
                 <Line1>Line1</Line1>
+                <Line2>Line2</Line2>
                 <City>City</City>
                 <Country>Country</Country>
                 <State>State</State>
                 <ZipCode>Code</ZipCode>
             </MailingAddress>
             <PhysicalAddress>
-                <Line1 />
+                <Line1>Line1</Line1>
                 <City>City</City>
                 <Country>Country</Country>
                 <State>State</State>
@@ -68,15 +68,15 @@ MINIMAL_211_DATA_SET = '''
                 <Description>the second site's service description</Description>
             </SiteService>
             <MailingAddress>
-                <Line2>Line2</Line2>
                 <Line1>Line1</Line1>
+                <Line2>Line2</Line2>
                 <City>City</City>
                 <Country>Country</Country>
                 <State>State</State>
                 <ZipCode>Code</ZipCode>
             </MailingAddress>
             <PhysicalAddress>
-                <Line1 />
+                <Line1>Line1</Line1>
                 <City>City</City>
                 <Country>Country</Country>
                 <State>State</State>
@@ -228,7 +228,29 @@ class ServiceParserTests(unittest.TestCase):
 
 class AddressParserTests(unittest.TestCase):
     def setUp(self):
-        root = etree.fromstring(MINIMAL_211_DATA_SET)
+        malformed_address_xml = '''
+            <Source>
+                <Agency>
+                    <Site>
+                        <MailingAddress>
+                            <Line2>Line2</Line2>
+                            <Line1>Line1</Line1>
+                            <City>City</City>
+                            <Country>Country</Country>
+                            <State>State</State>
+                            <ZipCode>Code</ZipCode>
+                        </MailingAddress>
+                        <PhysicalAddress>
+                            <Line1 />
+                            <City>City</City>
+                            <Country>Country</Country>
+                            <State>State</State>
+                            <ZipCode>Code</ZipCode>
+                        </PhysicalAddress>
+                    </Site>
+                </Agency>
+            </Source>'''
+        root = etree.fromstring(malformed_address_xml)
         site = root.find('Agency/Site')
         self.postal_address = site.find('MailingAddress')
         self.physical_address = site.find('PhysicalAddress')
