@@ -232,6 +232,7 @@ class AddressParserTests(unittest.TestCase):
             <Source>
                 <Agency>
                     <Site>
+                        <Key>1234</Key>
                         <MailingAddress>
                             <Line2>Line2</Line2>
                             <Line1>Line1</Line1>
@@ -252,12 +253,13 @@ class AddressParserTests(unittest.TestCase):
             </Source>'''
         root = etree.fromstring(malformed_address_xml)
         site = root.find('Agency/Site')
+        self.location_id = site.find('Key')
         self.postal_address = site.find('MailingAddress')
         self.physical_address = site.find('PhysicalAddress')
 
     def test_only_parses_valid_addresses(self):
         parsed_address = parser.parse_address(self.physical_address,
-                                              '12345', 'physical_address')
+                                              self.location_id, 'physical_address')
         self.assertEqual(parsed_address, None)
 
     def test_parsed_address_lines_correctly_formatted(self):
