@@ -236,6 +236,9 @@ class AddressParserTests(unittest.TestCase):
                         <MailingAddress>
                             <Line2>Line2</Line2>
                             <Line1>Line1</Line1>
+                            <Line3>Line3</Line3>
+                            <Line4>Line4</Line4>
+                            <Line5>Line5</Line5>
                             <City>City</City>
                             <Country>Country</Country>
                             <State>State</State>
@@ -262,6 +265,10 @@ class AddressParserTests(unittest.TestCase):
                                               self.location_id, 'physical_address')
         self.assertEqual(parsed_address, None)
 
+    def test_none_is_returned_when_line1_is_empty(self):
+        address_lines = parser.parse_address_lines(self.physical_address)
+        self.assertEqual(address_lines, None)
+
     def test_parsed_address_lines_correctly_formatted(self):
         address_lines = parser.parse_address_lines(self.postal_address)
-        self.assertEqual(address_lines, 'Line1\nLine2')
+        self.assertEqual(address_lines, 'Line1\nLine2\nLine3\nLine4')

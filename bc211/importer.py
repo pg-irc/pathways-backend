@@ -97,10 +97,10 @@ def save_services(services, counters):
         active_record.save()
         counters.count_service()
         LOGGER.info('Service "%s" "%s"', service.id, service.name)
-        save_service_at_location(service, counters)
+        save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
-def save_service_at_location(service, counters):
+def save_service_at_location(service):
     active_record = build_service_at_location_active_record(service)
     active_record.save()
     LOGGER.info('Imported service at location: %s %s', service.id, service.site_id)

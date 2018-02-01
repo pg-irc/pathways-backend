@@ -200,9 +200,11 @@ def parse_address_lines(address):
     address_lines = [line_1]
     address_children = sorted(address.getchildren(), key=lambda child: child.tag)
     for child in address_children:
-        if re.match("Line[2-9]", child.tag):
+        if re.match("Line[2-4]", child.tag):
             address_line = parse_required_field(address, child.tag)
             address_lines.append(address_line)
+        if re.match("Line[5-9]", child.tag):
+            LOGGER.warning('Tag %s encountered and has not been parsed.', child.tag)
     return '\n'.join(address_lines)
 
 def parse_city(address):
