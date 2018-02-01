@@ -1,9 +1,11 @@
 from common.models import ValidateOnSaveMixin, RequiredCharField
 from django.core import validators
 from django.db import models
+from django.db.models import Q
 from organizations.models import Organization
 from parler.models import TranslatableModel, TranslatedFields
 from taxonomies.models import TaxonomyTerm
+from services import details
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
@@ -27,6 +29,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     def get_queryset(cls, search_parameters):
         queryset = cls.objects.all()
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
+        queryset = cls.add_full_text_search_filter_if_given(queryset, search_parameters)
         return queryset
 
     @staticmethod
@@ -38,3 +41,17 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
             queryset = queryset.filter(taxonomy_terms__taxonomy_id=identifier,
                                        taxonomy_terms__name=term)
         return queryset
+
+    @staticmethod
+    def add_full_text_search_filter_if_given(queryset, search_parameters):
+        search_terms = search_parameters.full_text_search_terms
+
+        if not search_terms:
+            return queryset
+
+        builder = details.FilterBuilder()
+        for term in search_terms:
+            builder.add_with_or(Q(translations__name__icontains=term),
+                                Q(translations__description__icontains=term))
+
+        return queryset.filter(builder.get_filter())

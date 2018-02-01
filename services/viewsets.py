@@ -5,6 +5,7 @@ import services.details as details
 class SearchParameters:
     def __init__(self, query_parameters):
         self.taxonomy_id, self.taxonomy_term = details.parse_taxonomy_parameter(query_parameters)
+        self.full_text_search_terms = details.parse_full_text_search_terms(query_parameters)
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
@@ -13,7 +14,6 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         query_parameters = self.request.query_params
         search_parameters = SearchParameters(query_parameters)
         queryset = models.Service.get_queryset(search_parameters)
-        details.raise_404_on_empty(queryset)
         return queryset
 
     serializer_class = serializers.ServiceSerializer

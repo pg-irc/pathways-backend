@@ -32,7 +32,6 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',  # registration
     'corsheaders',
     'rest_framework',
-    'behave_django',
     'parler',
 ]
 

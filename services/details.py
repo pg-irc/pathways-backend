@@ -18,6 +18,32 @@ def build_valid_taxonomy_parameters(taxonomy_term):
 def raise_taxonomy_error():
     raise SuspiciousOperation('Invalid argument to taxonomy_term')
 
-def raise_404_on_empty(queryset):
-    if not queryset.exists():
-        raise Http404
+def parse_full_text_search_terms(query_parameters):
+    query_arguments = query_parameters.get('search', None)
+    if not query_arguments:
+        return None
+    search_terms = query_arguments.split(' ')
+    return [x.strip() for x in search_terms if x != '']
+
+class FilterBuilder:
+    def __init__(self):
+        self.filter = None
+
+    def add_with_or(self, *filters):
+        new_filters = self.join_with_or(*filters)
+        self.filter = self.join_with_and(self.filter, new_filters)
+
+    def join_with_and(self, *filters):
+        result = None
+        for filter in filters:
+            result = result & filter if result else filter
+        return result
+
+    def join_with_or(self, *filters):
+        result = None
+        for filter in filters:
+            result = result | filter if result else filter
+        return result
+
+    def get_filter(self):
+        return self.filter

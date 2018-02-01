@@ -19,3 +19,8 @@ class TaxonomyTermBuilder:
         result.taxonomy_id = self.taxonomy_id
         result.name = self.name
         return result
+
+    def create(self):
+        result = self.build()
+        result.save()
+        return result
