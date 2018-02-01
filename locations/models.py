@@ -49,13 +49,9 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
 
 
 class LocationAddress(ValidateOnSaveMixin, models.Model):
-    address = models.ForeignKey(Address,
-                                on_delete=models.CASCADE)
-    location = models.ForeignKey(Location,
-                                 related_name='location_addresses',
-                                 on_delete=models.CASCADE)
-    address_type = models.ForeignKey(AddressType,
-                                     on_delete=models.CASCADE)
+    address = models.ForeignKey(Address)
+    location = models.ForeignKey(Location, related_name='location_addresses')
+    address_type = models.ForeignKey(AddressType)
 
     class Meta:
         unique_together = ('location', 'address_type')
