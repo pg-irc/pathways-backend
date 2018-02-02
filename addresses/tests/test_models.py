@@ -15,46 +15,31 @@ def validate_save_and_reload(instance):
 class TestAddressModel(TestCase):
 
     def test_has_address_field(self):
-        address_field_value = a_string()
-        address = AddressBuilder().with_address(address_field_value).build()
+        address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.address, address.address)
 
-    def test_address_field_must_be_set_and_not_empty(self):
-        address = Address(city=a_string(), country=a_string(2, string.ascii_uppercase))
+    def test_address_field_cannot_be_empty(self):
         with self.assertRaises(exceptions.ValidationError):
-            address.save()
-        address = Address(city=a_string(), country=a_string(2, string.ascii_uppercase), address='')
-        with self.assertRaises(exceptions.ValidationError):
-            address.save()
+            AddressBuilder().with_address('').create()
 
     def test_has_city_field(self):
-        city_field_value = a_string()
-        address = AddressBuilder().with_city(city_field_value).build()
+        address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.city, address.city)
 
-    def test_city_field_must_be_set_and_not_empty(self):
-        address = Address(country=a_string(2, string.ascii_uppercase), address=a_string())
+    def test_city_field_cannot_be_empty(self):
         with self.assertRaises(exceptions.ValidationError):
-            address.save()
-        address = Address(city='', country=a_string(2, string.ascii_uppercase), address=a_string())
-        with self.assertRaises(exceptions.ValidationError):
-            address.save()
+            AddressBuilder().with_city('').create()
 
     def test_has_country_field(self):
-        country_field_value = a_string(2, string.ascii_uppercase)
-        address = AddressBuilder().with_country(country_field_value).build()
+        address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.country, address.country)
 
-    def test_country_field_must_be_set_and_not_empty(self):
-        address = Address(city=a_string(), address=a_string())
+    def test_country_field_cannot_be_empty(self):
         with self.assertRaises(exceptions.ValidationError):
-            address.save()
-        address = Address(city=a_string(), country='', address=a_string())
-        with self.assertRaises(exceptions.ValidationError):
-            address.save()
+            AddressBuilder().with_country('').create()
 
     def test_country_fields_cannot_exceed_two_characters(self):
         three_character_string = a_string(3)
@@ -63,8 +48,7 @@ class TestAddressModel(TestCase):
             validate_save_and_reload(address)
 
     def test_has_attention_field(self):
-        attention_field_value = a_string()
-        address = AddressBuilder().with_attention(attention_field_value).build()
+        address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.attention, address.attention)
 
@@ -73,8 +57,7 @@ class TestAddressModel(TestCase):
         self.assertTrue(Address.objects.first().attention is None)
 
     def test_has_state_province_field(self):
-        state_province_field_value = a_string()
-        address = AddressBuilder().with_state_province(state_province_field_value).build()
+        address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.state_province, address.state_province)
 
@@ -83,8 +66,7 @@ class TestAddressModel(TestCase):
         self.assertTrue(Address.objects.first().state_province is None)
 
     def test_has_postal_code_field(self):
-        postal_code_field_value = a_string()
-        address = AddressBuilder().with_postal_code(postal_code_field_value).build()
+        address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.postal_code, address.postal_code)
 
