@@ -2,7 +2,7 @@ import unittest
 import logging
 import xml.etree.ElementTree as etree
 
-from bc211 import parser
+from bc211 import parser, dtos, exceptions
 
 logging.disable(logging.ERROR)
 
@@ -94,10 +94,15 @@ class BC211ParserTests(unittest.TestCase):
         locations_from_first_organization = list(organizations[0].locations)
         services_from_first_location = list(locations_from_first_organization[0].services)
         taxonomy_terms_from_first_service = list(services_from_first_location[0].taxonomy_terms)
+        addresses_from_first_location = [
+            locations_from_first_organization[0].physical_address,
+            locations_from_first_organization[0].postal_address
+        ]
         self.assertEqual(len(organizations), 16)
         self.assertEqual(len(locations_from_first_organization), 1)
         self.assertEqual(len(services_from_first_location), 1)
         self.assertEqual(len(taxonomy_terms_from_first_service), 27)
+        self.assertEqual(len(addresses_from_first_location), 2)
 
 
 class OrganizationParserTests(unittest.TestCase):
@@ -227,48 +232,122 @@ class ServiceParserTests(unittest.TestCase):
                          self.site_id_passed_to_parser)
 
 class AddressParserTests(unittest.TestCase):
-    def setUp(self):
-        malformed_address_xml = '''
-            <Source>
-                <Agency>
-                    <Site>
-                        <Key>1234</Key>
-                        <MailingAddress>
-                            <Line2>Line2</Line2>
-                            <Line1>Line1</Line1>
-                            <Line3>Line3</Line3>
-                            <Line4>Line4</Line4>
-                            <Line5>Line5</Line5>
-                            <City>City</City>
-                            <Country>Country</Country>
-                            <State>State</State>
-                            <ZipCode>Code</ZipCode>
-                        </MailingAddress>
-                        <PhysicalAddress>
-                            <Line1 />
-                            <City>City</City>
-                            <Country>Country</Country>
-                            <State>State</State>
-                            <ZipCode>Code</ZipCode>
-                        </PhysicalAddress>
-                    </Site>
-                </Agency>
-            </Source>'''
-        root = etree.fromstring(malformed_address_xml)
-        site = root.find('Agency/Site')
-        self.location_id = site.find('Key')
-        self.postal_address = site.find('MailingAddress')
-        self.physical_address = site.find('PhysicalAddress')
+    def test_parses_physical_address(self):
+        xml_address = '''
+            <Site>
+                <Key>1234</Key>
+                <PhysicalAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>Country</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'physical_address'
+        address = parser.parse_address(root.find('PhysicalAddress'),
+                                       root.find('Key').text, address_type_id)
+        self.assertIsInstance(address, dtos.Address)
+        self.assertEqual(address.address_type_id, address_type_id)
 
-    def test_only_parses_valid_addresses(self):
-        parsed_address = parser.parse_address(self.physical_address,
-                                              self.location_id, 'physical_address')
-        self.assertEqual(parsed_address, None)
+    def test_parses_postal_address(self):
+        xml_address = '''
+            <Site>
+                <Key>1234</Key>
+                <MailingAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>Country</Country>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        address = parser.parse_address(root.find('MailingAddress'),
+                                       root.find('Key').text, address_type_id)
+        self.assertIsInstance(address, dtos.Address)
+        self.assertEqual(address.address_type_id, address_type_id)
 
-    def test_none_is_returned_when_line1_is_empty(self):
-        address_lines = parser.parse_address_lines(self.physical_address)
-        self.assertEqual(address_lines, None)
+    def test_missing_line_1_throws_exception(self):
+        xml_address = '''
+            <Site>
+                <Key>1234</Key>
+                <MailingAddress>
+                    <City>City</City>
+                    <Country>Country</Country>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            parser.parse_address(root.find('MailingAddress'),
+                                 root.find('Key').text, address_type_id)
 
-    def test_parsed_address_lines_correctly_formatted(self):
-        address_lines = parser.parse_address_lines(self.postal_address)
+    def test_missing_city_throws_exception(self):
+        xml_address = '''
+            <Site>
+                <Key>1234</Key>
+                <MailingAddress>
+                    <Line1>Line1</Line1>
+                    <Country>Country</Country>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            parser.parse_address(root.find('MailingAddress'),
+                                 root.find('Key').text, address_type_id)
+
+    def test_missing_country_throws_exception(self):
+        xml_address = '''
+            <Site>
+                <Key>1234</Key>
+                <MailingAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            parser.parse_address(root.find('MailingAddress'),
+                                 root.find('Key').text, address_type_id)
+
+    def test_address_line_parser_only_parses_lines_one_to_four(self):
+        xml_address = '''
+            <Site>
+                <MailingAddress>
+                    <Line1>Line1</Line1>
+                    <Line2>Line2</Line2>
+                    <Line3>Line3</Line3>
+                    <Line4>Line4</Line4>
+                    <Line5>Line5</Line5>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, 'Line1\nLine2\nLine3\nLine4')
+
+    def test_address_line_parser_sorts_address_lines(self):
+        xml_address = '''
+            <Site>
+                <MailingAddress>
+                    <Line3>Line3</Line3>
+                    <Line1>Line1</Line1>
+                    <Line2>Line2</Line2>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_lines = parser.parse_address_lines(root.find('MailingAddress'))
+        self.assertEqual(address_lines, 'Line1\nLine2\nLine3')
+
+    def test_address_line_parser_returns_none_when_line_1_is_not_empty(self):
+        xml_address = '''
+            <Site>
+                <MailingAddress>
+                    <Line1 />
+                    <Line2>Line2</Line2>
+                    <Line3>Line3</Line3>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_lines = parser.parse_address_lines(root.find('MailingAddress'))
+        self.assertEqual(address_lines, None)
