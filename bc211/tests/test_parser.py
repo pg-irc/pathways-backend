@@ -339,7 +339,7 @@ class AddressParserTests(unittest.TestCase):
         address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, 'Line1\nLine2\nLine3')
 
-    def test_address_line_parser_returns_none_when_line_1_is_not_empty(self):
+    def test_address_line_parser_returns_none_when_line_1_is_empty(self):
         xml_address = '''
             <Site>
                 <MailingAddress>
