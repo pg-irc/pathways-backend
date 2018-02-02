@@ -42,7 +42,7 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '\"{service}\" at \"{location}\"'.format(
+        return '"{service}" at "{location}"'.format(
             service=self.service,
             location=self.location
         )
@@ -57,7 +57,7 @@ class LocationAddress(ValidateOnSaveMixin, models.Model):
         unique_together = ('location', 'address_type')
 
     def __str__(self):
-        return '\"{address}\" for \"{location}\"'.format(
+        return '"{address}" for "{location}"'.format(
             address=self.address,
             location=self.location
         )
