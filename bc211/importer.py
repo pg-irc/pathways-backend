@@ -140,7 +140,8 @@ def create_address(address_dto, counters):
         city=address_dto.city,
         country=address_dto.country,
         state_province=address_dto.state_province,
-        postal_code=address_dto.postal_code
+        postal_code=address_dto.postal_code,
+        attention=None
     )
     if created:
         counters.count_address()

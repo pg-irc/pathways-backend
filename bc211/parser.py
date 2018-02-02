@@ -177,7 +177,7 @@ def parse_postal_address(site, site_id):
     type_id = 'postal_address'
     return parse_address(site.find('MailingAddress'), site_id, type_id)
 
-def parse_address(address, site_id, type_id):
+def parse_address(address, site_id, address_type_id):
     address_lines = parse_address_lines(address)
     city = parse_city(address)
     country = parse_country(address)
@@ -186,7 +186,6 @@ def parse_address(address, site_id, type_id):
                        'Parsed "%s" for address, "%s" for city, and "%s" for country.',
                        site_id, address_lines, city, country)
         return None
-    address_type_id = type_id
     state_province = parse_state_province(address)
     postal_code = parse_postal_code(address)
     return dtos.Address(location_id=site_id, address_lines=address_lines,
