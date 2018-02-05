@@ -1,8 +1,10 @@
 import unittest
 import logging
 import xml.etree.ElementTree as etree
+from common.testhelpers.random_test_values import a_string
 
-from bc211 import parser, dtos, exceptions
+from bc211 import parser, dtos
+from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 logging.disable(logging.ERROR)
 
@@ -277,14 +279,14 @@ class AddressParserTests(unittest.TestCase):
             </Site>'''
         root = etree.fromstring(xml_address)
         address_type_id = 'postal_address'
-        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+        with self.assertRaisesRegex(MissingRequiredFieldXmlParseException,
+                                    'Missing required field: "Line1"'):
             parser.parse_address(root.find('MailingAddress'),
-                                 root.find('Key').text, address_type_id)
+                                 a_string(), address_type_id)
 
     def test_missing_city_throws_exception(self):
         xml_address = '''
             <Site>
-                <Key>1234</Key>
                 <MailingAddress>
                     <Line1>Line1</Line1>
                     <Country>Country</Country>
@@ -292,14 +294,14 @@ class AddressParserTests(unittest.TestCase):
             </Site>'''
         root = etree.fromstring(xml_address)
         address_type_id = 'postal_address'
-        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+        with self.assertRaisesRegex(MissingRequiredFieldXmlParseException,
+                                    'Missing required field: "City"'):
             parser.parse_address(root.find('MailingAddress'),
-                                 root.find('Key').text, address_type_id)
+                                 a_string(), address_type_id)
 
     def test_missing_country_throws_exception(self):
         xml_address = '''
             <Site>
-                <Key>1234</Key>
                 <MailingAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
@@ -307,9 +309,10 @@ class AddressParserTests(unittest.TestCase):
             </Site>'''
         root = etree.fromstring(xml_address)
         address_type_id = 'postal_address'
-        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+        with self.assertRaisesRegex(MissingRequiredFieldXmlParseException,
+                                    'Missing required field: "Country"'):
             parser.parse_address(root.find('MailingAddress'),
-                                 root.find('Key').text, address_type_id)
+                                 a_string(), address_type_id)
 
     def test_address_line_parser_only_parses_lines_one_to_four(self):
         xml_address = '''

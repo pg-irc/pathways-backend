@@ -36,7 +36,7 @@ def parse_required_field(parent, field):
     try:
         return parent.find(field).text
     except AttributeError:
-        raise MissingRequiredFieldXmlParseException(field)
+        raise MissingRequiredFieldXmlParseException('Missing required field: "{0}"'.format(field))
 
 def parse_optional_field(parent, field):
     value = parent.find(field)
