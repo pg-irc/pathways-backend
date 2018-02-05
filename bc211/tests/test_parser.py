@@ -237,7 +237,6 @@ class AddressParserTests(unittest.TestCase):
     def test_parses_physical_address(self):
         xml_address = '''
             <Site>
-                <Key>1234</Key>
                 <PhysicalAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
@@ -247,14 +246,13 @@ class AddressParserTests(unittest.TestCase):
         root = etree.fromstring(xml_address)
         address_type_id = 'physical_address'
         address = parser.parse_address(root.find('PhysicalAddress'),
-                                       root.find('Key').text, address_type_id)
+                                       a_string(), address_type_id)
         self.assertIsInstance(address, dtos.Address)
         self.assertEqual(address.address_type_id, address_type_id)
 
     def test_parses_postal_address(self):
         xml_address = '''
             <Site>
-                <Key>1234</Key>
                 <MailingAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
@@ -264,14 +262,13 @@ class AddressParserTests(unittest.TestCase):
         root = etree.fromstring(xml_address)
         address_type_id = 'postal_address'
         address = parser.parse_address(root.find('MailingAddress'),
-                                       root.find('Key').text, address_type_id)
+                                       a_string(), address_type_id)
         self.assertIsInstance(address, dtos.Address)
         self.assertEqual(address.address_type_id, address_type_id)
 
     def test_missing_line_1_throws_exception(self):
         xml_address = '''
             <Site>
-                <Key>1234</Key>
                 <MailingAddress>
                     <City>City</City>
                     <Country>Country</Country>
