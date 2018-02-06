@@ -19,11 +19,15 @@ def raise_taxonomy_error():
     raise SuspiciousOperation('Invalid argument to taxonomy_term')
 
 def parse_full_text_search_terms(query_parameters):
-    query_arguments = query_parameters.get('search', None)
-    if not query_arguments:
+    search_argument = query_parameters.get('search', None)
+    return split_and_strip_if_given(search_argument)
+
+def split_and_strip_if_given(parameter_string):
+    if not parameter_string:
         return None
-    search_terms = query_arguments.split(' ')
-    return [x.strip() for x in search_terms if x != '']
+    parameters = parameter_string.split(' ')
+    return [p.strip() for p in parameters if p != '']
+
 
 class FilterBuilder:
     def __init__(self):
@@ -33,17 +37,30 @@ class FilterBuilder:
         new_filters = self.join_with_or(*filters)
         self.filter = self.join_with_and(self.filter, new_filters)
 
-    def join_with_and(self, *filters):
+    @staticmethod
+    def join_with_and(*filters):
         result = None
         for filter in filters:
-            result = result & filter if result else filter
+            if result:
+                result = result & filter
+            else:
+                result = filter
         return result
 
-    def join_with_or(self, *filters):
+    @staticmethod
+    def join_with_or(*filters):
         result = None
         for filter in filters:
-            result = result | filter if result else filter
+            if result:
+                result = result | filter
+            else:
+                result = filter
         return result
 
     def get_filter(self):
         return self.filter
+
+
+def parse_sorting(query_parameters):
+    sort_argument = query_parameters.get('sort_by', None)
+    return split_and_strip_if_given(sort_argument)

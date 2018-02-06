@@ -181,11 +181,10 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
 
     def test_can_combine_taxonomic_search_and_full_text_search(self):
         the_search_term = a_string()
-        the_name = the_search_term + a_string()
         the_taxonomy_term = TaxonomyTermBuilder().create()
 
         a_service = (ServiceBuilder(self.organization).
-                                                with_name(the_name).
+                                                with_name(the_search_term + a_string()).
                                                 with_taxonomy_terms([the_taxonomy_term]).
                                                 create())
         ServiceBuilder(self.organization).with_taxonomy_terms([the_taxonomy_term]).create()
@@ -198,4 +197,107 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['name'], the_name)
+        self.assertEqual(response.json()[0]['name'], a_service.name)
+
+class ServicesSearchSorting(rest_test.APITestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().create()
+
+    def create_many_services(self, count):
+        for i in range(0, count):
+            one_based_id = i + 1
+            id_as_string = str(one_based_id)
+            id_with_zero_prefix = ('00' + id_as_string)[-3:]
+            ServiceBuilder(self.organization).with_id(id_with_zero_prefix).create()
+
+    def test_can_order_by_field(self):
+        self.create_many_services(3)
+
+        response = self.client.get('/v1/services/?sort_by=id')
+
+        json = response.json()
+        self.assertLess(json[0]['id'], json[1]['id'])
+        self.assertLess(json[1]['id'], json[2]['id'])
+
+    def test_can_order_by_translated_field(self):
+        self.create_many_services(3)
+
+        response = self.client.get('/v1/services/?sort_by=name')
+
+        json = response.json()
+        self.assertLess(json[0]['name'], json[1]['name'])
+        self.assertLess(json[1]['name'], json[2]['name'])
+
+    def test_can_reverse_ordering(self):
+        self.create_many_services(3)
+
+        response = self.client.get('/v1/services/?sort_by=-id')
+
+        json = response.json()
+        self.assertGreater(json[0]['id'], json[1]['id'])
+        self.assertGreater(json[1]['id'], json[2]['id'])
+
+    def test_can_reverse_ordering_on_translated_field(self):
+        self.create_many_services(3)
+
+        response = self.client.get('/v1/services/?sort_by=-name')
+
+        json = response.json()
+        self.assertGreater(json[0]['name'], json[1]['name'])
+        self.assertGreater(json[1]['name'], json[2]['name'])
+
+    def test_can_order_by_two_fields(self):
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+
+        ServiceBuilder(self.organization).with_description('ccc').create()
+        ServiceBuilder(self.organization).with_description('aaa').create()
+
+        url = '/v1/services/?sort_by=description+name'
+        response = self.client.get(url)
+
+        first, second, third, fourth, fifth = response.json()
+
+        self.assertLess(first['description'], second['description'])
+        self.assertEqual(second['description'], third['description'])
+        self.assertEqual(third['description'], fourth['description'])
+        self.assertLess(fourth['description'], fifth['description'])
+
+        self.assertLess(second['name'], third['name'])
+        self.assertLess(third['name'], fourth['name'])
+
+    def test_can_reverse_order_by_one_of_two_fields(self):
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+        ServiceBuilder(self.organization).with_description('bbb').create()
+
+        ServiceBuilder(self.organization).with_description('ccc').create()
+        ServiceBuilder(self.organization).with_description('aaa').create()
+
+        response = self.client.get('/v1/services/?sort_by=description+-name')
+
+        first, second, third, fourth, fifth = response.json()
+
+        self.assertLess(first['description'], second['description'])
+        self.assertEqual(second['description'], third['description'])
+        self.assertEqual(third['description'], fourth['description'])
+        self.assertLess(fourth['description'], fifth['description'])
+
+        self.assertGreater(second['name'], third['name'])
+        self.assertGreater(third['name'], fourth['name'])
+
+    def test_can_specify_page_size(self):
+        self.create_many_services(6)
+        response = self.client.get('/v1/services/?per_page=3')
+        self.assertEqual(len(response.json()), 3)
+
+    def test_can_specify_page_size_and_page_number(self):
+        self.create_many_services(10)
+
+        url = '/v1/services/?per_page=2&page=3'
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(response.json()[0]['id'], '005')
+        self.assertEqual(response.json()[1]['id'], '006')

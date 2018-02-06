@@ -25,6 +25,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
 ]
+
 THIRD_PARTY_APPS = [
     'crispy_forms',  # Form layouts
     'allauth',  # registration
@@ -36,6 +37,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    'common.apps.CommonConfig',
     'polls.apps.PollsConfig',
     'locations.apps.LocationsConfig',
     'organizations.apps.OrganizationsConfig',
@@ -48,6 +50,11 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'common.view.Pagination',
+    'PAGE_SIZE': 30
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
