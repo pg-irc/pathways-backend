@@ -14,8 +14,11 @@ def a_website_address():
 def an_email_address():
     return '{0}@{1}.com'.format(a_string(), a_string())
 
-def an_integer():
-    return random.randint(0, 1000)
+def an_integer(**kwargs):
+    min_inclusive = kwargs.get('min', 0)
+    max_inclusive = kwargs.get('max', 1000)
+
+    return random.randint(min_inclusive, max_inclusive)
 
 def a_float():
     return float(an_integer())

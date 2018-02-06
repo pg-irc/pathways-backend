@@ -1,6 +1,7 @@
 from rest_framework import test as rest_test
 from organizations.tests.helpers import OrganizationBuilder
 from services.tests.helpers import ServiceBuilder
+from common.testhelpers.random_test_values import an_integer
 
 class TestPagination(rest_test.APITestCase):
     def setUp(self):
@@ -135,6 +136,15 @@ class TestPagination(rest_test.APITestCase):
         response = self.client.get('/v1/services/?per_page=2&page=2')
 
         self.assertEqual(response['Count'], '10')
+
+    def test_can_specify_page_size(self):
+        self.create_many_services(10)
+        per_page = an_integer(min=1, max=10)
+
+        response = self.client.get('/v1/services/?per_page={0}'.format(per_page))
+
+        self.assertEqual(len(response.json()), per_page)
+
     def test_default_items_per_page_is_30(self):
         self.create_many_services(31)
 
@@ -149,12 +159,24 @@ class TestPagination(rest_test.APITestCase):
 
         self.assertEqual(len(response.json()), 100)
 
-    def test_page_number_defaults_to_one(self):
+    def test_returns_records_from_the_specified_page(self):
         self.create_many_services(10)
+        per_page = 2
+        page_number = 4
+        ids_on_the_fourth_page = ['007', '008']
 
-        response = self.client.get('/v1/services/?per_page=3')
+        response = self.client.get('/v1/services/?per_page={0}&page={1}'.format(per_page, page_number))
 
-        self.assertEqual(len(response.json()), 3)
-        self.assertEqual(response.json()[0]['id'], '001')
-        self.assertEqual(response.json()[1]['id'], '002')
-        self.assertEqual(response.json()[2]['id'], '003')
+        self.assertIn(response.json()[0]['id'], ids_on_the_fourth_page)
+        self.assertIn(response.json()[1]['id'], ids_on_the_fourth_page)
+
+    def test_by_default_returns_records_from_the_first_page(self):
+        self.create_many_services(10)
+        per_page = 2
+        ids_on_the_first_page = ['001', '002']
+
+        response = self.client.get('/v1/services/?per_page={0}'.format(per_page))
+
+        self.assertIn(response.json()[0]['id'], ids_on_the_first_page)
+        self.assertIn(response.json()[1]['id'], ids_on_the_first_page)
+
