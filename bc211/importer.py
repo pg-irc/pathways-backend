@@ -1,9 +1,10 @@
+import logging
 from django.utils import translation
-from locations.models import Location, ServiceAtLocation
+from locations.models import Location, ServiceAtLocation, LocationAddress
 from organizations.models import Organization
 from services.models import Service
 from taxonomies.models import TaxonomyTerm
-import logging
+from addresses.models import Address, AddressType
 
 LOGGER = logging.getLogger(__name__)
 
@@ -12,8 +13,8 @@ class ImportCounters:
         self.organization_count = 0
         self.location_count = 0
         self.service_count = 0
-        self.service_at_location_count = 0
         self.taxonomy_term_count = 0
+        self.address_count = 0
 
     def count_organization(self):
         self.organization_count += 1
@@ -24,11 +25,11 @@ class ImportCounters:
     def count_service(self):
         self.service_count += 1
 
-    def count_service_at_location(self):
-        self.service_at_location_count += 1
-
     def count_taxonomy_term(self):
         self.taxonomy_term_count += 1
+
+    def count_address(self):
+        self.address_count += 1
 
 def save_records_to_database(organizations):
     translation.activate('en')
@@ -60,6 +61,10 @@ def save_locations(locations, counters):
         counters.count_location()
         LOGGER.info('Location "%s" "%s"', location.id, location.name)
         save_services(location.services, counters)
+        if location.physical_address:
+            create_address_for_location(active_record, location.physical_address, counters)
+        if location.postal_address:
+            create_address_for_location(active_record, location.postal_address, counters)
 
 def build_location_active_record(record):
     active_record = Location()
@@ -92,26 +97,25 @@ def save_services(services, counters):
         active_record.save()
         counters.count_service()
         LOGGER.info('Service "%s" "%s"', service.id, service.name)
-        save_service_at_location(service, counters)
+        save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
-def save_service_at_location(service, counters):
+def save_service_at_location(service):
     active_record = build_service_at_location_active_record(service)
     active_record.save()
-    counters.count_service_at_location()
-    LOGGER.info('Service at location "%s" "%s"', service.id, service.site_id)
+    LOGGER.info('Imported service at location: %s %s', service.id, service.site_id)
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
     for taxonomy_term in taxonomy_terms:
-        taxonomy_term_active_record = build_taxonomy_term_active_record(
+        taxonomy_term_active_record = create_taxonomy_term_active_record(
             taxonomy_term,
             counters
         )
         service_active_record.taxonomy_terms.add(taxonomy_term_active_record)
-        LOGGER.debug('Taxonomy term "%s" added to service "%s"', taxonomy_term.name, service_active_record.name)
+        LOGGER.info('Imported service taxonomy term')
     service_active_record.save()
 
-def build_taxonomy_term_active_record(record, counters):
+def create_taxonomy_term_active_record(record, counters):
     taxonomy_term_active_record, created = TaxonomyTerm.objects.get_or_create(
         taxonomy_id=record.taxonomy_id,
         name=record.name
@@ -120,3 +124,32 @@ def build_taxonomy_term_active_record(record, counters):
         counters.count_taxonomy_term()
         LOGGER.debug('Taxonomy term "%s" "%s"', record.taxonomy_id, record.name)
     return taxonomy_term_active_record
+
+def create_address_for_location(location, address_dto, counters):
+    address = create_address(address_dto, counters)
+    address_type = AddressType.objects.get(pk=address_dto.address_type_id)
+    create_location_address(
+        location,
+        address,
+        address_type
+    )
+
+def create_address(address_dto, counters):
+    active_record, created = Address.objects.get_or_create(
+        address=address_dto.address_lines,
+        city=address_dto.city,
+        country=address_dto.country,
+        state_province=address_dto.state_province,
+        postal_code=address_dto.postal_code,
+        attention=None
+    )
+    if created:
+        counters.count_address()
+        LOGGER.info('Imported address: %s %s', active_record.id, active_record.address)
+    return active_record
+
+def create_location_address(location, address, address_type):
+    active_record = LocationAddress(address=address, location=location,
+                                    address_type=address_type).save()
+    LOGGER.info('Imported location address')
+    return active_record

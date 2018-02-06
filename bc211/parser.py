@@ -1,14 +1,13 @@
-from bc211 import dtos
-from bc211.exceptions import MissingRequiredFieldXmlParseException
-from urllib import parse as urlparse
 import itertools
 import logging
 import re
 import xml.etree.ElementTree as etree
+from urllib import parse as urlparse
+
+from bc211 import dtos
+from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 LOGGER = logging.getLogger(__name__)
-
-BC211_JSON_RE = r"(\w+)\:\'([^\']+)\'"
 
 def read_records_from_file(file):
     xml = file.read()
@@ -37,7 +36,7 @@ def parse_required_field(parent, field):
     try:
         return parent.find(field).text
     except AttributeError:
-        raise MissingRequiredFieldXmlParseException(field)
+        raise MissingRequiredFieldXmlParseException('Missing required field: "{0}"'.format(field))
 
 def parse_optional_field(parent, field):
     value = parent.find(field)
@@ -78,10 +77,13 @@ def parse_site(site, organization_id):
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
     services = parse_services(site, organization_id, id)
-    LOGGER.debug('Location "%s" "%s"', id, name)
+    physical_address = parse_physical_address(site, id)
+    postal_address = parse_postal_address(site, id)
+    LOGGER.info('Parsed location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
-                         services=services)
+                         services=services, physical_address=physical_address,
+                         postal_address=postal_address)
 
 def parse_site_id(site):
     return parse_required_field(site, 'Key')
@@ -157,7 +159,8 @@ def is_bc211_taxonomy_term(code_str):
     return code_str.startswith('{')
 
 def parse_bc211_taxonomy_term(code_str):
-    groups = re.findall(BC211_JSON_RE, code_str)
+    bc211_json_re = r"(\w+)\:\'([^\']+)\'"
+    groups = re.findall(bc211_json_re, code_str)
     for (taxonomy_id, name) in groups:
         full_taxonomy_id = 'bc211-{}'.format(taxonomy_id)
         yield dtos.TaxonomyTerm(taxonomy_id=full_taxonomy_id, name=name)
@@ -165,3 +168,52 @@ def parse_bc211_taxonomy_term(code_str):
 def parse_airs_taxonomy_term(code_str):
     taxonomy_id = 'airs'
     yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)
+
+def parse_physical_address(site, site_id):
+    type_id = 'physical_address'
+    return parse_address(site.find('PhysicalAddress'), site_id, type_id)
+
+def parse_postal_address(site, site_id):
+    type_id = 'postal_address'
+    return parse_address(site.find('MailingAddress'), site_id, type_id)
+
+def parse_address(address, site_id, address_type_id):
+    address_lines = parse_address_lines(address)
+    city = parse_city(address)
+    country = parse_country(address)
+    if not address_lines or not city or not country:
+        LOGGER.warning('Unable to create address for location: "%s". '
+                       'Parsed "%s" for address, "%s" for city, and "%s" for country.',
+                       site_id, address_lines, city, country)
+        return None
+    state_province = parse_state_province(address)
+    postal_code = parse_postal_code(address)
+    return dtos.Address(location_id=site_id, address_lines=address_lines,
+                        city=city, state_province=state_province, postal_code=postal_code,
+                        country=country, address_type_id=address_type_id)
+
+def parse_address_lines(address):
+    line_1 = parse_required_field(address, 'Line1')
+    if not line_1:
+        return None
+    address_lines = [line_1]
+    address_children = sorted(address.getchildren(), key=lambda child: child.tag)
+    for child in address_children:
+        if re.match("Line[2-4]", child.tag):
+            address_line = parse_required_field(address, child.tag)
+            address_lines.append(address_line)
+        if re.match("Line[5-9]", child.tag):
+            LOGGER.warning('Tag %s encountered and has not been parsed.', child.tag)
+    return '\n'.join(address_lines)
+
+def parse_city(address):
+    return parse_required_field(address, 'City')
+
+def parse_country(address):
+    return parse_required_field(address, 'Country')
+
+def parse_state_province(address):
+    return parse_optional_field(address, 'State')
+
+def parse_postal_code(address):
+    return parse_optional_field(address, 'ZipCode')

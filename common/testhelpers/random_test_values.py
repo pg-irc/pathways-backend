@@ -4,9 +4,8 @@ import common.testhelpers.details as details
 
 details.set_random_seed_at_load_time()
 
-def a_string():
-    string_length = 20
-    return ''.join(random.choice(string.ascii_lowercase) for x in range(string_length))
+def a_string(length=20, from_character_string=string.ascii_lowercase):
+    return ''.join(random.choice(from_character_string) for x in range(length))
 
 def a_website_address():
     return 'http://www.{0}.com'.format(a_string())

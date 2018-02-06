@@ -13,10 +13,12 @@ from rest_framework import routers
 def build_router():
     router = routers.DefaultRouter()
     router.register(r'organizations', OrganizationViewSet, base_name='organization')
-    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations', LocationViewSetUnderOrganizations, base_name='organization-location')
+    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations',
+                    LocationViewSetUnderOrganizations, base_name='organization-location')
     router.register(r'locations', LocationViewSet, base_name='location')
     router.register(r'services', ServiceViewSet, base_name='service')
-    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services', ServiceViewSetUnderOrganizations, base_name='organiation-service')
+    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services',
+                    ServiceViewSetUnderOrganizations, base_name='organization-service')
     router.register(r'search', SearchViewSet, base_name='search')
     return router
 

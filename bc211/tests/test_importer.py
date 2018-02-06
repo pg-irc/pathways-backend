@@ -1,3 +1,4 @@
+import logging
 from bc211.importer import save_records_to_database
 from bc211.parser import read_records_from_file
 from django.test import TestCase
@@ -5,7 +6,7 @@ from locations.models import Location
 from organizations.models import Organization
 from taxonomies.models import TaxonomyTerm
 from services.models import Service
-import logging
+from addresses.models import Address, AddressType
 
 logging.disable(logging.ERROR)
 
@@ -75,6 +76,28 @@ class ServiceImportTests(TestCase):
         self.assertCountEqual(last_post_fund_service_taxonomy_terms, expected_last_post_fund_service_taxonony_terms)
 
 
+class AddressImportTests(TestCase):
+    def setUp(self):
+        file = open(ONE_AGENCY_FIXTURE, 'r')
+        records = read_records_from_file(file)
+        save_records_to_database(records)
+        self.addresses = Address.objects.all()
+
+    def test_can_import_address(self):
+        self.assertIsInstance(self.addresses.first(), Address)
+
+    def test_does_not_import_duplicates(self):
+        self.assertEqual(len(self.addresses), 1)
+
+class AddressTypeTests(TestCase):
+    def test_imports_correct_address_types(self):
+        expected_address_types = [
+            AddressType(id='physical_address'),
+            AddressType(id='postal_address')
+        ]
+        self.assertCountEqual(AddressType.objects.all(), expected_address_types)
+
+
 class FullDataImportTests(TestCase):
     def setUp(self):
         file = open(MULTI_AGENCY_FIXTURE, 'r')
@@ -100,3 +123,6 @@ class FullDataImportTests(TestCase):
 
     def test_returns_number_of_taxonomy_terms_imported(self):
         self.assertEqual(self.return_value.taxonomy_term_count, 134)
+
+    def test_returns_number_of_addresses_imported(self):
+        self.assertEqual(self.return_value.address_count, 32)

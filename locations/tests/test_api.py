@@ -1,7 +1,11 @@
 from rest_framework import test as rest_test
 from rest_framework import status
 from locations.tests.helpers import LocationBuilder
+from locations.models import Location, LocationAddress
 from organizations.tests.helpers import OrganizationBuilder
+from addresses.tests.helpers import AddressBuilder
+from addresses.models import Address, AddressType
+
 
 class LocationsApiTests(rest_test.APITestCase):
     def setUp(self):
@@ -86,3 +90,22 @@ class LocationsApiTests(rest_test.APITestCase):
         url = '/v1/organizations/{0}/locations/{1}/'.format(self.organization_id, location.pk)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def location_has_address_of_type(self, address_type_id):
+        LocationBuilder(self.organization).create()
+        AddressBuilder().create()
+        LocationAddress(
+            location=Location.objects.first(),
+            address=Address.objects.first(),
+            address_type=AddressType.objects.get(pk=address_type_id)
+        ).save()
+        url = '/v1/locations/'
+        response = self.client.get(url)
+        location_addresses = response.json()[0]['location_addresses']
+        self.assertEqual(location_addresses[0]['address_type'], address_type_id)
+
+    def test_has_physical_address(self):
+        self.location_has_address_of_type('physical_address')
+
+    def test_has_postal_address(self):
+        self.location_has_address_of_type('postal_address')
