@@ -9,7 +9,7 @@ TEST_PARLER_PO_CONTACT = 'test_content_translation_export@example.com'
 
 class ContentTranslationToolsListModelsTests(TestCase):
     def test_lists_translatable_models(self):
-        with patch('content_translation_tools.management.commands.content_translation_list_models.all_translatable_models') as all_translatable_models:
+        with patch('translation.management.commands.content_translation_list_models.all_translatable_models') as all_translatable_models:
             all_translatable_models.return_value = [Organization]
             stdout, stderr = _run_content_translation_list_models()
             self.assertEqual(stdout.getvalue(), 'organizations.organization\n')

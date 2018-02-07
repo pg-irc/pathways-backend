@@ -3,13 +3,13 @@ from unittest.mock import MagicMock, call, patch
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from content_translation_tools.exceptions import (
+from translation.exceptions import (
     ContentTypeDoesNotExistError,
     InvalidContentTypeIDError,
     InvalidInstanceFieldIDError,
     ModelInstanceDoesNotExistError
 )
-from content_translation_tools.field_ids import (
+from translation.field_ids import (
     build_instance_field_id,
     parse_instance_field_id,
     _build_content_type_id,
@@ -41,7 +41,7 @@ class TestFieldIdWithValidInstance(TestCase):
         self.assertEqual(instance_field_id, 'contenttranslationtools.testmodel@not_a_test_model_field@1')
 
     def test_parse_instance_field_id(self):
-        with patch('content_translation_tools.field_ids._parse_content_type_id') as parse_content_type_id:
+        with patch('translation.field_ids._parse_content_type_id') as parse_content_type_id:
             parse_content_type_id.return_value = self.content_type
 
             with patch.object(TestModel.objects, 'get') as test_model_get:
@@ -67,7 +67,7 @@ class TestFieldIdWithValidInstance(TestCase):
         content_type.model ='not_a_model'
         content_type.model_class.return_value = None
 
-        with patch('content_translation_tools.field_ids._parse_content_type_id') as parse_content_type_id:
+        with patch('translation.field_ids._parse_content_type_id') as parse_content_type_id:
             parse_content_type_id.return_value = content_type
 
             with self.assertRaises(ModelInstanceDoesNotExistError):
@@ -78,7 +78,7 @@ class TestFieldIdWithValidInstance(TestCase):
         self.assertEqual(result, 'contenttranslationtools.testmodel')
 
     def test_parse_content_type_id(self):
-        with patch('content_translation_tools.field_ids.ContentType.objects.get') as content_type_get:
+        with patch('translation.field_ids.ContentType.objects.get') as content_type_get:
             content_type_get.return_value = self.content_type
 
             result = _parse_content_type_id('contenttranslationtools.testmodel')
@@ -92,7 +92,7 @@ class TestFieldIdWithValidInstance(TestCase):
             _parse_content_type_id('not a content type id')
 
     def test_parse_content_type_id_with_nonexistent_content_type_raises_error(self):
-        with patch('content_translation_tools.field_ids.ContentType.objects.get') as content_type_get:
+        with patch('translation.field_ids.ContentType.objects.get') as content_type_get:
             content_type_get.side_effect = ContentType.DoesNotExist()
 
             with self.assertRaises(ContentTypeDoesNotExistError):

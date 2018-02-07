@@ -3,7 +3,7 @@ from django.utils.translation import ugettext as _
 from parler.models import TranslatableModel
 import polib
 
-from content_translation_tools.exceptions import (
+from translation.exceptions import (
     FieldNotTranslatableError,
     InvalidMsgidError,
     MasterInstanceLookupError,
@@ -12,8 +12,8 @@ from content_translation_tools.exceptions import (
     ContentTranslationToolsError,
     ProtectedTranslationError
 )
-from content_translation_tools.field_ids import build_instance_field_id, parse_instance_field_id
-from content_translation_tools.queries import get_base_translation, is_translatable_model
+from translation.field_ids import build_instance_field_id, parse_instance_field_id
+from translation.queries import get_base_translation, is_translatable_model
 
 class TranslatableString(object):
     def __init__(self, instance, field_id, source_str, translated_str):

@@ -4,9 +4,9 @@ import argparse
 import polib
 import sys
 
-from content_translation_tools.exceptions import ProtectedTranslationError
-from content_translation_tools.import_progress import ImportProgress
-from content_translation_tools.translatable_string import TranslatableString
+from translation.exceptions import ProtectedTranslationError
+from translation.import_progress import ImportProgress
+from translation.translatable_string import TranslatableString
 
 class Command(BaseCommand):
     help = _('Import a PO file with new content translations')

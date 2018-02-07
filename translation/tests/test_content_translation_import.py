@@ -2,7 +2,7 @@ from django.core.management import CommandError, call_command
 from django.test import TestCase
 
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from content_translation_tools.tests.helpers import add_base_translation, add_translation
+from translation.tests.helpers import add_base_translation, add_translation
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 import io
 import os

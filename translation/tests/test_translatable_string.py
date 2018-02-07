@@ -1,7 +1,7 @@
 from django.test import TestCase
 from unittest.mock import call, patch
 
-from content_translation_tools.exceptions import (
+from translation.exceptions import (
     FieldNotTranslatableError,
     InvalidMsgidError,
     MasterInstanceLookupError,
@@ -10,9 +10,9 @@ from content_translation_tools.exceptions import (
     ProtectedTranslationError
 )
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from content_translation_tools.tests.helpers import add_base_translation, add_translation
-from content_translation_tools.tests.models import TestNotTranslatable
-from content_translation_tools.translatable_string import TranslatableString
+from translation.tests.helpers import add_base_translation, add_translation
+from translation.tests.models import TestNotTranslatable
+from translation.translatable_string import TranslatableString
 import polib
 
 class CreateTranslatableStringTests(TestCase):
@@ -76,7 +76,7 @@ class CreateTranslatableStringTests(TestCase):
         po_entry.msgid = 'translation_name_msgid'
         po_entry.msgstr = 'translation_name_msgstr'
 
-        with patch('content_translation_tools.translatable_string.parse_instance_field_id') as parse_instance_field_id:
+        with patch('translation.translatable_string.parse_instance_field_id') as parse_instance_field_id:
             parse_instance_field_id.return_value = (translatable, 'name')
             translatable_string = TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])
             parse_instance_field_id.assert_called_once_with('organizations.organization@name@test_create_from_po_entry')
@@ -122,7 +122,7 @@ class CreateTranslatableStringTests(TestCase):
         po_entry.msgid = 'translation_name_msgid'
         po_entry.msgstr = 'translation_name_msgstr'
 
-        with patch('content_translation_tools.translatable_string.parse_instance_field_id') as parse_instance_field_id:
+        with patch('translation.translatable_string.parse_instance_field_id') as parse_instance_field_id:
             parse_instance_field_id.return_value = (translatable, 'name')
             with self.assertRaises(ModelNotTranslatableError):
                 TranslatableString.from_po_entry(po_entry, po_entry.occurrences[0])

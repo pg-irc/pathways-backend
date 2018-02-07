@@ -3,10 +3,10 @@ from django.utils.translation import ugettext as _
 import argparse
 import sys
 
-from content_translation_tools.exceptions import ContentTranslationToolsError, ModelNotTranslatableError
-from content_translation_tools.field_ids import parse_model_id
-from content_translation_tools.po_file import create_po_file_for_model, create_pot_file_for_model
-from content_translation_tools.queries import is_translatable_model
+from translation.exceptions import ContentTranslationToolsError, ModelNotTranslatableError
+from translation.field_ids import parse_model_id
+from translation.po_file import create_po_file_for_model, create_pot_file_for_model
+from translation.queries import is_translatable_model
 
 class Command(BaseCommand):
     help = _('Export a PO file for a translatable model')

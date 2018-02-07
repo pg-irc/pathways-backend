@@ -131,7 +131,7 @@ and check out http://localhost:8000/ to see if it worked. See https://cookiecutt
 
 ## Translations
 
-Certain content is translatable, using [django-parler](http://django-parler.readthedocs.io/). The *content_translation_tools* module provides management commands to export translatable strings as POT files, and import their translations from PO files.
+Certain content is translatable, using [django-parler](http://django-parler.readthedocs.io/). The *translation* module provides management commands to export translatable strings as POT files, and import their translations from PO files.
 
 List available translatable models:
 

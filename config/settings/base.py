@@ -43,7 +43,7 @@ LOCAL_APPS = [
     'human_services.services.apps.ServicesConfig',
     'human_services.taxonomies.apps.TaxonomiesConfig',
     'users.apps.UsersConfig',
-    'content_translation_tools.apps.ContentTranslationToolsConfig',
+    'translation.apps.ContentTranslationToolsConfig',
     'human_services.addresses.apps.AddressesConfig'
 ]
 
@@ -161,7 +161,7 @@ LOGGING = {
         },
         'bc211': VERBOSE_LOGGING_WITH_INFO,
         'common': VERBOSE_LOGGING_WITH_INFO,
-        'content_translation_tools': VERBOSE_LOGGING_WITH_INFO,
+        'translation': VERBOSE_LOGGING_WITH_INFO,
         'locations': VERBOSE_LOGGING_WITH_INFO,
         'organizations': VERBOSE_LOGGING_WITH_INFO,
         'polls': VERBOSE_LOGGING_WITH_INFO,

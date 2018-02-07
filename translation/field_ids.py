@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 
-from content_translation_tools.exceptions import (
+from translation.exceptions import (
     ContentTypeDoesNotExistError,
     InvalidContentTypeIDError,
     InvalidInstanceFieldIDError,
