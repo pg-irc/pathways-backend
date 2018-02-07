@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from services import models
+from human_services.services import models
 
 class ServiceSerializer(serializers.HyperlinkedModelSerializer):
     location_id = serializers.SerializerMethodField('service_location_id')

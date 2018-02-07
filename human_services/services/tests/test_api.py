@@ -1,6 +1,6 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from services.tests.helpers import ServiceBuilder
+from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from common.testhelpers.random_test_values import a_string
 

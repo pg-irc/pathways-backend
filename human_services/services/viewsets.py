@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from services import models, serializers
-import services.details as details
+from human_services.services import models, serializers
+import human_services.services.details as details
 
 class SearchParameters:
     def __init__(self, query_parameters):

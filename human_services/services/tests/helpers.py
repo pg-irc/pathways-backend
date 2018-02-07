@@ -1,4 +1,4 @@
-from services import models
+from human_services.services import models
 from common.testhelpers.random_test_values import a_string
 
 class ServiceBuilder:

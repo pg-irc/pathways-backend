@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.db import utils as django_utils
 from human_services.locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from services.tests.helpers import ServiceBuilder
+from human_services.services.tests.helpers import ServiceBuilder
 
 def validate_save_and_reload(instance):
     instance.save()

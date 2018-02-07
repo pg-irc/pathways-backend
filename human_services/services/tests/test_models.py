@@ -2,7 +2,7 @@ import unittest
 from django.test import TestCase
 from django.core import exceptions
 from django.db import utils as django_utils
-from services.tests.helpers import ServiceBuilder
+from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
 

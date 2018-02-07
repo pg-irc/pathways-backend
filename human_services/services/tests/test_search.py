@@ -4,8 +4,8 @@ from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from services.viewsets import SearchParameters
-from services.tests.helpers import ServiceBuilder
+from human_services.services.viewsets import SearchParameters
+from human_services.services.tests.helpers import ServiceBuilder
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 class SearchParametersTests(TestCase):

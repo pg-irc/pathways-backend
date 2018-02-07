@@ -5,7 +5,7 @@ from django.db.models import Q
 from human_services.organizations.models import Organization
 from parler.models import TranslatableModel, TranslatedFields
 from taxonomies.models import TaxonomyTerm
-from services import details
+from human_services.services import details
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
