@@ -5,7 +5,7 @@ from django.db.models import Q
 from human_services.organizations.models import Organization
 from parler.models import TranslatableModel, TranslatedFields
 from human_services.taxonomies.models import TaxonomyTerm
-from human_services.services import details
+from human_services.services import private
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
@@ -49,7 +49,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         if not search_terms:
             return queryset
 
-        builder = details.FilterBuilder()
+        builder = private.FilterBuilder()
         for term in search_terms:
             builder.add_with_or(Q(translations__name__icontains=term),
                                 Q(translations__description__icontains=term))
