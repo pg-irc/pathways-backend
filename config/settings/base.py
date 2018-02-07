@@ -43,7 +43,6 @@ LOCAL_APPS = [
     'human_services.organizations.apps.OrganizationsConfig',
     'human_services.services.apps.ServicesConfig',
     'human_services.taxonomies.apps.TaxonomiesConfig',
-    'search.apps.SearchConfig',
     'users.apps.UsersConfig',
     'content_translation_tools.apps.ContentTranslationToolsConfig',
     'human_services.addresses.apps.AddressesConfig'
