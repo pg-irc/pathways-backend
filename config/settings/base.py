@@ -38,13 +38,14 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'common.apps.CommonConfig',
+    'bc211.apps.Bc211Config',
     'human_services.locations.apps.LocationsConfig',
     'human_services.organizations.apps.OrganizationsConfig',
     'human_services.services.apps.ServicesConfig',
     'human_services.taxonomies.apps.TaxonomiesConfig',
+    'human_services.addresses.apps.AddressesConfig',
     'users.apps.UsersConfig',
     'translation.apps.ContentTranslationToolsConfig',
-    'human_services.addresses.apps.AddressesConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -162,12 +163,7 @@ LOGGING = {
         'bc211': VERBOSE_LOGGING_WITH_INFO,
         'common': VERBOSE_LOGGING_WITH_INFO,
         'translation': VERBOSE_LOGGING_WITH_INFO,
-        'locations': VERBOSE_LOGGING_WITH_INFO,
-        'organizations': VERBOSE_LOGGING_WITH_INFO,
-        'polls': VERBOSE_LOGGING_WITH_INFO,
-        'search': VERBOSE_LOGGING_WITH_INFO,
-        'services': VERBOSE_LOGGING_WITH_INFO,
-        'taxonomies': VERBOSE_LOGGING_WITH_INFO,
+        'human_services': VERBOSE_LOGGING_WITH_INFO,
         'users': VERBOSE_LOGGING_WITH_INFO,
     },
 }
