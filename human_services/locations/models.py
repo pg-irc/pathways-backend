@@ -1,7 +1,7 @@
 from django.db import models
 from django.core import exceptions, validators
 from parler.models import TranslatableModel, TranslatedFields
-from organizations.models import Organization
+from human_services.organizations.models import Organization
 from human_services.addresses.models import Address, AddressType
 from services.models import Service
 from common.models import ValidateOnSaveMixin, RequiredCharField

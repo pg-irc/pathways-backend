@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 from unittest.mock import patch
 
-from organizations.models import Organization
+from human_services.organizations.models import Organization
 import io
 
 TEST_PARLER_PO_CONTACT = 'test_content_translation_export@example.com'

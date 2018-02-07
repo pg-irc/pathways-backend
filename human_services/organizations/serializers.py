@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from organizations import models
+from human_services.organizations import models
 
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

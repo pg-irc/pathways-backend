@@ -1,5 +1,5 @@
 from rest_framework import test as rest_test
-from organizations.tests.helpers import OrganizationBuilder
+from human_services.organizations.tests.helpers import OrganizationBuilder
 from services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import an_integer
 

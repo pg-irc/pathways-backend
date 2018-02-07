@@ -3,7 +3,7 @@ from django.core.exceptions import SuspiciousOperation
 from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string
-from organizations.tests.helpers import OrganizationBuilder
+from human_services.organizations.tests.helpers import OrganizationBuilder
 from services.viewsets import SearchParameters
 from services.tests.helpers import ServiceBuilder
 from taxonomies.tests.helpers import TaxonomyTermBuilder

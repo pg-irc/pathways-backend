@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from organizations.models import Organization
-from organizations.serializers import OrganizationSerializer
+from human_services.organizations.models import Organization
+from human_services.organizations.serializers import OrganizationSerializer
 
 class SearchViewSet(viewsets.GenericViewSet):
     queryset = Organization.objects.all()

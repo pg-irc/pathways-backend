@@ -1,4 +1,4 @@
-from organizations import models
+from human_services.organizations import models
 from common.testhelpers.random_test_values import a_string, a_website_address, an_email_address
 
 class OrganizationBuilder:

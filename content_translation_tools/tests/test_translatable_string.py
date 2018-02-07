@@ -9,7 +9,7 @@ from content_translation_tools.exceptions import (
     ModelNotTranslatableError,
     ProtectedTranslationError
 )
-from organizations.tests.helpers import OrganizationBuilder
+from human_services.organizations.tests.helpers import OrganizationBuilder
 from content_translation_tools.tests.helpers import add_base_translation, add_translation
 from content_translation_tools.tests.models import TestNotTranslatable
 from content_translation_tools.translatable_string import TranslatableString

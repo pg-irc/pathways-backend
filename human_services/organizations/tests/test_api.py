@@ -1,6 +1,6 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from organizations.tests.helpers import OrganizationBuilder
+from human_services.organizations.tests.helpers import OrganizationBuilder
 
 
 class OrganizationsApiTests(rest_test.APITestCase):

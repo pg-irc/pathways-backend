@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
-from organizations.viewsets import OrganizationViewSet
+from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
 from services.viewsets import ServiceViewSet, ServiceViewSetUnderOrganizations
 from search.viewsets import SearchViewSet

@@ -2,7 +2,7 @@ from common.models import ValidateOnSaveMixin, RequiredCharField
 from django.core import validators
 from django.db import models
 from django.db.models import Q
-from organizations.models import Organization
+from human_services.organizations.models import Organization
 from parler.models import TranslatableModel, TranslatedFields
 from taxonomies.models import TaxonomyTerm
 from services import details

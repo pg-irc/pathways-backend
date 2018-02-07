@@ -1,4 +1,4 @@
 from django.contrib import admin
-from organizations import models
+from human_services.organizations import models
 
 admin.site.register(models.Organization)

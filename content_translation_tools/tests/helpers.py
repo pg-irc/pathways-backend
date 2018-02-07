@@ -1,4 +1,4 @@
-from organizations.models import Organization
+from human_services.organizations.models import Organization
 
 BASE_LANGUAGE = 'en'
 

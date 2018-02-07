@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
 from rest_framework import status
 from rest_framework import test as rest_test
-from organizations.tests.helpers import OrganizationBuilder
+from human_services.organizations.tests.helpers import OrganizationBuilder
 
 SEARCH_URL = '/v1/search/'
 

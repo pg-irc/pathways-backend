@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from organizations import models, serializers
+from human_services.organizations import models, serializers
 
 # pylint: disable=too-many-ancestors
 class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):

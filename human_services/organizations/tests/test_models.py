@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core import exceptions
-from organizations import models
-from organizations.tests.helpers import OrganizationBuilder
+from human_services.organizations import models
+from human_services.organizations.tests.helpers import OrganizationBuilder
 
 def validate_save_and_reload(organization):
     organization.save()
