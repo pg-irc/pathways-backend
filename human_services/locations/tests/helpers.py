@@ -1,4 +1,4 @@
-from locations import models
+from human_services.locations import models
 from common.testhelpers.random_test_values import a_string, a_float
 
 class LocationBuilder:

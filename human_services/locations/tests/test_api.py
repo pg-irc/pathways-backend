@@ -1,7 +1,7 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from locations.tests.helpers import LocationBuilder
-from locations.models import Location, LocationAddress
+from human_services.locations.tests.helpers import LocationBuilder
+from human_services.locations.models import Location, LocationAddress
 from organizations.tests.helpers import OrganizationBuilder
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.addresses.models import Address, AddressType

@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from locations import models, serializers
+from human_services.locations import models, serializers
 
 # pylint: disable=too-many-ancestors
 class LocationViewSet(viewsets.ReadOnlyModelViewSet):

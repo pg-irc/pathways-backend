@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from locations import models
+from human_services.locations import models
 from human_services.addresses.serializers import AddressSerializer
 
 

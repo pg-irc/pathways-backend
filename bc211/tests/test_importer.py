@@ -2,7 +2,7 @@ import logging
 from bc211.importer import save_records_to_database
 from bc211.parser import read_records_from_file
 from django.test import TestCase
-from locations.models import Location
+from human_services.locations.models import Location
 from organizations.models import Organization
 from taxonomies.models import TaxonomyTerm
 from services.models import Service
