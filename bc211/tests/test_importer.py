@@ -4,7 +4,7 @@ from bc211.parser import read_records_from_file
 from django.test import TestCase
 from human_services.locations.models import Location
 from human_services.organizations.models import Organization
-from taxonomies.models import TaxonomyTerm
+from human_services.taxonomies.models import TaxonomyTerm
 from human_services.services.models import Service
 from human_services.addresses.models import Address, AddressType
 

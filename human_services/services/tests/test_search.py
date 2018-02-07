@@ -6,7 +6,7 @@ from common.testhelpers.random_test_values import a_string
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.viewsets import SearchParameters
 from human_services.services.tests.helpers import ServiceBuilder
-from taxonomies.tests.helpers import TaxonomyTermBuilder
+from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
 
 class SearchParametersTests(TestCase):
     def test_can_build_with_taxonomy_id(self):
