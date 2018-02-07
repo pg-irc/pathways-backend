@@ -38,7 +38,6 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'common.apps.CommonConfig',
-    'polls.apps.PollsConfig',
     'human_services.locations.apps.LocationsConfig',
     'human_services.organizations.apps.OrganizationsConfig',
     'human_services.services.apps.ServicesConfig',

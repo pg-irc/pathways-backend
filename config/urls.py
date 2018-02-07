@@ -33,8 +33,6 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^v1/', include(build_router().urls)),
-    url(r'^v0/forms/polls/', include('polls.web.urls')),
-    url(r'^v0/polls/', include('polls.web.api')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
