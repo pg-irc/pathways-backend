@@ -98,13 +98,46 @@ You will be prompted to decide which of the possible upgrades you will take (thi
 Create a Heroku instance with these environment variables:
 
 * DATABASE_URL (managed by Heroku)
-* DJANGO_AWS_STORAGE_BUCKET_NAME = peacegeeks-pathways-static
+* DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static
 * DJANGO_SECRET_KEY
-* DJANGO_SETTINGS_MODULE = config.settings.production
+* DJANGO_SETTINGS_MODULE=config.settings.production
 
-Update ALLOWED_HOSTS production settig to include the name of the heroku instance
+Update ALLOWED_HOSTS production settings to include the name of the heroku instance
 
-% heroku run python manage.py migrate
+To clear out the database content
+
+```
+% heroku restart
+% heroku pg:reset DATABASE
+```
+
+To initialize the database schema
+
+```
+% heroku run ./manage.py migrate
+```
+
+To connect to the heroku instance over SSH:
+
+```
+heroku ps:exec
+```
+
+To retrieve and import the BC-211 dataset:
+
+```
+wget https://s3.ca-central-1.amazonaws.com/peacegeeks-pathways-static/bc211data.xml
+
+export DJANGO_SETTINGS_MODULE=config.settings.production
+export DJANGO_SECRET_KEY="the key"
+export DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static
+export DJANGO_MAILGUN_API_KEY="the key"
+export MAILGUN_SENDER_DOMAIN="the domain"
+export DATABASE_URL="the database url from heroku settings"
+
+./manage.py import_bc211_data bc211data.xml
+
+```
 
 ## Getting started with docker
 
