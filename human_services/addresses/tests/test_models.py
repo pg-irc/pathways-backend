@@ -3,8 +3,8 @@ from copy import copy
 from django.test import TestCase
 from django.core import exceptions
 from common.testhelpers.random_test_values import a_string
-from addresses.tests.helpers import AddressBuilder
-from addresses.models import Address
+from human_services.addresses.tests.helpers import AddressBuilder
+from human_services.addresses.models import Address
 
 def validate_save_and_reload(instance):
     instance.save()

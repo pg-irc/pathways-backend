@@ -1,5 +1,5 @@
 import string
-from addresses import models
+from human_services.addresses import models
 from common.testhelpers.random_test_values import a_string
 
 class AddressBuilder:

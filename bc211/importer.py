@@ -4,7 +4,7 @@ from locations.models import Location, ServiceAtLocation, LocationAddress
 from organizations.models import Organization
 from services.models import Service
 from taxonomies.models import TaxonomyTerm
-from addresses.models import Address, AddressType
+from human_services.addresses.models import Address, AddressType
 
 LOGGER = logging.getLogger(__name__)
 

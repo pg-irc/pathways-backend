@@ -3,8 +3,8 @@ from rest_framework import status
 from locations.tests.helpers import LocationBuilder
 from locations.models import Location, LocationAddress
 from organizations.tests.helpers import OrganizationBuilder
-from addresses.tests.helpers import AddressBuilder
-from addresses.models import Address, AddressType
+from human_services.addresses.tests.helpers import AddressBuilder
+from human_services.addresses.models import Address, AddressType
 
 
 class LocationsApiTests(rest_test.APITestCase):

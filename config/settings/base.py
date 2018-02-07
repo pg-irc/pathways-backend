@@ -46,7 +46,7 @@ LOCAL_APPS = [
     'search.apps.SearchConfig',
     'users.apps.UsersConfig',
     'content_translation_tools.apps.ContentTranslationToolsConfig',
-    'addresses.apps.AddressesConfig'
+    'human_services.addresses.apps.AddressesConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

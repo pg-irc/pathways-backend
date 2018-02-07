@@ -6,7 +6,7 @@ from locations.models import Location
 from organizations.models import Organization
 from taxonomies.models import TaxonomyTerm
 from services.models import Service
-from addresses.models import Address, AddressType
+from human_services.addresses.models import Address, AddressType
 
 logging.disable(logging.ERROR)
 
