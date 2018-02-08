@@ -4,10 +4,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
-from organizations.viewsets import OrganizationViewSet
-from locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
-from services.viewsets import ServiceViewSet, ServiceViewSetUnderOrganizations
-from search.viewsets import SearchViewSet
+from human_services.organizations.viewsets import OrganizationViewSet
+from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
+from human_services.services.viewsets import ServiceViewSet, ServiceViewSetUnderOrganizations
 from rest_framework import routers
 
 def build_router():
@@ -19,7 +18,6 @@ def build_router():
     router.register(r'services', ServiceViewSet, base_name='service')
     router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services',
                     ServiceViewSetUnderOrganizations, base_name='organization-service')
-    router.register(r'search', SearchViewSet, base_name='search')
     return router
 
 urlpatterns = [
@@ -35,8 +33,6 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^v1/', include(build_router().urls)),
-    url(r'^v0/forms/polls/', include('polls.web.urls')),
-    url(r'^v0/polls/', include('polls.web.api')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -1,8 +1,8 @@
 import string
 import random
-import common.testhelpers.details as details
+import common.testhelpers.private as private
 
-details.set_random_seed_at_load_time()
+private.set_random_seed_at_load_time()
 
 def a_string(length=20, from_character_string=string.ascii_lowercase):
     return ''.join(random.choice(from_character_string) for x in range(length))
