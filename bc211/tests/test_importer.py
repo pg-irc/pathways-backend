@@ -2,6 +2,7 @@ import logging
 from bc211.importer import save_records_to_database
 from bc211.parser import read_records_from_file
 from django.test import TestCase
+from django.test import tag
 from human_services.locations.models import Location
 from human_services.organizations.models import Organization
 from human_services.taxonomies.models import TaxonomyTerm
@@ -97,8 +98,8 @@ class AddressTypeTests(TestCase):
         ]
         self.assertCountEqual(AddressType.objects.all(), expected_address_types)
 
-
 class FullDataImportTests(TestCase):
+    @tag('slow')
     def setUp(self):
         file = open(MULTI_AGENCY_FIXTURE, 'r')
         self.return_value = save_records_to_database(read_records_from_file(file))
@@ -106,23 +107,30 @@ class FullDataImportTests(TestCase):
         self.all_organizations = Organization.objects.all()
         self.all_taxonomy_terms = TaxonomyTerm.objects.all()
 
+    @tag('slow')
     def test_can_import_multiple_organizations(self):
         self.assertEqual(len(self.all_organizations), 16)
 
+    @tag('slow')
     def test_can_import_multiple_locations(self):
         self.assertEqual(len(self.all_locations), 40)
 
+    @tag('slow')
     def test_can_import_multiple_taxonomy_terms(self):
         self.assertEqual(len(self.all_taxonomy_terms), 134)
 
+    @tag('slow')
     def test_returns_number_of_organizations_imported(self):
         self.assertEqual(self.return_value.organization_count, 16)
 
+    @tag('slow')
     def test_returns_number_of_locations_imported(self):
         self.assertEqual(self.return_value.location_count, 40)
 
+    @tag('slow')
     def test_returns_number_of_taxonomy_terms_imported(self):
         self.assertEqual(self.return_value.taxonomy_term_count, 134)
 
+    @tag('slow')
     def test_returns_number_of_addresses_imported(self):
         self.assertEqual(self.return_value.address_count, 32)
