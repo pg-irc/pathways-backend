@@ -8,6 +8,7 @@ from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
 from human_services.services.viewsets import ServiceViewSet, ServiceViewSetUnderOrganizations
 from rest_framework import routers
+from rest_framework_swagger.views import get_swagger_view
 
 def build_router():
     router = routers.DefaultRouter()
@@ -32,6 +33,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
+    url(r'^v1/docs/', get_swagger_view(title='Pathways API')),
     url(r'^v1/', include(build_router().urls)),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
