@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from human_services.services import models, serializers
-import human_services.services.private as private
+from . import private
 
 class SearchParameters:
     def __init__(self, query_parameters):

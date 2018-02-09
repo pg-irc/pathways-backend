@@ -1,6 +1,6 @@
 import string
 import random
-import common.testhelpers.private as private
+from . import private
 
 private.set_random_seed_at_load_time()
 
