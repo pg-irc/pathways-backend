@@ -1,0 +1,99 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: PathwaysHumanServices
+  description: An implementation of the HumanServices API
+  termsOfService: 'http://127.0.0.1:8000/terms/'
+  contact:
+    name: PeaceGeeks
+  license:
+    name: MIT
+host: 127.0.0.1:8000
+basePath: /v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /services:
+    get:
+      description: Get a list of services filtered on several paramters
+      produces: 
+        - application/json
+      parameters:
+        - name: taxonomy_term
+          in: query
+          required: false
+          description: Filter result on taxonomic terms of form taxonomy:taxonomy_term
+          type: string
+        - name: search
+          in: query
+          required: false
+          description: Filter result on one or more full text search terms
+          type: array
+          items:
+            type: string
+        - name: sort_by
+          in: query
+          required: false
+          description: Order returned services by one or more fields
+          type: array
+          items:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number
+          type: number
+          default: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The size of each page
+          type: number
+          default: 30
+      responses:
+        '200':
+          description: A list of services
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
+  /services/{service_id}:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          required: True
+          name: service_id
+          type: string
+      responses:
+        '200':
+          description: A service
+          schema:
+            $ref: '#/definitions/Service'
+
+definitions:
+  Service:
+    type: object
+    required: 
+      - id
+      - name
+      - organization_id
+      - location_id
+      - description
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      organization_id:
+        type: string
+      location_id:
+        type: string
+      description:
+        type: string
