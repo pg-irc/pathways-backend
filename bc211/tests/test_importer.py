@@ -99,7 +99,7 @@ class AddressTypeTests(TestCase):
         self.assertCountEqual(AddressType.objects.all(), expected_address_types)
 
 class FullDataImportTests(TestCase):
-    @tag('slow')
+    
     def setUp(self):
         file = open(MULTI_AGENCY_FIXTURE, 'r')
         self.return_value = save_records_to_database(read_records_from_file(file))
@@ -107,30 +107,11 @@ class FullDataImportTests(TestCase):
         self.all_organizations = Organization.objects.all()
         self.all_taxonomy_terms = TaxonomyTerm.objects.all()
 
-    @tag('slow')
-    def test_can_import_multiple_organizations(self):
+    def test_can_import_full_data_set(self):
         self.assertEqual(len(self.all_organizations), 16)
-
-    @tag('slow')
-    def test_can_import_multiple_locations(self):
         self.assertEqual(len(self.all_locations), 40)
-
-    @tag('slow')
-    def test_can_import_multiple_taxonomy_terms(self):
         self.assertEqual(len(self.all_taxonomy_terms), 134)
-
-    @tag('slow')
-    def test_returns_number_of_organizations_imported(self):
         self.assertEqual(self.return_value.organization_count, 16)
-
-    @tag('slow')
-    def test_returns_number_of_locations_imported(self):
         self.assertEqual(self.return_value.location_count, 40)
-
-    @tag('slow')
-    def test_returns_number_of_taxonomy_terms_imported(self):
         self.assertEqual(self.return_value.taxonomy_term_count, 134)
-
-    @tag('slow')
-    def test_returns_number_of_addresses_imported(self):
         self.assertEqual(self.return_value.address_count, 32)
