@@ -106,6 +106,7 @@ class FullDataImportTests(TestCase):
         self.all_organizations = Organization.objects.all()
         self.all_taxonomy_terms = TaxonomyTerm.objects.all()
 
+    #breaking one-assert-per-test rule to speed up running tests by only calling setup once for all the below checks
     def test_can_import_full_data_set(self):
         self.assertEqual(len(self.all_organizations), 16)
         self.assertEqual(len(self.all_locations), 40)
