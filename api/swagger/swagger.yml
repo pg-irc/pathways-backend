@@ -1,11 +1,13 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: PathwaysHumanServices
+  title: Pathways Human Services Data Implementation"
   description: An implementation of the HumanServices API
   termsOfService: 'http://127.0.0.1:8000/terms/'
   contact:
     name: PeaceGeeks
+    url: https://peacegeeks.org/
+    email: rasmus@peacegeeks.org
   license:
     name: MIT
 host: 127.0.0.1:8000
@@ -16,7 +18,6 @@ consumes:
   - application/json
 produces:
   - application/json
-
 paths:
   /services:
     get:
