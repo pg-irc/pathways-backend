@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.schemas.inspectors import ManualSchema, AutoSchema
+from rest_framework.schemas.inspectors import AutoSchema
 import coreapi, coreschema
 from human_services.services import models, serializers
 from . import private
@@ -16,7 +16,19 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         coreapi.Field(
             'search',
             location='query',
-            description='Search terms for full text search, logical AND implied among terms',
+            description='Search terms for full text search in all fields int the service record and related location and organization records, logical AND implied among terms',
+            schema=coreschema.Array(items=coreschema.String())
+        ),
+        coreapi.Field(
+            'taxonomy_term',
+            location='query',
+            description='Filter result on taxonomic terms, TODO make this take an array of terms with implied logical AND among terms, TODO make this work for hierarchical taxonomies',
+            schema=coreschema.String()
+        ),
+        coreapi.Field(
+            'sort_by',
+            location='query',
+            description='Sort resulting services by one or more fields, prefix field name with - for descending sort order, records that sort equal by the first term are sorted by the second term, etc.',
             schema=coreschema.Array(items=coreschema.String())
         ),
     ])
