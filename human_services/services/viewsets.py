@@ -1,31 +1,7 @@
 from rest_framework import viewsets
-from rest_framework.schemas.inspectors import AutoSchema
-import coreapi, coreschema
 from human_services.services import models, serializers
 from . import private
-
-def get_auto_schema_for_service_endpoint():
-    # TODO this is for list only!!!
-    return AutoSchema(manual_fields=[
-        coreapi.Field(
-            'search',
-            location='query',
-            description='Search terms for full text search in all fields int the service record and related location and organization records, logical AND implied among terms',
-            schema=coreschema.Array(items=coreschema.String())
-        ),
-        coreapi.Field(
-            'taxonomy_term',
-            location='query',
-            description='Filter result on taxonomic terms, TODO make this take an array of terms with implied logical AND among terms, TODO make this work for hierarchical taxonomies',
-            schema=coreschema.String(pattern='\w+:\w+')
-        ),
-        coreapi.Field(
-            'sort_by',
-            location='query',
-            description='Sort resulting services by one or more fields, prefix field name with - for descending sort order, records that sort equal by the first term are sorted by the second term, etc.',
-            schema=coreschema.Array(items=coreschema.String())
-        ),
-    ])
+from . import documentation
 
 class SearchParameters:
     def __init__(self, query_parameters):
@@ -35,7 +11,7 @@ class SearchParameters:
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
-    schema = get_auto_schema_for_service_endpoint()
+    schema = documentation.get_list_endpoint_fields()
 
     def get_queryset(self):
         query_parameters = self.request.query_params
@@ -47,7 +23,7 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSetUnderOrganizations(viewsets.ReadOnlyModelViewSet):
-    schema = get_auto_schema_for_service_endpoint()
+    schema = documentation.get_list_endpoint_fields()
 
     def get_queryset(self):
         organization_id = self.kwargs['organization_id']
