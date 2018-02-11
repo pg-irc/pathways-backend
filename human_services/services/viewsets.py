@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.schemas.inspectors import ManualSchema, AutoSchema
+import coreapi, coreschema
 from human_services.services import models, serializers
 from . import private
 
@@ -10,6 +12,14 @@ class SearchParameters:
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
+    schema = AutoSchema(manual_fields=[
+        coreapi.Field(
+            'search',
+            location='query',
+            description='Search terms for full text search, logical AND implied among terms',
+            schema=coreschema.Array(items=coreschema.String())
+        ),
+    ])
     def get_queryset(self):
         query_parameters = self.request.query_params
         search_parameters = SearchParameters(query_parameters)
