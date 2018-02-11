@@ -10,16 +10,6 @@ def get_list_endpoint_fields():
     # TODO how to define results
     return AutoSchema(manual_fields=[
         Field(
-            'search',
-            location='query',
-            schema=Array(
-                items=String(),
-                description='Search terms for full text search in all fields int the '
-                            'service record and related location and organization records, '
-                            'logical AND implied among terms',
-            ),
-        ),
-        Field(
             'taxonomy_term',
             location='query',
             schema=String(

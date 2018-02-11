@@ -38,22 +38,6 @@ class SearchParametersTests(TestCase):
         with self.assertRaises(SuspiciousOperation):
             SearchParameters({'taxonomy_term' : 'foo:'})
 
-    def test_can_build_full_text_search_term(self):
-        parameters = SearchParameters({'search' : 'foo'})
-        self.assertCountEqual(parameters.full_text_search_terms, ['foo'])
-
-    def test_full_text_search_term_is_optional(self):
-        parameters = SearchParameters({})
-        self.assertIsNone(parameters.full_text_search_terms)
-
-    # Django replaces + characters with space in URL parameter argument
-    def test_full_text_search_terms_are_split_on_space(self):
-        parameters = SearchParameters({'search' : 'foo bar'})
-        self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
-
-    def test_full_text_search_terms_are_stripped_of_white_space(self):
-        parameters = SearchParameters({'search' : '  foo   bar  '})
-        self.assertCountEqual(parameters.full_text_search_terms, ['foo', 'bar'])
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
     def setUp(self):

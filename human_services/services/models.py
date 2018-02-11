@@ -29,7 +29,6 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     def get_queryset(cls, search_parameters):
         queryset = cls.objects.all()
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
-        queryset = cls.add_full_text_search_filter_if_given(queryset, search_parameters)
         queryset = cls.add_sorting_if_given(queryset, search_parameters)
         return queryset
 
@@ -42,19 +41,6 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
             queryset = queryset.filter(taxonomy_terms__taxonomy_id=identifier,
                                        taxonomy_terms__name=term)
         return queryset
-
-    @staticmethod
-    def add_full_text_search_filter_if_given(queryset, search_parameters):
-        search_terms = search_parameters.full_text_search_terms
-        if not search_terms:
-            return queryset
-
-        builder = private.FilterBuilder()
-        for term in search_terms:
-            builder.add_with_or(Q(translations__name__icontains=term),
-                                Q(translations__description__icontains=term))
-
-        return queryset.filter(builder.get_filter())
 
     @classmethod
     def add_sorting_if_given(cls, queryset, search_parameters):
