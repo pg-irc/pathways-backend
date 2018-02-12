@@ -14,5 +14,5 @@ class LocationSerializer(serializers.ModelSerializer):
     location_addresses = LocationAddressSerializer(many=True)
     class Meta:
         model = models.Location
-        fields = ('id', 'name', 'organization_id', 'latitude',
-                  'longitude', 'location_addresses', 'description')
+        fields = ('id', 'name', 'organization_id',
+                  'point', 'location_addresses', 'description')
