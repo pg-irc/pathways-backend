@@ -29,7 +29,6 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     def get_queryset(cls, search_parameters):
         queryset = cls.objects.all()
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
-        queryset = cls.add_sorting_if_given(queryset, search_parameters)
         return queryset
 
     @staticmethod
@@ -41,26 +40,3 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
             queryset = queryset.filter(taxonomy_terms__taxonomy_id=identifier,
                                        taxonomy_terms__name=term)
         return queryset
-
-    @classmethod
-    def add_sorting_if_given(cls, queryset, search_parameters):
-        sort_arguments = search_parameters.sort_by
-
-        if not sort_arguments:
-            return queryset
-
-        sort_arguments = [cls.add_prefix_on_translated_fields(argument) for argument in sort_arguments]
-
-        return queryset.order_by(*sort_arguments)
-
-    @classmethod
-    def add_prefix_on_translated_fields(cls, argument):
-        reverse_sort = argument[0:1] == '-'
-        stripped_argument = argument[1:] if reverse_sort else argument
-
-        translated_fields = ['name', 'description']
-        if stripped_argument not in translated_fields:
-            return argument
-
-        argument = 'translations__' + stripped_argument
-        return '-' + argument if reverse_sort else argument

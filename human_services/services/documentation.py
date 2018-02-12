@@ -19,14 +19,4 @@ def get_list_endpoint_fields():
                             'for hierarchical taxonomies',
             ),
         ),
-        Field(
-            'sort_by',
-            location='query',
-            schema=Array(
-                items=String(),
-                description='Sort resulting services by one or more fields, prefix field '
-                            'name with - for descending sort order, records that sort equal '
-                            'by the first field are sorted by the second field, etc.',
-            ),
-        ),
     ])

@@ -17,13 +17,3 @@ def build_valid_taxonomy_parameters(taxonomy_term):
 
 def raise_taxonomy_error():
     raise SuspiciousOperation('Invalid argument to taxonomy_term')
-
-def split_and_strip_if_given(parameter_string):
-    if not parameter_string:
-        return None
-    parameters = parameter_string.split(' ')
-    return [p.strip() for p in parameters if p != '']
-
-def parse_sorting(query_parameters):
-    sort_argument = query_parameters.get('sort_by', None)
-    return split_and_strip_if_given(sort_argument)
