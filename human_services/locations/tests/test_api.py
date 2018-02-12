@@ -16,8 +16,6 @@ class LocationsApiTests(rest_test.APITestCase):
             'id': 'the_location_id',
             'name': 'the name',
             'organization_id': self.organization_id,
-            'latitude': 0.0,
-            'longitude': 0.0,
             'description': 'the description'
         }
 

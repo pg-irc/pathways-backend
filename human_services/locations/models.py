@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 from django.core import exceptions, validators
 from parler.models import TranslatableModel, TranslatedFields
 from human_services.organizations.models import Organization
@@ -15,8 +15,7 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
     services = models.ManyToManyField(Service,
                                       related_name='locations',
                                       through='ServiceAtLocation')
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
+    point = models.PointField(blank=True, null=True)
     addresses = models.ManyToManyField(Address, related_name='locations', through='LocationAddress')
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
@@ -28,16 +27,6 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
 
     def __str__(self):
         return self.name
-
-    def clean(self):
-        self.validate_latitude_and_longitude()
-        super(Location, self).clean()
-
-    def validate_latitude_and_longitude(self):
-        latitude_is_null = self.latitude is None
-        longitude_is_null = self.longitude is None
-        if latitude_is_null != longitude_is_null:
-            raise_mismatch_exception(latitude_is_null, longitude_is_null)
 
 
 class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
