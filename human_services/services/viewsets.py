@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from common.filters import SearchFilter, OrderingFilter
 from human_services.services import models, serializers, private, documentation
 
 class SearchParameters:
@@ -9,7 +8,6 @@ class SearchParameters:
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
     schema = documentation.get_list_endpoint_fields()
-    filter_backends = (SearchFilter, OrderingFilter, )
     search_fields = ('translations__name', 'translations__description',)
     ordering_fields = '__all__'
 
