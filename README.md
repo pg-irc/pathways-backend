@@ -26,7 +26,17 @@ Install the required python libraries for local development
 pip install -r requirements/local.txt
 ```
 
-Create the database tables. For local development, sqlite is the database implementation, for production, postgres is used.
+Create an .env file for configuration overrides. See env.example for example use.
+
+```
+touch .env
+```
+
+Create the database tables. Postgres with the PostGIS extension is required. Database default values are located in the
+config/settings/local.py, config/settings/test.py, and config/settings/production.py files. Overrides should be put in the .env file created in the previous step.
+
+To get up and running quickly just ensure you have a Postgres Superuser named "postgres" (default on fresh Postgres install)
+and two databases "pathways_local" and "pathways_test". The PostGIS extension will automatically be enabled when migrations are run.
 
 ```
 python manage.py migrate

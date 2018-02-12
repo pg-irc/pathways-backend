@@ -5,7 +5,7 @@ ROOT_DIR = environ.Path(__file__) - 3
 APPS_DIR = ROOT_DIR.path('main')
 
 env = environ.Env()
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
+READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=True)
 
 if READ_DOT_ENV_FILE:
     # Operating System Environment variables have precedence over variables defined in
@@ -231,3 +231,9 @@ LOGIN_URL = 'account_login'
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 ADMIN_URL = r'^admin/'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ATOMIC_REQUESTS': True
+    }
+}
