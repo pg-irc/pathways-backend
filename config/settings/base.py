@@ -55,7 +55,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'common.view.Pagination',
     'PAGE_SIZE': 30,
     'ORDERING_PARAM': 'sort_by',
-    'DEFAULT_FILTER_BACKENDS' : ['common.filters.SearchFilter', 'common.filters.OrderingFilter', ],
+    'DEFAULT_FILTER_BACKENDS' : ['common.filters.SearchFilter', 'common.filters.MultiFieldOrderingFilter', ],
 }
 
 MIDDLEWARE = [
