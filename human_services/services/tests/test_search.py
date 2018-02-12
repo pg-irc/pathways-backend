@@ -138,7 +138,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_name(second_name).create()
         ServiceBuilder(self.organization).with_name(combined_name).create()
 
-        url = '/v1/services/?search={0}+{1}'.format(first_name, second_name)
+        url = '/v1/services/?search={0},{1}'.format(first_name, second_name)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -157,7 +157,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
     def test_full_text_search_ignores_empty_search_term(self):
         ServiceBuilder(self.organization).create()
 
-        url = '/v1/services/?search={0}+{1}+{2}'.format('', a_string(), a_string())
+        url = '/v1/services/?search={0},{1},{2}'.format('', a_string(), a_string())
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -183,7 +183,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], a_service.name)
 
-class ServicesSearchSorting(rest_test.APITestCase):
+class ServicesSorting(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
 
@@ -238,7 +238,7 @@ class ServicesSearchSorting(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_description('ccc').create()
         ServiceBuilder(self.organization).with_description('aaa').create()
 
-        url = '/v1/services/?sort_by=description+name'
+        url = '/v1/services/?sort_by=description,name'
         response = self.client.get(url)
 
         first, second, third, fourth, fifth = response.json()
@@ -259,7 +259,7 @@ class ServicesSearchSorting(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_description('ccc').create()
         ServiceBuilder(self.organization).with_description('aaa').create()
 
-        response = self.client.get('/v1/services/?sort_by=description+-name')
+        response = self.client.get('/v1/services/?sort_by=description,-name')
 
         first, second, third, fourth, fifth = response.json()
 
