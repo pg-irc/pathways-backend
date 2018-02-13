@@ -4,6 +4,8 @@ from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string
 from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.locations.models import ServiceAtLocation
+from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services.viewsets import SearchParameters
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
@@ -12,6 +14,10 @@ class SearchParametersTests(TestCase):
     def test_can_build_with_organization_id(self):
         parameters = SearchParameters({}, {'organization_id': 'foo'})
         self.assertEqual(parameters.organization_id, 'foo')
+
+    def test_can_build_with_location_id(self):
+        parameters = SearchParameters({}, {'location_id': 'foo'})
+        self.assertEqual(parameters.location_id, 'foo')
 
     def test_can_build_with_taxonomy_id(self):
         parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
@@ -99,6 +105,32 @@ class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], first_service.name)
 
+    def test_can_retrieve_service_under_given_location(self):
+        first_organization = OrganizationBuilder().create()
+        second_organization = OrganizationBuilder().create()
+
+        first_location = LocationBuilder(first_organization).create()
+        second_location = LocationBuilder(first_organization).create()
+
+        first_service = ServiceBuilder(first_organization).create()
+        second_service = ServiceBuilder(second_organization).create()
+
+        service_at_location = ServiceAtLocation()
+        service_at_location.service = first_service
+        service_at_location.location = first_location
+        service_at_location.save()
+
+        service_at_location = ServiceAtLocation()
+        service_at_location.service = second_service
+        service_at_location.location = second_location
+        service_at_location.save()
+
+        url = '/v1/locations/{0}/services/'.format(first_location.id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], first_service.name)
 
 class ServicesFullTextSearchTests(rest_test.APITestCase):
     def setUp(self):

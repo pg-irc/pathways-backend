@@ -18,6 +18,7 @@ def build_router():
     router.register(r'locations', LocationViewSet, base_name='location')
     router.register(r'services', ServiceViewSet, base_name='service')
     router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
+    router.register(r'locations/(?P<location_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
     return router
 
 urlpatterns = [

@@ -30,6 +30,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
         queryset = cls.objects.all()
         queryset = cls.add_taxonomy_filter_if_given(queryset, search_parameters)
         queryset = cls.add_organization_filter_if_given(queryset, search_parameters)
+        queryset = cls.add_location_filter_if_given(queryset, search_parameters)
         return queryset
 
     @staticmethod
@@ -45,4 +46,9 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     def add_organization_filter_if_given(queryset, search_parameters):
         if search_parameters.organization_id:
             queryset = queryset.filter(organization_id=search_parameters.organization_id)
+        return queryset
+
+    def add_location_filter_if_given(queryset, search_parameters):
+        if search_parameters.location_id:
+            queryset = queryset.filter(serviceatlocation__location_id=search_parameters.location_id)
         return queryset
