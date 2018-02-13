@@ -91,46 +91,42 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
 
 
 class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
+    def setUp(self):
+        self.first_organization = OrganizationBuilder().create()
+        self.second_organization = OrganizationBuilder().create()
+
+        self.first_location = LocationBuilder(self.first_organization).create()
+        self.second_location = LocationBuilder(self.first_organization).create()
+
+        self.first_service = ServiceBuilder(self.first_organization).create()
+        self.second_service = ServiceBuilder(self.second_organization).create()
+
+        service_at_location = ServiceAtLocation()
+        service_at_location.service = self.first_service
+        service_at_location.location = self.first_location
+        service_at_location.save()
+
+        service_at_location = ServiceAtLocation()
+        service_at_location.service = self.second_service
+        service_at_location.location = self.second_location
+        service_at_location.save()
+
     def test_can_retrieve_service_under_given_organization(self):
-        first_organization = OrganizationBuilder().create()
-        second_organization = OrganizationBuilder().create()
-
-        first_service = ServiceBuilder(first_organization).create()
-        second_service = ServiceBuilder(second_organization).create()
-
-        url = '/v1/organizations/{0}/services/'.format(first_organization.id)
+        url = '/v1/organizations/{0}/services/'.format(self.first_organization.id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['name'], first_service.name)
+        self.assertEqual(response.json()[0]['name'], self.first_service.name)
 
     def test_can_retrieve_service_under_given_location(self):
-        first_organization = OrganizationBuilder().create()
-        second_organization = OrganizationBuilder().create()
-
-        first_location = LocationBuilder(first_organization).create()
-        second_location = LocationBuilder(first_organization).create()
-
-        first_service = ServiceBuilder(first_organization).create()
-        second_service = ServiceBuilder(second_organization).create()
-
-        service_at_location = ServiceAtLocation()
-        service_at_location.service = first_service
-        service_at_location.location = first_location
-        service_at_location.save()
-
-        service_at_location = ServiceAtLocation()
-        service_at_location.service = second_service
-        service_at_location.location = second_location
-        service_at_location.save()
-
-        url = '/v1/locations/{0}/services/'.format(first_location.id)
+        url = '/v1/locations/{0}/services/'.format(self.first_location.id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['name'], first_service.name)
+        self.assertEqual(response.json()[0]['name'], self.first_service.name)
+
 
 class ServicesFullTextSearchTests(rest_test.APITestCase):
     def setUp(self):
