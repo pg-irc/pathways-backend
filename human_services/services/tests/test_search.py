@@ -101,14 +101,13 @@ class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
         self.first_service = ServiceBuilder(self.first_organization).create()
         self.second_service = ServiceBuilder(self.second_organization).create()
 
-        service_at_location = ServiceAtLocation()
-        service_at_location.service = self.first_service
-        service_at_location.location = self.first_location
-        service_at_location.save()
+        self.add_service_to_location(self.first_service, self.first_location)
+        self.add_service_to_location(self.second_service, self.second_location)
 
+    def add_service_to_location(self, service, location):
         service_at_location = ServiceAtLocation()
-        service_at_location.service = self.second_service
-        service_at_location.location = self.second_location
+        service_at_location.service = service
+        service_at_location.location = location
         service_at_location.save()
 
     def test_can_retrieve_service_under_given_organization(self):
@@ -121,6 +120,27 @@ class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
 
     def test_can_retrieve_service_under_given_location(self):
         url = '/v1/locations/{0}/services/'.format(self.first_location.id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], self.first_service.name)
+
+    def test_can_retrieve_service_under_given_location_and_organization(self):
+        service_with_wrong_location = ServiceBuilder(self.first_organization).create()
+        self.add_service_to_location(service_with_wrong_location, self.second_location)
+
+        service_with_wrong_organization = ServiceBuilder(self.second_organization).create()
+        self.add_service_to_location(service_with_wrong_organization, self.first_location)
+
+        url = '/v1/organizations/{0}/locations/{1}/services/'.format(self.first_organization.id, self.first_location.id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], self.first_service.name)
+
+        url = '/v1/locations/{0}/organizations/{1}/services/'.format(self.first_location.id, self.first_organization.id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
