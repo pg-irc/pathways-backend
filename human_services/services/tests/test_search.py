@@ -9,34 +9,38 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
 
 class SearchParametersTests(TestCase):
+    def test_can_build_with_organization_id(self):
+        parameters = SearchParameters({}, {'organization_id': 'foo'})
+        self.assertEqual(parameters.organization_id, 'foo')
+
     def test_can_build_with_taxonomy_id(self):
-        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'})
+        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
         self.assertEqual(parameters.taxonomy_id, 'foo')
 
     def test_can_build_with_taxonomy_term(self):
-        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'})
+        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
         self.assertEqual(parameters.taxonomy_term, 'bar')
 
     def test_taxonomy_parameter_is_optional(self):
-        parameters = SearchParameters({})
+        parameters = SearchParameters({}, {})
         self.assertIsNone(parameters.taxonomy_id)
         self.assertIsNone(parameters.taxonomy_term)
 
     def test_throws_on_too_many_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : 'foo:bar:baz'})
+            SearchParameters({'taxonomy_term' : 'foo:bar:baz'}, {})
 
     def test_throws_on_missing_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : 'foobar'})
+            SearchParameters({'taxonomy_term' : 'foobar'}, {})
 
     def test_throws_on_missing_taxonomy_id(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : ':bar'})
+            SearchParameters({'taxonomy_term' : ':bar'}, {})
 
     def test_throws_on_missing_taxonomy_term(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : 'foo:'})
+            SearchParameters({'taxonomy_term' : 'foo:'}, {})
 
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
@@ -78,6 +82,23 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 0)
+
+
+class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
+    def test_can_retrieve_service_under_given_organization(self):
+        first_organization = OrganizationBuilder().create()
+        second_organization = OrganizationBuilder().create()
+
+        first_service = ServiceBuilder(first_organization).create()
+        second_service = ServiceBuilder(second_organization).create()
+
+        url = '/v1/organizations/{0}/services/'.format(first_organization.id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], first_service.name)
+
 
 class ServicesFullTextSearchTests(rest_test.APITestCase):
     def setUp(self):

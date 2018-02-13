@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
-from human_services.services.viewsets import ServiceViewSet, ServiceViewSetUnderOrganizations
+from human_services.services.viewsets import ServiceViewSet
 from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 
@@ -17,8 +17,7 @@ def build_router():
                     LocationViewSetUnderOrganizations, base_name='organization-location')
     router.register(r'locations', LocationViewSet, base_name='location')
     router.register(r'services', ServiceViewSet, base_name='service')
-    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services',
-                    ServiceViewSetUnderOrganizations, base_name='organization-service')
+    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
     return router
 
 urlpatterns = [
