@@ -5,6 +5,8 @@ from human_services.locations.models import Location, LocationAddress
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.addresses.models import Address, AddressType
+from common.testhelpers.random_test_values import a_float
+from django.contrib.gis.geos import Point, GEOSGeometry
 
 
 class LocationsApiTests(rest_test.APITestCase):
@@ -107,3 +109,18 @@ class LocationsApiTests(rest_test.APITestCase):
 
     def test_has_postal_address(self):
         self.location_has_address_of_type('postal_address')
+
+    def test_has_point(self):
+        point = Point(a_float(), a_float())
+        LocationBuilder(self.organization).with_point(point).create()
+        url = '/v1/locations/'
+        response = self.client.get(url)
+        self.assertEqual(response.json()[0]['point'], point.__str__())
+
+    def test_point_value_instantiates_to_geos_geometry(self):
+        LocationBuilder(self.organization).create()
+        url = '/v1/locations/'
+        response = self.client.get(url)
+        # This will throw one of a few various exceptions
+        # if parsing the value fails
+        GEOSGeometry(response.json()[0]['point'])
