@@ -13,15 +13,15 @@ from rest_framework_swagger.views import get_swagger_view
 def build_router():
     router = routers.DefaultRouter()
     router.register(r'organizations', OrganizationViewSet, base_name='organization')
-    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations',
+    router.register(r'organizations/(?P<organization_id>\w+)/locations',
                     LocationViewSetUnderOrganizations, base_name='organization-location')
     router.register(r'locations', LocationViewSet, base_name='location')
-    router.register(r'services', ServiceViewSet, base_name='service')
-    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
-    router.register(r'locations/(?P<location_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
 
-    router.register(r'organizations/(?P<organization_id>[0-9a-zA-Z_]+)/locations/(?P<location_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
-    router.register(r'locations/(?P<location_id>[0-9a-zA-Z_]+)/organizations/(?P<organization_id>[0-9a-zA-Z_]+)/services', ServiceViewSet, base_name='service')
+    router.register(r'services', ServiceViewSet, base_name='service')
+    router.register(r'organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'organizations/(?P<organization_id>\w+)/locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'locations/(?P<location_id>\w+)/organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
 
     return router
 

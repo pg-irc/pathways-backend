@@ -9,6 +9,7 @@ class SearchParameters:
 
 # pylint: disable=too-many-ancestors
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = serializers.ServiceSerializer
     schema = documentation.get_list_endpoint_fields()
     search_fields = ('translations__name', 'translations__description',)
     ordering_fields = '__all__'
@@ -19,5 +20,3 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         search_parameters = SearchParameters(query_parameters, path_parameters)
         queryset = models.Service.get_queryset(search_parameters)
         return queryset
-
-    serializer_class = serializers.ServiceSerializer
