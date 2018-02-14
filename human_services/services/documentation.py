@@ -6,6 +6,7 @@ def get_list_endpoint_fields():
     # TODO this is for list only, how to make it not appear on /services/{service_id}? The paginator know how...
     #       See AutoSchema#get_pagination_fields() which calls is_list_view()
     #       See also AutoSchema#get_filter_fields(), need to get _allows_filters() to return false on non-list views
+    #       The same issue applies to search and sort
     # TODO swagger UI creates invalid separator when giving >1 elements in argument arrays
     # TODO how to define results
     return AutoSchema(manual_fields=[
@@ -16,7 +17,8 @@ def get_list_endpoint_fields():
                 pattern='\w+:\w+',
                 description='Filter result on taxonomic terms, TODO make this take an array of '
                             'terms with implied logical AND among terms, TODO make this work '
-                            'for hierarchical taxonomies',
+                            'for hierarchical taxonomies. Examples: "bc211-what:libraries", '
+                            '"bc211-who:service-providers", "bc211-why:homelessness"'
             ),
         ),
     ])

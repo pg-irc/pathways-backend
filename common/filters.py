@@ -1,7 +1,9 @@
 from rest_framework import filters
 
 class MultiFieldOrderingFilter(filters.OrderingFilter):
-    ordering_description = 'Fields for sorting of results. Enter one or more fields separated by space or comma. Prefix any field with - for sorting in descending order.'
+    ordering_description = 'Fields for sorting of results. Enter one or more fields separated '
+    'by space or comma. Records that sort equally by the first field are sorted by the second '
+    'field, etc. Prefix any field with - for sorting in descending order.'
     REVERSE_SORT_PREFIX = '-'
 
     def get_ordering(self, request, queryset, view):
@@ -25,4 +27,5 @@ class MultiFieldOrderingFilter(filters.OrderingFilter):
 
 
 class SearchFilter(filters.SearchFilter):
-    search_description = 'Search terms for full text search. Enter one or more terms separated by space or comma. Logical AND is implied among the terms.'
+    search_description = 'Search terms for full text search. Enter one or more terms '
+    'separated by space or comma. Logical AND is implied among the terms.'
