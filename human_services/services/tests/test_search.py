@@ -105,10 +105,7 @@ class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
         self.add_service_to_location(self.second_service, self.second_location)
 
     def add_service_to_location(self, service, location):
-        service_at_location = ServiceAtLocation()
-        service_at_location.service = service
-        service_at_location.location = location
-        service_at_location.save()
+        ServiceAtLocation(service=service, location=location).save()
 
     def test_can_retrieve_service_under_given_organization(self):
         url = '/v1/organizations/{0}/services/'.format(self.first_organization.id)

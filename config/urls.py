@@ -7,8 +7,23 @@ from django.views import defaults as default_views
 from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
 from human_services.services.viewsets import ServiceViewSet
-from rest_framework import routers
-from rest_framework_swagger.views import get_swagger_view
+from rest_framework import routers, permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title='Pathways HSDA',
+      default_version='v1',
+      description='PeaceGeeks implementation of OpenReferral Human Services HSDA',
+      #terms_of_service='https://www.google.com/policies/terms/',
+      contact=openapi.Contact(email='rasmus@peacegeeks.org'),
+      license=openapi.License(name='MIT License'),
+   ),
+   #validators=['flex', 'ssv'],
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 def build_router():
     router = routers.DefaultRouter()
@@ -37,7 +52,10 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
-    url(r'^v1/docs/', get_swagger_view(title='Pathways API')),
+    url(r'^swagger(?P<format>.json|.yaml)$', schema_view.without_ui(cache_timeout=None), name='schema-json'),
+    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
+    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
+
     url(r'^v1/', include(build_router().urls)),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
