@@ -1,24 +1,16 @@
-from coreapi import Field
-from coreschema import Array, String
-from rest_framework.schemas.inspectors import AutoSchema
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
-def get_list_endpoint_fields():
-    # TODO this is for list only, how to make it not appear on /services/{service_id}? The paginator know how...
-    #       See AutoSchema#get_pagination_fields() which calls is_list_view()
-    #       See also AutoSchema#get_filter_fields(), need to get _allows_filters() to return false on non-list views
-    #       The same issue applies to search and sort
-    # TODO swagger UI creates invalid separator when giving >1 elements in argument arrays
-    # TODO how to define results
-    return AutoSchema(manual_fields=[
-        Field(
-            'taxonomy_term',
-            location='query',
-            schema=String(
-                pattern='\w+:\w+',
-                description='Filter result on taxonomic terms, TODO make this take an array of '
-                            'terms with implied logical AND among terms, TODO make this work '
-                            'for hierarchical taxonomies. Examples: "bc211-what:libraries", '
-                            '"bc211-who:service-providers", "bc211-why:homelessness"'
-            ),
-        ),
-    ])
+def get_list_schema_decorator():
+
+    taxonomy_term_description = 'Filter result on taxonomic terms, TODO make this take an array of terms with implied logical AND among terms, TODO make this work for hierarchical taxonomies. Examples: "bc211-what:libraries", "bc211-who:service-providers", "bc211-why:homelessness"'
+
+    taxonomy_term_param = openapi.Parameter('taxonomy_term',
+                                            openapi.IN_QUERY,
+                                            description=taxonomy_term_description,
+                                            type=openapi.TYPE_STRING)
+
+    operation_description = 'Return a list of services matching supplied search and filter criteria. Search uses full text search against name and description TODO also against other fields on service and related organization and maybe location.'
+
+    return swagger_auto_schema(operation_description=operation_description,
+                               manual_parameters=[taxonomy_term_param])

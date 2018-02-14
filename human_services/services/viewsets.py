@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from django.utils.decorators import method_decorator
 from human_services.services import models, serializers, private, documentation
 
 
@@ -10,9 +11,10 @@ class SearchParameters:
 
 
 # pylint: disable=too-many-ancestors
+@method_decorator(name='list', decorator=documentation.get_list_schema_decorator())
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
+
     serializer_class = serializers.ServiceSerializer
-    schema = documentation.get_list_endpoint_fields()
     search_fields = ('translations__name', 'translations__description',)
     ordering_fields = '__all__'
 
@@ -20,5 +22,4 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
         query_parameters = self.request.query_params
         path_parameters = self.kwargs
         search_parameters = SearchParameters(query_parameters, path_parameters)
-        queryset = models.Service.get_queryset(search_parameters)
-        return queryset
+        return models.Service.get_queryset(search_parameters)
