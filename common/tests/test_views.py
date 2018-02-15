@@ -3,6 +3,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import an_integer
 
+# pylint: disable=too-many-public-methods
 class TestPagination(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
@@ -123,7 +124,7 @@ class TestPagination(rest_test.APITestCase):
 
         self.assertNotIn('rel="last"', link_header)
 
-    def test_includes_no_Link_header_for_only_page(self):
+    def test_includes_no_link_header_for_only_page(self):
         self.create_many_services(2)
 
         response = self.client.get('/v1/services/?per_page=2')
@@ -165,7 +166,8 @@ class TestPagination(rest_test.APITestCase):
         page_number = 4
         ids_on_the_fourth_page = ['007', '008']
 
-        response = self.client.get('/v1/services/?per_page={0}&page={1}'.format(per_page, page_number))
+        url = '/v1/services/?per_page={0}&page={1}'.format(per_page, page_number)
+        response = self.client.get(url)
 
         self.assertIn(response.json()[0]['id'], ids_on_the_fourth_page)
         self.assertIn(response.json()[1]['id'], ids_on_the_fourth_page)
@@ -179,4 +181,3 @@ class TestPagination(rest_test.APITestCase):
 
         self.assertIn(response.json()[0]['id'], ids_on_the_first_page)
         self.assertIn(response.json()[1]['id'], ids_on_the_first_page)
-

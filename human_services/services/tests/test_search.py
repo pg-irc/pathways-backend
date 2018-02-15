@@ -65,6 +65,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['id'], service.id)
 
+    # pylint: disable=invalid-name
     def test_taxonomy_search_with_wrong_taxonomy_id_returns_empty_array(self):
         taxonomy_term = TaxonomyTermBuilder().create()
         wrong_taxonomy_term = TaxonomyTermBuilder().create()
@@ -77,6 +78,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 0)
 
+    # pylint: disable=invalid-name
     def test_taxonomy_search_with_wrong_taxonomy_term_returns_empty_array(self):
         taxonomy_term = TaxonomyTermBuilder().create()
         wrong_taxonomy_term = TaxonomyTermBuilder().create()
@@ -101,11 +103,9 @@ class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
         self.first_service = ServiceBuilder(self.first_organization).create()
         self.second_service = ServiceBuilder(self.second_organization).create()
 
-        self.add_service_to_location(self.first_service, self.first_location)
-        self.add_service_to_location(self.second_service, self.second_location)
+        add_service_to_location(self.first_service, self.first_location)
+        add_service_to_location(self.second_service, self.second_location)
 
-    def add_service_to_location(self, service, location):
-        ServiceAtLocation(service=service, location=location).save()
 
     def test_can_retrieve_service_under_given_organization(self):
         url = '/v1/organizations/{0}/services/'.format(self.first_organization.id)
@@ -123,35 +123,43 @@ class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], self.first_service.name)
 
+    # pylint: disable=invalid-name
     def test_can_retrieve_service_under_given_location_and_organization(self):
         service_with_wrong_location = ServiceBuilder(self.first_organization).create()
-        self.add_service_to_location(service_with_wrong_location, self.second_location)
+        add_service_to_location(service_with_wrong_location, self.second_location)
 
         service_with_wrong_organization = ServiceBuilder(self.second_organization).create()
-        self.add_service_to_location(service_with_wrong_organization, self.first_location)
+        add_service_to_location(service_with_wrong_organization, self.first_location)
 
-        url = '/v1/organizations/{0}/locations/{1}/services/'.format(self.first_organization.id, self.first_location.id)
+        url = '/v1/organizations/{0}/locations/{1}/services/'.format(self.first_organization.id,
+                                                                     self.first_location.id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], self.first_service.name)
 
-        url = '/v1/locations/{0}/organizations/{1}/services/'.format(self.first_location.id, self.first_organization.id)
+        url = '/v1/locations/{0}/organizations/{1}/services/'.format(self.first_location.id,
+                                                                     self.first_organization.id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], self.first_service.name)
+
+
+def add_service_to_location(service, location):
+    ServiceAtLocation(service=service, location=location).save()
 
 
 class ServicesFullTextSearchTests(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
 
+    # pylint: disable=invalid-name
     def test_full_text_search_returns_service_with_exact_match_on_name(self):
         the_name = a_string()
-        service = ServiceBuilder(self.organization).with_name(the_name).create()
+        ServiceBuilder(self.organization).with_name(the_name).create()
 
         url = '/v1/services/?search={0}'.format(the_name)
         response = self.client.get(url)
@@ -160,10 +168,11 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], the_name)
 
+    # pylint: disable=invalid-name
     def test_full_text_search_returns_service_with_substring_match_on_name(self):
         part_of_the_name = a_string()
         the_name = part_of_the_name + a_string()
-        service = ServiceBuilder(self.organization).with_name(the_name).create()
+        ServiceBuilder(self.organization).with_name(the_name).create()
 
         url = '/v1/services/?search={0}'.format(part_of_the_name)
         response = self.client.get(url)
@@ -175,7 +184,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
     def test_full_text_search_is_case_insensitive(self):
         the_name = 'FooBar'
         the_search_term = 'foobar'
-        service = ServiceBuilder(self.organization).with_name(the_name).create()
+        ServiceBuilder(self.organization).with_name(the_name).create()
 
         url = '/v1/services/?search={0}'.format(the_search_term)
         response = self.client.get(url)
@@ -184,10 +193,11 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], the_name)
 
+    # pylint: disable=invalid-name
     def test_full_text_search_returns_service_with_substring_match_to_description(self):
         part_of_the_description = a_string()
         the_description = part_of_the_description + a_string()
-        service = ServiceBuilder(self.organization).with_description(the_description).create()
+        ServiceBuilder(self.organization).with_description(the_description).create()
 
         url = '/v1/services/?search={0}'.format(part_of_the_description)
         response = self.client.get(url)
@@ -196,6 +206,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['description'], the_description)
 
+    # pylint: disable=invalid-name
     def test_full_text_search_with_two_search_terms_implies_logical_and(self):
         first_name = a_string()
         second_name = a_string()
@@ -211,8 +222,9 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['name'], combined_name)
 
+    # pylint: disable=invalid-name
     def test_full_text_search_with_no_match_returns_empty_array(self):
-        service = ServiceBuilder(self.organization).create()
+        ServiceBuilder(self.organization).create()
 
         url = '/v1/services/?search={0}'.format(a_string())
         response = self.client.get(url)
@@ -234,15 +246,16 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         the_taxonomy_term = TaxonomyTermBuilder().create()
 
         a_service = (ServiceBuilder(self.organization).
-                                                with_name(the_search_term + a_string()).
-                                                with_taxonomy_terms([the_taxonomy_term]).
-                                                create())
+                     with_name(the_search_term + a_string()).
+                     with_taxonomy_terms([the_taxonomy_term]).
+                     create())
+
         ServiceBuilder(self.organization).with_taxonomy_terms([the_taxonomy_term]).create()
         ServiceBuilder(self.organization).with_name(the_search_term + a_string()).create()
 
         url = '/v1/services/?search={0}&taxonomy_term={1}:{2}'.format(the_search_term,
-                                                                       the_taxonomy_term.taxonomy_id,
-                                                                       the_taxonomy_term.name)
+                                                                      the_taxonomy_term.taxonomy_id,
+                                                                      the_taxonomy_term.name)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

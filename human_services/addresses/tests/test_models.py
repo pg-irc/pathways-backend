@@ -1,4 +1,3 @@
-import string
 from copy import copy
 from django.test import TestCase
 from django.core import exceptions
