@@ -7,23 +7,8 @@ from django.views import defaults as default_views
 from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
 from human_services.services.viewsets import ServiceViewSet
-from rest_framework import routers, permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title='Pathways HSDA',
-      default_version='v1',
-      description='PeaceGeeks implementation of OpenReferral Human Services HSDA',
-      #terms_of_service='https://www.google.com/policies/terms/',
-      contact=openapi.Contact(email='rasmus@peacegeeks.org'),
-      license=openapi.License(name='MIT License'),
-   ),
-   #validators=['flex', 'ssv'],
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
+from rest_framework import routers
+from config import documentation
 
 def build_router():
     router = routers.DefaultRouter()
@@ -40,6 +25,8 @@ def build_router():
 
     return router
 
+SCHEMA_VIEW = documentation.build_schema_view()
+
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
@@ -52,9 +39,9 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
-    url(r'^swagger(?P<format>.json|.yaml)$', schema_view.without_ui(cache_timeout=None), name='schema-json'),
-    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
-    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
+    url(r'^swagger(?P<format>.json|.yaml)$', SCHEMA_VIEW.without_ui(cache_timeout=None), name='schema-json'),
+    url(r'^swagger/$', SCHEMA_VIEW.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
+    url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
 
     url(r'^v1/', include(build_router().urls)),
 
