@@ -21,16 +21,20 @@ class SearchParametersTests(TestCase):
 
     def test_can_build_with_taxonomy_id(self):
         parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
-        self.assertEqual(parameters.taxonomy_id, 'foo')
+        self.assertEqual(parameters.taxonomy_terms[0][0], 'foo')
 
     def test_can_build_with_taxonomy_term(self):
         parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
-        self.assertEqual(parameters.taxonomy_term, 'bar')
+        self.assertEqual(parameters.taxonomy_terms[0][1], 'bar')
+
+    def test_can_build_with_multiple_taxonomy_terms(self):
+        parameters = SearchParameters({'taxonomy_term' : 'foo:bar,bez:big'}, {})
+        self.assertEqual(parameters.taxonomy_terms[1][0], 'bez')
+        self.assertEqual(parameters.taxonomy_terms[1][1], 'big')
 
     def test_taxonomy_parameter_is_optional(self):
         parameters = SearchParameters({}, {})
-        self.assertIsNone(parameters.taxonomy_id)
-        self.assertIsNone(parameters.taxonomy_term)
+        self.assertIsNone(parameters.taxonomy_terms)
 
     def test_throws_on_too_many_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
@@ -90,6 +94,32 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 0)
+
+
+    def test_search_with_two_taxonomy_terms_returns_service_labelled_with_both_terms(self):
+        first_taxonomy_term = TaxonomyTermBuilder().create()
+        second_taxonomy_term = TaxonomyTermBuilder().create()
+
+        ServiceBuilder(self.organization).with_taxonomy_terms([first_taxonomy_term]).create()
+        ServiceBuilder(self.organization).with_taxonomy_terms([second_taxonomy_term]).create()
+
+        service_with_both_terms = (ServiceBuilder(self.organization).
+                                   with_taxonomy_terms([
+                                       first_taxonomy_term, second_taxonomy_term
+                                   ]).
+                                   create())
+
+        argument = '{first_id}:{first_name},{second_id}:{second_name}'.format(
+                                                        first_id=first_taxonomy_term.taxonomy_id,
+                                                        first_name=first_taxonomy_term.name,
+                                                        second_id=second_taxonomy_term.taxonomy_id,
+                                                        second_name=second_taxonomy_term.name)
+
+        response = self.client.get('/v1/services/?taxonomy_term={}'.format(argument))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['id'], service_with_both_terms.id)
 
 
 class ServicesSearchUnderOrganizationOrLocationTests(rest_test.APITestCase):

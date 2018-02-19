@@ -5,7 +5,7 @@ from human_services.services import models, serializers, private, documentation
 
 class SearchParameters:
     def __init__(self, query_parameters, path_parameters):
-        self.taxonomy_id, self.taxonomy_term = private.parse_taxonomy_parameter(query_parameters)
+        self.taxonomy_terms = private.parse_taxonomy_parameter(query_parameters)
         self.organization_id = path_parameters.get('organization_id', None)
         self.location_id = path_parameters.get('location_id', None)
 
