@@ -17,7 +17,7 @@ def get_list_schema_decorator():
                                            openapi.IN_QUERY,
                                            description=taxonomy_description,
                                            type=openapi.TYPE_STRING,
-                                           pattern=r'\w+\.\w+'),
+                                           pattern=r'^\w+\.\w+$'),
                         ]
 
     responses = {
