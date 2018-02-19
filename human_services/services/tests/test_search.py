@@ -20,15 +20,15 @@ class SearchParametersTests(TestCase):
         self.assertEqual(parameters.location_id, 'foo')
 
     def test_can_build_with_taxonomy_id(self):
-        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
+        parameters = SearchParameters({'taxonomy_term' : 'foo$bar'}, {})
         self.assertEqual(parameters.taxonomy_terms[0][0], 'foo')
 
     def test_can_build_with_taxonomy_term(self):
-        parameters = SearchParameters({'taxonomy_term' : 'foo:bar'}, {})
+        parameters = SearchParameters({'taxonomy_term' : 'foo$bar'}, {})
         self.assertEqual(parameters.taxonomy_terms[0][1], 'bar')
 
     def test_can_build_with_multiple_taxonomy_terms(self):
-        parameters = SearchParameters({'taxonomy_term' : 'foo:bar,bez:big'}, {})
+        parameters = SearchParameters({'taxonomy_term' : 'foo$bar,bez$big'}, {})
         self.assertEqual(parameters.taxonomy_terms[1][0], 'bez')
         self.assertEqual(parameters.taxonomy_terms[1][1], 'big')
 
@@ -38,7 +38,7 @@ class SearchParametersTests(TestCase):
 
     def test_throws_on_too_many_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : 'foo:bar:baz'}, {})
+            SearchParameters({'taxonomy_term' : 'foo$bar$baz'}, {})
 
     def test_throws_on_missing_field_separators(self):
         with self.assertRaises(SuspiciousOperation):
@@ -46,11 +46,11 @@ class SearchParametersTests(TestCase):
 
     def test_throws_on_missing_taxonomy_id(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : ':bar'}, {})
+            SearchParameters({'taxonomy_term' : '$bar'}, {})
 
     def test_throws_on_missing_taxonomy_term(self):
         with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_term' : 'foo:'}, {})
+            SearchParameters({'taxonomy_term' : 'foo$'}, {})
 
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
@@ -61,7 +61,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         taxonomy_term = TaxonomyTermBuilder().create()
         service = ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
-        url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
+        url = '/v1/services/?taxonomy_term={0}${1}'.format(taxonomy_term.taxonomy_id,
                                                            taxonomy_term.name)
         response = self.client.get(url)
 
@@ -75,7 +75,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         wrong_taxonomy_term = TaxonomyTermBuilder().create()
         ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
-        url = '/v1/services/?taxonomy_term={0}:{1}'.format(wrong_taxonomy_term.taxonomy_id,
+        url = '/v1/services/?taxonomy_term={0}${1}'.format(wrong_taxonomy_term.taxonomy_id,
                                                            taxonomy_term.name)
         response = self.client.get(url)
 
@@ -88,7 +88,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
         wrong_taxonomy_term = TaxonomyTermBuilder().create()
         ServiceBuilder(self.organization).with_taxonomy_terms([taxonomy_term]).create()
 
-        url = '/v1/services/?taxonomy_term={0}:{1}'.format(taxonomy_term.taxonomy_id,
+        url = '/v1/services/?taxonomy_term={0}${1}'.format(taxonomy_term.taxonomy_id,
                                                            wrong_taxonomy_term.name)
         response = self.client.get(url)
 
@@ -109,7 +109,7 @@ class ServicesTaxonomicSearchTests(rest_test.APITestCase):
                                    ]).
                                    create())
 
-        argument = '{first_id}:{first_name},{second_id}:{second_name}'.format(
+        argument = '{first_id}${first_name},{second_id}${second_name}'.format(
                                                         first_id=first_taxonomy_term.taxonomy_id,
                                                         first_name=first_taxonomy_term.name,
                                                         second_id=second_taxonomy_term.taxonomy_id,
@@ -283,7 +283,7 @@ class ServicesFullTextSearchTests(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_taxonomy_terms([the_taxonomy_term]).create()
         ServiceBuilder(self.organization).with_name(the_search_term + a_string()).create()
 
-        url = '/v1/services/?search={0}&taxonomy_term={1}:{2}'.format(the_search_term,
+        url = '/v1/services/?search={0}&taxonomy_term={1}${2}'.format(the_search_term,
                                                                       the_taxonomy_term.taxonomy_id,
                                                                       the_taxonomy_term.name)
         response = self.client.get(url)
