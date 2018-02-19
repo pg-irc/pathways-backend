@@ -77,8 +77,8 @@ def parse_site(site, organization_id):
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
     services = parse_services(site, organization_id, id)
-    physical_address = parse_physical_address(site, id)
-    postal_address = parse_postal_address(site, id)
+    physical_address = parse_physical_address(site, id, name)
+    postal_address = parse_postal_address(site, id, name)
     LOGGER.debug('Location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
@@ -169,23 +169,32 @@ def parse_airs_taxonomy_term(code_str):
     taxonomy_id = 'airs'
     yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)
 
-def parse_physical_address(site, site_id):
+def parse_physical_address(site_xml, site_id, site_name):
     type_id = 'physical_address'
-    return parse_address(site.find('PhysicalAddress'), site_id, type_id)
+    return parse_address_and_handle_errors(site_xml.find('PhysicalAddress'), site_id, site_name, type_id)
 
-def parse_postal_address(site, site_id):
+def parse_postal_address(site_xml, site_id, site_name):
     type_id = 'postal_address'
-    return parse_address(site.find('MailingAddress'), site_id, type_id)
+    return parse_address_and_handle_errors(site_xml.find('MailingAddress'), site_id, site_name, type_id)
+
+def parse_address_and_handle_errors(address, site_id, site_name, address_type_id):
+    try:
+        return parse_address(address, site_id, address_type_id)
+    except MissingRequiredFieldXmlParseException as error:
+        LOGGER.warning('Failed to import address for\n\tlocation %s (%s):\n\t%s',
+                       site_id, site_name, error)
+    return None
 
 def parse_address(address, site_id, address_type_id):
+    if not address:
+        raise MissingRequiredFieldXmlParseException('No {} element found'.format(address_type_id))
     address_lines = parse_address_lines(address)
     city = parse_city(address)
     country = parse_country(address)
     if not address_lines or not city or not country:
-        LOGGER.warning('Unable to create address for location: "%s". '
-                       'Parsed "%s" for address, "%s" for city, and "%s" for country.',
-                       site_id, address_lines, city, country)
-        return None
+        message = 'Parsed "{}" for address, "{}" for city, and "{}" for country.'.format(address_lines, city, country)
+        raise MissingRequiredFieldXmlParseException(message)
+
     state_province = parse_state_province(address)
     postal_code = parse_postal_code(address)
     return dtos.Address(location_id=site_id, address_lines=address_lines,
