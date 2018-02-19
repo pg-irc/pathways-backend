@@ -79,7 +79,7 @@ def parse_site(site, organization_id):
     services = parse_services(site, organization_id, id)
     physical_address = parse_physical_address(site, id)
     postal_address = parse_postal_address(site, id)
-    LOGGER.info('Parsed location: %s %s', id, name)
+    LOGGER.debug('Location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
                          services=services, physical_address=physical_address,

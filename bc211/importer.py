@@ -42,7 +42,7 @@ def save_organizations(organizations, counters):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization()
-        LOGGER.info('Organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
         save_locations(organization.locations, counters)
 
 def build_organization_active_record(record):
@@ -59,7 +59,7 @@ def save_locations(locations, counters):
         active_record = build_location_active_record(location)
         active_record.save()
         counters.count_location()
-        LOGGER.info('Location "%s" "%s"', location.id, location.name)
+        LOGGER.debug('Location "%s" "%s"', location.id, location.name)
         save_services(location.services, counters)
         if location.physical_address:
             create_address_for_location(active_record, location.physical_address, counters)
@@ -96,14 +96,14 @@ def save_services(services, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.info('Service "%s" "%s"', service.id, service.name)
+        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
 def save_service_at_location(service):
     active_record = build_service_at_location_active_record(service)
     active_record.save()
-    LOGGER.info('Imported service at location: %s %s', service.id, service.site_id)
+    LOGGER.debug('Service at location: %s %s', service.id, service.site_id)
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
     for taxonomy_term in taxonomy_terms:
@@ -112,7 +112,7 @@ def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters)
             counters
         )
         service_active_record.taxonomy_terms.add(taxonomy_term_active_record)
-        LOGGER.info('Imported service taxonomy term')
+        LOGGER.debug('Imported service taxonomy term')
     service_active_record.save()
 
 def create_taxonomy_term_active_record(record, counters):
@@ -145,11 +145,11 @@ def create_address(address_dto, counters):
     )
     if created:
         counters.count_address()
-        LOGGER.info('Imported address: %s %s', active_record.id, active_record.address)
+        LOGGER.debug('Address: %s %s', active_record.id, active_record.address)
     return active_record
 
 def create_location_address(location, address, address_type):
     active_record = LocationAddress(address=address, location=location,
                                     address_type=address_type).save()
-    LOGGER.info('Imported location address')
+    LOGGER.debug('Location address')
     return active_record
