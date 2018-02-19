@@ -7,8 +7,8 @@ def get_list_schema_decorator():
     operation_description = 'Get a list of services'
 
     taxonomy_description = ('Filter result on taxonomic terms, specify one or more terms of the '
-                            'form taxonomy$term. Examples: "bc211-what$libraries", '
-                            '"bc211-who$service-providers", "bc211-why$homelessness". '
+                            'form taxonomy.term. Examples: "bc211-what.libraries", '
+                            '"bc211-who.service-providers", "bc211-why.homelessness". '
                             'If more than one term is given, records returned are those that are '
                             'annotated with all specified terms. TODO make this work for '
                             'hierarchical taxonomies.')
@@ -17,7 +17,7 @@ def get_list_schema_decorator():
                                            openapi.IN_QUERY,
                                            description=taxonomy_description,
                                            type=openapi.TYPE_STRING,
-                                           pattern=r'\w+\$\w+'),
+                                           pattern=r'\w+\.\w+'),
                         ]
 
     responses = {

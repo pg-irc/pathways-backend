@@ -4,7 +4,7 @@ def parse_taxonomy_parameter(query_parameters):
     parameter = query_parameters.get('taxonomy_terms', None)
     if not parameter:
         return None
-    split_terms = [term.split('$') for term in parameter.split(',')]
+    split_terms = [term.split('.') for term in parameter.split(',')]
     return [build_valid_taxonomy_parameters(split_term) for split_term in split_terms]
 
 def build_valid_taxonomy_parameters(taxonomy_term):
