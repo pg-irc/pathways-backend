@@ -104,6 +104,7 @@ class TestServiceModel(TestCase):
 
         self.assertEqual(service.locations.first(), location)
 
+    # pylint: disable=invalid-name
     def test_locations_is_empty_if_no_service_location_exists(self):
         service = ServiceBuilder(self.organization).build()
         service_from_db = validate_save_and_reload(service)

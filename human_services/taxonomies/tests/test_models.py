@@ -59,6 +59,7 @@ class TestTaxonomyModel(TestCase):
         with self.assertRaises(exceptions.ValidationError):
             taxonomy_term.full_clean()
 
+    # pylint: disable=invalid-name
     def test_saving_two_taxonomies_with_same_taxonomy_id_and_different_name(self):
         taxonomy_id = 'the_taxonomy_id'
         name_1 = 'the_name_1'
@@ -74,6 +75,7 @@ class TestTaxonomyModel(TestCase):
 
         self.assertNotEqual(taxonomy_term1.pk, taxonomy_term2.pk)
 
+    # pylint: disable=invalid-name
     def test_saving_two_taxonomies_with_same_name_and_different_taxonomy_id(self):
         taxonomy_id_1 = 'the_taxonomy_id_1'
         taxonomy_id_2 = 'the_taxonomy_id_2'
@@ -89,6 +91,7 @@ class TestTaxonomyModel(TestCase):
 
         self.assertNotEqual(taxonomy_term1.pk, taxonomy_term2.pk)
 
+    # pylint: disable=invalid-name
     def test_saving_two_taxonomies_with_same_name_and_taxonomy_id_fails_with_integrity_error(self):
         taxonomy_id = 'the_taxonomy_id'
         name = 'the_name'

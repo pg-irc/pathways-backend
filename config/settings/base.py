@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',  # registration
     'corsheaders',
     'rest_framework',
+    'drf_yasg',
     'parler',
 ]
 
@@ -52,7 +53,9 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'common.view.Pagination',
-    'PAGE_SIZE': 30
+    'PAGE_SIZE': 30,
+    'ORDERING_PARAM': 'sort_by',
+    'DEFAULT_FILTER_BACKENDS' : ['common.filters.SearchFilter', 'common.filters.MultiFieldOrderingFilter', ],
 }
 
 MIDDLEWARE = [

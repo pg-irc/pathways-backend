@@ -1,27 +1,25 @@
 from rest_framework import viewsets
-from human_services.services import models, serializers
-import human_services.services.private as private
+from django.utils.decorators import method_decorator
+from human_services.services import models, serializers, private, documentation
+
 
 class SearchParameters:
-    def __init__(self, query_parameters):
+    def __init__(self, query_parameters, path_parameters):
         self.taxonomy_id, self.taxonomy_term = private.parse_taxonomy_parameter(query_parameters)
-        self.full_text_search_terms = private.parse_full_text_search_terms(query_parameters)
-        self.sort_by = private.parse_sorting(query_parameters)
+        self.organization_id = path_parameters.get('organization_id', None)
+        self.location_id = path_parameters.get('location_id', None)
+
 
 # pylint: disable=too-many-ancestors
+@method_decorator(name='list', decorator=documentation.get_list_schema_decorator())
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
+
+    serializer_class = serializers.ServiceSerializer
+    search_fields = ('translations__name', 'translations__description',)
+    ordering_fields = '__all__'
+
     def get_queryset(self):
         query_parameters = self.request.query_params
-        search_parameters = SearchParameters(query_parameters)
-        queryset = models.Service.get_queryset(search_parameters)
-        return queryset
-
-    serializer_class = serializers.ServiceSerializer
-
-# pylint: disable=too-many-ancestors
-class ServiceViewSetUnderOrganizations(viewsets.ReadOnlyModelViewSet):
-    def get_queryset(self):
-        organization_id = self.kwargs['organization_id']
-        return models.Service.objects.filter(organization=organization_id)
-
-    serializer_class = serializers.ServiceSerializer
+        path_parameters = self.kwargs
+        search_parameters = SearchParameters(query_parameters, path_parameters)
+        return models.Service.get_queryset(search_parameters)

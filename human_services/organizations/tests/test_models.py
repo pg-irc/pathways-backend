@@ -41,16 +41,12 @@ class TestOrganizationModel(TestCase):
 
     def test_name_is_multilingual(self):
         organization = OrganizationBuilder().build()
-        self.set_name_in_language(organization, 'en', 'In English')
-        self.set_name_in_language(organization, 'fr', 'En français')
+        set_name_in_language(organization, 'en', 'In English')
+        set_name_in_language(organization, 'fr', 'En français')
         organization_from_db = validate_save_and_reload(organization)
 
         self.assert_name_in_language_equals(organization_from_db, 'en', 'In English')
         self.assert_name_in_language_equals(organization_from_db, 'fr', 'En français')
-
-    def set_name_in_language(self, organization, language, text):
-        organization.set_current_language(language)
-        organization.name = text
 
     def assert_name_in_language_equals(self, organization, language, expected_text):
         organization.set_current_language(language)
@@ -70,16 +66,12 @@ class TestOrganizationModel(TestCase):
 
     def test_description_is_multilingual(self):
         organization = OrganizationBuilder().build()
-        self.set_description_in_language(organization, 'en', 'In English')
-        self.set_description_in_language(organization, 'fr', 'En français')
+        set_description_in_language(organization, 'en', 'In English')
+        set_description_in_language(organization, 'fr', 'En français')
         organization_from_db = validate_save_and_reload(organization)
 
         self.assert_description_in_language_equals(organization_from_db, 'en', 'In English')
         self.assert_description_in_language_equals(organization_from_db, 'fr', 'En français')
-
-    def set_description_in_language(self, organization, language, text):
-        organization.set_current_language(language)
-        organization.description = text
 
     def assert_description_in_language_equals(self, organization, language, expected_text):
         organization.set_current_language(language)
@@ -134,3 +126,12 @@ class TestOrganizationModel(TestCase):
         organization = OrganizationBuilder().with_email(empty_email).build()
         organization_from_db = validate_save_and_reload(organization)
         self.assertEqual(organization_from_db.email, no_email)
+
+
+def set_name_in_language(organization, language, text):
+    organization.set_current_language(language)
+    organization.name = text
+
+def set_description_in_language(organization, language, text):
+    organization.set_current_language(language)
+    organization.description = text
