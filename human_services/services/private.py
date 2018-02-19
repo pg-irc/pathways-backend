@@ -1,7 +1,7 @@
 from django.core.exceptions import SuspiciousOperation
 
 def parse_taxonomy_parameter(query_parameters):
-    parameter = query_parameters.get('taxonomy_term', None)
+    parameter = query_parameters.get('taxonomy_terms', None)
     if not parameter:
         return None
     split_terms = [term.split('$') for term in parameter.split(',')]

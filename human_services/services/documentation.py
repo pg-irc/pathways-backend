@@ -13,7 +13,7 @@ def get_list_schema_decorator():
                             'annotated with all specified terms. TODO make this work for '
                             'hierarchical taxonomies.')
 
-    manual_parameters = [openapi.Parameter('taxonomy_term',
+    manual_parameters = [openapi.Parameter('taxonomy_terms',
                                            openapi.IN_QUERY,
                                            description=taxonomy_description,
                                            type=openapi.TYPE_STRING,
