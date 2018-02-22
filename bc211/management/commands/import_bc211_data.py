@@ -16,8 +16,12 @@ class Command(BaseCommand):
                             help='Path to XML file containing BC-211 data')
 
     def handle(self, *args, **options):
-        path = options['file']
-        records = read_records_from_file(path)
+        file = options['file']
+
+        self.stdout.write(self.style.SUCCESS('Reading BC-211 data from {}'.format(file.name)))
+        records = read_records_from_file(file)
+
+        self.stdout.write(self.style.SUCCESS('Writing data to database'))
         counts = save_records_to_database(records)
 
         message_template = ('Successfully imported {0} organization(s), '
