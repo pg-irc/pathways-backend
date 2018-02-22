@@ -1,4 +1,8 @@
 from rest_framework import filters
+from rest_framework.exceptions import ParseError
+from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models.functions import Distance
+
 
 class MultiFieldOrderingFilter(filters.OrderingFilter):
     REVERSE_SORT_PREFIX = '-'
@@ -32,3 +36,45 @@ class SearchFilter(filters.SearchFilter):
                           'by space or comma. Logical AND is implied among the terms. TODO '
                           'currently only looks in name and description, make it look more '
                           'widely.')
+
+
+class BaseProximityFilter(filters.BaseFilterBackend):
+    filter_parameter = 'proximity'
+    filter_description = ('Order by proximity to a point. '
+                          'Accepts two comma values representing a latitude and a longitude. '
+                          'For example: proximity=+49.2827,-123.1207.')
+    srid = 4326
+
+    def get_model_point_field(self):
+        raise NotImplementedError('.get_model_point_field() must be overridden.')
+
+    def get_reference_point(self, request):
+        parameters = request.query_params.get(self.filter_parameter)
+        if parameters:
+            latitude_longitude_values = [parameter.strip() for parameter in parameters.split(',')]
+            latitude_longitude_length = 2
+            if (len(latitude_longitude_values) is not latitude_longitude_length):
+                raise (ParseError('Exactly two comma separated values expected for {0}.'
+                                  .format(self.filter_parameter)))
+            try:
+                latitude = float(latitude_longitude_values[0])
+                longitude = float(latitude_longitude_values[1])
+            except ValueError:
+                raise (ParseError('Values provide to {0} must be able to represent integers or floats.'
+                                 .format(self.filter_parameter)))
+            return Point(latitude, longitude, srid=self.srid)
+        return None
+
+    def filter_queryset(self, request, queryset, view):
+        reference_point = self.get_reference_point(request)
+        if reference_point:
+            model_point_field = self.get_model_point_field()
+            return (queryset
+                    .annotate(distance=Distance(model_point_field, reference_point))
+                    .order_by('distance'))
+        return queryset
+
+
+class ServiceAtLocationProximityFilter(BaseProximityFilter):
+    def get_model_point_field(self):
+        return 'location__point'
