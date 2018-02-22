@@ -51,3 +51,8 @@ class ServiceLocationBuilder:
         result.service = self.service
         result.location = self.location
         return result
+
+    def create(self):
+        result = self.build()
+        result.save()
+        return result
