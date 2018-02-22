@@ -41,8 +41,12 @@ class SearchFilter(filters.SearchFilter):
 class BaseProximityFilter(filters.BaseFilterBackend):
     filter_parameter = 'proximity'
     filter_description = ('Order by proximity to a point. '
-                          'Accepts two comma values representing a latitude and a longitude. '
-                          'For example: proximity=+49.2827,-123.1207.')
+                          'Accepts two comma separated values representing a latitude and a longitude. '
+                          'Example: "{0}=+49.2827,-123.1207".'.format(filter_parameter))
+    parse_errors = [
+        'Exactly two comma separated values expected for {0}'.format(filter_parameter),
+        'Values provided to {0} must be able to represent integers'.format(filter_parameter),
+    ]
     srid = 4326
 
     def get_model_point_field(self):
@@ -53,15 +57,13 @@ class BaseProximityFilter(filters.BaseFilterBackend):
         if parameters:
             latitude_longitude_values = [parameter.strip() for parameter in parameters.split(',')]
             latitude_longitude_length = 2
-            if (len(latitude_longitude_values) is not latitude_longitude_length):
-                raise (ParseError('Exactly two comma separated values expected for {0}.'
-                                  .format(self.filter_parameter)))
+            if (len(latitude_longitude_values) != latitude_longitude_length):
+                raise (ParseError(self.parse_errors[0]))
             try:
                 latitude = float(latitude_longitude_values[0])
                 longitude = float(latitude_longitude_values[1])
             except ValueError:
-                raise (ParseError('Values provide to {0} must be able to represent integers or floats.'
-                                 .format(self.filter_parameter)))
+                raise (ParseError(self.parse_errors[1]))
             return Point(latitude, longitude, srid=self.srid)
         return None
 

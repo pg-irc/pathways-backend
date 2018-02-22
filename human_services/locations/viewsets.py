@@ -1,6 +1,7 @@
 from rest_framework import viewsets
-from human_services.locations import models, serializers
-from common.filters import ServiceAtLocationProximityFilter
+from django.utils.decorators import method_decorator
+from human_services.locations import models, serializers, documentation
+from common.filters import ServiceAtLocationProximityFilter, SearchFilter, MultiFieldOrderingFilter
 
 # pylint: disable=too-many-ancestors
 class LocationViewSet(viewsets.ReadOnlyModelViewSet):
@@ -17,8 +18,9 @@ class LocationViewSetUnderOrganizations(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.LocationSerializer
 
 
+@method_decorator(name='list', decorator=documentation.get_list_schema_decorator())
 class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ServiceAtLocation.objects.all()
-    search_fields = ('location__translations__name', 'service__translations__name')
     serializer_class = serializers.ServiceAtLocationSerializer
-    filter_backends = (ServiceAtLocationProximityFilter,)
+    filter_backends = (ServiceAtLocationProximityFilter, SearchFilter)
+    search_fields = ('location__translations__name', 'service__translations__name')
