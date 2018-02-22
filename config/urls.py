@@ -5,7 +5,8 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from human_services.organizations.viewsets import OrganizationViewSet
-from human_services.locations.viewsets import LocationViewSet, LocationViewSetUnderOrganizations
+from human_services.locations.viewsets import (LocationViewSet, LocationViewSetUnderOrganizations,
+                                               ServiceAtLocationViewSet)
 from human_services.services.viewsets import ServiceViewSet
 from rest_framework import routers
 from config import documentation
@@ -22,6 +23,7 @@ def build_router():
     router.register(r'organizations/(?P<organization_id>\w+)/locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'locations/(?P<location_id>\w+)/organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'services_at_location', ServiceAtLocationViewSet, base_name='services_at_location')
 
     return router
 
