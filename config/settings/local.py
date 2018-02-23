@@ -20,7 +20,7 @@ CACHES = {
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATABASES['default']['NAME'] = env('LOCAL_DATABASE', default='pathways_local')
-DATABASES['default']['USER'] = env('LOCAL_DATABASE_USER', default='postgres')
+DATABASES['default']['USER'] = env('LOCAL_DATABASE_USER', default='pathways')
 DATABASES['default']['PASSWORD'] = env('LOCAL_DATABASE_PASSWORD', default='')
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]

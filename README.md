@@ -26,17 +26,23 @@ Install the required python libraries for local development
 pip install -r requirements/local.txt
 ```
 
-Create an .env file for configuration overrides. See env.example for example use.
+Create a PostgreSQL user, local database, and enable the PostGIS extension
 
 ```
-touch .env
+$psql postgres
+postgres=# CREATE USER pathways WITH PASSWORD 'your-secure-password';
+postgres=# CREATE DATABASE pathways_local;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE pathways_local TO pathways
+postgres=# \connect pathways_local
+postgres=# CREATE EXTENSION postgis;
 ```
 
-Create the database tables. Postgres with the PostGIS extension is required. Database default values are located in the
-config/settings/local.py, config/settings/test.py, and config/settings/production.py files. Overrides should be put in the .env file created in the previous step.
+Create a .env file and add your local database password
+```
+echo "LOCAL_DATABASE_PASSWORD='your-secure-password'" > .env
+```
 
-To get up and running quickly just ensure you have a Postgres Superuser named "postgres" (default on fresh Postgres install)
-and two databases "pathways_local" and "pathways_test". The PostGIS extension will automatically be enabled when migrations are run.
+Create the database tables
 
 ```
 python manage.py migrate
