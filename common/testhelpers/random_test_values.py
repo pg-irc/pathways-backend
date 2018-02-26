@@ -25,4 +25,4 @@ def a_float():
 
 def a_point():
     srid = 4326
-    return Point(a_float(), a_float(), srid)
+    return Point(a_float(), a_float(), srid=srid)
