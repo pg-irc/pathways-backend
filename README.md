@@ -26,18 +26,18 @@ Install the required python libraries for local development
 pip install -r requirements/local.txt
 ```
 
-Create a PostgreSQL user, local database, and enable the PostGIS extension
+Create a PostgreSQL user and database for your local development and enable the PostGIS extension
 
 ```
 $psql postgres
 postgres=# CREATE USER pathways WITH PASSWORD 'your-secure-password';
 postgres=# CREATE DATABASE pathways_local;
-postgres=# GRANT ALL PRIVILEGES ON DATABASE pathways_local TO pathways
+postgres=# GRANT ALL PRIVILEGES ON DATABASE pathways_local TO pathways;
 postgres=# \connect pathways_local
 postgres=# CREATE EXTENSION postgis;
 ```
 
-Create a .env file and add your local database password
+Create a .env file and add your database user password
 ```
 echo "LOCAL_DATABASE_PASSWORD='your-secure-password'" > .env
 ```
@@ -177,6 +177,11 @@ docker-compose -f compose-local.yml up
 ```
 
 and check out http://localhost:8000/ to see if it worked. See https://cookiecutter-django.readthedocs.io/en/latest/developing-locally-docker.html for more details.
+
+## Getting started with PostgreSQL and PostGIS
+PostgreSQL with the PostGIS extension is required for local development.
+You can find the installation that is right for your OS here: https://www.postgresql.org/download/ or use a package manager
+of your choice. The PostGIS extension can be found here: https://postgis.net/install/.
 
 ## Translations
 

@@ -6,7 +6,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='6_nmfhb8jto6u=!h3*s+@84#rf51=3cx$
 
 INSTALLED_APPS += ['behave_django']
 
-DATABASES['default']['NAME'] = env('TEST_DATABASE', default='pathways_test')
+DATABASES['default']['NAME'] = env('TEST_DATABASE', default='test_db')
 DATABASES['default']['USER'] = env('TEST_DATABASE_USER', default='postgres')
 DATABASES['default']['PASSWORD'] = env('TEST_DATABASE_PASSWORD', default='')
 
