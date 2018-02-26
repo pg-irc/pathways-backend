@@ -7,7 +7,7 @@ from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.addresses.models import Address, AddressType
 from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_float
-from django.contrib.gis.geos import Point, GEOSGeometry
+from django.contrib.gis.geos import Point
 
 
 class LocationsApiTests(rest_test.APITestCase):
@@ -191,4 +191,3 @@ class ServiceAtLocationProximityFilterTests(rest_test.APITestCase):
         self.assertEqual(json[1]['location_name'], vancouver_location.name)
         self.assertEqual(json[2]['location_name'], kamloops_location.name)
         self.assertEqual(json[3]['location_name'], salmon_arm_location.name)
-

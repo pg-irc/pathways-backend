@@ -1,13 +1,12 @@
 from human_services.locations import models
-from django.contrib.gis.geos import Point
-from common.testhelpers.random_test_values import a_string, a_float
+from common.testhelpers.random_test_values import a_string, a_float, a_point
 
 class LocationBuilder:
     def __init__(self, organization):
         self.location_id = a_string()
         self.organization = organization
         self.name = a_string()
-        self.point = Point(a_float(), a_float())
+        self.point = a_point()
         self.description = a_string()
 
     def with_id(self, location_id):
