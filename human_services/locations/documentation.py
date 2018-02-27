@@ -2,7 +2,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from human_services.locations.serializers import ServiceAtLocationSerializer
 from common.filters import ProximityFilter
-from common.filter_parameter_parsers import ProximityParser
+from common.filter_parameter_parsers import ProximityParameterParser
 
 def get_list_schema_decorator():
 
@@ -20,7 +20,7 @@ def get_list_schema_decorator():
 
     responses = {
                     200: openapi.Response('A list of zero or more services at locations', ServiceAtLocationSerializer(many=True)),
-                    400: ProximityParser.errors_to_string(),
+                    400: ProximityParameterParser.errors_to_string(),
                     404: 'Invalid page',
                 }
 

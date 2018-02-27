@@ -1,7 +1,7 @@
 from rest_framework import filters
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
-from common.filter_parameter_parsers import ProximityParser
+from common.filter_parameter_parsers import ProximityParameterParser
 
 
 class MultiFieldOrderingFilter(filters.OrderingFilter):
@@ -45,17 +45,31 @@ class ProximityFilter(filters.BaseFilterBackend):
     srid = 4326
 
     def filter_queryset(self, request, queryset, view):
-        query_parameters = request.query_params
-        path_parameters = view.kwargs
-        proximity = ProximityParser.parse_proximity(query_parameters.get('proximity', None))
-        if proximity:
-            queryset = (queryset
-                        .annotate(distance=Distance('location__point', Point(proximity, srid=self.srid)))
-                        .order_by('distance'))
-        location_id = path_parameters.get('location_id', None)
-        if location_id:
-            queryset = queryset.filter(location_id=location_id)
-        service_id = path_parameters.get('service_id', None)
-        if service_id:
-            queryset = queryset.filter(service_id=service_id)
+        proximity_parameter = request.query_params.get('proximity', None)
+        if proximity_parameter:
+            proximity = ProximityParameterParser(proximity_parameter).parse()
+            if proximity:
+                queryset = (queryset
+                            .annotate(distance=Distance('location__point', Point(proximity, srid=self.srid)))
+                            .order_by('distance'))
+        return queryset
+
+
+class LocationIdFilter(filters.BaseFilterBackend):
+    filter_description = ('Filter by the location id path parameter.')
+
+    def filter_queryset(self, request, queryset, view):
+        location_id_parameter = view.kwargs.get('location_id', None)
+        if location_id_parameter:
+            queryset = queryset.filter(location_id=location_id_parameter)
+        return queryset
+
+
+class ServiceIdFilter(filters.BaseFilterBackend):
+    filter_description = ('Filter by the service id path parameter.')
+
+    def filter_queryset(self, request, queryset, view):
+        service_id_parameter = view.kwargs.get('service_id', None)
+        if service_id_parameter:
+            queryset = queryset.filter(service_id=service_id_parameter)
         return queryset
