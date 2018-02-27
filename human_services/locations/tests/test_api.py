@@ -123,8 +123,6 @@ class LocationsApiTests(rest_test.APITestCase):
         LocationBuilder(self.organization).create()
         url = '/v1/locations/'
         response = self.client.get(url)
-        # This will throw one of a few various exceptions (causing test failure)
-        # if parsing the values fails
         latitude = float(response.json()[0]['latitude'])
         longitude = float(response.json()[0]['longitude'])
         Point(latitude, longitude)
@@ -143,26 +141,6 @@ class ServiceAtLocationProximityFilterTests(rest_test.APITestCase):
         url = '/v1/services_at_location/?proximity=11.1111,-222.2222'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_400_response_when_proximity_has_one_value(self):
-        url = '/v1/services_at_location/?proximity=+11.1111'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_400_response_when_proximity_has_more_than_two_values(self):
-        url = '/v1/services_at_location/?proximity=+11.1111,-222.2222,333.3333'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_400_response_when_proximity_uses_none_comma_separator(self):
-        url = '/v1/services_at_location/?proximity=+11.1111&-222.2222'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_400_response_when_proximity_to_cannot_represent_a_point(self):
-        url = '/v1/services_at_location/?proximity=foo,bar'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_can_order_by_proximity(self):
         first_location = (LocationBuilder(self.organization)
