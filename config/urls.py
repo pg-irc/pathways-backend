@@ -13,16 +13,16 @@ from config import documentation
 
 def build_router():
     router = routers.DefaultRouter()
+
     router.register(r'organizations', OrganizationViewSet, base_name='organization')
     router.register(r'organizations/(?P<organization_id>\w+)/locations',
                     LocationViewSetUnderOrganizations, base_name='organization-location')
-    router.register(r'locations', LocationViewSet, base_name='location')
-
+    router.register(r'organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'organizations/(?P<organization_id>\w+)/locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'services', ServiceViewSet, base_name='service')
     router.register(r'services/(?P<service_id>\w+)/services_at_location', ServiceAtLocationViewSet)
     router.register(r'services/(?P<service_id>\w+)/locations/(?P<location_id>\w+)/services_at_location', ServiceAtLocationViewSet)
-    router.register(r'organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
-    router.register(r'organizations/(?P<organization_id>\w+)/locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'locations', LocationViewSet, base_name='location')
     router.register(r'locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'locations/(?P<location_id>\w+)/organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'locations/(?P<location_id>\w+)/services_at_location', ServiceAtLocationViewSet)
