@@ -6,6 +6,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.addresses.models import Address, AddressType
 from human_services.services.tests.helpers import ServiceBuilder
+from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
 from django.contrib.gis.geos import Point
 
@@ -246,4 +247,13 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
 
     def test_can_filter_by_taxonomy(self):
-        pass
+        taxonomy_terms = [TaxonomyTermBuilder().create(), TaxonomyTermBuilder().create()]
+        service = ServiceBuilder(self.organization).with_taxonomy_terms(taxonomy_terms).create()
+        location = LocationBuilder(self.organization).create()
+        expected_service_at_location = ServiceLocationBuilder(service,location).create()
+        response = (self.client.get('/v1/services_at_location/?taxonomy_terms={0}.{1}'
+                                    .format(taxonomy_terms[0].taxonomy_id, taxonomy_terms[0].name)))
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
