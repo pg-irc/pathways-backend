@@ -1,10 +1,8 @@
-import types
 from django.test import TestCase
 from rest_framework.exceptions import ParseError
-from common.filter_parameter_parsers import ProximityParameterParser
+from common.filter_parameter_parsers import ProximityParameterParser, TaxonomyParameterParser
 
 class ProximityParameterParserTests(TestCase):
-
     def test_parses_proximity_with_white_space(self):
         proximity = ProximityParameterParser(' 1.1111, 22.2222    ').parse()
         self.assertEqual(proximity[0], 1.1111)
@@ -29,3 +27,21 @@ class ProximityParameterParserTests(TestCase):
     def test_throws_when_second_proximity_value_cannot_be_parsed_to_longitude(self):
         with self.assertRaisesRegex(ParseError, ProximityParameterParser.errors['invalid_longitude_value_type']):
             ProximityParameterParser('1.1111,foo').parse()
+
+
+class TaxonomyParameterParserTests(TestCase):
+    def test_throws_when_too_many_field_separators(self):
+        with self.assertRaisesRegex(ParseError, TaxonomyParameterParser.errors['exactly_two_values']):
+            TaxonomyParameterParser('foo.bar.baz').parse()
+
+    def test_throws_when_missing_field_separators(self):
+        with self.assertRaisesRegex(ParseError, TaxonomyParameterParser.errors['exactly_two_values']):
+            TaxonomyParameterParser('foobar').parse()
+
+    def test_throws_when_missing_taxonomy_id(self):
+        with self.assertRaisesRegex(ParseError, TaxonomyParameterParser.errors['empty_taxonomy_id']):
+            TaxonomyParameterParser('.bar').parse()
+
+    def test_throws_when_missing_taxonomy_term(self):
+        with self.assertRaisesRegex(ParseError, TaxonomyParameterParser.errors['empty_taxonomy_term']):
+            TaxonomyParameterParser('foo.').parse()
