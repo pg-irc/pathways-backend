@@ -127,10 +127,20 @@ class LocationsApiTests(rest_test.APITestCase):
         longitude = float(response.json()[0]['longitude'])
         Point(latitude, longitude)
 
-class ServiceAtLocationProximityFilterTests(rest_test.APITestCase):
+class ServicesAtLocationApiTests(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
         self.service = ServiceBuilder(self.organization).create()
+
+    def create_two_service_at_locations(self):
+        first_service = ServiceBuilder(self.organization).with_name('First Service').create()
+        first_location = LocationBuilder(self.organization).with_name('First Location').create()
+        second_service = ServiceBuilder(self.organization).with_name('Second Service').create()
+        second_location = LocationBuilder(self.organization).with_name('Second Location').create()
+        return [
+            ServiceLocationBuilder(first_service, first_location).create(),
+            ServiceLocationBuilder(second_service, second_location).create(),
+        ]
 
     def test_200_response_when_proximity_includes_plus(self):
         url = '/v1/services_at_location/?proximity=+11.1111,+222.2222'
@@ -170,3 +180,70 @@ class ServiceAtLocationProximityFilterTests(rest_test.APITestCase):
         self.assertEqual(json[1]['location_name'], first_location.name)
         self.assertEqual(json[2]['location_name'], third_location.name)
         self.assertEqual(json[3]['location_name'], fourth_location.name)
+
+    def test_can_full_text_search(self):
+        service_at_locations = self.create_two_service_at_locations()
+        expected_service_at_location = service_at_locations[1]
+        response = self.client.get('/v1/services_at_location/?search=sec')
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
+
+    def test_can_filter_by_location_id(self):
+        service_at_locations = self.create_two_service_at_locations()
+        expected_service_at_location = service_at_locations[0]
+        location_id = expected_service_at_location.location.id
+        response = (self.client.get('/v1/locations/{0}/services_at_location/'
+                                    .format(location_id)))
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
+
+    def test_can_filter_by_location_id_and_service_id(self):
+        service_at_locations = self.create_two_service_at_locations()
+        expected_service_at_location = service_at_locations[0]
+        location_id = expected_service_at_location.location.id
+        service_id = expected_service_at_location.service.id
+        response = (self.client.get('/v1/locations/{0}/services/{1}/services_at_location/'
+                                    .format(location_id, service_id)))
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
+
+    def test_can_filter_by_service_id(self):
+        service_at_locations = self.create_two_service_at_locations()
+        expected_service_at_location = service_at_locations[0]
+        service_id = expected_service_at_location.service.id
+        response = (self.client.get('/v1/services/{0}/services_at_location/'
+                                    .format(service_id)))
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
+
+    def test_can_filter_by_service_id_and_location_id(self):
+        service_at_locations = self.create_two_service_at_locations()
+        expected_service_at_location = service_at_locations[0]
+        service_id = expected_service_at_location.service.id
+        location_id = expected_service_at_location.location.id
+        response = (self.client.get('/v1/services/{0}/locations/{1}/services_at_location/'
+                                    .format(service_id, location_id)))
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
+
+    def test_can_page(self):
+        service_at_locations = self.create_two_service_at_locations()
+        expected_service_at_location = service_at_locations[1]
+        response = self.client.get('/v1/services_at_location/?per_page=1&page=2')
+        json = response.json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
+        self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
+
+    def test_can_filter_by_taxonomy(self):
+        pass

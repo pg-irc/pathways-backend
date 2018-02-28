@@ -33,6 +33,9 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return '"{service}" at "{location}"'.format(
             service=self.service,

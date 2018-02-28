@@ -19,10 +19,14 @@ def build_router():
     router.register(r'locations', LocationViewSet, base_name='location')
 
     router.register(r'services', ServiceViewSet, base_name='service')
+    router.register(r'services/(?P<service_id>\w+)/services_at_location', ServiceAtLocationViewSet)
+    router.register(r'services/(?P<service_id>\w+)/locations/(?P<location_id>\w+)/services_at_location', ServiceAtLocationViewSet)
     router.register(r'organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'organizations/(?P<organization_id>\w+)/locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
     router.register(r'locations/(?P<location_id>\w+)/organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
+    router.register(r'locations/(?P<location_id>\w+)/services_at_location', ServiceAtLocationViewSet)
+    router.register(r'locations/(?P<location_id>\w+)/services/(?P<service_id>\w+)/services_at_location', ServiceAtLocationViewSet)
     router.register(r'services_at_location', ServiceAtLocationViewSet, base_name='services_at_location')
 
     return router
