@@ -19,9 +19,15 @@ CACHES = {
 }
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DATABASES['default']['NAME'] = env('LOCAL_DATABASE', default='pathways_local')
-DATABASES['default']['USER'] = env('LOCAL_DATABASE_USER', default='pathways')
-DATABASES['default']['PASSWORD'] = env('LOCAL_DATABASE_PASSWORD', default='')
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env('POSTGRES_DATABASE', default='pathways_local'),
+        'USER': env('POSTGRES_USER', default='pathways'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default=''),
+        'ATOMIC_REQUESTS': True,
+    }
+}
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
 INSTALLED_APPS += ['debug_toolbar', ]

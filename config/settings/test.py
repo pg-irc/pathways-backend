@@ -6,9 +6,15 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='6_nmfhb8jto6u=!h3*s+@84#rf51=3cx$
 
 INSTALLED_APPS += ['behave_django']
 
-DATABASES['default']['NAME'] = env('TEST_DATABASE', default='test_db')
-DATABASES['default']['USER'] = env('TEST_DATABASE_USER', default='postgres')
-DATABASES['default']['PASSWORD'] = env('TEST_DATABASE_PASSWORD', default='')
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env('POSTGRES_DATABASE', default='test_db'),
+        'USER': env('POSTGRES_USER', default='pathways'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default=''),
+        'ATOMIC_REQUESTS': True
+    }
+}
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025

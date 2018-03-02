@@ -26,11 +26,15 @@ Install the required python libraries for local development
 pip install -r requirements/local.txt
 ```
 
-Create a PostgreSQL user and database for your local development and enable the PostGIS extension
+Create a PostgreSQL user and database for your local development and enable the PostGIS extension.
+The user needs superuser permissions because the GIS extension needed for proximity search needs
+to be installed on test databases as part of the unit tests and only superusers are allowed to do
+that.
 
 ```
-$psql postgres
+$ psql postgres
 postgres=# CREATE USER pathways WITH PASSWORD 'your-secure-password';
+postgres=# ALTER ROLE pathways SUPERUSER NOCREATEROLE CREATEDB;
 postgres=# CREATE DATABASE pathways_local;
 postgres=# GRANT ALL PRIVILEGES ON DATABASE pathways_local TO pathways;
 postgres=# \connect pathways_local
@@ -39,7 +43,7 @@ postgres=# CREATE EXTENSION postgis;
 
 Create a .env file and add your database user password
 ```
-echo "LOCAL_DATABASE_PASSWORD='your-secure-password'" > .env
+echo "POSTGRES_PASSWORD='your-secure-password'" > .env
 ```
 
 Create the database tables
