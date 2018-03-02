@@ -184,6 +184,16 @@ PARLER_LANGUAGES = {
 
 PARLER_PO_CONTACT = 'translations@peacegeeks.org'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env('POSTGRES_DATABASE', default='pathways_local'),
+        'USER': env('POSTGRES_USER', default='pathways'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default=''),
+        'ATOMIC_REQUESTS': True,
+    }
+}
+
 WSGI_APPLICATION = 'config.wsgi.application'
 
 PASSWORD_HASHERS = [
