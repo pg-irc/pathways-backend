@@ -34,9 +34,7 @@ class ProximityParser:
 
     @classmethod
     def errors_to_string(cls):
-        return ('{0}, {1}, {2}'.format(cls.errors['exactly_two_values'],
-                                cls.errors['invalid_latitude_value_type'],
-                                cls.errors['invalid_longitude_value_type']))
+        return ', '.join(list(cls.errors.values()))
 
 
 class TaxonomyParser:
@@ -63,6 +61,4 @@ class TaxonomyParser:
 
     @classmethod
     def errors_to_string(cls):
-        return ('{0}, {1}, {2}'.format(cls.errors['exactly_two_values'],
-                                cls.errors['empty_taxonomy_id'],
-                                cls.errors['empty_taxonomy_term']))
+        return ', '.join(list(cls.errors.values()))
