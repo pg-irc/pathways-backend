@@ -235,3 +235,5 @@ DATABASES = {
         'ATOMIC_REQUESTS': True
     }
 }
+
+SRID = 4326

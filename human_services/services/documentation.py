@@ -2,7 +2,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from human_services.services.serializers import ServiceSerializer
 from common.filters import TaxonomyFilter
-from common.filter_parameter_parsers import TaxonomyParameterParser
+from common.filter_parameter_parsers import TaxonomyParser
 
 def get_list_schema_decorator():
 
@@ -30,7 +30,7 @@ def get_list_schema_decorator():
 
     responses = {
                     200: openapi.Response('A list of zero or more services', ServiceSerializer(many=True)),
-                    400: TaxonomyParameterParser.errors_to_string(),
+                    400: TaxonomyParser.errors_to_string(),
                     404: 'invalid page',
                 }
 
