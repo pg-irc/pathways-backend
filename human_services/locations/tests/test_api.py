@@ -1,7 +1,7 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from human_services.locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
-from human_services.locations.models import Location, LocationAddress
+from human_services.locations.tests.helpers import LocationBuilder
+from human_services.locations.models import Location, LocationAddress, ServiceAtLocation
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.addresses.models import Address, AddressType
@@ -113,12 +113,11 @@ class LocationsApiTests(rest_test.APITestCase):
         self.location_has_address_of_type('postal_address')
 
     def test_has_point_values(self):
-        point = Point(a_float(), a_float())
-        LocationBuilder(self.organization).with_point(point).create()
+        location = LocationBuilder(self.organization).with_point(a_float(), a_float()).create()
         url = '/v1/locations/'
         response = self.client.get(url)
-        self.assertEqual(response.json()[0]['latitude'], point.x)
-        self.assertEqual(response.json()[0]['longitude'], point.y)
+        self.assertEqual(response.json()[0]['latitude'], location.point.x)
+        self.assertEqual(response.json()[0]['longitude'], location.point.y)
 
     def test_point_values_instantiate_a_point(self):
         LocationBuilder(self.organization).create()
@@ -136,12 +135,11 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def create_two_service_at_locations(self):
         first_service = ServiceBuilder(self.organization).with_name('First Service').create()
         first_location = LocationBuilder(self.organization).with_name('First Location').create()
+        first_service_at_location = ServiceAtLocation.objects.create(service=first_service, location=first_location)
         second_service = ServiceBuilder(self.organization).with_name('Second Service').create()
         second_location = LocationBuilder(self.organization).with_name('Second Location').create()
-        return [
-            ServiceLocationBuilder(first_service, first_location).create(),
-            ServiceLocationBuilder(second_service, second_location).create(),
-        ]
+        second_service_at_location = ServiceAtLocation.objects.create(service=second_service, location=second_location)
+        return [first_service_at_location, second_service_at_location]
 
     def test_200_response_when_proximity_includes_plus(self):
         url = '/v1/services_at_location/?proximity=+11.1111,+222.2222'
@@ -156,21 +154,21 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def test_can_order_by_proximity(self):
         first_location = (LocationBuilder(self.organization)
                               .with_name('First')
-                              .with_point(Point(0, 0)).create())
+                              .with_point(0, 0).create())
         second_location = (LocationBuilder(self.organization)
                               .with_name('Second')
-                              .with_point(Point(10, 10)).create())
+                              .with_point(10, 10).create())
         third_location = (LocationBuilder(self.organization)
                               .with_name('Third')
-                              .with_point(Point(25, 25)).create())
+                              .with_point(25, 25).create())
         fourth_location = (LocationBuilder(self.organization)
                               .with_name('Fourth')
-                              .with_point(Point(30, 30)).create())
+                              .with_point(30, 30).create())
 
-        ServiceLocationBuilder(self.service, first_location).create()
-        ServiceLocationBuilder(self.service, second_location).create()
-        ServiceLocationBuilder(self.service, third_location).create()
-        ServiceLocationBuilder(self.service, fourth_location).create()
+        ServiceAtLocation.objects.create(service=self.service, location=first_location)
+        ServiceAtLocation.objects.create(service=self.service, location=second_location)
+        ServiceAtLocation.objects.create(service=self.service, location=third_location)
+        ServiceAtLocation.objects.create(service=self.service, location=fourth_location)
 
         at_second_location_services_url = ('/v1/services_at_location/?proximity={0},{1}'
                                             .format(second_location.point.x, second_location.point.y))
@@ -250,7 +248,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         taxonomy_terms = [TaxonomyTermBuilder().create(), TaxonomyTermBuilder().create()]
         service = ServiceBuilder(self.organization).with_taxonomy_terms(taxonomy_terms).create()
         location = LocationBuilder(self.organization).create()
-        expected_service_at_location = ServiceLocationBuilder(service,location).create()
+        expected_service_at_location = ServiceAtLocation.objects.create(service=service, location=location)
         response = (self.client.get('/v1/services_at_location/?taxonomy_terms={0}.{1}'
                                     .format(taxonomy_terms[0].taxonomy_id, taxonomy_terms[0].name)))
         json = response.json()

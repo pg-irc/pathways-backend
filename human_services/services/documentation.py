@@ -14,7 +14,7 @@ def get_list_schema_decorator():
                           ManualParameters.get_taxonomy_terms_parameter()])
     responses = {
                     200: openapi.Response('A list of zero or more services', ServiceSerializer(many=True)),
-                    400: TaxonomyParser.errors_to_string(),
+                    400: ', '.join(TaxonomyParser.errors_to_list()),
                     404: 'invalid page',
                 }
 

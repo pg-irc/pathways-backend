@@ -2,11 +2,13 @@ import unittest
 from django.test import TestCase
 from django.core import exceptions
 from django.db import utils as django_utils
-from human_services.locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
+from django.contrib.gis.geos import Point
+from human_services.locations.tests.helpers import LocationBuilder
+from human_services.locations.models import ServiceAtLocation
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
-from django.contrib.gis.geos import Point
 from common.testhelpers.random_test_values import a_float
+
 
 def validate_save_and_reload(instance):
     instance.save()
@@ -65,15 +67,9 @@ class TestLocationModel(TestCase):
             validate_save_and_reload(location)
 
     def test_can_set_point(self):
-        point = Point(a_float(), a_float())
-        location = LocationBuilder(self.organization).with_point(point).build()
+        location = LocationBuilder(self.organization).with_point(a_float(), a_float()).build()
         location_from_db = validate_save_and_reload(location)
-        self.assertAlmostEqual(location_from_db.point, point)
-
-    def test_point_can_be_null(self):
-        location = LocationBuilder(self.organization).with_point(None).build()
-        location_from_db = validate_save_and_reload(location)
-        self.assertEqual(location_from_db.point, None)
+        self.assertIsInstance(location_from_db.point, Point)
 
     def test_can_set_description(self):
         description = 'The location description'
@@ -113,7 +109,7 @@ class TestLocationModel(TestCase):
         location.set_current_language(language)
         self.assertEqual(location.description, expected_text)
 
-class TestServiceLocationModel(TestCase):
+class TestServiceAtLocationModel(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().build()
         self.organization.save()
@@ -125,21 +121,21 @@ class TestServiceLocationModel(TestCase):
         self.location.save()
 
     def test_has_service_field(self):
-        service_at_location = ServiceLocationBuilder(self.service, self.location).build()
+        service_at_location = ServiceAtLocation(service=self.service, location=self.location)
         service_location_from_db = validate_save_and_reload(service_at_location)
         self.assertEqual(service_location_from_db.service, self.service)
 
     def test_service_cannot_be_none(self):
-        service_at_location = ServiceLocationBuilder(None, self.location).build()
+        service_at_location = ServiceAtLocation(service=None, location=self.location)
         with self.assertRaises(exceptions.ValidationError):
             service_at_location.full_clean()
 
     def test_has_location_field(self):
-        service_at_location = ServiceLocationBuilder(self.service, self.location).build()
+        service_at_location = ServiceAtLocation(service=self.service, location=self.location)
         service_location_from_db = validate_save_and_reload(service_at_location)
         self.assertEqual(service_location_from_db.location, self.location)
 
     def test_location_cannot_be_none(self):
-        service_at_location = ServiceLocationBuilder(self.service, None).build()
+        service_at_location = ServiceAtLocation(service=self.service, location=None)
         with self.assertRaises(exceptions.ValidationError):
             service_at_location.full_clean()

@@ -9,8 +9,7 @@ def get_list_schema_decorator():
     manual_parameters = [ManualParameters.get_taxonomy_terms_parameter()]
     responses = {
                     200: openapi.Response('A list of zero or more services at locations', ServiceAtLocationSerializer(many=True)),
-                    400: (', '.join([ProximityParser.errors_to_string(),
-                          TaxonomyParser.errors_to_string()])),
+                    400: (', '.join(ProximityParser.errors_to_list() + TaxonomyParser.errors_to_list())),
                     404: 'Invalid page',
                 }
 

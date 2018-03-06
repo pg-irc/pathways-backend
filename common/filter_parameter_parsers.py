@@ -33,8 +33,8 @@ class ProximityParser:
             raise (ParseError(self.errors['invalid_longitude_value_type']))
 
     @classmethod
-    def errors_to_string(cls):
-        return ', '.join(list(cls.errors.values()))
+    def errors_to_list(cls):
+        return list(cls.errors.values())
 
 
 class TaxonomyParser:
@@ -60,5 +60,5 @@ class TaxonomyParser:
         return (taxonomy_id, term)
 
     @classmethod
-    def errors_to_string(cls):
-        return ', '.join(list(cls.errors.values()))
+    def errors_to_list(cls):
+        return list(cls.errors.values())
