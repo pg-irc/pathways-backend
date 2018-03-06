@@ -25,6 +25,7 @@ Install the required python libraries for local development
 ```
 pip install -r requirements/local.txt
 ```
+## PostgreSQL on non-Ubuntu systems
 
 Create a PostgreSQL user and database for your local development and enable the PostGIS extension.
 The user needs superuser permissions because the GIS extension needed for proximity search needs
@@ -46,7 +47,44 @@ Create a .env file and add your database user password
 echo "POSTGRES_PASSWORD='your-secure-password'" > .env
 ```
 
-Create the database tables
+## PostgreSQL on Ubuntu systems
+
+PostgreSQL is locked down and very secure by default on Ubuntu, so there is a simpler and more
+secure way to use on Ubuntu. Create a postgreql account with same name as your Linux account,
+('rasmus' below) and make it superuser. You will be able to log into this postgresql account
+without a password:
+
+```
+$ sudo -u postgres createuser --interactive
+Enter name of role to add: rasmus
+Shall the new role be a superuser? (y/n) y
+```
+
+Log into postgresql as the root account (postgresql) and set up the database and set some properties
+on the user account:
+
+```
+$ sudo -u postgres psql
+postgres=# ALTER ROLE rasmus SUPERUSER NOCREATEROLE CREATEDB;
+postgres=# CREATE DATABASE pathways_local;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE pathways_local TO rasmus;
+```
+
+Now check that you can log in to psql as yourself with no password and that you have permission to
+install the postgis extension:
+
+```
+$ psql -d pathways_local
+postgres=# CREATE EXTENSION postgis;
+```
+
+Now the `.env` file needs to contain the postgresql username only:
+
+```
+echo "POSTGRES_USER=rasmus" > .env
+```
+
+## Create the database tables
 
 ```
 python manage.py migrate
