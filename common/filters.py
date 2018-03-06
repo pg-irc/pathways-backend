@@ -45,7 +45,7 @@ class SearchFilter(filters.SearchFilter):
 class ProximityFilter(filters.BaseFilterBackend):
     filter_description = ('Order by proximity to a point. '
                           'Accepts two comma separated values representing a latitude and a longitude. '
-                          'Example: "proximity=+49.2827,-123.1207".')
+                          'Example: "+49.2827,-123.1207".')
 
     def filter_queryset(self, request, queryset, view):
         proximity_parameter = request.query_params.get('proximity', None)

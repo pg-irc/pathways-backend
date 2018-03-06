@@ -68,8 +68,7 @@ class TestLocationModel(TestCase):
 
     def test_can_set_point(self):
         location = LocationBuilder(self.organization).with_point(a_float(), a_float()).build()
-        location_from_db = validate_save_and_reload(location)
-        self.assertIsInstance(location_from_db.point, Point)
+        validate_save_and_reload(location)
 
     def test_can_set_description(self):
         description = 'The location description'
