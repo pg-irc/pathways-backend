@@ -119,13 +119,6 @@ class LocationsApiTests(rest_test.APITestCase):
         self.assertEqual(response.json()[0]['latitude'], location.point.x)
         self.assertEqual(response.json()[0]['longitude'], location.point.y)
 
-    def test_point_values_instantiate_a_point(self):
-        LocationBuilder(self.organization).create()
-        url = '/v1/locations/'
-        response = self.client.get(url)
-        latitude = float(response.json()[0]['latitude'])
-        longitude = float(response.json()[0]['longitude'])
-        Point(latitude, longitude)
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
     def setUp(self):
@@ -181,9 +174,10 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[3]['location_name'], fourth_location.name)
 
     def test_can_full_text_search(self):
-        service_at_locations = self.create_two_service_at_locations()
-        expected_service_at_location = service_at_locations[1]
-        response = self.client.get('/v1/services_at_location/?search=sec')
+        service = ServiceBuilder(self.organization).create()
+        location = LocationBuilder(self.organization).create()
+        expected_service_at_location = ServiceAtLocation.objects.create(service=service, location=location)
+        response = (self.client.get('/v1/services_at_location/?search={0}'.format(service.name)))
         json = response.json()
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['location_name'], expected_service_at_location.location.name)
