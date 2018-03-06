@@ -239,7 +239,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service_name'], expected_service_at_location.service.name)
 
     def test_can_filter_by_taxonomy(self):
-        taxonomy_terms = [TaxonomyTermBuilder().create(), TaxonomyTermBuilder().create()]
+        taxonomy_terms = TaxonomyTermBuilder().create_many()
         service = ServiceBuilder(self.organization).with_taxonomy_terms(taxonomy_terms).create()
         location = LocationBuilder(self.organization).create()
         expected_service_at_location = ServiceAtLocation.objects.create(service=service, location=location)
