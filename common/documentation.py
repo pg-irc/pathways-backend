@@ -1,26 +1,29 @@
 from drf_yasg import openapi
 from common.filters import ProximityFilter, TaxonomyFilter
 
-class ManualParameters:
-    @staticmethod
-    def get_proximity_parameter():
-        return (openapi.Parameter('proximity',
-                                   openapi.IN_QUERY,
-                                   description=ProximityFilter.filter_description,
-                                   type=openapi.TYPE_STRING,
-                                   # Regex representing a latitude and longitude.
-                                   # Valid patterns consist of two integers or floats, comma separated, with
-                                   # optional + or - prefixes. One space after the comma is allowed here.
-                                   pattern=r'^[-+]?[0-9]+\.?[0-9]*,\s?[-+]?[0-9]+\.?[0-9]*$'))
+def get_proximity_manual_parameter():
+    return (openapi.Parameter('proximity',
+                                openapi.IN_QUERY,
+                                description=('Order by proximity to a point. Accepts two comma separated values '
+                                             'representing a latitude and a longitude. Example: "+49.2827,-123.1207".'),
+                                type=openapi.TYPE_STRING,
+                                # Regex representing a latitude and longitude.
+                                # Valid patterns consist of two integers or floats, comma separated, with
+                                # optional + or - prefixes. One space after the comma is allowed here.
+                                pattern=r'^[-+]?[0-9]+\.?[0-9]*,\s?[-+]?[0-9]+\.?[0-9]*$'))
 
-    @staticmethod
-    def get_taxonomy_terms_parameter():
-        return (openapi.Parameter('taxonomy_terms',
-                                   openapi.IN_QUERY,
-                                   description=TaxonomyFilter.filter_description,
-                                   type=openapi.TYPE_STRING,
-                                   # One term followed by comma and additional terms zero or more times,
-                                   # where a term consits of one or more letters/dashes, a dot, and more
-                                   # letters/dashes. White space is allowed around the comma but not the
-                                   # dots
-                                   pattern=r'^[\w\-]+\.[\w\-]+(\W*,\W*[\w\-]+\.[\w\-]+)*$'))
+def get_taxonomy_terms_manual_parameter():
+    return (openapi.Parameter('taxonomy_terms',
+                                openapi.IN_QUERY,
+                                description = ('Filter result on taxonomic terms, specify one or more terms of the '
+                                               'form taxonomy.term, separated by comma. Examples: '
+                                               '"bc211-what.libraries", "bc211-who.service-providers", '
+                                               '"bc211-why.homelessness". If more than one term is given, records '
+                                               'returned are those that are annotated with all specified terms. TODO '
+                                               'make this work for hierarchical taxonomies.'),
+                                type=openapi.TYPE_STRING,
+                                # One term followed by comma and additional terms zero or more times,
+                                # where a term consits of one or more letters/dashes, a dot, and more
+                                # letters/dashes. White space is allowed around the comma but not the
+                                # dots
+                                pattern=r'^[\w\-]+\.[\w\-]+(\W*,\W*[\w\-]+\.[\w\-]+)*$'))
