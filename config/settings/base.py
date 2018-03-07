@@ -5,16 +5,14 @@ ROOT_DIR = environ.Path(__file__) - 3
 APPS_DIR = ROOT_DIR.path('main')
 
 env = environ.Env()
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
+READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=True)
 
 if READ_DOT_ENV_FILE:
     # Operating System Environment variables have precedence over variables defined in
     # the .env file, that is to say variables from the .env files will only be used if
     # not defined as environment variables.
     env_file = str(ROOT_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
     env.read_env(env_file)
-    print('The .env file has been loaded. See base.py for more information')
 
 DJANGO_APPS = [
     'django.contrib.auth',
@@ -186,6 +184,16 @@ PARLER_LANGUAGES = {
 
 PARLER_PO_CONTACT = 'translations@peacegeeks.org'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env('POSTGRES_DATABASE', default='pathways_local'),
+        'USER': env('POSTGRES_USER', default='pathways'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default=''),
+        'ATOMIC_REQUESTS': True,
+    }
+}
+
 WSGI_APPLICATION = 'config.wsgi.application'
 
 PASSWORD_HASHERS = [
@@ -231,3 +239,5 @@ LOGIN_URL = 'account_login'
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 ADMIN_URL = r'^admin/'
+
+SRID = 4326

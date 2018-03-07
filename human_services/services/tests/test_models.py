@@ -4,7 +4,8 @@ from django.core import exceptions
 from django.db import utils as django_utils
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from human_services.locations.tests.helpers import LocationBuilder, ServiceLocationBuilder
+from human_services.locations.tests.helpers import LocationBuilder
+from human_services.locations.models import ServiceAtLocation
 
 def validate_save_and_reload(instance):
     instance.save()
@@ -99,7 +100,7 @@ class TestServiceModel(TestCase):
         location = LocationBuilder(self.organization).build()
         validate_save_and_reload(location)
 
-        service_at_location = ServiceLocationBuilder(service, location).build()
+        service_at_location = ServiceAtLocation(service=service, location=location)
         validate_save_and_reload(service_at_location)
 
         self.assertEqual(service.locations.first(), location)

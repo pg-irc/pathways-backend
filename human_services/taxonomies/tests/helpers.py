@@ -24,3 +24,6 @@ class TaxonomyTermBuilder:
         result = self.build()
         result.save()
         return result
+
+    def create_many(self, count=3):
+        return [TaxonomyTermBuilder().create() for _ in range(0, count)]

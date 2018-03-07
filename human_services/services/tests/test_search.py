@@ -6,51 +6,8 @@ from common.testhelpers.random_test_values import a_string
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import ServiceAtLocation
 from human_services.locations.tests.helpers import LocationBuilder
-from human_services.services.viewsets import SearchParameters
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
-
-class SearchParametersTests(TestCase):
-    def test_can_build_with_organization_id(self):
-        parameters = SearchParameters({}, {'organization_id': 'foo'})
-        self.assertEqual(parameters.organization_id, 'foo')
-
-    def test_can_build_with_location_id(self):
-        parameters = SearchParameters({}, {'location_id': 'foo'})
-        self.assertEqual(parameters.location_id, 'foo')
-
-    def test_can_build_with_taxonomy_id(self):
-        parameters = SearchParameters({'taxonomy_terms' : 'foo.bar'}, {})
-        self.assertEqual(parameters.taxonomy_terms[0][0], 'foo')
-
-    def test_can_build_with_taxonomy_term(self):
-        parameters = SearchParameters({'taxonomy_terms' : 'foo.bar'}, {})
-        self.assertEqual(parameters.taxonomy_terms[0][1], 'bar')
-
-    def test_can_build_with_multiple_taxonomy_terms(self):
-        parameters = SearchParameters({'taxonomy_terms' : 'foo.bar,bez.big'}, {})
-        self.assertEqual(parameters.taxonomy_terms[1][0], 'bez')
-        self.assertEqual(parameters.taxonomy_terms[1][1], 'big')
-
-    def test_taxonomy_parameter_is_optional(self):
-        parameters = SearchParameters({}, {})
-        self.assertIsNone(parameters.taxonomy_terms)
-
-    def test_throws_on_too_many_field_separators(self):
-        with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_terms' : 'foo.bar.baz'}, {})
-
-    def test_throws_on_missing_field_separators(self):
-        with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_terms' : 'foobar'}, {})
-
-    def test_throws_on_missing_taxonomy_id(self):
-        with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_terms' : '.bar'}, {})
-
-    def test_throws_on_missing_taxonomy_term(self):
-        with self.assertRaises(SuspiciousOperation):
-            SearchParameters({'taxonomy_terms' : 'foo.'}, {})
 
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):

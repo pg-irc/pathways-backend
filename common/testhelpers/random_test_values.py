@@ -1,6 +1,7 @@
 import string
 import random
 from . import private
+from django.contrib.gis.geos import Point
 
 private.set_random_seed_at_load_time()
 
@@ -21,3 +22,7 @@ def an_integer(**kwargs):
 
 def a_float():
     return float(an_integer())
+
+def a_point():
+    srid = 4326
+    return Point(a_float(), a_float(), srid=srid)

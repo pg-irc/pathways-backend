@@ -1,13 +1,15 @@
-from human_services.locations import models
-from common.testhelpers.random_test_values import a_string, a_float
+from human_services.locations.models import Location, ServiceAtLocation
+from common.testhelpers.random_test_values import a_string, a_float, a_point
+from django.contrib.gis.geos import Point
+from human_services.services.tests.helpers import ServiceBuilder
+from human_services.organizations.tests.helpers import OrganizationBuilder
 
 class LocationBuilder:
     def __init__(self, organization):
         self.location_id = a_string()
         self.organization = organization
         self.name = a_string()
-        self.latitude = a_float()
-        self.longitude = a_float()
+        self.point = a_point()
         self.description = a_string()
 
     def with_id(self, location_id):
@@ -18,12 +20,8 @@ class LocationBuilder:
         self.name = name
         return self
 
-    def with_latitude(self, latitude):
-        self.latitude = latitude
-        return self
-
-    def with_longitude(self, longitude):
-        self.longitude = longitude
+    def with_point(self, latitude, longitude):
+        self.point = Point(latitude, longitude)
         return self
 
     def with_description(self, description):
@@ -31,12 +29,11 @@ class LocationBuilder:
         return self
 
     def build(self):
-        result = models.Location()
+        result = Location()
         result.id = self.location_id
         result.name = self.name
         result.organization = self.organization
-        result.latitude = self.latitude
-        result.longitude = self.longitude
+        result.point = self.point
         result.description = self.description
         return result
 
@@ -45,13 +42,11 @@ class LocationBuilder:
         result.save()
         return result
 
-class ServiceLocationBuilder:
-    def __init__(self, service, location):
-        self.service = service
-        self.location = location
 
-    def build(self):
-        result = models.ServiceAtLocation()
-        result.service = self.service
-        result.location = self.location
-        return result
+class ServiceAtLocationBuilder:
+    def create_many(self, count=3):
+        organization = OrganizationBuilder().create()
+        return ([ServiceAtLocation.objects.create(
+                 location=LocationBuilder(organization).create(),
+                 service=ServiceBuilder(organization).create())
+                 for _ in range(0, count)])
