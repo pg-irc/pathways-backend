@@ -6,7 +6,7 @@ from common.filters import (SearchFilter, OrganizationIdFilter, LocationIdFilter
 
 
 # pylint: disable=too-many-ancestors
-@method_decorator(name='list', decorator=documentation.get_list_schema_decorator())
+@method_decorator(name='list', decorator=documentation.get_service_list_schema())
 class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Service.objects.all()
     serializer_class = serializers.ServiceSerializer

@@ -5,6 +5,7 @@ from common.filters import (ProximityFilter, SearchFilter, LocationIdFilter,
                             ServiceIdFilter, TaxonomyFilter)
 
 # pylint: disable=too-many-ancestors
+@method_decorator(name='list', decorator=documentation.get_location_list_schema())
 class LocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Location.objects.all()
     serializer_class = serializers.LocationSerializer
@@ -18,8 +19,8 @@ class LocationViewSetUnderOrganizations(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = serializers.LocationSerializer
 
-
-@method_decorator(name='list', decorator=documentation.get_list_schema_decorator())
+# pylint: disable=too-many-ancestors
+@method_decorator(name='list', decorator=documentation.get_service_at_location_list_schema())
 class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ServiceAtLocation.objects.all()
     serializer_class = serializers.ServiceAtLocationSerializer

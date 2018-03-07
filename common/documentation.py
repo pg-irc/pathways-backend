@@ -27,3 +27,14 @@ def get_taxonomy_terms_manual_parameter():
                                 # letters/dashes. White space is allowed around the comma but not the
                                 # dots
                                 pattern=r'^[\w\-]+\.[\w\-]+(\W*,\W*[\w\-]+\.[\w\-]+)*$'))
+
+def get_page_manual_parameter():
+    return (openapi.Parameter('page',
+                                openapi.IN_QUERY,
+                                description = ('A page number within the paginated result set. When returning a paginated '
+                                               'result, the response contains a Count header with the total number of '
+                                               'entries in the result, and a Link header with links to first, prev, next '
+                                               'and last pages in the result'),
+                                type=openapi.TYPE_STRING,
+                                # 1 to 2 digit number
+                                pattern=r'^[1-9][0-9]*$'))
