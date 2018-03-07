@@ -60,12 +60,6 @@ class ProximityFilter(filters.BaseFilterBackend):
 
 
 class TaxonomyFilter(filters.BaseFilterBackend):
-    filter_description = ('Filter result on taxonomic terms, specify one or more terms of the '
-                          'form taxonomy.term, separated by comma. Examples: '
-                          '"bc211-what.libraries", "bc211-who.service-providers", '
-                          '"bc211-why.homelessness". If more than one term is given, records '
-                          'returned are those that are annotated with all specified terms. TODO '
-                          'make this work for hierarchical taxonomies.')
 
     def filter_queryset(self, request, queryset, view):
         taxonomy_parameter = request.query_params.get('taxonomy_terms', None)
@@ -83,7 +77,6 @@ class TaxonomyFilter(filters.BaseFilterBackend):
 
 
 class LocationIdFilter(filters.BaseFilterBackend):
-    filter_description = ('Filter by the location id path parameter.')
 
     def filter_queryset(self, request, queryset, view):
         location_id = view.kwargs.get('location_id', None)
@@ -96,7 +89,6 @@ class LocationIdFilter(filters.BaseFilterBackend):
 
 
 class ServiceIdFilter(filters.BaseFilterBackend):
-    filter_description = ('Filter by the service id path parameter.')
 
     def filter_queryset(self, request, queryset, view):
         service_id = view.kwargs.get('service_id', None)
@@ -107,7 +99,6 @@ class ServiceIdFilter(filters.BaseFilterBackend):
 
 
 class OrganizationIdFilter(filters.BaseFilterBackend):
-    filter_description = ('Filter by the organization id path parameter.')
 
     def filter_queryset(self, request, queryset, view):
         organization_id = view.kwargs.get('organization_id', None)
