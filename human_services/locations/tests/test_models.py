@@ -66,9 +66,10 @@ class TestLocationModel(TestCase):
         with self.assertRaises(django_utils.IntegrityError):
             validate_save_and_reload(location)
 
-    def test_can_set_point(self):
+    def test_can_create_and_retrieve_point(self):
         location = LocationBuilder(self.organization).with_point(a_float(), a_float()).build()
-        validate_save_and_reload(location)
+        location_from_db = validate_save_and_reload(location)
+        self.assertEqual(location_from_db.point, location.point)
 
     def test_can_set_description(self):
         description = 'The location description'
