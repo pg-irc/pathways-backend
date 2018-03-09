@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from django.utils.decorators import method_decorator
-from human_services.locations import models, documentation
-from human_services.services_at_location import serializers
+from human_services.locations import models
+from human_services.services_at_location import documentation, serializers
 from common.filters import (ProximityFilter, SearchFilter, LocationIdFilter,
                             ServiceIdFilter, TaxonomyFilter)
 
