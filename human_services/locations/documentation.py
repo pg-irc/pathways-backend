@@ -1,6 +1,7 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from human_services.locations.serializers import LocationSerializer, ServiceAtLocationSerializer
+from human_services.locations.serializers import LocationSerializer
+from human_services.services_at_location.serializers import ServiceAtLocationSerializer
 from common import documentation
 from common.filter_parameter_parsers import ProximityParser, TaxonomyParser
 
