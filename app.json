@@ -38,6 +38,9 @@
   ],
   "buildpacks": [
     {
+      "url": "https://github.com/dschep/heroku-geo-buildpack.git"
+    },
+    {
       "url": "heroku/python"
     }
   ]
