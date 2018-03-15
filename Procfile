@@ -1,2 +1,2 @@
-release: ./release-tasks.sh
+release: python manage.py migrate
 web: gunicorn config.wsgi:application --log-file -
