@@ -1,6 +1,7 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from human_services.locations.tests.helpers import LocationBuilder, ServiceAtLocationBuilder
+from human_services.locations.tests.helpers import LocationBuilder
+from human_services.services_at_location.tests.helpers import ServiceAtLocationBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder

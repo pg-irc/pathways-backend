@@ -1,14 +1,11 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from human_services.locations.tests.helpers import LocationBuilder, ServiceAtLocationBuilder
-from human_services.locations.models import Location, LocationAddress, ServiceAtLocation
+from human_services.locations.tests.helpers import LocationBuilder
+from human_services.locations.models import Location, LocationAddress
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.addresses.models import Address, AddressType
-from human_services.services.tests.helpers import ServiceBuilder
-from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
-from django.contrib.gis.geos import Point
 
 
 class LocationsApiTests(rest_test.APITestCase):
