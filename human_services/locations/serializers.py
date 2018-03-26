@@ -19,12 +19,3 @@ class LocationSerializer(serializers.ModelSerializer):
         model = models.Location
         fields = ('id', 'name', 'organization_id', 'latitude',
                   'longitude', 'location_addresses', 'description')
-
-
-class ServiceAtLocationSerializer(serializers.ModelSerializer):
-    service_name = serializers.ReadOnlyField(source='service.name')
-    location_name = serializers.ReadOnlyField(source='location.name')
-
-    class Meta:
-        model = models.ServiceAtLocation
-        fields = ('service_name', 'location_name')

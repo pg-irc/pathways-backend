@@ -1,8 +1,7 @@
-from human_services.locations.models import Location, ServiceAtLocation
-from common.testhelpers.random_test_values import a_string, a_float, a_point
+from common.testhelpers.random_test_values import a_string, a_point
 from django.contrib.gis.geos import Point
-from human_services.services.tests.helpers import ServiceBuilder
-from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.locations.models import Location
+
 
 class LocationBuilder:
     def __init__(self, organization):
@@ -41,12 +40,3 @@ class LocationBuilder:
         result = self.build()
         result.save()
         return result
-
-
-class ServiceAtLocationBuilder:
-    def create_many(self, count=3):
-        organization = OrganizationBuilder().create()
-        return ([ServiceAtLocation.objects.create(
-                 location=LocationBuilder(organization).create(),
-                 service=ServiceBuilder(organization).create())
-                 for _ in range(0, count)])
