@@ -1,4 +1,4 @@
-from human_services.taxonomies import models
+from taxonomies import models
 from common.testhelpers.random_test_values import a_string
 
 class TaxonomyTermBuilder:

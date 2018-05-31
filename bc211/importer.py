@@ -3,9 +3,9 @@ from django.utils import translation
 from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
 from human_services.organizations.models import Organization
 from human_services.services.models import Service
-from human_services.taxonomies.models import TaxonomyTerm
 from human_services.addresses.models import Address, AddressType
 from django.contrib.gis.geos import Point
+from taxonomies.models import TaxonomyTerm
 
 LOGGER = logging.getLogger(__name__)
 

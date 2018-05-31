@@ -1,5 +1,5 @@
 from django.contrib import admin
-from human_services.taxonomies import models
+from taxonomies import models
 
 
 @admin.register(models.TaxonomyTerm)

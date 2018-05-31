@@ -7,7 +7,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import ServiceAtLocation
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
-from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
+from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 
 class ServicesTaxonomicSearchTests(rest_test.APITestCase):
