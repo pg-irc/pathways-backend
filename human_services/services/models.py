@@ -3,7 +3,7 @@ from django.core import validators
 from django.db import models
 from parler.models import TranslatableModel, TranslatedFields
 from human_services.organizations.models import Organization
-from human_services.taxonomies.models import TaxonomyTerm
+from taxonomies.models import TaxonomyTerm
 
 class Service(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,

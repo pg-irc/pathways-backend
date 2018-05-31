@@ -1,8 +1,8 @@
 from django.core import exceptions
 from django.db import IntegrityError
 from django.test import TestCase
-from human_services.taxonomies import models
-from human_services.taxonomies.tests.helpers import TaxonomyTermBuilder
+from taxonomies import models
+from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 
 def validate_save_and_reload(taxonomy_term):
