@@ -2,7 +2,7 @@
 
 This repository contains the server for providing access to data about services for refugees and immigrants to BC.
 
-At this stage, our focus is on establishing the server architecture and testing frameworks for unit, integration and feature testing, continuous integration, logging, etc. The domain model is still that from a django turorial on polls, with a single one-to-many relationship from questions to choices. The plan is for future services to be built with the polls service as pattern, and the polls patter to be discarded. This will happen as our understanding of our domain improves.
+We can import and serve up read-only services data from the BC-211 dataset, using the [HSDS](http://openreferral.readthedocs.io/en/latest/hsds/reference/) data format and [HSDA API](http://docs.openreferral.org/en/latest/) format.
 
 ## Getting started
 
