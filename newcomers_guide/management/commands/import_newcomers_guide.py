@@ -1,5 +1,6 @@
 import os
 from django.core.management.base import BaseCommand
+from newcomers_guide import generate_task_fixture
 
 # invoke as follows:
 # python manage.py import_newcomers_guide path/to/newcomers/root/directory
@@ -18,6 +19,15 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Reading Newcomers Guide data from {}'.format(root_folder)))
 
-        for root, _, files in os.walk(root_folder, topdown=False):
-            for name in files:
-                print(os.path.join(root, name))
+        data = []
+        for root, _, filenames in os.walk(root_folder, topdown=False):
+            for filename in filenames:
+                path = os.path.join(root, filename)
+                with open(path, 'r') as file:
+                    self.stdout.write(self.style.SUCCESS('Reading {}...'.format(path)))
+                    content = file.read()
+                    data.append([path, content])
+
+        with open('buildTasksFixture.ts', 'w') as file:
+            fixture = generate_task_fixture.generate_task_fixture(data)
+            file.write(fixture)
