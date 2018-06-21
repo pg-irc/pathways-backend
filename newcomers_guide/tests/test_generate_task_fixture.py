@@ -4,7 +4,7 @@ from newcomers_guide import generate_task_fixture
 
 class GenerateFixtureTest(TestCase):
     def setUp(self):
-        self.english_path = 'some/path/chapter/articles/school/en.Elementary_school.txt'
+        self.english_path = 'some/path/chapter/tasks/To_learn_english/en.Learn_english.txt'
         self.content = 'the content in English'
 
     def test_include_content_id_from_path(self):
@@ -13,9 +13,9 @@ class GenerateFixtureTest(TestCase):
             'export const buildTasksFixture = (): Store => {\n'
             '    return {\n'
             '        taskMap: '
-            '{"school": {'
-            '"id": "school", '
-            '"title": {"en": "Elementary_school"}, '
+            '{"To_learn_english": {'
+            '"id": "To_learn_english", '
+            '"title": {"en": "Learn_english"}, '
             '"description": {"en": "the content in English"}'
             '}}\n'
             '    }\n'
