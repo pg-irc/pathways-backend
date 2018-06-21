@@ -17,14 +17,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         root_folder = options['path']
 
-        self.stdout.write(self.style.SUCCESS('Reading Newcomers Guide data from {}'.format(root_folder)))
+        self.stdout.write('Reading Newcomers Guide data from {}'.format(root_folder))
 
         data = []
         for root, _, filenames in os.walk(root_folder, topdown=False):
             for filename in filenames:
                 path = os.path.join(root, filename)
                 with open(path, 'r') as file:
-                    self.stdout.write(self.style.SUCCESS('Reading {}...'.format(path)))
+                    self.stdout.write('Reading {}...'.format(path))
                     content = file.read()
                     data.append([path, content])
 

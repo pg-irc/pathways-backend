@@ -8,16 +8,21 @@ class GenerateFixtureTest(TestCase):
         self.content = 'the content in English'
 
     def test_include_content_id_from_path(self):
+        self.maxDiff = None
         result = generate_task_fixture.generate_task_fixture([[self.english_path, self.content]])
-        expected = (
-            'export const buildTasksFixture = (): Store => {\n'
-            '    return {\n'
-            '        taskMap: '
-            '{"To_learn_english": {'
-            '"id": "To_learn_english", '
-            '"title": {"en": "Learn_english"}, '
-            '"description": {"en": "the content in English"}'
-            '}}\n'
-            '    }\n'
-            '}')
+        expected = ('export const buildTasksFixture = (): Store => {\n'
+                    '    return {\n'
+                    '        taskMap: {\n'
+                    '    "To_learn_english": {\n'
+                    '        "description": {\n'
+                    '            "en": "the content in English"\n'
+                    '        },\n'
+                    '        "id": "To_learn_english",\n'
+                    '        "title": {\n'
+                    '            "en": "Learn_english"\n'
+                    '        }\n'
+                    '    }\n'
+                    '}\n'
+                    '    }\n'
+                    '}')
         self.assertEqual(result, expected)

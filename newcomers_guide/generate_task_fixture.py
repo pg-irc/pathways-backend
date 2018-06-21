@@ -11,6 +11,6 @@ def generate_task_fixture(files):
               '    }\n'
               '}')
 
-    result = process_files.process_all_files(files)
+    result = process_files.process_all_task_files(files)
 
-    return header + json.dumps(result) + footer
+    return header + json.dumps(result, ensure_ascii=True, sort_keys=True, indent=4) + footer
