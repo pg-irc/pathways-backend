@@ -1,11 +1,11 @@
 from django.test import TestCase
-from newcomers_guide import data_import
+from newcomers_guide import parse_file_path
 
 
 class FilePathParseTests(TestCase):
     def setUp(self):
         self.path = 'some/path/chapter_6_education/articles/Elementary_school/fr.École_primaire.txt'
-        self.parsed_path = data_import.parse_file_path(self.path)
+        self.parsed_path = parse_file_path.parse_file_path(self.path)
 
     def test_can_extract_chapter(self):
         self.assertEqual(self.parsed_path.chapter, 'chapter_6_education')

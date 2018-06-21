@@ -17,14 +17,17 @@ class TaskBuilder:
         self.task['title'][locale] = title
         return self
 
-    def ensure_key_exist(self, key):
-        if key not in self.task:
-            self.task[key] = {}
-
     def set_description_in_locale(self, locale, description):
         self.ensure_key_exist('description')
         self.task['description'][locale] = description
         return self
+
+    def ensure_key_exist(self, key):
+        if key not in self.task:
+            self.task[key] = {}
+
+    def to_task(self):
+        return self.task
 
     def to_json(self):
         return json.dumps(self.task)

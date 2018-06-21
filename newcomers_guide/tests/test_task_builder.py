@@ -1,10 +1,10 @@
 from django.test import TestCase
-from newcomers_guide import data_export
+from newcomers_guide import task_builder
 
 
 class TaskBuilderTest(TestCase):
     def setUp(self):
-        self.task = data_export.TaskBuilder()
+        self.task = task_builder.TaskBuilder()
 
     def test_can_set_id(self):
         self.task.set_id('xyz')
