@@ -17,10 +17,53 @@ def generate_task_fixture(tasks):
 
     tasks_as_json = json.dumps(tasks, ensure_ascii=False, sort_keys=True, indent=4)
 
-    return header + add_leading_spaces(tasks_as_json) + footer
+    return header + add_leading_spaces(8, tasks_as_json) + footer
 
 
-def add_leading_spaces(tasks_as_json):
+def generate_taxonomy_fixture(taxonomies):
+    header = ('export const buildTaxonomyFixture = (): Store => ({\n'
+              '    taxonomyMap:     ')
+    footer = ('\n);')
+    taxonomies_as_dictionary = make_dict_from_taxonomies(taxonomies)
+    taxonomies_as_json = json.dumps(taxonomies_as_dictionary,
+                                    ensure_ascii=False,
+                                    sort_keys=True,
+                                    indent=4)
+    return header + add_leading_spaces(4, taxonomies_as_json) + footer
+
+
+def make_dict_from_taxonomies(taxonomies):
+    result = {
+        'explore':
+        {
+            'SettlingIn': {'icon': 'sign-text'},
+            'Education': {'icon': 'book-open-variant'},
+            'HealthCare': {'icon': 'medical-bag'},
+            'Money': {'icon': 'currency-usd'},
+            'Housing': {'icon': 'home'},
+            'Employment': {'icon': 'briefcase'},
+            'LegalOrImmigration': {'icon': 'gavel'},
+            'Driving': {'icon': 'car'},
+            'HelpForIndividualsAndFamilies': {'icon': 'account'}
+        }
+    }
+
+    for term in taxonomies:
+        taxonomy_id = term.taxonomy_id
+        ensure_map_has_key(result, taxonomy_id, {})
+
+        term_id = term.taxonomy_term_id
+        ensure_map_has_key(result[taxonomy_id], term_id, {'icon': 'unknown'})
+
+    return result
+
+
+def ensure_map_has_key(the_map, the_key, the_value):
+    if the_key not in the_map:
+        the_map[the_key] = the_value
+
+
+def add_leading_spaces(count, tasks_as_json):
     json_lines = tasks_as_json.split('\n')
-    json_lines_with_spaces = map(lambda line: 8*' ' + line, json_lines)
+    json_lines_with_spaces = map(lambda line: count*' ' + line, json_lines)
     return '\n'.join(json_lines_with_spaces)
