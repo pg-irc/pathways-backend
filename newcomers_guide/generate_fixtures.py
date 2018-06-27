@@ -6,7 +6,6 @@ def generate_task_fixture(tasks):
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
               '\n'
               'import { Store } from \'../types/tasks\';\n'
-              'export { Id, Task, TaskUserSettings, TaskMap, TaskUserSettingsMap, TaskList, Store } from \'../types/tasks\';\n'
               '\n'
               'export const buildTasksFixture = (): Store => {\n'
               '    return {\n'
