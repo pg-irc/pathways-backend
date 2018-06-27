@@ -2,33 +2,47 @@ import json
 
 
 def generate_task_fixture(tasks):
-    header = ('// intended to be located at pathways-frontend/src/fixtures/tasks.ts\n'
+    header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
+              '// tslint:disable:quotemark trailing-comma max-line-length\n'
               '\n'
-              'import { Store } from \'./types/tasks\';\n'
-              'export { Id, Task, TaskUserSettings, TaskMap, TaskUserSettingsMap, TaskList, Store } from \'./types/tasks\';\n'
+              'import { Store } from \'../types/tasks\';\n'
+              'export { Id, Task, TaskUserSettings, TaskMap, TaskUserSettingsMap, TaskList, Store } from \'../types/tasks\';\n'
               '\n'
               'export const buildTasksFixture = (): Store => {\n'
               '    return {\n'
+              '        taskUserSettingsMap: {},\n'
+              '        savedTasksList: [],\n'
+              '        suggestedTasksList: [],\n'
               '        taskMap: ')
 
     footer = ('\n'
-              '    }\n'
-              '}')
+              '    };\n'
+              '};')
 
-    tasks_as_json = json.dumps(tasks, ensure_ascii=False, sort_keys=True, indent=4)
+    tasks_as_json = json.dumps(tasks,
+                               ensure_ascii=False,
+                               sort_keys=True,
+                               indent=4)
 
     return header + add_leading_spaces(8, tasks_as_json) + footer
 
 
 def generate_taxonomy_fixture(taxonomies):
-    header = ('export const buildTaxonomyFixture = (): Store => ({\n'
+    header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/taxonomies.ts\n'
+              '// tslint:disable:quotemark trailing-comma max-line-length\n'
+              'import { Store } from \'../types/taxonomies\';\n'
+              '\n'
+              'export const buildTaxonomyFixture = (): Store => ({\n'
               '    taxonomyMap:     ')
-    footer = ('\n);')
+
+    footer = ('\n});')
+
     taxonomies_as_dictionary = make_dict_from_taxonomies(taxonomies)
     taxonomies_as_json = json.dumps(taxonomies_as_dictionary,
                                     ensure_ascii=False,
                                     sort_keys=True,
                                     indent=4)
+
     return header + add_leading_spaces(4, taxonomies_as_json) + footer
 
 
@@ -53,7 +67,7 @@ def make_dict_from_taxonomies(taxonomies):
         ensure_map_has_key(result, taxonomy_id, {})
 
         term_id = term.taxonomy_term_id
-        ensure_map_has_key(result[taxonomy_id], term_id, {'icon': 'unknown'})
+        ensure_map_has_key(result[taxonomy_id], term_id, {})
 
     return result
 
