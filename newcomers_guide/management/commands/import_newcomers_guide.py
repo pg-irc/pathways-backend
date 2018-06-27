@@ -3,6 +3,7 @@ from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_t
                                                set_taxonomies_on_tasks)
 from newcomers_guide.read_data import read_task_data, read_taxonomy_data
 from newcomers_guide.parse_data import parse_task_files, parse_taxonomy_files
+from newcomers_guide.log_data import log_taxonomies, log_locales
 
 
 # invoke as follows:
@@ -27,7 +28,11 @@ class Command(BaseCommand):
 
         taxonomy_data = read_taxonomy_data(root_folder)
         taxonomies = parse_taxonomy_files(taxonomy_data)
+
         set_taxonomies_on_tasks(taxonomies, tasks)
+
+        log_taxonomies(self.stdout, tasks)
+        log_locales(self.stdout, tasks)
 
         with open('tasks.ts', 'w') as file:
             file.write(generate_task_fixture(tasks))
