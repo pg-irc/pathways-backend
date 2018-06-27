@@ -36,15 +36,15 @@ def make_dict_from_taxonomies(taxonomies):
     result = {
         'explore':
         {
-            'SettlingIn': {'icon': 'sign-text'},
-            'Education': {'icon': 'book-open-variant'},
-            'HealthCare': {'icon': 'medical-bag'},
-            'Money': {'icon': 'currency-usd'},
-            'Housing': {'icon': 'home'},
-            'Employment': {'icon': 'briefcase'},
-            'LegalOrImmigration': {'icon': 'gavel'},
-            'Driving': {'icon': 'car'},
-            'HelpForIndividualsAndFamilies': {'icon': 'account'}
+            'settlingIn': {'icon': 'sign-text'},
+            'education': {'icon': 'book-open-variant'},
+            'healthCare': {'icon': 'medical-bag'},
+            'money': {'icon': 'currency-usd'},
+            'housing': {'icon': 'home'},
+            'employment': {'icon': 'briefcase'},
+            'legalOrImmigration': {'icon': 'gavel'},
+            'driving': {'icon': 'car'},
+            'helpForIndividualsAndFamilies': {'icon': 'account'}
         }
     }
 

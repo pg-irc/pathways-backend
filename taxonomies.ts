@@ -15,59 +15,29 @@ export const buildTaxonomyFixture = (): Store => ({
             }
         },
         "explore": {
-            "Driving": {
-                "icon": "car"
-            },
-            "Education": {
-                "icon": "book-open-variant"
-            },
-            "Employment": {
-                "icon": "briefcase"
-            },
-            "HealthCare": {
-                "icon": "medical-bag"
-            },
-            "HelpForIndividualsAndFamilies": {
-                "icon": "account"
-            },
-            "Housing": {
-                "icon": "home"
-            },
-            "LegalOrImmigration": {
-                "icon": "gavel"
-            },
-            "Money": {
-                "icon": "currency-usd"
-            },
-            "SettlingIn": {
-                "icon": "sign-text"
-            },
             "citizenship": {
                 "icon": "unknown"
             },
+            "driving": {
+                "icon": "car"
+            },
             "education": {
-                "icon": "unknown"
+                "icon": "book-open-variant"
             },
-            "education:distance": {
-                "icon": "unknown"
-            },
-            "education:french_program": {
-                "icon": "unknown"
-            },
-            "education:homeschool": {
-                "icon": "unknown"
-            },
-            "education:learn_english": {
-                "icon": "unknown"
-            },
-            "education:post_secondary": {
-                "icon": "unknown"
-            },
-            "education:school_registeration": {
-                "icon": "unknown"
+            "employment": {
+                "icon": "briefcase"
             },
             "government": {
                 "icon": "unknown"
+            },
+            "healthCare": {
+                "icon": "medical-bag"
+            },
+            "helpForIndividualsAndFamilies": {
+                "icon": "account"
+            },
+            "housing": {
+                "icon": "home"
             },
             "immigration": {
                 "icon": "unknown"
@@ -75,23 +45,14 @@ export const buildTaxonomyFixture = (): Store => ({
             "legal": {
                 "icon": "unknown"
             },
-            "legal:court": {
-                "icon": "unknown"
-            },
-            "legal:discrimination": {
-                "icon": "unknown"
-            },
-            "legal:legal_help": {
-                "icon": "unknown"
-            },
-            "legal:police": {
-                "icon": "unknown"
-            },
-            "legal:privacy": {
-                "icon": "unknown"
+            "legalOrImmigration": {
+                "icon": "gavel"
             },
             "money": {
-                "icon": "unknown"
+                "icon": "currency-usd"
+            },
+            "settlingIn": {
+                "icon": "sign-text"
             }
         },
         "group": {

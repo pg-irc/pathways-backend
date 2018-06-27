@@ -32,7 +32,7 @@ export const buildTasksFixture = (): Store => {
                 "taxonomyTerms": [
                     {
                         "taxonomyId": "explore",
-                        "taxonomyTermId": "education:learn_english"
+                        "taxonomyTermId": "education"
                     },
                     {
                         "taxonomyId": "age",
@@ -57,7 +57,7 @@ export const buildTasksFixture = (): Store => {
                 "taxonomyTerms": [
                     {
                         "taxonomyId": "explore",
-                        "taxonomyTermId": "education:school_registeration"
+                        "taxonomyTermId": "education"
                     }
                 ],
                 "title": {
@@ -74,7 +74,7 @@ export const buildTasksFixture = (): Store => {
                 "taxonomyTerms": [
                     {
                         "taxonomyId": "explore",
-                        "taxonomyTermId": "legal:legal_help"
+                        "taxonomyTermId": "legal"
                     },
                     {
                         "taxonomyId": "group",
