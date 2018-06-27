@@ -81,3 +81,13 @@ def add_leading_spaces(count, tasks_as_json):
     json_lines = tasks_as_json.split('\n')
     json_lines_with_spaces = map(lambda line: count*' ' + line, json_lines)
     return '\n'.join(json_lines_with_spaces)
+
+
+def set_taxonomies_on_tasks(taxonomy_references, tasks_fixture):
+    for reference in taxonomy_references:
+        if reference.content_id in tasks_fixture:
+            task = tasks_fixture[reference.content_id]
+            if 'taxonomyTerms' not in task:
+                task['taxonomyTerms'] = []
+            task['taxonomyTerms'].append({'taxonomyId': reference.taxonomy_id,
+                                          'taxonomyTermId': reference.taxonomy_term_id})

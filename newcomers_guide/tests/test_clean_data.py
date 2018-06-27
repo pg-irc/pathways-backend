@@ -1,5 +1,5 @@
 from django.test import TestCase
-from newcomers_guide.data_cleanup import clean_up_links, clean_up_newlines
+from newcomers_guide.clean_data import clean_up_links, clean_up_newlines
 
 
 class CleanUpNewlinesTest(TestCase):

@@ -1,6 +1,6 @@
 from django.test import TestCase
-from newcomers_guide.generate_task_fixture import generate_task_fixture, generate_taxonomy_fixture
-from newcomers_guide.process_all_taxonomy_files import TaxonomyTermReference
+from newcomers_guide.generate_fixtures import generate_task_fixture, generate_taxonomy_fixture
+from newcomers_guide.parse_data import TaxonomyTermReference
 
 
 class GenerateFixtureTest(TestCase):

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from newcomers_guide.task_builder import TaskBuilder
+from newcomers_guide.parse_data import TaskBuilder
 
 
 class TaskBuilderTest(TestCase):
