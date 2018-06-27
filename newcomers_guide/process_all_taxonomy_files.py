@@ -45,9 +45,9 @@ def parse_taxonomy_file(taxonomy_terms):
     items = taxonomy_terms.split(',')
     for item in items:
         validate_item(item)
-        split_point = item.find(':')
-        result.append(taxonomy_term_type(taxonomy_id=item[:split_point].strip(),
-                                         taxonomy_term_id=item[split_point+1:].strip()))
+        split_item = item.split(':')
+        result.append(taxonomy_term_type(taxonomy_id=split_item[0].strip(),
+                                         taxonomy_term_id=split_item[1].strip()))
     return result
 
 
