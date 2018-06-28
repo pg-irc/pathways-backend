@@ -94,7 +94,7 @@ class GenerateFixtureTest(TestCase):
                     '            "housing": {\n'
                     '                "icon": "home"\n'
                     '            },\n'
-                    '            "legalOrImmigration": {\n'
+                    '            "legal": {\n'
                     '                "icon": "gavel"\n'
                     '            },\n'
                     '            "money": {\n'

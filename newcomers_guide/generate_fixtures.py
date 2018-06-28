@@ -1,4 +1,5 @@
 import json
+from newcomers_guide.system_data import get_system_taxonomies
 
 
 def generate_task_fixture(tasks):
@@ -51,20 +52,7 @@ def generate_taxonomy_fixture(taxonomies):
 
 
 def make_dict_from_taxonomies(taxonomies):
-    result = {
-        'explore':
-        {
-            'settlingIn': {'icon': 'sign-text'},
-            'education': {'icon': 'book-open-variant'},
-            'healthCare': {'icon': 'medical-bag'},
-            'money': {'icon': 'currency-usd'},
-            'housing': {'icon': 'home'},
-            'employment': {'icon': 'briefcase'},
-            'legalOrImmigration': {'icon': 'gavel'},
-            'driving': {'icon': 'car'},
-            'helpForIndividualsAndFamilies': {'icon': 'account'}
-        }
-    }
+    result = get_system_taxonomies()
 
     for term in taxonomies:
         taxonomy_id = term.taxonomy_id
