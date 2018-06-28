@@ -21,6 +21,14 @@ class GenerateFixtureTest(TestCase):
                         'en': 'the content in English'
                     }
                 }
+            },
+            'taskUserSettingsMap': {
+                'USER:To_learn_english': {
+                    'id': 'USER:To_learn_english',
+                    'taskId': 'To_learn_english',
+                    'starred': True,
+                    'completed': False,
+                }
             }
         }
         expected = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
@@ -30,7 +38,6 @@ class GenerateFixtureTest(TestCase):
                     '\n'
                     'export const buildTasksFixture = (): Store => {\n'
                     '    return {\n'
-                    '        taskUserSettingsMap: {},\n'
                     '        savedTasksList: [],\n'
                     '        suggestedTasksList: [],\n'
                     '        taskMap: {\n'
@@ -42,6 +49,14 @@ class GenerateFixtureTest(TestCase):
                     '                "title": {\n'
                     '                    "en": "Learn_english"\n'
                     '                }\n'
+                    '            }\n'
+                    '        },\n'
+                    '        taskUserSettingsMap: {\n'
+                    '            "USER:To_learn_english": {\n'
+                    '                "completed": false,\n'
+                    '                "id": "USER:To_learn_english",\n'
+                    '                "starred": true,\n'
+                    '                "taskId": "To_learn_english"\n'
                     '            }\n'
                     '        }\n'
                     '    };\n'

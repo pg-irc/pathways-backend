@@ -9,12 +9,10 @@ def generate_task_fixture(tasks):
               '\n'
               'export const buildTasksFixture = (): Store => {\n'
               '    return {\n'
-              '        taskUserSettingsMap: {},\n'
               '        savedTasksList: [],\n'
               '        suggestedTasksList: [],\n')
 
-    footer = ('\n'
-              '    };\n'
+    footer = ('    };\n'
               '};')
 
     task_map_as_json = 'taskMap: ' + json.dumps(tasks['taskMap'],
@@ -22,7 +20,15 @@ def generate_task_fixture(tasks):
                                                 sort_keys=True,
                                                 indent=4)
 
-    return header + add_leading_spaces(8, task_map_as_json) + footer
+    user_settings_as_json = 'taskUserSettingsMap: ' + json.dumps(tasks['taskUserSettingsMap'],
+                                                                 ensure_ascii=False,
+                                                                 sort_keys=True,
+                                                                 indent=4)
+
+    return (header +
+            add_leading_spaces(8, task_map_as_json) + ',\n' +
+            add_leading_spaces(8, user_settings_as_json) + '\n' +
+            footer)
 
 
 def generate_taxonomy_fixture(taxonomies):
