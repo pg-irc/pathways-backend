@@ -85,7 +85,7 @@ def make_task_map(builders):
     tasks = {}
     for key in builders:
         tasks[key] = builders[key].to_task()
-    return tasks
+    return {'taskMap': tasks}
 
 
 def parse_taxonomy_files(file_specs):

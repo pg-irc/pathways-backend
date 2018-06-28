@@ -11,19 +11,18 @@ def generate_task_fixture(tasks):
               '    return {\n'
               '        taskUserSettingsMap: {},\n'
               '        savedTasksList: [],\n'
-              '        suggestedTasksList: [],\n'
-              '        taskMap: ')
+              '        suggestedTasksList: [],\n')
 
     footer = ('\n'
               '    };\n'
               '};')
 
-    tasks_as_json = json.dumps(tasks,
-                               ensure_ascii=False,
-                               sort_keys=True,
-                               indent=4)
+    task_map_as_json = 'taskMap: ' + json.dumps(tasks['taskMap'],
+                                                ensure_ascii=False,
+                                                sort_keys=True,
+                                                indent=4)
 
-    return header + add_leading_spaces(8, tasks_as_json) + footer
+    return header + add_leading_spaces(8, task_map_as_json) + footer
 
 
 def generate_taxonomy_fixture(taxonomies):

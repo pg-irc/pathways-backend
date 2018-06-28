@@ -29,10 +29,10 @@ class Command(BaseCommand):
         taxonomy_data = read_taxonomy_data(root_folder)
         taxonomies = parse_taxonomy_files(taxonomy_data)
 
-        set_taxonomies_on_tasks(taxonomies, tasks)
+        set_taxonomies_on_tasks(taxonomies, tasks['taskMap'])
 
-        log_taxonomies(self.stdout, tasks)
-        log_locales(self.stdout, tasks)
+        log_taxonomies(self.stdout, tasks['taskMap'])
+        log_locales(self.stdout, tasks['taskMap'])
 
         with open('tasks.ts', 'w') as file:
             file.write(generate_task_fixture(tasks))

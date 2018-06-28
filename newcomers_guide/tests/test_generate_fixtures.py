@@ -11,13 +11,15 @@ class GenerateFixtureTest(TestCase):
     def test_generated_task_fixture(self):
         self.maxDiff = None
         data = {
-            'To_learn_english': {
-                'id': 'To_learn_english',
-                'title': {
-                    'en': 'Learn_english'
-                },
-                'description': {
-                    'en': 'the content in English'
+            'taskMap': {
+                'To_learn_english': {
+                    'id': 'To_learn_english',
+                    'title': {
+                        'en': 'Learn_english'
+                    },
+                    'description': {
+                        'en': 'the content in English'
+                    }
                 }
             }
         }
@@ -31,7 +33,7 @@ class GenerateFixtureTest(TestCase):
                     '        taskUserSettingsMap: {},\n'
                     '        savedTasksList: [],\n'
                     '        suggestedTasksList: [],\n'
-                    '        taskMap:         {\n'
+                    '        taskMap: {\n'
                     '            "To_learn_english": {\n'
                     '                "description": {\n'
                     '                    "en": "the content in English"\n'
