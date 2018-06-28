@@ -5,12 +5,42 @@ from django.core import exceptions
 from newcomers_guide.clean_data import clean_text
 
 
-class TaxonomyTermReference:
-    def __init__(self, taxonomy_id, taxonomy_term_id, content_type, content_id):
-        self.taxonomy_id = taxonomy_id
-        self.taxonomy_term_id = taxonomy_term_id
-        self.content_type = content_type
-        self.content_id = content_id
+def parse_task_files(file_specs):
+    builders = {}
+    for spec in file_specs:
+        path = spec[0]
+        description = clean_text(spec[1])
+
+        parsed_path = parse_file_path(path)
+        task_id = parsed_path.id
+
+        if parsed_path.type == 'tasks':
+            ensure_builder_exists_for_task(builders, task_id)
+            add_properties_for_locale(builders[task_id], parsed_path, description)
+
+    return make_task_map(builders)
+
+
+def parse_file_path(path):
+    parsed_file_path = collections.namedtuple('parsed_file_path',
+                                              ['chapter', 'type', 'id', 'locale', 'title'])
+    split_path = path.split(os.sep)
+    length = len(split_path)
+    if length < 5:
+        raise Exception(path + ': path is too short')
+    name = split_path[length-1]
+    split_name = name.split('.')
+    return parsed_file_path(chapter=split_path[length - 4],
+                            type=split_path[length - 3],
+                            id=split_path[length - 2],
+                            title=split_name[1],
+                            locale=split_name[0])
+
+
+def ensure_builder_exists_for_task(builders, task_id):
+    if task_id not in builders:
+        builders[task_id] = TaskBuilder()
+        builders[task_id].set_id(task_id)
 
 
 class TaskBuilder:
@@ -45,44 +75,6 @@ class TaskBuilder:
         return json.dumps(self.task)
 
 
-def parse_file_path(path):
-    parsed_file_path = collections.namedtuple('parsed_file_path',
-                                              ['chapter', 'type', 'id', 'locale', 'title'])
-    split_path = path.split(os.sep)
-    length = len(split_path)
-    if length < 5:
-        raise Exception(path + ': path is too short')
-    name = split_path[length-1]
-    split_name = name.split('.')
-    return parsed_file_path(chapter=split_path[length - 4],
-                            type=split_path[length - 3],
-                            id=split_path[length - 2],
-                            title=split_name[1],
-                            locale=split_name[0])
-
-
-def parse_task_files(file_specs):
-    builders = {}
-    for spec in file_specs:
-        path = spec[0]
-        description = clean_text(spec[1])
-
-        parsed_path = parse_file_path(path)
-        task_id = parsed_path.id
-
-        if parsed_path.type == 'tasks':
-            ensure_builder_exists_for_task(builders, task_id)
-            add_properties_for_locale(builders[task_id], parsed_path, description)
-
-    return make_task_map(builders)
-
-
-def ensure_builder_exists_for_task(builders, task_id):
-    if task_id not in builders:
-        builders[task_id] = TaskBuilder()
-        builders[task_id].set_id(task_id)
-
-
 def add_properties_for_locale(builder, parsed_path, description):
     locale = parsed_path.locale
     builder.set_title_in_locale(locale, parsed_path.title)
@@ -111,6 +103,14 @@ def parse_taxonomy_files(file_specs):
                                                 content_type=content_type,
                                                 content_id=content_id))
     return result
+
+
+class TaxonomyTermReference:
+    def __init__(self, taxonomy_id, taxonomy_term_id, content_type, content_id):
+        self.taxonomy_id = taxonomy_id
+        self.taxonomy_term_id = taxonomy_term_id
+        self.content_type = content_type
+        self.content_id = content_id
 
 
 def parse_taxonomy_terms(taxonomy_terms):
