@@ -71,6 +71,14 @@ class TaskBuilder:
     def to_task(self):
         return self.task
 
+    def to_task_user_settings(self):
+        return {
+            'id': 'USER:' + self.task['id'],
+            'taskId': self.task['id'],
+            'starred': False,
+            'completed': False
+        }
+
     def to_json(self):
         return json.dumps(self.task)
 
@@ -83,9 +91,15 @@ def add_properties_for_locale(builder, parsed_path, description):
 
 def make_task_map(builders):
     tasks = {}
+    settings = {}
     for key in builders:
         tasks[key] = builders[key].to_task()
-    return {'taskMap': tasks}
+        user_settings = builders[key].to_task_user_settings()
+        settings[user_settings['id']] = user_settings
+    return {
+        'taskMap': tasks,
+        'taskUserSettingsMap': settings
+    }
 
 
 def parse_taxonomy_files(file_specs):
