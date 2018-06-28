@@ -32,6 +32,25 @@ def generate_task_fixture(tasks):
             footer)
 
 
+def generate_article_fixture(articles):
+    header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
+              '// tslint:disable:quotemark trailing-comma max-line-length\n'
+              '\n'
+              'import { Store } from \'../types/articles\';\n'
+              '\n'
+              'export const buildArticlesFixture = (): Store => ({\n'
+              )
+
+    footer = '});'
+
+    articles_as_json = 'articles: ' + json.dumps(articles,
+                                                 ensure_ascii=False,
+                                                 sort_keys=True,
+                                                 indent=4)
+
+    return header + add_leading_spaces(8, articles_as_json) + footer
+
+
 def generate_taxonomy_fixture(taxonomies):
     header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/taxonomies.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
@@ -75,11 +94,11 @@ def add_leading_spaces(count, tasks_as_json):
     return '\n'.join(json_lines_with_spaces)
 
 
-def set_taxonomies_on_tasks(taxonomy_references, tasks_fixture):
+def set_taxonomy_term_references_on_content(taxonomy_references, content_fixtures):
     for reference in taxonomy_references:
-        if reference.content_id in tasks_fixture:
-            task = tasks_fixture[reference.content_id]
-            if 'taxonomyTerms' not in task:
-                task['taxonomyTerms'] = []
-            task['taxonomyTerms'].append({'taxonomyId': reference.taxonomy_id,
-                                          'taxonomyTermId': reference.taxonomy_term_id})
+        if reference.content_id in content_fixtures:
+            content = content_fixtures[reference.content_id]
+            if 'taxonomyTerms' not in content:
+                content['taxonomyTerms'] = []
+            content['taxonomyTerms'].append({'taxonomyId': reference.taxonomy_id,
+                                             'taxonomyTermId': reference.taxonomy_term_id})

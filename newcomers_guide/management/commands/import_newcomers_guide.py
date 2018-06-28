@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_taxonomy_fixture,
-                                               set_taxonomies_on_tasks)
-from newcomers_guide.read_data import read_task_data, read_taxonomy_data
-from newcomers_guide.parse_data import parse_task_files, parse_taxonomy_files
+                                               generate_article_fixture, set_taxonomy_term_references_on_content)
+from newcomers_guide.read_data import read_task_data, read_article_data, read_taxonomy_data
+from newcomers_guide.parse_data import parse_task_files, parse_article_files, parse_taxonomy_files
 from newcomers_guide.log_data import log_taxonomies, log_locales
 
 
@@ -23,19 +23,25 @@ class Command(BaseCommand):
 
         self.stdout.write('Reading Newcomers Guide data from {}'.format(root_folder))
 
-        task_data = read_task_data(root_folder)
-        tasks = parse_task_files(task_data)
-
         taxonomy_data = read_taxonomy_data(root_folder)
         taxonomies = parse_taxonomy_files(taxonomy_data)
 
-        set_taxonomies_on_tasks(taxonomies, tasks['taskMap'])
+        task_data = read_task_data(root_folder)
+        tasks = parse_task_files(task_data)
+        set_taxonomy_term_references_on_content(taxonomies, tasks['taskMap'])
 
-        log_taxonomies(self.stdout, tasks['taskMap'])
-        log_locales(self.stdout, tasks['taskMap'])
+        article_data = read_article_data(root_folder)
+        articles = parse_article_files(article_data)
+        set_taxonomy_term_references_on_content(taxonomies, articles)
+
+        log_taxonomies(self.stdout, tasks['taskMap'], articles)
+        log_locales(self.stdout, tasks['taskMap'], articles)
 
         with open('tasks.ts', 'w') as file:
             file.write(generate_task_fixture(tasks))
+
+        with open('articles.ts', 'w') as file:
+            file.write(generate_article_fixture(articles))
 
         with open('taxonomies.ts', 'w') as file:
             file.write(generate_taxonomy_fixture(taxonomies))
