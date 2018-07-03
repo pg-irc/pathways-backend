@@ -4,7 +4,7 @@ import collections
 from django.core import exceptions
 from newcomers_guide.clean_data import clean_text
 from newcomers_guide.system_data import get_system_taxonomies, get_explore_taxonomy_id
-from newcomers_guide.exceptions import TaxonomyError
+from newcomers_guide.exceptions import TaxonomyError, ParseError
 
 
 def parse_task_files(file_specs):
@@ -175,7 +175,12 @@ def parse_taxonomy_files(file_specs):
         parsed_path = parse_file_path(path)
         content_id = parsed_path.id
         content_type = parsed_path.type
-        parsed_terms = parse_taxonomy_terms(file_content)
+        try:
+            parsed_terms = parse_taxonomy_terms(file_content)
+        except:
+            message = '{}: Failed to parse taxonomy file with content "{}"'.format(path, file_content)
+            raise ParseError(message)
+
         for term in parsed_terms:
             validate_taxonomy_term(term, path)
             result.append(TaxonomyTermReference(taxonomy_id=term.taxonomy_id,
