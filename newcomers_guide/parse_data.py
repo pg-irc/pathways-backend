@@ -63,7 +63,10 @@ def ensure_builder_exists_for_task(builders, task_id):
 
 class TaskBuilder:
     def __init__(self):
-        self.task = {}
+        self.task = {
+            'relatedTasks': [],
+            'relatedArticles': [],
+        }
 
     def get_id(self):
         return self.task['id']

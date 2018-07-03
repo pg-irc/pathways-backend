@@ -40,7 +40,6 @@ class GenerateFixtureTest(TestCase):
                     'export const buildTasksFixture = (): Store => {\n'
                     '    return {\n'
                     '        savedTasksList: [],\n'
-                    '        suggestedTasksList: [],\n'
                     '        taskMap: {\n'
                     '            "To_learn_english": {\n'
                     '                "description": {\n'

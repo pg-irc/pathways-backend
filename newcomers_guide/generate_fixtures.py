@@ -10,8 +10,7 @@ def generate_task_fixture(tasks):
               '\n'
               'export const buildTasksFixture = (): Store => {\n'
               '    return {\n'
-              '        savedTasksList: [],\n'
-              '        suggestedTasksList: [],\n')
+              '        savedTasksList: [],\n')
 
     footer = ('    };\n'
               '};')
