@@ -32,7 +32,7 @@ def generate_task_fixture(tasks):
 
 
 def generate_article_fixture(articles):
-    header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
+    header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/articles.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
               '\n'
               'import { Store } from \'../types/articles\';\n'

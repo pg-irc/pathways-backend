@@ -84,7 +84,7 @@ class GenerateFixtureTest(TestCase):
                 'starred': False
             }
         }
-        expected = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
+        expected = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/articles.ts\n'
                     '// tslint:disable:quotemark trailing-comma max-line-length\n'
                     '\n'
                     'import { Store } from \'../types/articles\';\n'
