@@ -247,6 +247,24 @@ After a translation file has been modified, you can import it again:
 
     ./manage.py content_translation_import fr/organization.po
 
+## Importing Newcomers Guide content
+
+Converting the Newcomers' Giude content into a form that can be built into the client is done using
+a server side tool. This is an interrim measure only. Ultimately we will change this tool to instead
+import the same data into the database, hence it makese sense to build it on the server side.
+
+Prepare the Newcomers Guide content as documented elsewhere. Convert the content from its plain Unicode text
+format to typescripts suitable for compiling into the client using the following server command:
+
+    ./manage.py import_newcomers_guide path/to/newcomers/guide/content
+
+This produces a number of typescript files in the working directory. Move these files into the client
+folder structure
+
+    mv *.ts ../pathways-frontend/src/fixtures/newcomers_guide/
+
+Build the client as normal, noting that the screen output contains the line `bin/buildFixtures.sh: Using Newcomers Guide fixtures` to indicate that the Newcomers' Guide content is being used.
+
 ## Development
 
 ### Null and django blank

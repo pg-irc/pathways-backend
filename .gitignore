@@ -8,3 +8,5 @@
 main/media/
 main/static/css/
 staticfiles/
+# don't commit generated fixture files
+*.ts
