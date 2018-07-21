@@ -66,6 +66,7 @@ class TaskBuilder:
         self.task = {
             'relatedTasks': [],
             'relatedArticles': [],
+            'completed': False
         }
 
     def get_id(self):
@@ -96,8 +97,7 @@ class TaskBuilder:
         return {
             'id': 'USER:' + self.task['id'],
             'taskId': self.task['id'],
-            'starred': False,
-            'completed': False
+            'starred': False
         }
 
     def to_json(self):

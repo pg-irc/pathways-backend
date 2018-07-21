@@ -14,6 +14,7 @@ class GenerateFixtureTest(TestCase):
         data = {
             'taskMap': {
                 'To_learn_english': {
+                    'completed': False,
                     'id': 'To_learn_english',
                     'title': {
                         'en': 'Learn_english'
@@ -28,7 +29,6 @@ class GenerateFixtureTest(TestCase):
                     'id': 'USER:To_learn_english',
                     'taskId': 'To_learn_english',
                     'starred': True,
-                    'completed': False,
                 }
             }
         }
@@ -42,6 +42,7 @@ class GenerateFixtureTest(TestCase):
                     '        savedTasksList: [],\n'
                     '        taskMap: {\n'
                     '            "To_learn_english": {\n'
+                    '                "completed": false,\n'
                     '                "description": {\n'
                     '                    "en": "the content in English"\n'
                     '                },\n'
@@ -53,7 +54,6 @@ class GenerateFixtureTest(TestCase):
                     '        },\n'
                     '        taskUserSettingsMap: {\n'
                     '            "USER:To_learn_english": {\n'
-                    '                "completed": false,\n'
                     '                "id": "USER:To_learn_english",\n'
                     '                "starred": true,\n'
                     '                "taskId": "To_learn_english"\n'

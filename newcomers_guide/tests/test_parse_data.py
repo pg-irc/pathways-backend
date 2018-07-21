@@ -40,6 +40,9 @@ class ProcessTaskFilesTests(TestCase):
     def test_include_localzed_title_from_path(self):
         self.assertEqual(self.result['taskMap']['To_learn_english']['title']['en'], 'Learn_english')
 
+    def test_include_complete_flag(self):
+        self.assertEqual(self.result['taskMap']['To_learn_english']['completed'], False)
+
     def test_handles_unicode_in_title(self):
         self.english_path = "some/path/chapter/tasks/the_id/fr.Système_d'éducation.txt"
         self.result = parse_task_files([[self.english_path, a_string()]])
@@ -97,9 +100,6 @@ class ProcessTaskFilesTests(TestCase):
 
     def test_create_task_user_settings_with_starred_flag(self):
         self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['starred'], False)
-
-    def test_create_task_user_settings_with_completed_flag(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['completed'], False)
 
 
 class ProcessArticleFilesTests(TestCase):
