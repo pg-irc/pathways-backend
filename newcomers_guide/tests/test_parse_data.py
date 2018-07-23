@@ -92,15 +92,6 @@ class ProcessTaskFilesTests(TestCase):
         self.assertIn('To_learn_english', result['taskMap'])
         self.assertNotIn('Human_rights', result['taskMap'])
 
-    def test_create_task_user_settings_with_id(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['id'], 'USER:To_learn_english')
-
-    def test_create_task_user_settings_with_task_id(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['taskId'], 'To_learn_english')
-
-    def test_create_task_user_settings_with_starred_flag(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['starred'], False)
-
 
 class ProcessArticleFilesTests(TestCase):
 

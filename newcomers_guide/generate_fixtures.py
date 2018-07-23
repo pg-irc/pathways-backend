@@ -20,14 +20,8 @@ def generate_task_fixture(tasks):
                                                 sort_keys=True,
                                                 indent=4)
 
-    user_settings_as_json = 'taskUserSettingsMap: ' + json.dumps(tasks['taskUserSettingsMap'],
-                                                                 ensure_ascii=False,
-                                                                 sort_keys=True,
-                                                                 indent=4)
-
     return (header +
-            add_leading_spaces(8, task_map_as_json) + ',\n' +
-            add_leading_spaces(8, user_settings_as_json) + '\n' +
+            add_leading_spaces(8, task_map_as_json) + '\n' +
             footer)
 
 
