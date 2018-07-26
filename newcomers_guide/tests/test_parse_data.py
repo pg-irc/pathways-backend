@@ -40,6 +40,9 @@ class ProcessTaskFilesTests(TestCase):
     def test_include_localzed_title_from_path(self):
         self.assertEqual(self.result['taskMap']['To_learn_english']['title']['en'], 'Learn_english')
 
+    def test_include_complete_flag(self):
+        self.assertEqual(self.result['taskMap']['To_learn_english']['completed'], False)
+
     def test_handles_unicode_in_title(self):
         self.english_path = "some/path/chapter/tasks/the_id/fr.Système_d'éducation.txt"
         self.result = parse_task_files([[self.english_path, a_string()]])
@@ -88,18 +91,6 @@ class ProcessTaskFilesTests(TestCase):
         result = parse_task_files([[task_path, a_string()], [article_path, a_string()]])
         self.assertIn('To_learn_english', result['taskMap'])
         self.assertNotIn('Human_rights', result['taskMap'])
-
-    def test_create_task_user_settings_with_id(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['id'], 'USER:To_learn_english')
-
-    def test_create_task_user_settings_with_task_id(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['taskId'], 'To_learn_english')
-
-    def test_create_task_user_settings_with_starred_flag(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['starred'], False)
-
-    def test_create_task_user_settings_with_completed_flag(self):
-        self.assertEqual(self.result['taskUserSettingsMap']['USER:To_learn_english']['completed'], False)
 
 
 class ProcessArticleFilesTests(TestCase):
