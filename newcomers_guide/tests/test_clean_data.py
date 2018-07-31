@@ -11,6 +11,14 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\ndef\nghi'
         self.assertEqual(clean_up_newlines(text), 'abc def ghi')
 
+    def test_replaces_single_newlines_with_space_also_after_punctiation(self):
+        text = 'abc,\r\ndef.\r\nghi)\r\njkl'
+        self.assertEqual(clean_up_newlines(text), 'abc, def. ghi) jkl')
+
+    def test_replaces_double_newlines_with_newline_also_after_punctiation(self):
+        text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
+        self.assertEqual(clean_up_newlines(text), 'abc,\ndef.\nghi)\njkl')
+
     def test_replaces_one_newline_surrounded_by_whitspace(self):
         text = 'abc\t \n\r\t def'
         self.assertEqual(clean_up_newlines(text), 'abc def')

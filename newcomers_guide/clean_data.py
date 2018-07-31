@@ -2,11 +2,16 @@ import re
 
 
 def clean_up_newlines(text):
-    single_newline = r'\b[ \t\r]*\n[ \t\r]*\b'
-    text = re.sub(single_newline, ' ', text)
+    line_break = 'XXX_replace_this_with_single_newline_XXX'
 
-    double_newline = r'\b[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*\b'
-    text = re.sub(double_newline, '\n', text)
+    find_multiple_newline = r'[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*'
+    text = re.sub(find_multiple_newline, line_break, text)
+
+    find_single_newline = r'[ \t\r]*\n[ \t\r]*'
+    text = re.sub(find_single_newline, ' ', text)
+
+    text = re.sub(line_break, '\n', text)
+
     return text
 
 
