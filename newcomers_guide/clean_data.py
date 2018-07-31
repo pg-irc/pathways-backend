@@ -10,7 +10,7 @@ def clean_up_newlines(text):
     find_single_newline = r'[ \t\r]*\n[ \t\r]*'
     text = re.sub(find_single_newline, ' ', text)
 
-    text = re.sub(line_break, '\n', text)
+    text = re.sub(line_break, '\n\n', text)
 
     return text
 

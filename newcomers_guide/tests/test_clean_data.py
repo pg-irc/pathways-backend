@@ -15,25 +15,25 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc,\r\ndef.\r\nghi)\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc, def. ghi) jkl')
 
-    def test_replaces_double_newlines_with_newline_also_after_punctiation(self):
+    def test_replaces_double_newlines_with_paragraph_break_also_after_punctiation(self):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
-        self.assertEqual(clean_up_newlines(text), 'abc,\ndef.\nghi)\njkl')
+        self.assertEqual(clean_up_newlines(text), 'abc,\n\ndef.\n\nghi)\n\njkl')
 
     def test_replaces_one_newline_surrounded_by_whitspace(self):
         text = 'abc\t \n\r\t def'
         self.assertEqual(clean_up_newlines(text), 'abc def')
 
-    def test_replaces_double_newline_with_newline(self):
+    def test_replaces_double_newline_with_paragraph_break(self):
         text = 'abc\n\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
-    def test_replaces_tripple_newline_with_newline(self):
+    def test_replaces_tripple_newline_with_paragraph_break(self):
         text = 'abc\n\n\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
-    def test_replaces_double_newline_carriage_return_with_newline(self):
+    def test_replaces_double_newline_carriage_return_with_paragraph_break(self):
         text = 'abc\n\r\n\rdef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
 
 class CleanUpLinksTest(TestCase):
