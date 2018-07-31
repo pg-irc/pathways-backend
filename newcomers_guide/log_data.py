@@ -11,6 +11,8 @@ def log_taxonomies(stream, tasks_fixture, articles_fixture):
 
 
 def format_taxonomies(value):
+    if 'taxonomyTerms' not in value:
+        return '---------------- NO TAXONOMY TERMS IN THIS ITEM ----------------'
     terms = value['taxonomyTerms']
     result = []
     for term in terms:
