@@ -2,15 +2,21 @@ import re
 
 
 def clean_up_newlines(text):
-    line_break = 'XXX_replace_this_with_single_newline_XXX'
+    find_heading_at_the_start = r'^(\#[^\n]+)'
+    text = re.sub(find_heading_at_the_start, r'\g<1>\n\n', text)
 
-    find_multiple_newline = r'[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*'
-    text = re.sub(find_multiple_newline, line_break, text)
+    find_heading_after_newline = r'(\n[ \t\r]*\#[^\n]+)'
+    text = re.sub(find_heading_after_newline, r'\g<1>\n\n', text)
+
+    line_break_marker = 'XXX_linebreak_XXX'
+
+    find_multiple_newlines = r'[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*'
+    text = re.sub(find_multiple_newlines, line_break_marker, text)
 
     find_single_newline = r'[ \t\r]*\n[ \t\r]*'
     text = re.sub(find_single_newline, ' ', text)
 
-    text = re.sub(line_break, '\n\n', text)
+    text = re.sub(line_break_marker, '\n\n', text)
 
     return text
 

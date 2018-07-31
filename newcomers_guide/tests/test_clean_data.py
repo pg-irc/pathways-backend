@@ -35,6 +35,18 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n\r\n\rdef'
         self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
+    def test_inserts_newline_after_heading(self):
+        text = 'previous paragraph.\n\n# Heading\nBody text.'
+        self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n# Heading\n\nBody text.')
+
+    def test_inserts_newline_after_heading_at_the_start_of_string(self):
+        text = '# Heading\nBody text.'
+        self.assertEqual(clean_up_newlines(text), '# Heading\n\nBody text.')
+
+    def test_does_not_insert_newline_after_pound_character_in_text(self):
+        text = 'some text with #2 in it.\nSome more text'
+        self.assertEqual(clean_up_newlines(text), 'some text with #2 in it. Some more text')
+
 
 class CleanUpLinksTest(TestCase):
     def test_replaces_http_link_with_markdown(self):
