@@ -35,6 +35,10 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n\r\n\rdef'
         self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
+    def test_inserts_newline_before_bullet(self):
+        text = 'previous paragraph.\n* This is a bullet'
+        self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n* This is a bullet')
+
     def test_inserts_newline_after_heading(self):
         text = 'previous paragraph.\n\n# Heading\nBody text.'
         self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n# Heading\n\nBody text.')
