@@ -2,11 +2,25 @@ import re
 
 
 def clean_up_newlines(text):
-    single_newline = r'\b[ \t\r]*\n[ \t\r]*\b'
-    text = re.sub(single_newline, ' ', text)
+    find_heading_at_the_start = r'^(\#[^\n]+)'
+    text = re.sub(find_heading_at_the_start, r'\g<1>\n\n', text)
 
-    double_newline = r'\b[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*\b'
-    text = re.sub(double_newline, '\n', text)
+    find_heading_after_newline = r'(\n[ \t\r]*\#[^\n]+)'
+    text = re.sub(find_heading_after_newline, r'\g<1>\n\n', text)
+
+    find_bullet = r'(\n[ \r\t]*\*)'
+    text = re.sub(find_bullet, '\n\n*', text)
+
+    line_break_marker = 'XXX_linebreak_XXX'
+
+    find_multiple_newlines = r'[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*'
+    text = re.sub(find_multiple_newlines, line_break_marker, text)
+
+    find_single_newline = r'[ \t\r]*\n[ \t\r]*'
+    text = re.sub(find_single_newline, ' ', text)
+
+    text = re.sub(line_break_marker, '\n\n', text)
+
     return text
 
 
