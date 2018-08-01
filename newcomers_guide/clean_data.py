@@ -8,6 +8,9 @@ def clean_up_newlines(text):
     find_heading_after_newline = r'(\n[ \t\r]*\#[^\n]+)'
     text = re.sub(find_heading_after_newline, r'\g<1>\n\n', text)
 
+    find_bullet_character = r'\•'
+    text = re.sub(find_bullet_character, '*', text)
+
     find_bullet = r'(\n[ \r\t]*\*)'
     text = re.sub(find_bullet, '\n\n*', text)
 
