@@ -11,11 +11,11 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\ndef\nghi'
         self.assertEqual(clean_up_newlines(text), 'abc def ghi')
 
-    def test_replaces_single_newlines_with_space_also_after_punctiation(self):
+    def test_replaces_single_newlines_with_space_also_after_punctuation(self):
         text = 'abc,\r\ndef.\r\nghi)\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc, def. ghi) jkl')
 
-    def test_replaces_double_newlines_with_paragraph_break_also_after_punctiation(self):
+    def test_replaces_double_newlines_with_paragraph_break_also_after_punctuation(self):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc,\n\ndef.\n\nghi)\n\njkl')
 
@@ -42,6 +42,14 @@ class CleanUpNewlinesTest(TestCase):
     def test_inserts_newline_before_bullet(self):
         text = 'previous paragraph.\n* This is a bullet'
         self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n* This is a bullet')
+
+    def test_inserts_newline_before_bullet_character(self):
+        text = 'previous paragraph.\n• This is a bullet'
+        self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n* This is a bullet')
+
+    def test_doesnt_affect_inline_star_characters(self):
+        text = 'abc * def'
+        self.assertEqual(clean_up_newlines(text), 'abc * def')
 
     def test_inserts_newline_after_heading(self):
         text = 'previous paragraph.\n\n# Heading\nBody text.'
