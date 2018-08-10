@@ -1,13 +1,32 @@
 def log_taxonomies(stream, tasks_fixture, articles_fixture):
     stream.write('\nTaxonomy terms for tasks\n\n')
-    for key, value in tasks_fixture.items():
-        taxonomy_terms = format_taxonomies(value)
-        stream.write('{:<50} TaxTerms: {}'.format(key, taxonomy_terms))
+    lines = build_and_sort_taxonomy_log_lines(tasks_fixture)
+    print_log_lines(stream, lines)
 
     stream.write('\nTaxonomy terms for articles\n\n')
-    for key, value in articles_fixture.items():
+    lines = build_and_sort_taxonomy_log_lines(articles_fixture)
+    print_log_lines(stream, lines)
+
+
+def build_and_sort_taxonomy_log_lines(tasks_fixture):
+    log_lines = []
+    for key, value in tasks_fixture.items():
         taxonomy_terms = format_taxonomies(value)
-        stream.write('{:<50} TaxTerms: {}'.format(key, taxonomy_terms))
+        logdata = '{:<50} TaxTerms: {}'.format(key, taxonomy_terms)
+        log_lines.append(LogLine(value['chapter'], value['id'], logdata))
+
+    return sorted(log_lines, key=key_for_sorting)
+
+
+class LogLine:
+    def __init__(self, chapter, theId, logdata):
+        self.chapter = chapter
+        self.id = theId
+        self.logdata = logdata
+
+
+def key_for_sorting(log_line):
+    return '{}:{}'.format(log_line.chapter, log_line.id)
 
 
 def format_taxonomies(value):
@@ -28,17 +47,6 @@ def log_locales(stream, tasks_fixture, articles_fixture):
     stream.write('\nLocales for articles\n\n')
     lines = build_and_sort_locale_log_lines(articles_fixture)
     print_log_lines(stream, lines)
-
-
-class LogLine:
-    def __init__(self, chapter, theId, logdata):
-        self.chapter = chapter
-        self.id = theId
-        self.logdata = logdata
-
-
-def key_for_sorting(log_line):
-    return '{}:{}'.format(log_line.chapter, log_line.id)
 
 
 def build_and_sort_locale_log_lines(tasks_fixture):
