@@ -1,4 +1,5 @@
 import os
+from newcomers_guide import exceptions
 
 
 def read_task_data(root_folder):
@@ -33,8 +34,11 @@ def read_taxonomy_data(root_folder):
 
 def read_file_content(path):
     with open(path, 'r') as file:
-        content = file.read()
-        return content
+        try:
+            content = file.read()
+            return content
+        except ValueError as error:
+            raise exceptions.DecodeError(path)
 
 
 def is_task_file(path):
