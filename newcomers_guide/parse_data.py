@@ -45,14 +45,48 @@ def parse_file_path(path):
     split_path = path.split(os.sep)
     length = len(split_path)
     if length < 5:
-        raise Exception(path + ': path is too short')
+        raise exceptions.ValidationError(path + ': path is too short')
     name = split_path[length-1]
-    split_name = name.split('.')
+    validate_filename(name)
+    title = get_title_from_file_name(name)
+    locale = get_locale_from_file_name(name)
     return parsed_file_path(chapter=split_path[length - 4],
                             type=split_path[length - 3],
                             id=split_path[length - 2],
-                            title=split_name[1],
-                            locale=split_name[0])
+                            title=title,
+                            locale=locale)
+
+
+def validate_filename(file_name):
+    first, last = find_periods_in_filename(file_name)
+
+    too_few_periods = first == last
+    no_language_code = first == 0
+    no_article_name = first + 1 == last
+    no_file_extension = last == len(file_name) - 1
+
+    if (too_few_periods or no_language_code or no_article_name or no_file_extension):
+        raise_invalid_filename_error(file_name)
+
+
+def find_periods_in_filename(file_name):
+    first = file_name.find('.')
+    last = file_name.rfind('.')
+    return first, last
+
+
+def raise_invalid_filename_error(file_name):
+    message = ': Invalid file name, should be <language code>.<article name>.md'
+    raise exceptions.ValidationError(file_name + message)
+
+
+def get_title_from_file_name(file_name):
+    first, last = find_periods_in_filename(file_name)
+    return file_name[first + 1:last]
+
+
+def get_locale_from_file_name(file_name):
+    return file_name.split('.')[0]
 
 
 def ensure_builder_exists_for_task(builders, task_id):
