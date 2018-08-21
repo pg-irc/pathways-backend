@@ -245,3 +245,8 @@ class CleanUpLinksTest(TestCase):
     def test_replaces_https_link_with_markdown(self):
         text = 'https://example.com'
         self.assertEqual(clean_up_links(text), '[example.com](https://example.com)')
+
+    def test_handles_urls_with_dash_in_the_host_name(self):
+        text = 'http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html'
+        expected = '[www.cra-arc.gc.ca](http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html)'
+        self.assertEqual(clean_up_links(text), expected)
