@@ -97,10 +97,11 @@ def unprotect_newlines(text):
     return re.sub(r'NEWLINE_MARKER', r'\n', text)
 
 
-def clean_up_links(text):
-    return re.sub(r'(https?://([a-zA-Z0-9\.\:\-]+)(/\S*)?)', r'[\2](\1)', text)
+def clean_up_http_links(text):
+    return re.sub(r'(https?://([^\s/]+)([^\s]*)?)', r'[\2](\1)', text)
 
 
 def clean_text(text):
     text = clean_up_newlines(text)
-    return clean_up_links(text)
+    text = clean_up_http_links(text)
+    return text

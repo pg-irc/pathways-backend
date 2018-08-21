@@ -1,5 +1,5 @@
 from django.test import TestCase
-from newcomers_guide.clean_data import clean_up_links, clean_up_newlines
+from newcomers_guide.clean_data import clean_up_http_links, clean_up_newlines
 
 # Need to replace single newlines with space, except when the line before
 # and/or after is a list item or heading. This is because the markdown
@@ -231,22 +231,22 @@ class CleanUpNewlinesTest(TestCase):
 class CleanUpLinksTest(TestCase):
     def test_replaces_http_link_with_markdown(self):
         text = 'abc http://example.com def'
-        self.assertEqual(clean_up_links(text), 'abc [example.com](http://example.com) def')
+        self.assertEqual(clean_up_http_links(text), 'abc [example.com](http://example.com) def')
 
     def test_replaces_two_links_with_markdown(self):
         text = 'abc http://example.com def http://example.org ghi'
         expected = 'abc [example.com](http://example.com) def [example.org](http://example.org) ghi'
-        self.assertEqual(clean_up_links(text), expected)
+        self.assertEqual(clean_up_http_links(text), expected)
 
     def test_includes_just_host_in_link_name(self):
         text = 'abc http://example.com/foo/bar def'
-        self.assertEqual(clean_up_links(text), 'abc [example.com](http://example.com/foo/bar) def')
+        self.assertEqual(clean_up_http_links(text), 'abc [example.com](http://example.com/foo/bar) def')
 
     def test_replaces_https_link_with_markdown(self):
         text = 'https://example.com'
-        self.assertEqual(clean_up_links(text), '[example.com](https://example.com)')
+        self.assertEqual(clean_up_http_links(text), '[example.com](https://example.com)')
 
     def test_handles_urls_with_dash_in_the_host_name(self):
         text = 'http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html'
         expected = '[www.cra-arc.gc.ca](http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html)'
-        self.assertEqual(clean_up_links(text), expected)
+        self.assertEqual(clean_up_http_links(text), expected)
