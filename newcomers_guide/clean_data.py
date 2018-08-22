@@ -4,6 +4,7 @@ import re
 def clean_up_newlines(text):
     text = remove_carriage_returns(text)
     text = remove_whitespace_before_newline(text)
+    text = protect_newlines_around_indentend_lines(text)
     text = protect_newlines_around_markup(text)
     text = protect_newlines_around_numbered_list_items(text)
     text = replace_newlines_with_space(text)
@@ -21,14 +22,27 @@ def remove_whitespace_before_newline(text):
     return re.sub(space_before_newline, r'\n', text)
 
 
-def protect_newlines_around_markup(text):
-    at_line_end = r'(\n[#\*\+\-\t ][^\n]+)\n'
+def protect_newlines_around_indentend_lines(text):
+    at_line_end = r'(\n[\t ][^\n]+)\n'
     text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
-    at_text_start = r'^([#\*\+\-\t ][^\n]+)\n'
+    at_text_start = r'^([\t ][^\n]+)\n'
     text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
 
-    at_line_start = r'\n([#\*\+\-\t ][^\n]+\n)'
+    at_line_start = r'\n([\t ][^\n]+\n)'
+    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
+
+    return text
+
+
+def protect_newlines_around_markup(text):
+    at_line_end = r'(\n[#\*\+\-][^\n]+)\n'
+    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
+
+    at_text_start = r'^([#\*\+\-][^\n]+)\n'
+    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
+
+    at_line_start = r'\n([#\*\+\-][^\n]+\n)'
     text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
     return text
