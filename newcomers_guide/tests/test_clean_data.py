@@ -59,13 +59,25 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\ndef\nghi'
         self.assertEqual(clean_up_newlines(text), 'abc def ghi')
 
-    def ignore_test_replaces_single_newlines_with_space_also_after_punctuation(self):
+    def test_replaces_single_newlines_with_space_also_after_punctuation(self):
         text = 'abc,\r\ndef.\r\nghi)\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc, def. ghi) jkl')
 
-    def ignore_test_leaves_double_newlines_unchanged_also_after_punctuation(self):
+    def test_leaves_double_newlines_unchanged_also_after_punctuation(self):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc,\n\ndef.\n\nghi)\n\njkl')
+
+    def test_leaves_double_newlines_unchanged_when_separated_by_space(self):
+        text = 'abc \n \n def'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\n def')
+
+    def test_leaves_double_newlines_unchanged_when_separated_by_carriage_return(self):
+        text = 'abc\r\n\r\n\rdef'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
+
+    def test_leaves_double_newlines_unchanged_when_separated_by_tabs(self):
+        text = 'abc\t\n\t\n\tdef'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\n\tdef')
 
     def test_removes_whitespace_before_newline(self):
         text = 'abc\t \r\ndef'
