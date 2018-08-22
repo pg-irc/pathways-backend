@@ -83,15 +83,11 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\t \r\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc def')
 
-    def ignore_test_keeps_double_newline(self):
-        text = 'abc\n\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
+    def test_keeps_tripple_newline_with_trailing_white_space(self):
+        text = 'abc\n  \n\t\t\n\t def'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\n\n\t def')
 
-    def ignore_test_keeps_tripple_newline_with_white_space(self):
-        text = 'abc\n  \n\t\t\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\n  \n\t\t\ndef')
-
-    def ignore_test_removes_carriage_return_within_newlines(self):
+    def test_removes_carriage_return_within_newlines(self):
         text = 'abc\n\r\n\rdef'
         self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
@@ -100,11 +96,11 @@ class CleanUpNewlinesTest(TestCase):
         text = '• This is a bullet'
         self.assertEqual(clean_up_newlines(text), '* This is a bullet')
 
-    def ignore_test_leaves_newline_after_heading_unchanged(self):
+    def test_leaves_newline_after_heading_unchanged(self):
         text = 'previous paragraph.\n\n# Heading\nBody text.'
         self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n# Heading\nBody text.')
 
-    def ignore_test_leaves_newline_after_heading_at_the_start_of_string_unchanged(self):
+    def test_leaves_newline_after_heading_at_the_start_of_string_unchanged(self):
         text = '# Heading\nBody text.'
         self.assertEqual(clean_up_newlines(text), '# Heading\nBody text.')
 
