@@ -31,7 +31,7 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc def')
 
-    def ignore_test_leaves_newline_unchanged_before_heading(self):
+    def test_leaves_newline_unchanged_before_heading(self):
         text = 'abc\n# def'
         self.assertEqual(clean_up_newlines(text), 'abc\n# def')
 

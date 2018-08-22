@@ -9,8 +9,8 @@ def clean_up_newlines(text):
     find_space_before_newline = r'[ \t\r]+\n'
     text = re.sub(find_space_before_newline, r'\n', text)
 
-    find_newline = r'\n'
-    text = re.sub(find_newline, r' ', text)
+    find_newline = r'\n([^#])'
+    text = re.sub(find_newline, r' \1', text)
 
     return text
 
