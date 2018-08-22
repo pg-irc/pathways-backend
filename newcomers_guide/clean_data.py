@@ -6,6 +6,9 @@ def clean_up_newlines(text):
     find_carriage_return = r'\r'
     text = re.sub(find_carriage_return, r'', text)
 
+    find_space_before_newline = r'[ \t\r]+\n'
+    text = re.sub(find_space_before_newline, r'\n', text)
+
     find_newline = r'\n'
     text = re.sub(find_newline, r' ', text)
 

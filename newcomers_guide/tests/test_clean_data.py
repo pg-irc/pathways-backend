@@ -67,7 +67,7 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc,\n\ndef.\n\nghi)\n\njkl')
 
-    def ignore_test_removes_whitespace_before_newline(self):
+    def test_removes_whitespace_before_newline(self):
         text = 'abc\t \r\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc def')
 
