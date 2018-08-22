@@ -1,10 +1,10 @@
 from django.test import TestCase
 from newcomers_guide.clean_data import clean_up_links, clean_up_newlines
 
-# Need to replace single newlines with space, except when the next line
-# is a list item or heading. This is because the markdown component renders
-# newlines as line breaks,
-# see https://github.com/mientjan/react-native-markdown-renderer/issues/74
+# Need to replace single newlines with space, except when the line before
+# and/or after is a list item or heading. This is because the markdown
+# component renders newlines as line breaks, see
+# https://github.com/mientjan/react-native-markdown-renderer/issues/74
 
 # Need to replace multiple spaces with a single space, because the markdown
 # component renders larger horizontal spaces for multiple space characters.
@@ -14,12 +14,6 @@ from newcomers_guide.clean_data import clean_up_links, clean_up_newlines
 
 # One newline is enough before and after headings. Three or more newlines
 # in a row is OK, even when they're interspersed with other whitespace
-
-# Algorithm:
-# All carriage returns are removed
-# All whitespace before a newline is removed
-# All spaces and tabs after a newline are left untouched
-# All newline characters with no trailing white space are replaced with space
 
 
 class CleanUpNewlinesTest(TestCase):
@@ -35,17 +29,71 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n# def'
         self.assertEqual(clean_up_newlines(text), 'abc\n# def')
 
+    def test_leaves_newline_unchanged_after_heading(self):
+        text = 'abc\n# def\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc\n# def\nghi')
+        text = '# def\nghi'
+        self.assertEqual(clean_up_newlines(text), '# def\nghi')
+
     def test_leaves_newline_unchanged_before_star_bullet(self):
         text = 'abc\n* def'
         self.assertEqual(clean_up_newlines(text), 'abc\n* def')
+
+    def test_leaves_newline_unchanged_after_star_bullet(self):
+        text = 'abc\n* def\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc\n* def\nghi')
+        text = '* def\nghi'
+        self.assertEqual(clean_up_newlines(text), '* def\nghi')
 
     def test_leaves_newline_unchanged_before_plus_bullet(self):
         text = 'abc\n+ def'
         self.assertEqual(clean_up_newlines(text), 'abc\n+ def')
 
+    def test_leaves_newline_unchanged_after_plus_bullet(self):
+        text = 'abc\n+ def\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc\n+ def\nghi')
+        text = '+ def\nghi'
+        self.assertEqual(clean_up_newlines(text), '+ def\nghi')
+
     def test_leaves_newline_unchanged_before_dash_bullet(self):
         text = 'abc\n- def'
         self.assertEqual(clean_up_newlines(text), 'abc\n- def')
+
+    def test_leaves_newline_unchanged_after_dash_bullet(self):
+        text = 'abc\n- def\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc\n- def\nghi')
+        text = '- def\nghi'
+        self.assertEqual(clean_up_newlines(text), '- def\nghi')
+
+    def test_leaves_newline_unchanged_before_line_starting_with_space(self):
+        text = 'abc\n def'
+        self.assertEqual(clean_up_newlines(text), 'abc\n def')
+
+    def test_leaves_newline_unchanged_after_line_starting_with_space(self):
+        text = 'abc\n def\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc\n def\nghi')
+        text = ' def\nghi'
+        self.assertEqual(clean_up_newlines(text), ' def\nghi')
+
+    def test_leaves_newline_unchanged_before_numbered_list_item_with_period(self):
+        text = 'abc\n123. def'
+        self.assertEqual(clean_up_newlines(text), 'abc\n123. def')
+
+    def test_leaves_newline_unchanged_after_numbered_list_item_with_period(self):
+        text = 'abc\n123. def\nefg'
+        self.assertEqual(clean_up_newlines(text), 'abc\n123. def\nefg')
+        text = '123. def\nefg'
+        self.assertEqual(clean_up_newlines(text), '123. def\nefg')
+
+    def test_leaves_newline_unchanged_before_numbered_list_item_with_bracket(self):
+        text = 'abc\n123) def'
+        self.assertEqual(clean_up_newlines(text), 'abc\n123) def')
+
+    def test_leaves_newline_unchanged_after_numbered_list_item_with_bracket(self):
+        text = 'abc\n123) def\nefg'
+        self.assertEqual(clean_up_newlines(text), 'abc\n123) def\nefg')
+        text = '123) def\nefg'
+        self.assertEqual(clean_up_newlines(text), '123) def\nefg')
 
     def test_leaves_newline_unchanged_before_whitespace(self):
         text = 'abc\n def'
