@@ -35,23 +35,23 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n# def'
         self.assertEqual(clean_up_newlines(text), 'abc\n# def')
 
-    def ignore_test_leaves_newline_unchanged_before_star_bullet(self):
+    def test_leaves_newline_unchanged_before_star_bullet(self):
         text = 'abc\n* def'
         self.assertEqual(clean_up_newlines(text), 'abc\n* def')
 
-    def ignore_test_leaves_newline_unchanged_before_plus_bullet(self):
+    def test_leaves_newline_unchanged_before_plus_bullet(self):
         text = 'abc\n+ def'
         self.assertEqual(clean_up_newlines(text), 'abc\n+ def')
 
-    def ignore_test_leaves_newline_unchanged_before_dash_bullet(self):
+    def test_leaves_newline_unchanged_before_dash_bullet(self):
         text = 'abc\n- def'
         self.assertEqual(clean_up_newlines(text), 'abc\n- def')
 
-    def ignore_test_leaves_newline_unchanged_before_whitespace(self):
+    def test_leaves_newline_unchanged_before_whitespace(self):
         text = 'abc\n def'
         self.assertEqual(clean_up_newlines(text), 'abc\n def')
 
-    def ignore_test_leaves_newline_unchanged_before_tab(self):
+    def test_leaves_newline_unchanged_before_tab(self):
         text = 'abc\n\tdef'
         self.assertEqual(clean_up_newlines(text), 'abc\n\tdef')
 
