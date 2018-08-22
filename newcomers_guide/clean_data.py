@@ -22,24 +22,27 @@ def remove_whitespace_before_newline(text):
 
 
 def protect_newlines_around_markup(text):
-    line_ends = r'(\n[#\*\+\-\t ][^\n]+)\n'
-    text = re.sub(line_ends, r'\1NEWLINE_MARKER', text)
+    at_line_end = r'(\n[#\*\+\-\t ][^\n]+)\n'
+    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
-    markup_at_beginning = r'^([#\*\+\-\t ][^\n]+)\n'
-    text = re.sub(markup_at_beginning, r'\1NEWLINE_MARKER', text)
+    at_text_start = r'^([#\*\+\-\t ][^\n]+)\n'
+    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
+
+    at_line_start = r'\n([#\*\+\-\t ][^\n]+\n)'
+    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
     return text
 
 
 def protect_newlines_around_numbered_list_items(text):
-    line_start = r'(\n\d+[\)\.][^\n]+)\n'
-    text = re.sub(line_start, r'\1NEWLINE_MARKER', text)
+    at_line_end = r'(\n\d+[\)\.][^\n]+)\n'
+    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
-    numbered_list_item_at_start = r'^(\d+[\)\.][^\n]+)\n'
-    text = re.sub(numbered_list_item_at_start, r'\1NEWLINE_MARKER', text)
+    at_text_start = r'^(\d+[\)\.][^\n]+)\n'
+    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
 
-    start_of_numbered_list_item = r'\n(\d+[\)\.])'
-    text = re.sub(start_of_numbered_list_item, r'NEWLINE_MARKER\1', text)
+    at_line_start = r'\n(\d+[\)\.])'
+    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
     return text
 
