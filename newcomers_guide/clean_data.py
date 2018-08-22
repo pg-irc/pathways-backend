@@ -28,13 +28,13 @@ def protect_newlines_around_markup(text):
     markup_at_beginning = r'^([#\*\+\-\t ][^\n]+)\n'
     text = re.sub(markup_at_beginning, r'\1NEWLINE_MARKER', text)
 
-    line_start = r'(\n\d+[\)\.][^\n]+)\n'
-    text = re.sub(line_start, r'\1NEWLINE_MARKER', text)
-
     return text
 
 
 def protect_newlines_around_numbered_list_items(text):
+    line_start = r'(\n\d+[\)\.][^\n]+)\n'
+    text = re.sub(line_start, r'\1NEWLINE_MARKER', text)
+
     numbered_list_item_at_start = r'^(\d+[\)\.][^\n]+)\n'
     text = re.sub(numbered_list_item_at_start, r'\1NEWLINE_MARKER', text)
 
