@@ -60,16 +60,16 @@ def protect_newlines_around_headings(text):
 
 
 def protect_newlines_around_bullet_list_items(text):
-    last_bullet_list_item = r'([\*\+\-]([^\n]+\n)+)\n'
-    text = re.sub(last_bullet_list_item, r'\1NEWLINE_MARKERNEWLINE_MARKER', text)
+    last_list_item = r'([\*\+\-]([^\n]+\n)+)\n'
+    text = re.sub(last_list_item, r'\1NEWLINE_MARKERNEWLINE_MARKER', text)
 
     at_line_start = r'\n([\*\+\-][^\n])'
     return re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
 
 def protect_newlines_around_numbered_list_items(text):
-    last_bullet_list_item = r'(\d+[\.\)]([^\n]+\n)+)\n'
-    text = re.sub(last_bullet_list_item, r'\1NEWLINE_MARKERNEWLINE_MARKER', text)
+    last_list_item = r'(\d+[\.\)]([^\n]+\n)+)\n'
+    text = re.sub(last_list_item, r'\1NEWLINE_MARKERNEWLINE_MARKER', text)
 
     at_line_start = r'\n(\d+[\.\)][^\n])'
     return re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
