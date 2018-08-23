@@ -60,25 +60,19 @@ def protect_newlines_around_headings(text):
 
 
 def protect_newlines_around_bullet_list_items(text):
-    at_text_start = r'^([\*\+\-][^\n]+)\n'
-    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
+    last_bullet_list_item = r'([\*\+\-]([^\n]+\n)+)\n'
+    text = re.sub(last_bullet_list_item, r'\1NEWLINE_MARKERNEWLINE_MARKER', text)
 
     at_line_start = r'\n([\*\+\-][^\n])'
-    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
-
-    at_line_end = r'(NEWLINE_MARKER[\*\+\-][^\n]+)\n'
-    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
+    return re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
 
 def protect_newlines_around_numbered_list_items(text):
-    at_text_start = r'^(\d+[\)\.][^\n]+)\n'
-    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
+    last_bullet_list_item = r'(\d+[\.\)]([^\n]+\n)+)\n'
+    text = re.sub(last_bullet_list_item, r'\1NEWLINE_MARKERNEWLINE_MARKER', text)
 
-    at_line_start = r'\n(\d+[\)\.])'
-    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
-
-    at_line_end = r'(NEWLINE_MARKER\d+[\)\.][^\n]+)\n'
-    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
+    at_line_start = r'\n(\d+[\.\)][^\n])'
+    return re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
 
 def replace_newlines_with_space(text):

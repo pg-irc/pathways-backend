@@ -70,31 +70,47 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n* def'
         self.assertEqual(clean_up_newlines(text), 'abc\n* def')
 
-    def test_leaves_newline_unchanged_after_star_bullet(self):
+    def test_replaces_newline_with_space_after_star_bullet(self):
         text = 'abc\n* def\nghi'
-        self.assertEqual(clean_up_newlines(text), 'abc\n* def\nghi')
+        self.assertEqual(clean_up_newlines(text), 'abc\n* def ghi')
         text = '* def\nghi'
-        self.assertEqual(clean_up_newlines(text), '* def\nghi')
+        self.assertEqual(clean_up_newlines(text), '* def ghi')
 
     def test_leaves_newline_unchanged_before_plus_bullet(self):
         text = 'abc\n+ def'
         self.assertEqual(clean_up_newlines(text), 'abc\n+ def')
 
-    def test_leaves_newline_unchanged_after_plus_bullet(self):
+    def test_replaces_newline_with_space_after_plus_bullet(self):
         text = 'abc\n+ def\nghi'
-        self.assertEqual(clean_up_newlines(text), 'abc\n+ def\nghi')
+        self.assertEqual(clean_up_newlines(text), 'abc\n+ def ghi')
         text = '+ def\nghi'
-        self.assertEqual(clean_up_newlines(text), '+ def\nghi')
+        self.assertEqual(clean_up_newlines(text), '+ def ghi')
 
     def test_leaves_newline_unchanged_before_dash_bullet(self):
         text = 'abc\n- def'
         self.assertEqual(clean_up_newlines(text), 'abc\n- def')
 
-    def test_leaves_newline_unchanged_after_dash_bullet(self):
+    def test_replaces_newline_with_space_after_dash_bullet(self):
         text = 'abc\n- def\nghi'
-        self.assertEqual(clean_up_newlines(text), 'abc\n- def\nghi')
+        self.assertEqual(clean_up_newlines(text), 'abc\n- def ghi')
         text = '- def\nghi'
-        self.assertEqual(clean_up_newlines(text), '- def\nghi')
+        self.assertEqual(clean_up_newlines(text), '- def ghi')
+
+    def test_leaves_double_newline_after_list_unchanged(self):
+        self.maxDiff = None
+        text = ('Before list.\n'
+                '* First item\n'
+                'continues here.\n'
+                '* Second item\n'
+                'continues here.\n'
+                '\n'
+                'After list.')
+        expected = ('Before list.\n'
+                    '* First item continues here.\n'
+                    '* Second item continues here. \n'
+                    '\n'
+                    'After list.')
+        self.assertEqual(clean_up_newlines(text), expected)
 
     def test_leaves_newline_unchanged_before_indented_line_starting_with_space(self):
         text = 'abc\n def'
@@ -120,21 +136,21 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n123. def'
         self.assertEqual(clean_up_newlines(text), 'abc\n123. def')
 
-    def test_leaves_newline_unchanged_after_numbered_list_item_with_period(self):
+    def test_replaces_newline_with_space_after_numbered_list_item_with_period(self):
         text = 'abc\n123. def\nefg'
-        self.assertEqual(clean_up_newlines(text), 'abc\n123. def\nefg')
+        self.assertEqual(clean_up_newlines(text), 'abc\n123. def efg')
         text = '123. def\nefg'
-        self.assertEqual(clean_up_newlines(text), '123. def\nefg')
+        self.assertEqual(clean_up_newlines(text), '123. def efg')
 
     def test_leaves_newline_unchanged_before_numbered_list_item_with_bracket(self):
         text = 'abc\n123) def'
         self.assertEqual(clean_up_newlines(text), 'abc\n123) def')
 
-    def test_leaves_newline_unchanged_after_numbered_list_item_with_bracket(self):
+    def test_replaces_newline_with_space_after_numbered_list_item_with_bracket(self):
         text = 'abc\n123) def\nefg'
-        self.assertEqual(clean_up_newlines(text), 'abc\n123) def\nefg')
+        self.assertEqual(clean_up_newlines(text), 'abc\n123) def efg')
         text = '123) def\nefg'
-        self.assertEqual(clean_up_newlines(text), '123) def\nefg')
+        self.assertEqual(clean_up_newlines(text), '123) def efg')
 
     def test_replaces_single_newlines_with_space_also_after_punctuation(self):
         text = 'abc,\r\ndef.\r\nghi)\r\njkl'
