@@ -88,7 +88,7 @@ class CleanUpNewlinesTest(TestCase):
         text = '- def\nghi'
         self.assertEqual(clean_up_newlines(text), '- def\nghi')
 
-    def test_leaves_newline_unchanged_before_line_starting_with_space(self):
+    def test_leaves_newline_unchanged_before_indented_line_starting_with_space(self):
         text = 'abc\n def'
         self.assertEqual(clean_up_newlines(text), 'abc\n def')
 
@@ -97,6 +97,16 @@ class CleanUpNewlinesTest(TestCase):
         self.assertEqual(clean_up_newlines(text), 'abc\n def\nghi')
         text = ' def\nghi'
         self.assertEqual(clean_up_newlines(text), ' def\nghi')
+
+    def test_leaves_newline_unchanged_before_indented_line_starting_with_tab(self):
+        text = 'abc\n\tdef'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\tdef')
+
+    def test_leaves_newline_unchanged_after_line_starting_with_tab(self):
+        text = 'abc\n\tdef\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\tdef\nghi')
+        text = '\tdef\nghi'
+        self.assertEqual(clean_up_newlines(text), '\tdef\nghi')
 
     def test_leaves_newline_unchanged_before_numbered_list_item_with_period(self):
         text = 'abc\n123. def'
@@ -161,7 +171,7 @@ class CleanUpNewlinesTest(TestCase):
 
     def test_leaves_newline_after_heading_unchanged(self):
         text = 'previous paragraph.\n\n# Heading\nBody text.'
-        self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n# Heading\nBody text.')
+        self.assertEqual(clean_up_newlines(text), 'previous paragraph. \n# Heading\nBody text.')
 
     def test_leaves_newline_after_heading_at_the_start_of_string_unchanged(self):
         text = '# Heading\nBody text.'
