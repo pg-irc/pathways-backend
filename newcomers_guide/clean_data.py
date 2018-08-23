@@ -10,8 +10,7 @@ def clean_up_newlines(text):
     text = protect_newlines_around_numbered_list_items(text)
     text = protect_multiple_newlines(text)
     text = replace_newlines_with_space(text)
-    text = unprotect_newlines(text)
-    return text
+    return unprotect_newlines(text)
 
 
 def remove_carriage_returns(text):
@@ -30,11 +29,11 @@ def remove_whitespace_before_newline(text):
 
 
 def protect_multiple_newlines(text):
-    text = re.sub(r'(\n){5}', r'NEWLINE_MARKERNEWLINE_MARKER', text)
-    text = re.sub(r'(\n){4}', r'NEWLINE_MARKERNEWLINE_MARKER', text)
-    text = re.sub(r'(\n){3}', r'NEWLINE_MARKERNEWLINE_MARKER', text)
-    text = re.sub(r'(\n){2}', r'NEWLINE_MARKER', text)
-    return text
+    three_or_more_newlines = r'(\n){3,}'
+    text = re.sub(three_or_more_newlines, r'NEWLINE_MARKERNEWLINE_MARKER', text)
+
+    two_newlines = r'(\n){2}'
+    return re.sub(two_newlines, r'NEWLINE_MARKER', text)
 
 
 def protect_newlines_around_indentend_lines(text):
@@ -45,9 +44,7 @@ def protect_newlines_around_indentend_lines(text):
     text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
     at_line_end = r'(NEWLINE_MARKER[\t ][^\n]+)\n'
-    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
-
-    return text
+    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
 
 def protect_newlines_around_markup(text):
@@ -58,22 +55,18 @@ def protect_newlines_around_markup(text):
     text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
     at_line_end = r'(NEWLINE_MARKER[#\*\+\-][^\n]+)\n'
-    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
-
-    return text
+    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
 
 def protect_newlines_around_numbered_list_items(text):
-    at_line_end = r'(\n\d+[\)\.][^\n]+)\n'
-    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
-
     at_text_start = r'^(\d+[\)\.][^\n]+)\n'
     text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
 
     at_line_start = r'\n(\d+[\)\.])'
     text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
 
-    return text
+    at_line_end = r'(NEWLINE_MARKER\d+[\)\.][^\n]+)\n'
+    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
 
 def replace_newlines_with_space(text):
@@ -90,5 +83,4 @@ def clean_up_links(text):
 
 def clean_text(text):
     text = clean_up_newlines(text)
-    text = clean_up_links(text)
-    return text
+    return clean_up_links(text)
