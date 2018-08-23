@@ -23,14 +23,14 @@ def remove_whitespace_before_newline(text):
 
 
 def protect_newlines_around_indentend_lines(text):
-    at_line_end = r'(\n[\t ][^\n]+)\n'
-    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
-
     at_text_start = r'^([\t ][^\n]+)\n'
     text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
 
     at_line_start = r'\n([\t ][^\n]+\n)'
     text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
+
+    at_line_end = r'(NEWLINE_MARKER[\t ][^\n]+)\n'
+    text = re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
 
     return text
 
