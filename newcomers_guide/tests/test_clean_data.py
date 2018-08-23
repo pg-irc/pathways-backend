@@ -32,9 +32,17 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n\t\r \ndef'
         self.assertEqual(clean_up_newlines(text), 'abc\ndef')
 
+    def test_ignores_whitespace_before_newline(self):
+        text = 'abc\t \r\ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc def')
+
     def test_replaces_single_newline_with_space(self):
         text = 'abc\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc def')
+
+    def test_replaces_single_newline_in_two_places_with_spaces(self):
+        text = 'abc\ndef\nghi'
+        self.assertEqual(clean_up_newlines(text), 'abc def ghi')
 
     def test_replaces_double_newline_with_single_newline(self):
         text = 'abc\n\ndef'
@@ -128,18 +136,6 @@ class CleanUpNewlinesTest(TestCase):
         text = '123) def\nefg'
         self.assertEqual(clean_up_newlines(text), '123) def\nefg')
 
-    def test_leaves_newline_unchanged_before_whitespace(self):
-        text = 'abc\n def'
-        self.assertEqual(clean_up_newlines(text), 'abc\n def')
-
-    def test_leaves_newline_unchanged_before_tab(self):
-        text = 'abc\n\tdef'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\tdef')
-
-    def test_replaces_single_newline_in_two_places_with_spaces(self):
-        text = 'abc\ndef\nghi'
-        self.assertEqual(clean_up_newlines(text), 'abc def ghi')
-
     def test_replaces_single_newlines_with_space_also_after_punctuation(self):
         text = 'abc,\r\ndef.\r\nghi)\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc, def. ghi) jkl')
@@ -147,22 +143,6 @@ class CleanUpNewlinesTest(TestCase):
     def test_handles_newlines_after_punctuation(self):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc,\ndef.\nghi)\njkl')
-
-    def test_ignores_spaces_between_newlines(self):
-        text = 'abc \n \ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
-
-    def test_ignores_carriage_return_between_newlines(self):
-        text = 'abc\r\n\r\n\rdef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
-
-    def test_removes_whitespace_before_newline(self):
-        text = 'abc\t \r\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc def')
-
-    def test_keeps_tripple_newline_with_trailing_white_space(self):
-        text = 'abc\n  \n\t\t\n\t def'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\n\t def')
 
     # What to do with bullets, throw an error?
     def ignore_test_replaces_bullet_character_with_star(self):
@@ -176,6 +156,27 @@ class CleanUpNewlinesTest(TestCase):
     def test_leaves_newline_after_heading_at_the_start_of_string_unchanged(self):
         text = '# Heading\nBody text.'
         self.assertEqual(clean_up_newlines(text), '# Heading\nBody text.')
+
+    def test_realistic_example(self):
+        self.maxDiff = None
+        text = ('## Try CommonMark\n\n\n'
+                'You can try CommonMark here.\n'
+                'This dingus is powered by\n\n'
+                '[commonmark.js](https://github.com/jgm/commonmark.js), the\n\n'
+                'JavaScript reference implementation.\n'
+                '1. item one\n'
+                '2. item two\n'
+                '   - sublist\n'
+                '   - sublist\n')
+        expected = ('## Try CommonMark\n\n'
+                    'You can try CommonMark here. This dingus is powered by\n'
+                    '[commonmark.js](https://github.com/jgm/commonmark.js), the\n'
+                    'JavaScript reference implementation.\n'
+                    '1. item one\n'
+                    '2. item two\n'
+                    '   - sublist\n'
+                    '   - sublist\n')
+        self.assertEqual(clean_up_newlines(text), expected)
 
 
 class CleanUpLinksTest(TestCase):
