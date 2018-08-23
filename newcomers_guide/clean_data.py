@@ -3,10 +3,12 @@ import re
 
 def clean_up_newlines(text):
     text = remove_carriage_returns(text)
+    text = remove_whitespace_between_newlines(text)
     text = remove_whitespace_before_newline(text)
     text = protect_newlines_around_indentend_lines(text)
     text = protect_newlines_around_markup(text)
     text = protect_newlines_around_numbered_list_items(text)
+    text = protect_multiple_newlines(text)
     text = replace_newlines_with_space(text)
     text = unprotect_newlines(text)
     return text
@@ -17,9 +19,22 @@ def remove_carriage_returns(text):
     return re.sub(carriage_return, r'', text)
 
 
+def remove_whitespace_between_newlines(text):
+    whitespace_between_newlines = r'\n[ \t\r]+\n'
+    return re.sub(whitespace_between_newlines, r'\n\n', text)
+
+
 def remove_whitespace_before_newline(text):
     space_before_newline = r'[ \t\r]+\n'
     return re.sub(space_before_newline, r'\n', text)
+
+
+def protect_multiple_newlines(text):
+    text = re.sub(r'(\n){5}', r'NEWLINE_MARKERNEWLINE_MARKER', text)
+    text = re.sub(r'(\n){4}', r'NEWLINE_MARKERNEWLINE_MARKER', text)
+    text = re.sub(r'(\n){3}', r'NEWLINE_MARKERNEWLINE_MARKER', text)
+    text = re.sub(r'(\n){2}', r'NEWLINE_MARKER', text)
+    return text
 
 
 def protect_newlines_around_indentend_lines(text):

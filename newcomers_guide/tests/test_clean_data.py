@@ -6,6 +6,13 @@ from newcomers_guide.clean_data import clean_up_links, clean_up_newlines
 # component renders newlines as line breaks, see
 # https://github.com/mientjan/react-native-markdown-renderer/issues/74
 
+# For the markdown component, one newline means a line break, two newlines
+# or more means a paragraph break. So since we are converting one newline
+# into space, we need to convert two newlines into one newline and three or
+# more newlines into two newlines. To simplify the implementation, two newlines
+# separated by all whitespace is converted into just two newlines as a pre-
+# processing step.
+
 # Need to replace multiple spaces with a single space, because the markdown
 # component renders larger horizontal spaces for multiple space characters.
 
@@ -21,9 +28,25 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\rdef'
         self.assertEqual(clean_up_newlines(text), 'abcdef')
 
+    def test_ignores_whitespace_between_newlines(self):
+        text = 'abc\n\t\r \ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+
     def test_replaces_single_newline_with_space(self):
         text = 'abc\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc def')
+
+    def test_replaces_double_newline_with_single_newline(self):
+        text = 'abc\n\ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+
+    def test_replaces_tripple_newline_with_double_newline(self):
+        text = 'abc\n\n\ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
+
+    def test_replaces_four_newlines_with_double_newline(self):
+        text = 'abc\n\n\n\ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
     def test_leaves_newline_unchanged_before_heading(self):
         text = 'abc\n# def'
@@ -111,21 +134,17 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc,\r\ndef.\r\nghi)\r\njkl'
         self.assertEqual(clean_up_newlines(text), 'abc, def. ghi) jkl')
 
-    def test_leaves_double_newlines_unchanged_also_after_punctuation(self):
+    def test_handles_newlines_after_punctuation(self):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
-        self.assertEqual(clean_up_newlines(text), 'abc,\n\ndef.\n\nghi)\n\njkl')
+        self.assertEqual(clean_up_newlines(text), 'abc,\ndef.\nghi)\njkl')
 
-    def test_leaves_double_newlines_unchanged_when_separated_by_space(self):
-        text = 'abc \n \n def'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\n def')
+    def test_ignores_spaces_between_newlines(self):
+        text = 'abc \n \ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
 
-    def test_leaves_double_newlines_unchanged_when_separated_by_carriage_return(self):
+    def test_ignores_carriage_return_between_newlines(self):
         text = 'abc\r\n\r\n\rdef'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
-
-    def test_leaves_double_newlines_unchanged_when_separated_by_tabs(self):
-        text = 'abc\t\n\t\n\tdef'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\n\tdef')
+        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
 
     def test_removes_whitespace_before_newline(self):
         text = 'abc\t \r\ndef'
@@ -133,11 +152,7 @@ class CleanUpNewlinesTest(TestCase):
 
     def test_keeps_tripple_newline_with_trailing_white_space(self):
         text = 'abc\n  \n\t\t\n\t def'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\n\n\t def')
-
-    def test_removes_carriage_return_within_newlines(self):
-        text = 'abc\n\r\n\rdef'
-        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
+        self.assertEqual(clean_up_newlines(text), 'abc\n\n\t def')
 
     # What to do with bullets, throw an error?
     def ignore_test_replaces_bullet_character_with_star(self):
@@ -146,7 +161,7 @@ class CleanUpNewlinesTest(TestCase):
 
     def test_leaves_newline_after_heading_unchanged(self):
         text = 'previous paragraph.\n\n# Heading\nBody text.'
-        self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n\n# Heading\nBody text.')
+        self.assertEqual(clean_up_newlines(text), 'previous paragraph.\n# Heading\nBody text.')
 
     def test_leaves_newline_after_heading_at_the_start_of_string_unchanged(self):
         text = '# Heading\nBody text.'
