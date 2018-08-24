@@ -83,7 +83,7 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(self.result['taskMap']['To_learn_english']['description']['en'], self.content)
 
     def test_clean_up_content_linebreaks(self):
-        result = parse_task_files([[self.english_path, 'abc \n def']])
+        result = parse_task_files([[self.english_path, 'abc\ndef']])
         description = result['taskMap']['To_learn_english']['description']['en']
         self.assertEqual(description, 'abc def')
 
@@ -147,7 +147,7 @@ class ProcessArticleFilesTests(TestCase):
         self.assertEqual(self.result['To_learn_english']['description']['en'], self.content)
 
     def test_clean_up_content_linebreaks(self):
-        result = parse_article_files([[self.english_path, 'abc \n def']])
+        result = parse_article_files([[self.english_path, 'abc\ndef']])
         description = result['To_learn_english']['description']['en']
         self.assertEqual(description, 'abc def')
 

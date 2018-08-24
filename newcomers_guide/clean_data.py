@@ -2,29 +2,99 @@ import re
 
 
 def clean_up_newlines(text):
-    find_heading_at_the_start = r'^(\#[^\n]+)'
-    text = re.sub(find_heading_at_the_start, r'\g<1>\n\n', text)
+    text = remove_carriage_returns(text)
+    text = remove_whitespace_between_newlines(text)
+    text = remove_whitespace_before_newline(text)
+    text = remove_duplicate_space_within_lines(text)
+    text = protect_newlines_around_indented_lines(text)
+    text = protect_newlines_around_headings(text)
+    text = protect_newlines_around_bullet_list_items(text)
+    text = protect_newlines_around_numbered_list_items(text)
+    text = protect_multiple_newlines(text)
+    text = replace_newlines_with_space(text)
+    return unprotect_newlines(text)
 
-    find_heading_after_newline = r'(\n[ \t\r]*\#[^\n]+)'
-    text = re.sub(find_heading_after_newline, r'\g<1>\n\n', text)
 
-    find_bullet_character = r'\•'
-    text = re.sub(find_bullet_character, '*', text)
+def remove_carriage_returns(text):
+    carriage_return = r'\r'
+    return re.sub(carriage_return, r'', text)
 
-    find_bullet = r'(\n[ \r\t]*\*)'
-    text = re.sub(find_bullet, '\n\n*', text)
 
-    line_break_marker = 'XXX_linebreak_XXX'
+def remove_whitespace_between_newlines(text):
+    whitespace_between_newlines = r'\n[ \t\r]+\n'
+    return re.sub(whitespace_between_newlines, r'\n\n', text)
 
-    find_multiple_newlines = r'[ \t\r]*\n([ \t\r]*\n)+[ \t\r]*'
-    text = re.sub(find_multiple_newlines, line_break_marker, text)
 
-    find_single_newline = r'[ \t\r]*\n[ \t\r]*'
-    text = re.sub(find_single_newline, ' ', text)
+def remove_duplicate_space_within_lines(text):
+    duplicate_spaces = r'([^\n ]) {2,}'
+    return re.sub(duplicate_spaces, r'\1 ', text)
 
-    text = re.sub(line_break_marker, '\n\n', text)
 
-    return text
+def remove_whitespace_before_newline(text):
+    space_before_newline = r'[ \t\r]+\n'
+    return re.sub(space_before_newline, r'\n', text)
+
+
+def protect_multiple_newlines(text):
+    three_or_more_newlines = r'(\n){3,}'
+    text = re.sub(three_or_more_newlines, r'NEWLINE_MARKERNEWLINE_MARKER', text)
+
+    two_newlines = r'(\n){2}'
+    return re.sub(two_newlines, r'NEWLINE_MARKER', text)
+
+
+def protect_newlines_around_indented_lines(text):
+    at_text_start = r'^([\t ][^\n]+)\n'
+    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
+
+    at_line_start = r'\n([\t ][^\n])'
+    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
+
+    at_line_end = r'(NEWLINE_MARKER[\t ][^\n]+)\n'
+    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
+
+
+def protect_newlines_around_headings(text):
+    at_text_start = r'^(#[^\n]+)\n'
+    text = re.sub(at_text_start, r'\1NEWLINE_MARKER', text)
+
+    at_line_start = r'\n(#[^\n])'
+    text = re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
+
+    at_line_end = r'(NEWLINE_MARKER#[^\n]+)\n'
+    return re.sub(at_line_end, r'\1NEWLINE_MARKER', text)
+
+
+def protect_newlines_around_bullet_list_items(text):
+    # This regex matches the last item in a bullet list:
+    # a new line, optional white space, a bullet character,
+    # one or more non-empty lines, an empty line
+    last_list_item = r'(\n[ \t]*[\*\+\-]([^\n]+\n)+)\n'
+    text = re.sub(last_list_item, r'\1SECOND_NEWLINE', text)
+    text = re.sub(r'\nSECOND_NEWLINE', r'NEWLINE_MARKERNEWLINE_MARKER', text)
+
+    at_line_start = r'\n([\*\+\-][^\n])'
+    return re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
+
+
+def protect_newlines_around_numbered_list_items(text):
+    # This regex matches the last item in a numbered list:
+    # a new line, optional white space, one or more digits,
+    # '.' or ')', one or more non-empty lines, an empty line
+    last_list_item = r'(\n[ \t]*\d+[\.\)]([^\n]+\n)+)\n'
+    text = re.sub(last_list_item, r'\1SECOND_NEWLINE', text)
+    text = re.sub(r'\nSECOND_NEWLINE', r'NEWLINE_MARKERNEWLINE_MARKER', text)
+
+    at_line_start = r'\n(\d+[\.\)][^\n])'
+    return re.sub(at_line_start, r'NEWLINE_MARKER\1', text)
+
+
+def replace_newlines_with_space(text):
+    return re.sub(r'\n', r' ', text)
+
+
+def unprotect_newlines(text):
+    return re.sub(r'NEWLINE_MARKER', r'\n', text)
 
 
 def clean_up_links(text):
@@ -33,5 +103,4 @@ def clean_up_links(text):
 
 def clean_text(text):
     text = clean_up_newlines(text)
-    text = clean_up_links(text)
-    return text
+    return clean_up_links(text)
