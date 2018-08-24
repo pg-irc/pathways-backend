@@ -5,6 +5,7 @@ def clean_up_newlines(text):
     text = remove_carriage_returns(text)
     text = remove_whitespace_between_newlines(text)
     text = remove_whitespace_before_newline(text)
+    text = remove_duplicate_space_within_lines(text)
     text = protect_newlines_around_indented_lines(text)
     text = protect_newlines_around_headings(text)
     text = protect_newlines_around_bullet_list_items(text)
@@ -22,6 +23,11 @@ def remove_carriage_returns(text):
 def remove_whitespace_between_newlines(text):
     whitespace_between_newlines = r'\n[ \t\r]+\n'
     return re.sub(whitespace_between_newlines, r'\n\n', text)
+
+
+def remove_duplicate_space_within_lines(text):
+    duplicate_spaces = r'([^\n ]) {2,}'
+    return re.sub(duplicate_spaces, r'\1 ', text)
 
 
 def remove_whitespace_before_newline(text):

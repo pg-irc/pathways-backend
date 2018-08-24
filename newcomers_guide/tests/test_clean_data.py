@@ -15,6 +15,7 @@ from newcomers_guide.clean_data import clean_up_links, clean_up_newlines
 
 # Need to replace multiple spaces with a single space, because the markdown
 # component renders larger horizontal spaces for multiple space characters.
+# However, multiple spaces at the start of a line are not changed
 
 # Need to leave all whitespace following one or more newlines unchanged,
 # because this whitespace can be meaningful when formatting nested lists.
@@ -28,11 +29,19 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\rdef'
         self.assertEqual(clean_up_newlines(text), 'abcdef')
 
-    def test_ignores_whitespace_between_newlines(self):
+    def test_removes_duplicate_spaces(self):
+        text = 'abc  def'
+        self.assertEqual(clean_up_newlines(text), 'abc def')
+
+    def test_leaves_duplicate_spaces_at_line_start_unchanged(self):
+        text = '  abc'
+        self.assertEqual(clean_up_newlines(text), '  abc')
+
+    def test_removes_whitespace_between_newlines(self):
         text = 'abc\n\t\r \ndef'
         self.assertEqual(clean_up_newlines(text), 'abc\ndef')
 
-    def test_ignores_whitespace_before_newline(self):
+    def test_removes_whitespace_before_newline(self):
         text = 'abc\t \r\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc def')
 
@@ -112,7 +121,7 @@ class CleanUpNewlinesTest(TestCase):
                     'After list.')
         self.assertEqual(clean_up_newlines(text), expected)
 
-    def test_leaves_newline_unchanged_before_indented_line_starting_with_space(self):
+    def test_leaves_newline_unchanged_before_line_starting_with_space(self):
         text = 'abc\n def'
         self.assertEqual(clean_up_newlines(text), 'abc\n def')
 
@@ -122,7 +131,7 @@ class CleanUpNewlinesTest(TestCase):
         text = ' def\nghi'
         self.assertEqual(clean_up_newlines(text), ' def\nghi')
 
-    def test_leaves_newline_unchanged_before_indented_line_starting_with_tab(self):
+    def test_leaves_newline_unchanged_before_line_starting_with_tab(self):
         text = 'abc\n\tdef'
         self.assertEqual(clean_up_newlines(text), 'abc\n\tdef')
 
