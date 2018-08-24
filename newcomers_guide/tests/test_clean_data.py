@@ -105,7 +105,7 @@ class CleanUpNewlinesTest(TestCase):
         text = '- def\nghi'
         self.assertEqual(clean_up_newlines(text), '- def ghi')
 
-    def test_leaves_double_newline_after_list_unchanged(self):
+    def test_leaves_double_newline_after_bullet_list_unchanged(self):
         self.maxDiff = None
         text = ('Before list.\n'
                 '* First item\n'
@@ -116,7 +116,23 @@ class CleanUpNewlinesTest(TestCase):
                 'After list.')
         expected = ('Before list.\n'
                     '* First item continues here.\n'
-                    '* Second item continues here. \n'
+                    '* Second item continues here.\n'
+                    '\n'
+                    'After list.')
+        self.assertEqual(clean_up_newlines(text), expected)
+
+    def test_leaves_double_newline_after_numbered_list_unchanged(self):
+        self.maxDiff = None
+        text = ('Before list.\n'
+                '1. First item\n'
+                'continues here.\n'
+                '1. Second item\n'
+                'continues here.\n'
+                '\n'
+                'After list.')
+        expected = ('Before list.\n'
+                    '1. First item continues here.\n'
+                    '1. Second item continues here.\n'
                     '\n'
                     'After list.')
         self.assertEqual(clean_up_newlines(text), expected)
