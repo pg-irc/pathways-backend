@@ -1,5 +1,5 @@
 from django.test import TestCase
-from newcomers_guide.clean_data import clean_up_http_links, clean_up_newlines
+from newcomers_guide.clean_data import clean_up_http_links, clean_up_email_links, clean_up_newlines
 
 # Need to replace single newlines with space, except when the line before
 # and/or after is a list item or heading. This is because the markdown
@@ -228,7 +228,7 @@ class CleanUpNewlinesTest(TestCase):
         self.assertEqual(clean_up_newlines(text), expected)
 
 
-class CleanUpLinksTest(TestCase):
+class CleanUpUrlLinksTest(TestCase):
     def test_replaces_http_link_with_markdown(self):
         text = 'abc http://example.com def'
         self.assertEqual(clean_up_http_links(text), 'abc [example.com](http://example.com) def')
@@ -250,3 +250,9 @@ class CleanUpLinksTest(TestCase):
         text = 'http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html'
         expected = '[www.cra-arc.gc.ca](http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html)'
         self.assertEqual(clean_up_http_links(text), expected)
+
+
+class CleanUpMailtoLinksTest(TestCase):
+    def test_replaces_email_link_with_markdown(self):
+        text = 'abc foo@bar.com def'
+        self.assertEqual(clean_up_email_links(text), 'abc [foo@bar.com](mailto:foo@bar.com) def')

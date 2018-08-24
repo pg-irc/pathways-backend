@@ -101,7 +101,12 @@ def clean_up_http_links(text):
     return re.sub(r'(https?://([^\s/]+)([^\s]*)?)', r'[\2](\1)', text)
 
 
+def clean_up_email_links(text):
+    return re.sub(r'([^@\s]+@[^@\s]+\.[^@\s]+)', r'[\1](mailto:\1)', text)
+
+
 def clean_text(text):
     text = clean_up_newlines(text)
     text = clean_up_http_links(text)
+    text = clean_up_email_links(text)
     return text
