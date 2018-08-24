@@ -1,14 +1,15 @@
 from django.core import exceptions
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_string
-from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_files, parse_article_files,
-                                        parse_task_files, parse_file_path, TaxonomyTermReference)
+from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_files,
+                                        parse_article_files, parse_task_files, parse_file_path,
+                                        TaxonomyTermReference)
 from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_content
 
 
 class FilePathParseTests(TestCase):
     def setUp(self):
-        self.path = 'some/path/chapter_6_education/tasks/To_learn_english/fr.Apprendre_l_anglais.txt'
+        self.path = 'some/path/chapter_6_education/tasks/To_learn_english/fr.Apprendre l\'anglais.md'
         self.parsed_path = parse_file_path(self.path)
 
     def test_can_extract_chapter(self):
@@ -24,7 +25,37 @@ class FilePathParseTests(TestCase):
         self.assertEqual(self.parsed_path.locale, 'fr')
 
     def test_can_extract_localized_content_title(self):
-        self.assertEqual(self.parsed_path.title, 'Apprendre_l_anglais')
+        self.assertEqual(self.parsed_path.title, 'Apprendre l\'anglais')
+
+    def test_can_handle_titles_with_period(self):
+        path = 'some/path/chapter/articles/articleId/en.article.name.with.periods.md'
+        parsed_path = parse_file_path(path)
+        self.assertEqual(parsed_path.title, 'article.name.with.periods')
+
+    def test_throw_if_filename_contains_no_periods(self):
+        path = 'some/path/chapter/articles/articleId/name'
+        with self.assertRaisesMessage(exceptions.ValidationError, 'name: Invalid file name'):
+            parse_file_path(path)
+
+    def test_throw_if_filename_contains_one_period(self):
+        path = 'some/path/chapter/articles/articleId/name.md'
+        with self.assertRaisesMessage(exceptions.ValidationError, 'name.md: Invalid file name'):
+            parse_file_path(path)
+
+    def test_throw_if_filename_contains_empty_language_code(self):
+        path = 'some/path/chapter/articles/articleId/.name.md'
+        with self.assertRaisesMessage(exceptions.ValidationError, '.name.md: Invalid file name'):
+            parse_file_path(path)
+
+    def test_throw_if_filename_contains_empty_article_name(self):
+        path = 'some/path/chapter/articles/articleId/en..md'
+        with self.assertRaisesMessage(exceptions.ValidationError, 'en..md: Invalid file name'):
+            parse_file_path(path)
+
+    def test_throw_if_filename_contains_empty_file_extension(self):
+        path = 'some/path/chapter/articles/articleId/en.name.'
+        with self.assertRaisesMessage(exceptions.ValidationError, 'en.name.: Invalid file name'):
+            parse_file_path(path)
 
 
 class ProcessTaskFilesTests(TestCase):
