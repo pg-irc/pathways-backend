@@ -66,7 +66,10 @@ def protect_newlines_around_headings(text):
 
 
 def protect_newlines_around_bullet_list_items(text):
-    last_list_item = r'([\*\+\-]([^\n]+\n)+)\n'
+    # This regex matches the last item in a bullet list:
+    # a new line, optional white space, a bullet character,
+    # one or more non-empty lines, an empty line
+    last_list_item = r'(\n[ \t]*[\*\+\-]([^\n]+\n)+)\n'
     text = re.sub(last_list_item, r'\1SECOND_NEWLINE', text)
     text = re.sub(r'\nSECOND_NEWLINE', r'NEWLINE_MARKERNEWLINE_MARKER', text)
 
@@ -75,7 +78,10 @@ def protect_newlines_around_bullet_list_items(text):
 
 
 def protect_newlines_around_numbered_list_items(text):
-    last_list_item = r'(\d+[\.\)]([^\n]+\n)+)\n'
+    # This regex matches the last item in a numbered list:
+    # a new line, optional white space, one or more digits,
+    # '.' or ')', one or more non-empty lines, an empty line
+    last_list_item = r'(\n[ \t]*\d+[\.\)]([^\n]+\n)+)\n'
     text = re.sub(last_list_item, r'\1SECOND_NEWLINE', text)
     text = re.sub(r'\nSECOND_NEWLINE', r'NEWLINE_MARKERNEWLINE_MARKER', text)
 

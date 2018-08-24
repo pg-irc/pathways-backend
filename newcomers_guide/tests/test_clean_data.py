@@ -57,6 +57,14 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\n\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc\ndef')
 
+    def test_replaces_double_newline_with_single_newline_after_inline_bullet_character(self):
+        text = ('a*bc\n\ndef')
+        self.assertEqual(clean_up_newlines(text), 'a*bc\ndef')
+
+    def test_replaces_double_newline_with_single_newline_after_inline_number(self):
+        text = ('a1.bc\n\ndef')
+        self.assertEqual(clean_up_newlines(text), 'a1.bc\ndef')
+
     def test_replaces_tripple_newline_with_double_newline(self):
         text = 'abc\n\n\ndef'
         self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
