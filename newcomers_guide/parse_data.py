@@ -60,6 +60,10 @@ def parse_file_path(path):
 def validate_filename(file_name):
     first, last = find_periods_in_filename(file_name)
 
+    file_extension = file_name[last+1:]
+    if not is_content_file(file_extension):
+        return
+
     too_few_periods = first == last
     no_language_code = first == 0
     no_article_name = first + 1 == last
@@ -73,6 +77,11 @@ def find_periods_in_filename(file_name):
     first = file_name.find('.')
     last = file_name.rfind('.')
     return first, last
+
+
+def is_content_file(file_extension):
+    content_file_extension = 'md'
+    return file_extension == content_file_extension
 
 
 def raise_invalid_filename_error(file_name):
