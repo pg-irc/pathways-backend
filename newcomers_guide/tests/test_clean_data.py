@@ -6,12 +6,17 @@ from newcomers_guide.clean_data import clean_up_http_links, clean_up_email_links
 # component renders newlines as line breaks, see
 # https://github.com/mientjan/react-native-markdown-renderer/issues/74
 
-# For the markdown component, one newline means a line break, two newlines
-# or more means a paragraph break. So since we are converting one newline
-# into space, we need to convert two newlines into one newline and three or
-# more newlines into two newlines. To simplify the implementation, two newlines
-# separated by all whitespace is converted into just two newlines as a pre-
-# processing step.
+# To minimize needed content editing, newlines are converted into spaces.
+# This script needs to do that, since the markdown component renders
+# single newlines as line breaks. By the common mark standard, newlines
+# preceeded by at least two spaces are rendered as a line break, so we
+# need to keep white-space+newline sequences unchanged. A double newline
+# are kept unchanged and they are rendered as a paragraph break. More than
+# two newlines in a row are converted to just two newlines.
+
+# So for editors: A newline will be rendered as a spaces. A newline
+# preceeded by at least two spaces will be rendered as a line break.
+# Double newlines (i.e. an empty line) will be rendered as a paragraph break.
 
 # Need to replace multiple spaces with a single space, because the markdown
 # component renders larger horizontal spaces for multiple space characters.
@@ -39,11 +44,11 @@ class CleanUpNewlinesTest(TestCase):
 
     def test_removes_whitespace_between_newlines(self):
         text = 'abc\n\t\r \ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
-    def test_removes_whitespace_before_newline(self):
-        text = 'abc\t \r\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc def')
+    def test_leaves_whitespace_before_newline_unchanged(self):
+        text = 'abc\t \ndef'
+        self.assertEqual(clean_up_newlines(text), 'abc\t \ndef')
 
     def test_replaces_single_newline_with_space(self):
         text = 'abc\ndef'
@@ -53,17 +58,17 @@ class CleanUpNewlinesTest(TestCase):
         text = 'abc\ndef\nghi'
         self.assertEqual(clean_up_newlines(text), 'abc def ghi')
 
-    def test_replaces_double_newline_with_single_newline(self):
+    def test_leaves_double_newline_unchanged(self):
         text = 'abc\n\ndef'
-        self.assertEqual(clean_up_newlines(text), 'abc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'abc\n\ndef')
 
-    def test_replaces_double_newline_with_single_newline_after_inline_bullet_character(self):
+    def test_leaves_double_newline_unchanged_after_inline_bullet_character(self):
         text = ('a*bc\n\ndef')
-        self.assertEqual(clean_up_newlines(text), 'a*bc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'a*bc\n\ndef')
 
-    def test_replaces_double_newline_with_single_newline_after_inline_number(self):
+    def test_leaves_double_newline_unchanged_after_inline_number(self):
         text = ('a1.bc\n\ndef')
-        self.assertEqual(clean_up_newlines(text), 'a1.bc\ndef')
+        self.assertEqual(clean_up_newlines(text), 'a1.bc\n\ndef')
 
     def test_replaces_tripple_newline_with_double_newline(self):
         text = 'abc\n\n\ndef'
@@ -191,7 +196,7 @@ class CleanUpNewlinesTest(TestCase):
 
     def test_handles_newlines_after_punctuation(self):
         text = 'abc,\r\n\r\ndef.\r\n\r\nghi)\r\n\r\njkl'
-        self.assertEqual(clean_up_newlines(text), 'abc,\ndef.\nghi)\njkl')
+        self.assertEqual(clean_up_newlines(text), 'abc,\n\ndef.\n\nghi)\n\njkl')
 
     # What to do with bullets, throw an error?
     def ignore_test_replaces_bullet_character_with_star(self):
@@ -208,18 +213,18 @@ class CleanUpNewlinesTest(TestCase):
 
     def test_realistic_example(self):
         self.maxDiff = None
-        text = ('## Try CommonMark\n\n\n'
+        text = ('## Try CommonMark\n\n'
                 'You can try CommonMark here.\n'
-                'This dingus is powered by\n\n'
-                '[commonmark.js](https://github.com/jgm/commonmark.js), the\n\n'
+                'This dingus is powered by\n'
+                '[commonmark.js](https://github.com/jgm/commonmark.js), the\n'
                 'JavaScript reference implementation.\n'
                 '1. item one\n'
                 '2. item two\n'
                 '   - sublist\n'
                 '   - sublist\n')
-        expected = ('## Try CommonMark\n\n'
-                    'You can try CommonMark here. This dingus is powered by\n'
-                    '[commonmark.js](https://github.com/jgm/commonmark.js), the\n'
+        expected = ('## Try CommonMark\n'
+                    'You can try CommonMark here. This dingus is powered by '
+                    '[commonmark.js](https://github.com/jgm/commonmark.js), the '
                     'JavaScript reference implementation.\n'
                     '1. item one\n'
                     '2. item two\n'
