@@ -109,6 +109,7 @@ class TaskBuilder:
         self.task = {
             'relatedTasks': [],
             'relatedArticles': [],
+            'serviceQuery': '',
             'completed': False
         }
 
