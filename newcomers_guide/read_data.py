@@ -32,6 +32,16 @@ def read_taxonomy_data(root_folder):
     return taxonomy_data
 
 
+def read_service_query_data(root_folder):
+    service_query_data = []
+    for root, _, filenames in os.walk(root_folder, topdown=False):
+        for filename in filenames:
+            path = os.path.join(root, filename)
+            if is_service_query_file(path):
+                service_query_data.append([path, read_file_content(path)])
+    return service_query_data
+
+
 def read_file_content(path):
     with open(path, 'r') as file:
         try:
@@ -43,14 +53,23 @@ def read_file_content(path):
 
 def is_task_file(path):
     sep = os.sep
-    return path.find(sep + 'tasks' + sep) > 0 and not is_taxonomy_file(path)
+    return path.find(sep + 'tasks' + sep) > 0 and is_content_file(path)
 
 
 def is_article_file(path):
     sep = os.sep
-    return path.find(sep + 'articles' + sep) > 0 and not is_taxonomy_file(path)
+    return path.find(sep + 'articles' + sep) > 0 and is_content_file(path)
+
+
+def is_content_file(path):
+    return path.endswith('.md')
 
 
 def is_taxonomy_file(path):
     sep = os.sep
-    return path.find(sep + 'taxonomy.txt') > 0
+    return path.endswith(sep + 'taxonomy.txt')
+
+
+def is_service_query_file(path):
+    sep = os.sep
+    return path.endswith(sep + 'serviceQuery.txt')
