@@ -40,7 +40,6 @@ class Command(BaseCommand):
         article_data = read_article_data(root_folder)
         articles = parse_article_files(article_data)
         set_taxonomy_term_references_on_content(taxonomies, articles)
-        set_service_query_on_content(service_queries, articles)
 
         log_taxonomies(self.stdout, tasks['taskMap'], articles)
         log_locales(self.stdout, tasks['taskMap'], articles)
