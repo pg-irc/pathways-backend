@@ -32,11 +32,6 @@ class FilePathParseTests(TestCase):
         parsed_path = parse_file_path(path)
         self.assertEqual(parsed_path.title, 'article.name.with.periods')
 
-    def test_throw_if_filename_contains_no_periods(self):
-        path = 'some/path/chapter/articles/articleId/name'
-        with self.assertRaisesMessage(exceptions.ValidationError, 'name: Invalid file name'):
-            parse_file_path(path)
-
     def test_throw_if_filename_contains_one_period(self):
         path = 'some/path/chapter/articles/articleId/name.md'
         with self.assertRaisesMessage(exceptions.ValidationError, 'name.md: Invalid file name'):
@@ -52,10 +47,9 @@ class FilePathParseTests(TestCase):
         with self.assertRaisesMessage(exceptions.ValidationError, 'en..md: Invalid file name'):
             parse_file_path(path)
 
-    def test_throw_if_filename_contains_empty_file_extension(self):
-        path = 'some/path/chapter/articles/articleId/en.name.'
-        with self.assertRaisesMessage(exceptions.ValidationError, 'en.name.: Invalid file name'):
-            parse_file_path(path)
+    def test_dont_throw_on_non_content_file(self):
+        path = 'some/path/chapter/articles/articleId/en.txt'
+        parse_file_path(path)
 
 
 class ProcessTaskFilesTests(TestCase):
