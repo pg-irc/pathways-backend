@@ -109,6 +109,7 @@ class TaskBuilder:
         self.task = {
             'relatedTasks': [],
             'relatedArticles': [],
+            'serviceQuery': '',
             'completed': False
         }
 
@@ -268,3 +269,20 @@ def parse_taxonomy_terms(taxonomy_terms):
 def validate_taxonomy_item(item):
     if item.find(' :') != -1 or item.find(': ') != -1:
         raise exceptions.ValidationError('"' + item + '" : Invalid taxonomy term format')
+
+
+def parse_service_query_files(file_specs):
+    result = []
+    for spec in file_specs:
+        path = spec[0]
+        parsed_path = parse_file_path(path)
+        file_content = spec[1]
+        result.append(ServiceQuery(content_id=parsed_path.id,
+                                   service_query=file_content))
+    return result
+
+
+class ServiceQuery:
+    def __init__(self, content_id, service_query):
+        self.content_id = content_id
+        self.service_query = service_query

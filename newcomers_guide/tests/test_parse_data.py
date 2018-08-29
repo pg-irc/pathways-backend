@@ -3,8 +3,8 @@ from django.test import TestCase
 from common.testhelpers.random_test_values import a_string
 from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_files,
                                         parse_article_files, parse_task_files, parse_file_path,
-                                        TaxonomyTermReference)
-from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_content
+                                        TaxonomyTermReference, parse_service_query_files, ServiceQuery)
+from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_content, set_service_query_on_content
 
 
 class FilePathParseTests(TestCase):
@@ -237,6 +237,26 @@ class ProcessAllTaxonomyFilesTests(TestCase):
             [['some/path/tasks/TaskId/en.name.txt', 'FooTaxId:FooTaxTermId, BarTaxId:BarTaxTermId']])
         self.assertEqual(self.references[0].content_id, 'TaskId')
         self.assertEqual(self.references[1].content_id, 'TaskId')
+
+
+class ProcessAllServiceQueryFiles(TestCase):
+    def setUp(self):
+        data = [['some/path/tasks/TheTaskId/service_query.txt', 'the service query string']]
+        self.query_strings = parse_service_query_files(data)
+
+    def test_result_contains_content_id(self):
+        self.assertEqual(self.query_strings[0].content_id, 'TheTaskId')
+
+    def test_result_contains_service_query_string(self):
+        self.assertEqual(self.query_strings[0].service_query, 'the service query string')
+
+
+class SetServiceQueryOnContentTests(TestCase):
+    def test_sets_the_service_query_on_the_content(self):
+        service_query = ServiceQuery('contentId', 'theQuery')
+        content = {'contentId': {'id': 'contentId'}}
+        set_service_query_on_content([service_query], content)
+        self.assertEqual(content['contentId']['serviceQuery'], 'theQuery')
 
 
 class SetTaxonomiesOnContentTests(TestCase):
