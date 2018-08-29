@@ -241,7 +241,7 @@ class ProcessAllTaxonomyFilesTests(TestCase):
 
 class ProcessAllServiceQueryFiles(TestCase):
     def setUp(self):
-        data = [['some/path/tasks/TheTaskId/serviceQuery.txt', 'the service query string']]
+        data = [['some/path/tasks/TheTaskId/service_query.txt', 'the service query string']]
         self.query_strings = parse_service_query_files(data)
 
     def test_result_contains_content_id(self):

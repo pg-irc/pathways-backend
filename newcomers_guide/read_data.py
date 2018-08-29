@@ -72,4 +72,4 @@ def is_taxonomy_file(path):
 
 def is_service_query_file(path):
     sep = os.sep
-    return path.endswith(sep + 'serviceQuery.txt')
+    return path.endswith(sep + 'service_query.txt')
