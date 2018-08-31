@@ -1,4 +1,5 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 from common.models import RequiredCharField
 from human_services.locations.models import Location
 
@@ -9,4 +10,4 @@ class PhoneNumberType(models.Model):
 class PhoneNumber(models.Model):
     location = models.ForeignKey(Location)
     phone_number_type = models.ForeignKey(PhoneNumberType)
-    phone_number = models.TextField()
+    phone_number = PhoneNumberField()
