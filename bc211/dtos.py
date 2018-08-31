@@ -53,3 +53,9 @@ class Address:
         self.address_type_id = validate.required_string('address_type_id', kwargs)
         self.state_province = validate.optional_string('state_province', kwargs)
         self.postal_code = validate.optional_string('postal_code', kwargs)
+
+class PhoneNumber:
+    def __init__(self, **kwargs):
+        self.location_id = validate.required_string('location_id', kwargs)
+        self.phone_number_type_id = validate.required_string('phone_number_type_id', kwargs)
+        self.phone_number = validate.required_string('phone_number', kwargs)

@@ -351,3 +351,84 @@ class AddressParserTests(unittest.TestCase):
         root = etree.fromstring(xml_address)
         address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, None)
+
+
+class PhoneNumberParserTests(unittest.TestCase):
+
+    def test_parses_all_valid_phone_numbers(self):
+        xml = '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>604-530-5033</PhoneNumber>
+                    <Type>Phone1</Type>
+                </Phone>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>604-530-5033</PhoneNumber>
+                    <Type>Fax</Type>
+                </Phone>
+            </Site>'''
+        root = etree.fromstring(xml)
+        site_id = a_string()
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 2)
+
+    def test_does_not_parse_invalid_phone_numbers(self):
+        xml = self.build_phone_xml(a_string(), 'Unsupported')
+        root = etree.fromstring(xml)
+        parsed_phone_numbers = parser.parse_site_phone_number_list(root, a_string())
+        self.assertEqual(len(parsed_phone_numbers), 0)
+
+    def test_parses_phone1_phone_number(self):
+        self.run_parses_phone_number_for_type_test('Phone1')
+
+    def test_parses_after_hours_phone_number(self):
+        self.run_parses_phone_number_for_type_test('After Hours')
+
+    def test_parses_business_line_phone_number(self):
+        self.run_parses_phone_number_for_type_test('Business Line')
+
+    def test_parses_hotline_phone_number(self):
+        self.run_parses_phone_number_for_type_test('Hotline')
+
+    def test_parses_out_of_area_phone_number(self):
+        self.run_parses_phone_number_for_type_test('Out of area')
+
+    def test_parses_fax_phone_number(self):
+        self.run_parses_phone_number_for_type_test('Fax')
+
+    def test_convert_to_type_id_replaces_spaces_with_underscores(self):
+        strings = [a_string(), a_string()]
+        phone_type = ' '.join(strings)
+        expected_phone_type_id = '_'.join(strings)
+        self.assertEqual(parser.convert_phone_type_to_type_id(phone_type), expected_phone_type_id)
+
+    def test_convert_to_type_id_lowercases(self):
+        strings = [a_string(), a_string()]
+        phone_type = ' '.join(strings).upper()
+        expected_phone_type_id = '_'.join(strings).lower()
+        self.assertEqual(parser.convert_phone_type_to_type_id(phone_type), expected_phone_type_id)
+
+    def run_parses_phone_number_for_type_test(self, phone_number_type):
+        site_id = a_string()
+        phone_number = a_string()
+        xml = self.build_phone_xml(phone_number, phone_number_type)
+        root = etree.fromstring(xml)
+        parsed_phone_number = parser.parse_site_phone_number_list(root, site_id)[0]
+
+        expected_location_id = site_id
+        expected_phone_number_type_id = parser.convert_phone_type_to_type_id(phone_number_type)
+        expected_phone_number = phone_number
+
+        self.assertIsInstance(parsed_phone_number, dtos.PhoneNumber)
+        self.assertEqual(parsed_phone_number.location_id, expected_location_id)
+        self.assertEqual(parsed_phone_number.phone_number_type_id, expected_phone_number_type_id)
+        self.assertEqual(parsed_phone_number.phone_number, expected_phone_number)
+
+    def build_phone_xml(self, phone_number, phone_number_type):
+        return '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>{}</PhoneNumber>
+                    <Type>{}</Type>
+                </Phone>
+            </Site>'''.format(phone_number, phone_number_type)

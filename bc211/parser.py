@@ -226,3 +226,39 @@ def parse_state_province(address):
 
 def parse_postal_code(address):
     return parse_optional_field(address, 'ZipCode')
+
+def parse_site_phone_number_list(site, site_id):
+    valid_phones = filter(phone_has_number_and_supported_type, site.findall('Phone'))
+    return [parse_site_phone(phone, site_id) for phone in valid_phones]
+
+def parse_site_phone(phone, site_id):
+    location_id = site_id
+    phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
+    phone_number = phone.find('PhoneNumber').text
+    return dtos.PhoneNumber(
+        location_id=location_id,
+        phone_number_type_id=phone_number_type_id,
+        phone_number=phone_number
+    )
+
+def phone_has_number_and_supported_type(phone):
+    phone_number = parse_optional_field(phone, 'PhoneNumber')
+    phone_number_type = parse_optional_field(phone, 'Type')
+    has_supported_phone_number_type = phone_number_type in get_supported_phone_types()
+    if not has_supported_phone_number_type:
+        LOGGER.warning('Encountered unsupported type: "%s" for phone number: "%s".',
+                       phone_number_type, phone_number)
+    return bool(phone_number and has_supported_phone_number_type)
+
+def get_supported_phone_types():
+    return [
+        'Phone1',
+        'After Hours',
+        'Business Line',
+        'Hotline',
+        'Out of area',
+        'Fax',
+    ]
+
+def convert_phone_type_to_type_id(phone_type):
+    return phone_type.lower().replace(' ', '_')
