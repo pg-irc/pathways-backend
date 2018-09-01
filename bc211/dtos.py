@@ -58,4 +58,4 @@ class PhoneNumber:
     def __init__(self, **kwargs):
         self.location_id = validate.required_string('location_id', kwargs)
         self.phone_number_type_id = validate.required_string('phone_number_type_id', kwargs)
-        self.phone_number = validate.required_string('phone_number', kwargs)
+        self.phone_number = validate.required_int('phone_number', kwargs)

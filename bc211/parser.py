@@ -1,8 +1,10 @@
+from django.core.exceptions import ValidationError
 import itertools
 import logging
 import re
 import xml.etree.ElementTree as etree
 from urllib import parse as urlparse
+from phonenumber_field.validators import validate_international_phonenumber
 
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
@@ -228,27 +230,38 @@ def parse_postal_code(address):
     return parse_optional_field(address, 'ZipCode')
 
 def parse_site_phone_number_list(site, site_id):
-    valid_phones = filter(phone_has_number_and_supported_type, site.findall('Phone'))
+    valid_phones = filter(phone_has_valid_number_and_type, site.findall('Phone'))
     return [parse_site_phone(phone, site_id) for phone in valid_phones]
 
 def parse_site_phone(phone, site_id):
     location_id = site_id
     phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
-    phone_number = phone.find('PhoneNumber').text
+    phone_number = convert_bc_phone_number_to_international(phone.find('PhoneNumber').text)
     return dtos.PhoneNumber(
         location_id=location_id,
         phone_number_type_id=phone_number_type_id,
         phone_number=phone_number
     )
 
-def phone_has_number_and_supported_type(phone):
+def phone_has_valid_number_and_type(phone):
     phone_number = parse_optional_field(phone, 'PhoneNumber')
     phone_number_type = parse_optional_field(phone, 'Type')
-    has_supported_phone_number_type = phone_number_type in get_supported_phone_types()
-    if not has_supported_phone_number_type:
-        LOGGER.warning('Encountered unsupported type: "%s" for phone number: "%s".',
-                       phone_number_type, phone_number)
-    return bool(phone_number and has_supported_phone_number_type)
+    if not (phone_number and phone_number_type):
+        LOGGER.warning('Encountered empty PhoneNumber or Type for Phone. Skipped by parser.')
+        return False
+    return is_valid_phone_type(phone_number_type) and is_valid_phone_number(phone_number)
+
+def convert_phone_type_to_type_id(phone_type):
+    return phone_type.lower().replace(' ', '_')
+
+def convert_bc_phone_number_to_international(bc_phone_number):
+    return int('1' + bc_phone_number.replace('-', ''))
+
+def is_valid_phone_type(phone_number_type):
+    if phone_number_type in get_supported_phone_types():
+        return True
+    LOGGER.warning('Invalid value: "%s" encountered for phone number type. Skipped by parser.', phone_number_type)
+    return False
 
 def get_supported_phone_types():
     return [
@@ -260,5 +273,15 @@ def get_supported_phone_types():
         'Fax',
     ]
 
-def convert_phone_type_to_type_id(phone_type):
-    return phone_type.lower().replace(' ', '_')
+def is_valid_phone_number(phone_number):
+    try:
+        intl_phone_number = convert_bc_phone_number_to_international(phone_number)
+    except ValueError:
+        LOGGER.warning('Invalid value: "%s" encountered for phone number. Skipped by parser.', phone_number)
+        return False
+    try:
+        validate_international_phonenumber(intl_phone_number)
+    except ValidationError:
+        LOGGER.warning('Invalid value: "%s" encountered for international phone number. Skipped by parser.', intl_phone_number)
+        return False
+    return True

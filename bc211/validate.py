@@ -34,3 +34,9 @@ def parse_float(value):
         return float(value)
     except ValueError:
         raise exceptions.InvalidFloatXmlParseException(value)
+
+def required_int(field, values):
+    value = values.get(field)
+    if isinstance(value, int):
+        return value
+    raise exceptions.MissingRequiredFieldXmlParseException(field)
