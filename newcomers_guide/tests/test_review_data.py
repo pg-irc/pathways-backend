@@ -1,5 +1,31 @@
 from django.test import TestCase
-from newcomers_guide.review_data import compare_data
+from utility.review_data import compare_data, partition_files
+
+
+class PartitionFilesForReview(TestCase):
+    def test_includes_file_in_reference_language(self):
+        result = partition_files('en', 'fr', {
+            'somePath': ['en.content.md', 'fr.content.md'],
+        })
+        self.assertEqual(result[0].reference_file, 'somePath/en.content.md')
+
+    def test_includes_file_in_target_language(self):
+        result = partition_files('en', 'fr', {
+            'somePath': ['en.content.md', 'fr.content.md'],
+        })
+        self.assertEqual(result[0].target_file, 'somePath/fr.content.md')
+
+    def test_ignore_if_only_reference_file_exists(self):
+        result = partition_files('en', 'fr', {
+            'somePath': ['en.content.md'],
+        })
+        self.assertEqual(len(result), 0)
+
+    def test_ignore_if_only_target_file_exists(self):
+        result = partition_files('en', 'fr', {
+            'somePath': ['fr.content.md'],
+        })
+        self.assertEqual(len(result), 0)
 
 
 class CompareDataForReviewTests(TestCase):
@@ -126,6 +152,12 @@ class CompareDataForReviewTests(TestCase):
     def test_ignores_matching_urls(self):
         target_text = 'http://www.foo.com'
         reference_text = 'http://www.foo.com'
+        result = compare_data(target_text, reference_text)
+        self.assertEqual(result, '')
+
+    def test_ignores_stuff_on_the_next_line(self):
+        target_text = 'http://www.foo.com\nFoo'
+        reference_text = 'http://www.foo.com\nBar'
         result = compare_data(target_text, reference_text)
         self.assertEqual(result, '')
 

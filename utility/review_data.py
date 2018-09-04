@@ -1,5 +1,27 @@
 import re
-import itertools
+import os
+from itertools import zip_longest
+
+
+class ReviewPair:
+    def __init__(self, reference_file, target_file):
+        self.reference_file = reference_file
+        self.target_file = target_file
+
+
+def partition_files(reference_language, target_language, file_map):
+    result = []
+    for path in file_map:
+        reference_file = None
+        target_file = None
+        for filename in file_map[path]:
+            if filename.startswith(reference_language + '.'):
+                reference_file = path + os.sep + filename
+            if filename.startswith(target_language + '.'):
+                target_file = path + os.sep + filename
+        if reference_file and target_file:
+            result.append(ReviewPair(reference_file, target_file))
+    return result
 
 
 def compare_data(target_text, reference_text):
@@ -11,7 +33,7 @@ def compare_data(target_text, reference_text):
                    compare_urls(target_text, reference_text),
                    compare_emails(target_text, reference_text),
                    compare_phone_numbers(target_text, reference_text)]
-    return '\n'.join(flatten(differences))
+    return '\n'.join(flatten(differences)).strip()
 
 
 def flatten(nested_list):
@@ -62,7 +84,7 @@ def count_instances(pattern, text):
 
 
 def compare_urls(target_text, reference_text):
-    pattern = r'https?[^ ]+'
+    pattern = r'https?[^\s]+'
     return compare_pattern_content(pattern, 'link', target_text, reference_text)
 
 
@@ -79,7 +101,7 @@ def compare_phone_numbers(target_text, reference_text):
 def compare_pattern_content(pattern, data_type, target_text, reference_text):
     target_matches = re.findall(pattern, target_text)
     reference_matches = re.findall(pattern, reference_text)
-    zipped_matches = itertools.zip_longest(target_matches, reference_matches)
+    zipped_matches = zip_longest(target_matches, reference_matches)
     return [difference_message(data_type, target, reference) for target, reference in zipped_matches]
 
 
