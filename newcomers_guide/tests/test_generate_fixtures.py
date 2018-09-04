@@ -66,7 +66,6 @@ class GenerateFixtureTest(TestCase):
                 }],
                 'relatedTasks': ['t1', 't2', 't3'],
                 'relatedArticles': ['a2'],
-                'isRecommendedToAllUsers': False,
                 'starred': False
             }
         }
@@ -82,7 +81,6 @@ class GenerateFixtureTest(TestCase):
                     '                    "en": "the content of Elementary school"\n'
                     '                },\n'
                     '                "id": "About Elementary school",\n'
-                    '                "isRecommendedToAllUsers": false,\n'
                     '                "relatedArticles": [\n'
                     '                    "a2"\n'
                     '                ],\n'

@@ -4,7 +4,8 @@ from common.testhelpers.random_test_values import a_string
 from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_files,
                                         parse_article_files, parse_task_files, parse_file_path,
                                         TaxonomyTermReference, parse_service_query_files, ServiceQuery)
-from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_content, set_service_query_on_content
+from newcomers_guide.generate_fixtures import (set_taxonomy_term_references_on_content,
+                                               set_service_query_on_content)
 
 
 class FilePathParseTests(TestCase):

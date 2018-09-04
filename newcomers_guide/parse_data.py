@@ -165,7 +165,6 @@ class ArticleBuilder:
         self.article = {
             'relatedTasks': [],
             'relatedArticles': [],
-            'isRecommendedToAllUsers': False,
             'starred': False,
         }
 
