@@ -17,9 +17,10 @@ class Location:
         self.organization_id = validate.required_string('organization_id', kwargs)
         self.description = validate.optional_string('description', kwargs)
         self.spatial_location = validate.optional_object(SpatialLocation, 'spatial_location', kwargs)
-        self.services = kwargs.get('services', [])
+        self.services = validate.optional_list_of_objects(Service, 'services', kwargs)
         self.physical_address = validate.optional_object(Address, 'physical_address', kwargs)
         self.postal_address = validate.optional_object(Address, 'postal_address', kwargs)
+        self.phone_numbers = validate.optional_list_of_objects(PhoneNumber, 'phone_numbers', kwargs)
 
 
 class SpatialLocation:

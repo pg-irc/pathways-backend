@@ -78,14 +78,15 @@ def parse_site(site, organization_id):
     name = parse_site_name(site)
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
-    services = parse_services(site, organization_id, id)
+    services = parse_service_list(site, organization_id, id)
     physical_address = parse_physical_address(site, id, name)
     postal_address = parse_postal_address(site, id, name)
+    phone_numbers = parse_site_phone_number_list(site, id)
     LOGGER.debug('Location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
                          services=services, physical_address=physical_address,
-                         postal_address=postal_address)
+                         postal_address=postal_address, phone_numbers=phone_numbers)
 
 def parse_site_id(site):
     return parse_required_field(site, 'Key')
@@ -103,9 +104,9 @@ def parse_spatial_location_if_defined(site):
         return None
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
 
-def parse_services(site, organization_id, site_id):
+def parse_service_list(site, organization_id, site_id):
     services = site.findall('SiteService')
-    return map(ServiceParser(organization_id, site_id), services)
+    return list(map(ServiceParser(organization_id, site_id), services))
 
 class ServiceParser:
     def __init__(self, organization_id, site_id):
@@ -183,7 +184,7 @@ def parse_address_and_handle_errors(address, site_id, site_name, address_type_id
     try:
         return parse_address(address, site_id, address_type_id)
     except MissingRequiredFieldXmlParseException as error:
-        LOGGER.warning('Failed to import address for\n\tlocation %s (%s):\n\t%s',
+        LOGGER.warning('Failed to parse address for\n\tlocation %s (%s):\n\t%s',
                        site_id, site_name, error)
     return None
 
@@ -247,25 +248,8 @@ def phone_has_valid_number_and_type(phone):
     phone_number = parse_optional_field(phone, 'PhoneNumber')
     phone_number_type = parse_optional_field(phone, 'Type')
     if not (phone_number and phone_number_type):
-        LOGGER.warning('Encountered empty PhoneNumber or Type for Phone. Skipped by parser.')
         return False
-    return is_valid_phone_type(phone_number_type) and is_valid_phone_number(phone_number)
-
-def is_valid_phone_type(phone_number_type):
-    if phone_number_type in get_supported_phone_types():
-        return True
-    LOGGER.warning('Invalid value: "%s" encountered for phone number type. Skipped by parser.', phone_number_type)
-    return False
-
-def get_supported_phone_types():
-    return [
-        'Phone1',
-        'After Hours',
-        'Business Line',
-        'Hotline',
-        'Out of area',
-        'Fax',
-    ]
+    return is_valid_phone_number(phone_number)
 
 def is_valid_phone_number(phone_number):
     try:
