@@ -6,13 +6,13 @@ def generate_task_fixture(tasks):
     header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
               '\n'
-              'import { Store } from \'../types/tasks\';\n'
+              'import { ValidTaskStore } from \'../types/tasks\';\n'
               '\n'
-              'export const buildTasksFixture = (): Store => {\n'
-              '    return {\n'
+              'export const buildTasksFixture = (): ValidTaskStore => {\n'
+              '    return new ValidTaskStore({\n'
               '        savedTasksList: [],\n')
 
-    footer = ('    };\n'
+    footer = ('    });\n'
               '};')
 
     task_map_as_json = 'taskMap: ' + json.dumps(tasks['taskMap'],
@@ -29,9 +29,9 @@ def generate_article_fixture(articles):
     header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/articles.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
               '\n'
-              'import { Store } from \'../types/articles\';\n'
+              'import { ArticleStore } from \'../types/articles\';\n'
               '\n'
-              'export const buildArticlesFixture = (): Store => ({\n'
+              'export const buildArticlesFixture = (): ArticleStore => ({\n'
               )
 
     footer = '});'
@@ -47,9 +47,9 @@ def generate_article_fixture(articles):
 def generate_taxonomy_fixture(taxonomies):
     header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/taxonomies.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
-              'import { Store } from \'../types/taxonomies\';\n'
+              'import { TaxonomyStore } from \'../types/taxonomies\';\n'
               '\n'
-              'export const buildTaxonomyFixture = (): Store => ({\n'
+              'export const buildTaxonomyFixture = (): TaxonomyStore => ({\n'
               '    taxonomyMap:     ')
 
     footer = ('\n});')
