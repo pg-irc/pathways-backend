@@ -255,12 +255,12 @@ def is_valid_phone_number(phone_number):
     try:
         intl_phone_number = convert_bc_phone_number_to_international(phone_number)
     except ValueError:
-        LOGGER.warning('Invalid value: "%s" encountered for phone number. Skipped by parser.', phone_number)
+        LOGGER.warning('Failed to parse value: "%s" for phone number.', phone_number)
         return False
     try:
         validate_international_phonenumber(intl_phone_number)
     except ValidationError:
-        LOGGER.warning('Invalid value: "%s" encountered for international phone number. Skipped by parser.', intl_phone_number)
+        LOGGER.warning('Failed to parse value: "%s" for international phone number.', intl_phone_number)
         return False
     return True
 
@@ -268,4 +268,5 @@ def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
 
 def convert_bc_phone_number_to_international(bc_phone_number):
-    return int('1' + bc_phone_number.replace('-', ''))
+    dashes_replaced = bc_phone_number.replace('-', '')
+    return int(dashes_replaced) if dashes_replaced[0] == '1' else int('1' + dashes_replaced)

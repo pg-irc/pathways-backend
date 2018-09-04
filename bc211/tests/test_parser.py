@@ -1,7 +1,7 @@
 import unittest
 import logging
 import xml.etree.ElementTree as etree
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, an_integer
 
 from bc211 import parser, dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
@@ -355,14 +355,8 @@ class AddressParserTests(unittest.TestCase):
 
 class PhoneNumberParserTests(unittest.TestCase):
 
-    def setUp(self):
-        self.site_id = a_string()
-        self.a_phone_number = '123-456-7890'
-        self.a_phone_number_intl = 11234567890
-        self.a_phone_number_type = 'Phone1'
-        self.a_phone_number_type_id = 'phone1'
-
     def test_does_not_parse_phone_with_empty_phone_type(self):
+        site_id = a_string()
         root = etree.fromstring(
             '''
             <Site>
@@ -372,10 +366,11 @@ class PhoneNumberParserTests(unittest.TestCase):
                 </Phone>
             </Site>'''
         )
-        phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 0)
 
     def test_does_not_parse_phone_with_empty_phone_number(self):
+        site_id = a_string()
         root = etree.fromstring(
             '''
             <Site>
@@ -385,52 +380,51 @@ class PhoneNumberParserTests(unittest.TestCase):
                 </Phone>
             </Site>'''
         )
-        phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 0)
 
     def test_parses_phone_into_expected_dto_object(self):
-        xml = self.build_phone_xml(self.a_phone_number, self.a_phone_number_type)
+        site_id = a_string()
+        phone_type = a_string()
+        phone_number = an_integer()
+        xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
-        phone_number = parser.parse_site_phone_number_list(root, self.site_id)[0]
+        phone_number = parser.parse_site_phone_number_list(root, site_id)[0]
         self.assertIsInstance(phone_number, dtos.PhoneNumber)
 
-    def test_parses_phone_type(self):
-        xml = self.build_phone_xml(self.a_phone_number, self.a_phone_number_type)
+    def test_parses_phone_type_and_converts_to_id(self):
+        site_id = a_string()
+        phone_type = 'A phone TYPE'
+        phone_number = an_integer()
+        xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
-        phone_number = parser.parse_site_phone_number_list(root, self.site_id)[0]
-        self.assertEqual(phone_number.phone_number_type_id, self.a_phone_number_type_id)
+        phone_number = parser.parse_site_phone_number_list(root, site_id)[0]
+        self.assertEqual(phone_number.phone_number_type_id, 'a_phone_type')
 
-    def test_parses_phone_number_and_converts_to_intl(self):
-        xml = self.build_phone_xml(self.a_phone_number, self.a_phone_number_type)
+    def test_parses_phone_number_and_converts_to_intl_number(self):
+        site_id = a_string()
+        phone_type = a_string()
+        phone_number = 2223334444
+        xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
-        phone_number = parser.parse_site_phone_number_list(root, self.site_id)[0]
-        self.assertEqual(phone_number.phone_number, self.a_phone_number_intl)
+        phone_number = parser.parse_site_phone_number_list(root, site_id)[0]
+        self.assertEqual(phone_number.phone_number, 12223334444)
 
     def test_does_not_parse_phone_with_alphanumeric_phone_number(self):
-        xml = self.build_phone_xml(a_string(), self.a_phone_number_type)
+        site_id = a_string()
+        phone_type = a_string()
+        phone_number = a_string()
+        xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
-        phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 0)
 
-    def test_convert_to_type_id_replaces_spaces_with_underscores(self):
-        strings = [a_string(), a_string()]
-        phone_type = ' '.join(strings)
-        expected_phone_type_id = '_'.join(strings)
-        self.assertEqual(parser.convert_phone_type_to_type_id(phone_type), expected_phone_type_id)
-
-    def test_convert_to_type_id_lowercases(self):
-        strings = [a_string(), a_string()]
-        phone_type = ' '.join(strings).upper()
-        expected_phone_type_id = '_'.join(strings).lower()
-        self.assertEqual(parser.convert_phone_type_to_type_id(phone_type), expected_phone_type_id)
-
     def test_convert_bc_phone_to_intl_returns_int(self):
-        string = '123'
-        self.assertIsInstance(parser.convert_bc_phone_number_to_international(string), int)
+        phone_number = str(an_integer())
+        self.assertIsInstance(parser.convert_bc_phone_number_to_international(phone_number), int)
 
-    def test_convert_bc_phone_to_intl_removes_dashes_and_adds_country_code(self):
-        string = '123-456'
-        self.assertEqual(parser.convert_bc_phone_number_to_international(string), 1123456)
+    def test_convert_bc_phone_to_intl_does_not_add_country_code_to_toll_free(self):
+        self.assertEqual(parser.convert_bc_phone_number_to_international('1-222-333-4444'), 12223334444)
 
     def build_phone_xml(self, phone_number, phone_number_type):
         return '''
