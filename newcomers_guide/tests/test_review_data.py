@@ -37,25 +37,25 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'Bullet'
         reference_text = '* Bullet'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 bullets, reference has 1')
+        self.assertEqual(result, 'contains 0 bullets, reference has 1')
 
     def test_detects_bullet_missing(self):
         target_text = 'some text.Bullet'
         reference_text = 'some text.\n* Bullet'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 bullets, reference has 1')
+        self.assertEqual(result, 'contains 0 bullets, reference has 1')
 
     def test_detects_minus_bullet_missing(self):
         target_text = 'some text.Bullet'
         reference_text = 'some text.\n- Bullet'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 bullets, reference has 1')
+        self.assertEqual(result, 'contains 0 bullets, reference has 1')
 
     def test_detects_plus_bullet_missing(self):
         target_text = 'some text.Bullet'
         reference_text = 'some text.\n+ Bullet'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 bullets, reference has 1')
+        self.assertEqual(result, 'contains 0 bullets, reference has 1')
 
     def test_ignored_difference_between_bullet_types(self):
         target_text = 'some text.\n* Bullet'
@@ -67,7 +67,7 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'some text.\n* Bullet'
         reference_text = 'some text.\nBullet'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 1 bullets, reference has 0')
+        self.assertEqual(result, 'contains 1 bullets, reference has 0')
 
     def test_ignores_bullet_within_lines(self):
         target_text = 'some text. Not a bullet'
@@ -79,13 +79,13 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'some text.\nList item'
         reference_text = 'some text.\n12. List item'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 numbered list items, reference has 1')
+        self.assertEqual(result, 'contains 0 numbered list items, reference has 1')
 
     def test_detects_extra_numbered_list_item(self):
         target_text = 'some text.\n12. List item'
         reference_text = 'some text.\nList item'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 1 numbered list items, reference has 0')
+        self.assertEqual(result, 'contains 1 numbered list items, reference has 0')
 
     def test_ignores_numbered_list_item_within_line(self):
         target_text = 'some text. 12. List item'
@@ -97,19 +97,19 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'One paragraph. A second paragraph'
         reference_text = 'One paragraph.\n\nA second paragraph'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 paragraph breaks, reference has 1')
+        self.assertEqual(result, 'contains 0 paragraph breaks, reference has 1')
 
     def test_detects_extra_paragraph_break(self):
         target_text = 'One paragraph.\n\nA second paragraph'
         reference_text = 'One paragraph. nA second paragraph'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 1 paragraph breaks, reference has 0')
+        self.assertEqual(result, 'contains 1 paragraph breaks, reference has 0')
 
     def test_detects_missing_line_break(self):
         target_text = 'One paragraph. A second paragraph'
         reference_text = 'One paragraph.  \nA second paragraph'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains 0 line breaks, reference has 1')
+        self.assertEqual(result, 'contains 0 line breaks, reference has 1')
 
     def test_one_trailing_space_is_not_considered_line_break(self):
         target_text = 'One paragraph. A second paragraph'
@@ -133,19 +133,19 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'http://www.foo.com'
         reference_text = 'http://www.bar.com'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains link http://www.foo.com, the reference has http://www.bar.com')
+        self.assertEqual(result, 'contains link http://www.foo.com, the reference has http://www.bar.com')
 
     def test_detects_missing_url(self):
         target_text = ''
         reference_text = 'http://www.bar.com'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'missing link http://www.bar.com, it\'s there in the reference')
+        self.assertEqual(result, 'missing link http://www.bar.com, it\'s there in the reference')
 
     def test_detects_extra_url(self):
         target_text = 'http://www.bar.com'
         reference_text = ''
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'extra link http://www.bar.com is not there in the reference')
+        self.assertEqual(result, 'extra link http://www.bar.com is not there in the reference')
 
     def test_ignores_matching_email_addresses(self):
         target_text = 'user@foo.com'
@@ -157,19 +157,19 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'user@foo.com'
         reference_text = 'user@bar.com'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains email address user@foo.com, the reference has user@bar.com')
+        self.assertEqual(result, 'contains email address user@foo.com, the reference has user@bar.com')
 
     def test_detects_missing_email_address(self):
         target_text = ''
         reference_text = 'user@foo.com'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'missing email address user@foo.com, it\'s there in the reference')
+        self.assertEqual(result, 'missing email address user@foo.com, it\'s there in the reference')
 
     def test_detects_extra_email_address(self):
         target_text = 'user@foo.com'
         reference_text = ''
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'extra email address user@foo.com is not there in the reference')
+        self.assertEqual(result, 'extra email address user@foo.com is not there in the reference')
 
     def test_ignores_matching_phone_numbers(self):
         target_text = '888-888-8888'
@@ -181,16 +181,26 @@ class CompareDataForReviewTests(TestCase):
         target_text = '888-888-8888'
         reference_text = '111-888-8888'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'contains phone number 888-888-8888, the reference has 111-888-8888')
+        self.assertEqual(result, 'contains phone number 888-888-8888, the reference has 111-888-8888')
 
     def test_detects_mising_phone_number(self):
         target_text = ''
         reference_text = '111-888-8888'
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'missing phone number 111-888-8888, it\'s there in the reference')
+        self.assertEqual(result, 'missing phone number 111-888-8888, it\'s there in the reference')
 
     def test_detects_extra_phone_number(self):
         target_text = '111-888-8888'
         reference_text = ''
         result = compare_data(target_text, reference_text)
-        self.assertRegex(result, r'extra phone number 111-888-8888 is not there in the reference')
+        self.assertEqual(result, 'extra phone number 111-888-8888 is not there in the reference')
+
+    def test_multiple_differences_are_joined_with_newline(self):
+        target_text = 'some text http://www.example.com 1-800-345-6789'
+        reference_text = 'some different text http://www.example2.com 1-800-987-6543'
+        result = compare_data(target_text, reference_text)
+        self.assertEqual(
+            result,
+            ('contains link http://www.example.com, the reference has http://www.example2.com\n'
+             'contains phone number 1-800-345-6789, the reference has 1-800-987-6543')
+        )
