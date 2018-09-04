@@ -386,8 +386,20 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
         self.assertEqual(len(phone_numbers), 0)
 
-    def test_does_not_parse_phone_with_invalid_phone_number(self):
-        xml = self.build_phone_xml('invalid phone number', self.a_phone_number_type)
+    def test_does_not_parse_phone_with_none_type(self):
+        xml = self.build_phone_xml(self.a_phone_number, None)
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
+        self.assertEqual(len(phone_numbers), 0)
+
+    def test_does_not_parse_phone_with_alphanumeric_phone_number(self):
+        xml = self.build_phone_xml(a_string(), self.a_phone_number_type)
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
+        self.assertEqual(len(phone_numbers), 0)
+
+    def test_does_not_parse_phone_with_none_phone_number(self):
+        xml = self.build_phone_xml(None, self.a_phone_number_type)
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, self.site_id)
         self.assertEqual(len(phone_numbers), 0)

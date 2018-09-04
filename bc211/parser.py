@@ -251,12 +251,6 @@ def phone_has_valid_number_and_type(phone):
         return False
     return is_valid_phone_type(phone_number_type) and is_valid_phone_number(phone_number)
 
-def convert_phone_type_to_type_id(phone_type):
-    return phone_type.lower().replace(' ', '_')
-
-def convert_bc_phone_number_to_international(bc_phone_number):
-    return int('1' + bc_phone_number.replace('-', ''))
-
 def is_valid_phone_type(phone_number_type):
     if phone_number_type in get_supported_phone_types():
         return True
@@ -285,3 +279,9 @@ def is_valid_phone_number(phone_number):
         LOGGER.warning('Invalid value: "%s" encountered for international phone number. Skipped by parser.', intl_phone_number)
         return False
     return True
+
+def convert_phone_type_to_type_id(phone_type):
+    return phone_type.lower().replace(' ', '_')
+
+def convert_bc_phone_number_to_international(bc_phone_number):
+    return int('1' + bc_phone_number.replace('-', ''))
