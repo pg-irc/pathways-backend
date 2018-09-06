@@ -178,7 +178,7 @@ def create_phone_numbers_for_location(location, phone_number_dtos, counters):
         number = PhoneAtLocation.objects.create(
             location=location,
             phone_number_type=phone_number_type,
-            phone_number='+' + str(dto.phone_number)
+            phone_number=dto.phone_number
         )
         counters.count_phone_at_location()
         LOGGER.debug('PhoneNumber: "%s" "%s"', number.id, number.phone_number)

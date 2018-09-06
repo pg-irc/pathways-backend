@@ -231,42 +231,21 @@ def parse_postal_code(address):
     return parse_optional_field(address, 'ZipCode')
 
 def parse_site_phone_number_list(site, site_id):
-    valid_phones = filter(phone_has_valid_number_and_type, site.findall('Phone'))
+    valid_phones = filter(phone_has_number_and_type, site.findall('Phone'))
     return [parse_site_phone(phone, site_id) for phone in valid_phones]
 
 def parse_site_phone(phone, site_id):
     location_id = site_id
     phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
-    phone_number = convert_bc_phone_number_to_international(phone.find('PhoneNumber').text)
+    phone_number = phone.find('PhoneNumber').text
     return dtos.PhoneAtLocation(
         location_id=location_id,
         phone_number_type_id=phone_number_type_id,
         phone_number=phone_number
     )
 
-def phone_has_valid_number_and_type(phone):
-    phone_number = parse_optional_field(phone, 'PhoneNumber')
-    phone_number_type = parse_optional_field(phone, 'Type')
-    if not (phone_number and phone_number_type):
-        return False
-    return is_valid_phone_number(phone_number)
-
-def is_valid_phone_number(phone_number):
-    try:
-        intl_phone_number = convert_bc_phone_number_to_international(phone_number)
-    except ValueError:
-        LOGGER.warning('Failed to parse value: "%s" for phone number.', phone_number)
-        return False
-    try:
-        validate_international_phonenumber(intl_phone_number)
-    except ValidationError:
-        LOGGER.warning('Failed to parse value: "%s" for international phone number.', intl_phone_number)
-        return False
-    return True
+def phone_has_number_and_type(phone):
+    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type')
 
 def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
-
-def convert_bc_phone_number_to_international(bc_phone_number):
-    dashes_replaced = bc_phone_number.replace('-', '')
-    return int(dashes_replaced) if dashes_replaced[0] == '1' else int('1' + dashes_replaced)

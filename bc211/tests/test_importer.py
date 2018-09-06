@@ -73,7 +73,8 @@ class ServiceImportTests(TestCase):
         last_post_fund_service = self.all_services.get(id=last_post_fund_service_id)
         last_post_fund_service_taxonomy_terms = last_post_fund_service.taxonomy_terms.all()
 
-        self.assertCountEqual(last_post_fund_service_taxonomy_terms, expected_last_post_fund_service_taxonony_terms)
+        self.assertCountEqual(last_post_fund_service_taxonomy_terms,
+                              expected_last_post_fund_service_taxonony_terms)
 
 
 class AddressImportTests(TestCase):
@@ -115,4 +116,4 @@ class FullDataImportTests(TestCase):
         self.assertEqual(self.return_value.taxonomy_term_count, 134)
         self.assertEqual(self.return_value.address_count, 32)
         self.assertEqual(self.return_value.phone_number_types_count, 5)
-        self.assertEqual(self.return_value.phone_at_location_count, 69)
+        self.assertEqual(self.return_value.phone_at_location_count, 86)
