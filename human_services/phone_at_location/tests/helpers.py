@@ -4,23 +4,10 @@ from human_services.locations.tests.helpers import LocationBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 
 
-class PhoneNumberTypeBuilder:
-    def __init__(self):
-        self.id = a_string()
-
-    def with_id(self, type_id):
-        self.id = type_id
-        return self
-
-    def build(self):
-        address_type = PhoneNumberType()
-        address_type.id = self.id
-        return address_type
-
 class PhoneAtLocationBuilder:
     def __init__(self):
         self.location = LocationBuilder(OrganizationBuilder().build()).build()
-        self.phone_number_type = PhoneNumberTypeBuilder().build()
+        self.phone_number_type = a_string()
         self.phone_number = a_string()
 
     def with_location(self, location):
