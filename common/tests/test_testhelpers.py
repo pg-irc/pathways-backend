@@ -1,5 +1,5 @@
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, a_list_of_strings, a_list_of_integers, a_phone_number
 
 
 class TestTestHelpers(TestCase):
@@ -16,3 +16,15 @@ class TestTestHelpers(TestCase):
 
     def test_a_string_by_default_is_lower(self):
         return self.assertTrue(a_string().islower())
+
+    def test_a_list_of_strings_by_default_has_length_3(self):
+        return self.assertEqual(len(a_list_of_strings()), 3)
+
+    def test_a_list_of_ints_by_default_has_length_3(self):
+        return self.assertEqual(len(a_list_of_integers()), 3)
+
+    def test_a_phone_number_by_default_has_length_12(self):
+        return self.assertEqual(len(a_phone_number()), 11)
+
+    def test_a_phone_number_is_numeric(self):
+        return self.assertTrue(a_phone_number().isnumeric())
