@@ -238,7 +238,7 @@ def parse_site_phone(phone, site_id):
     location_id = site_id
     phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
     phone_number = convert_bc_phone_number_to_international(phone.find('PhoneNumber').text)
-    return dtos.PhoneNumber(
+    return dtos.PhoneAtLocation(
         location_id=location_id,
         phone_number_type_id=phone_number_type_id,
         phone_number=phone_number

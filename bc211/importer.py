@@ -4,7 +4,7 @@ from human_services.locations.models import Location, ServiceAtLocation, Locatio
 from human_services.organizations.models import Organization
 from human_services.services.models import Service
 from human_services.addresses.models import Address, AddressType
-from human_services.phone_numbers.models import PhoneNumberType, PhoneNumber
+from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from django.contrib.gis.geos import Point
 from taxonomies.models import TaxonomyTerm
 
@@ -18,7 +18,7 @@ class ImportCounters:
         self.taxonomy_term_count = 0
         self.address_count = 0
         self.phone_number_types_count = 0
-        self.phone_numbers_count = 0
+        self.phone_at_location_count = 0
 
     def count_organization(self):
         self.organization_count += 1
@@ -38,8 +38,8 @@ class ImportCounters:
     def count_phone_number_types(self):
         self.phone_number_types_count += 1
 
-    def count_phone_numbers(self):
-        self.phone_numbers_count += 1
+    def count_phone_at_location(self):
+        self.phone_at_location_count += 1
 
 def save_records_to_database(organizations):
     translation.activate('en')
@@ -175,10 +175,10 @@ def create_phone_numbers_for_location(location, phone_number_dtos, counters):
         if created:
             counters.count_phone_number_types()
             LOGGER.debug('PhoneNumberType: "%s"', phone_number_type.id)
-        number = PhoneNumber.objects.create(
+        number = PhoneAtLocation.objects.create(
             location=location,
             phone_number_type=phone_number_type,
             phone_number='+' + str(dto.phone_number)
         )
-        counters.count_phone_numbers()
+        counters.count_phone_at_location()
         LOGGER.debug('PhoneNumber: "%s" "%s"', number.id, number.phone_number)

@@ -390,7 +390,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
         phone_number = parser.parse_site_phone_number_list(root, site_id)[0]
-        self.assertIsInstance(phone_number, dtos.PhoneNumber)
+        self.assertIsInstance(phone_number, dtos.PhoneAtLocation)
 
     def test_parses_phone_type_and_converts_to_id(self):
         site_id = a_string()

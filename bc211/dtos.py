@@ -20,7 +20,7 @@ class Location:
         self.services = validate.optional_list_of_objects(Service, 'services', kwargs)
         self.physical_address = validate.optional_object(Address, 'physical_address', kwargs)
         self.postal_address = validate.optional_object(Address, 'postal_address', kwargs)
-        self.phone_numbers = validate.optional_list_of_objects(PhoneNumber, 'phone_numbers', kwargs)
+        self.phone_numbers = validate.optional_list_of_objects(PhoneAtLocation, 'phone_numbers', kwargs)
 
 
 class SpatialLocation:
@@ -55,7 +55,7 @@ class Address:
         self.state_province = validate.optional_string('state_province', kwargs)
         self.postal_code = validate.optional_string('postal_code', kwargs)
 
-class PhoneNumber:
+class PhoneAtLocation:
     def __init__(self, **kwargs):
         self.location_id = validate.required_string('location_id', kwargs)
         self.phone_number_type_id = validate.required_string('phone_number_type_id', kwargs)

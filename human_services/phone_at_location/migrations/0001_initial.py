@@ -34,6 +34,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='phonenumber',
             name='phone_number_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='phone_numbers.PhoneNumberType'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='phone_at_location.PhoneNumberType'),
         ),
     ]

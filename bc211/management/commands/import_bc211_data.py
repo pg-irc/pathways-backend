@@ -34,5 +34,5 @@ class Command(BaseCommand):
                                                  counts.taxonomy_term_count,
                                                  counts.address_count,
                                                  counts.phone_number_types_count,
-                                                 counts.phone_numbers_count)
+                                                 counts.phone_at_location_count)
         self.stdout.write(self.style.SUCCESS(status_message))
