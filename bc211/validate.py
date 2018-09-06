@@ -27,6 +27,8 @@ def optional_object(the_class, field, values):
 
 def optional_list_of_objects(the_class, field, values):
     value = values.get(field)
+    if value is None:
+        return value
     if isinstance(value, list):
         if not value:
             return value

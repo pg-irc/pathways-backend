@@ -1,6 +1,6 @@
 import unittest
 from bc211 import dtos, exceptions
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, an_integer
 
 class TestOrganization(unittest.TestCase):
     def test_throws_on_missing_id(self):
@@ -24,6 +24,62 @@ class TestLocation(unittest.TestCase):
     def test_throws_on_missing_organization_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.Location(id='id', name='name')
+
+    def test_can_create_with_none_value_for_services(self):
+        services = None
+        location = dtos.Location(id=a_string(), name=a_string(),
+                                 organization_id=a_string(), services=services)
+        self.assertEqual(location.services, services)
+
+    def test_can_create_with_list_of_service_dtos_for_services(self):
+        service = dtos.Service(id=a_string(), name=a_string(),
+                               organization_id=a_string(), site_id=a_string())
+        services = [service]
+        location = dtos.Location(id=a_string(), name=a_string(),
+                                 organization_id=a_string(), services=services)
+        self.assertEqual(location.services, services)
+
+    def test_throws_on_single_service_for_services(self):
+        service = dtos.Service(id=a_string(), name=a_string(),
+                               organization_id=a_string(), site_id=a_string())
+        with self.assertRaises(exceptions.InvalidTypeXmlParseException):
+            dtos.Location(id=a_string(), name=a_string(),
+                          organization_id=a_string(), services=service)
+
+    def test_throws_on_list_of_wrong_type_for_services(self):
+        services = [a_string()]
+        with self.assertRaises(exceptions.InvalidTypeXmlParseException):
+            dtos.Location(id=a_string(), name=a_string(),
+                          organization_id=a_string(), services=services)
+
+    def test_can_create_with_none_value_for_phone_numbers(self):
+        phone_numbers = None
+        location = dtos.Location(id=a_string(), name=a_string(),
+                                 organization_id=a_string(), phone_numbers=phone_numbers)
+        self.assertEqual(location.services, phone_numbers)
+
+    def test_can_create_with_list_of_phone_at_location_dtos_for_phone_numbers(self):
+        phone_at_location = dtos.PhoneAtLocation(location_id=a_string(),
+                                                 phone_number_type_id=a_string(),
+                                                 phone_number=an_integer())
+        phones_at_location = [phone_at_location]
+        location = dtos.Location(id=a_string(), name=a_string(),
+                                 organization_id=a_string(), phone_numbers=phones_at_location)
+        self.assertEqual(location.phone_numbers, phones_at_location)
+
+    def test_throws_on_single_phone_at_location_for_phone_numbers(self):
+        phone_at_location = dtos.PhoneAtLocation(location_id=a_string(),
+                                                 phone_number_type_id=a_string(),
+                                                 phone_number=an_integer())
+        with self.assertRaises(exceptions.InvalidTypeXmlParseException):
+            dtos.Location(id=a_string(), name=a_string(),
+                          organization_id=a_string(), phone_numbers=phone_at_location)
+
+    def test_throws_on_list_of_wrong_type_for_phone_numbers(self):
+        phone_numbers = [a_string()]
+        with self.assertRaises(exceptions.InvalidTypeXmlParseException):
+            dtos.Location(id=a_string(), name=a_string(),
+                          organization_id=a_string(), phone_numbers=phone_numbers)
 
 
 class TestSpatialLocation(unittest.TestCase):
@@ -52,11 +108,13 @@ class TestService(unittest.TestCase):
 
     def test_throws_on_missing_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
-            dtos.TaxonomyTerm(name='name', organization_id='organization_id', site_id='site_id', description='description')
+            dtos.TaxonomyTerm(name='name', organization_id='organization_id',
+                              site_id='site_id', description='description')
 
     def test_throws_on_missing_name(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
-            dtos.TaxonomyTerm(id='id', organization_id='organization_id', site_id='site_id', description='description')
+            dtos.TaxonomyTerm(id='id', organization_id='organization_id',
+                              site_id='site_id', description='description')
 
     def test_throws_on_missing_organization_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
@@ -64,7 +122,8 @@ class TestService(unittest.TestCase):
 
     def test_throws_on_missing_site_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
-            dtos.TaxonomyTerm(id='id', name='name', organization_id='organization_id', description='description')
+            dtos.TaxonomyTerm(id='id', name='name',
+                              organization_id='organization_id', description='description')
 
 class TestTaxonomyTerm(unittest.TestCase):
     def test_can_create(self):
@@ -79,3 +138,24 @@ class TestTaxonomyTerm(unittest.TestCase):
     def test_throws_on_missing_name(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.TaxonomyTerm(taxonomy_id='taxonomy_id')
+
+class PhoneAtLocation(unittest.TestCase):
+    def test_can_create(self):
+        phone_at_location = dtos.PhoneAtLocation(location_id='location_id',
+                                                 phone_number_type_id='type_id',
+                                                 phone_number=1234)
+        self.assertEqual(phone_at_location.location_id, 'location_id')
+        self.assertEqual(phone_at_location.phone_number_type_id, 'type_id')
+        self.assertEqual(phone_at_location.phone_number, 1234)
+
+    def test_throws_on_missing_location_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.PhoneAtLocation(phone_number_type_id=a_string(), phone_number=an_integer())
+
+    def test_throws_on_missing_phone_number_type_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.PhoneAtLocation(phone_number=an_integer(), location_id=a_string())
+
+    def test_throws_on_phone_number(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.PhoneAtLocation(phone_number_type_id=a_string(), location_id=a_string())
