@@ -7,7 +7,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 class PhoneAtLocationBuilder:
     def __init__(self):
         self.location = LocationBuilder(OrganizationBuilder().build()).build()
-        self.phone_number_type = a_string()
+        self.phone_number_type = PhoneNumberType(id=a_string())
         self.phone_number = a_string()
 
     def with_location(self, location):
