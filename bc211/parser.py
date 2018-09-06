@@ -4,7 +4,6 @@ import logging
 import re
 import xml.etree.ElementTree as etree
 from urllib import parse as urlparse
-from phonenumber_field.validators import validate_international_phonenumber
 
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
