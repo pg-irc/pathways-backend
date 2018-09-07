@@ -2,6 +2,7 @@ import unittest
 from bc211 import dtos, exceptions
 from common.testhelpers.random_test_values import a_string, a_phone_number
 
+
 class TestOrganization(unittest.TestCase):
     def test_throws_on_missing_id(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
@@ -159,6 +160,6 @@ class PhoneAtLocation(unittest.TestCase):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.PhoneAtLocation(phone_number=a_phone_number(), location_id=a_string())
 
-    def test_throws_on_phone_number(self):
+    def test_throws_on_missing_phone_number(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.PhoneAtLocation(phone_number_type_id=a_string(), location_id=a_string())
