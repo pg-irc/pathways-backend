@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 import itertools
 import logging
 import re
@@ -76,14 +77,15 @@ def parse_site(site, organization_id):
     name = parse_site_name(site)
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
-    services = parse_services(site, organization_id, id)
+    services = parse_service_list(site, organization_id, id)
     physical_address = parse_physical_address(site, id, name)
     postal_address = parse_postal_address(site, id, name)
+    phone_numbers = parse_site_phone_number_list(site, id)
     LOGGER.debug('Location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
                          description=description, spatial_location=spatial_location,
                          services=services, physical_address=physical_address,
-                         postal_address=postal_address)
+                         postal_address=postal_address, phone_numbers=phone_numbers)
 
 def parse_site_id(site):
     return parse_required_field(site, 'Key')
@@ -101,9 +103,9 @@ def parse_spatial_location_if_defined(site):
         return None
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
 
-def parse_services(site, organization_id, site_id):
+def parse_service_list(site, organization_id, site_id):
     services = site.findall('SiteService')
-    return map(ServiceParser(organization_id, site_id), services)
+    return list(map(ServiceParser(organization_id, site_id), services))
 
 class ServiceParser:
     def __init__(self, organization_id, site_id):
@@ -181,7 +183,7 @@ def parse_address_and_handle_errors(address, site_id, site_name, address_type_id
     try:
         return parse_address(address, site_id, address_type_id)
     except MissingRequiredFieldXmlParseException as error:
-        LOGGER.warning('Failed to import address for\n\tlocation %s (%s):\n\t%s',
+        LOGGER.warning('Failed to parse address for\n\tlocation %s (%s):\n\t%s',
                        site_id, site_name, error)
     return None
 
@@ -226,3 +228,23 @@ def parse_state_province(address):
 
 def parse_postal_code(address):
     return parse_optional_field(address, 'ZipCode')
+
+def parse_site_phone_number_list(site, site_id):
+    valid_phones = filter(phone_has_number_and_type, site.findall('Phone'))
+    return [parse_site_phone(phone, site_id) for phone in valid_phones]
+
+def parse_site_phone(phone, site_id):
+    location_id = site_id
+    phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
+    phone_number = phone.find('PhoneNumber').text
+    return dtos.PhoneAtLocation(
+        location_id=location_id,
+        phone_number_type_id=phone_number_type_id,
+        phone_number=phone_number
+    )
+
+def phone_has_number_and_type(phone):
+    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type')
+
+def convert_phone_type_to_type_id(phone_type):
+    return phone_type.lower().replace(' ', '_')

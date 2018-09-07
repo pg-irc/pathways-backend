@@ -1,7 +1,7 @@
 import unittest
 import logging
 import xml.etree.ElementTree as etree
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, a_phone_number
 
 from bc211 import parser, dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
@@ -351,3 +351,70 @@ class AddressParserTests(unittest.TestCase):
         root = etree.fromstring(xml_address)
         address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, None)
+
+
+class PhoneNumberParserTests(unittest.TestCase):
+
+    def test_does_not_parse_phone_with_empty_phone_type(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>123456789</PhoneNumber>
+                    <Type />
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 0)
+
+    def test_does_not_parse_phone_with_empty_phone_number(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber />
+                    <Type>Phone1</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 0)
+
+    def test_parses_phone_into_expected_dto_object(self):
+        site_id = a_string()
+        phone_type = a_string()
+        phone_number = a_phone_number()
+        xml = self.build_phone_xml(phone_number, phone_type)
+        root = etree.fromstring(xml)
+        phone_number_list = parser.parse_site_phone_number_list(root, site_id)
+        self.assertIsInstance(phone_number_list[0], dtos.PhoneAtLocation)
+
+    def test_parses_phone_type_and_converts_to_id(self):
+        site_id = a_string()
+        phone_type = 'A phone TYPE'
+        phone_number = a_phone_number()
+        xml = self.build_phone_xml(phone_number, phone_type)
+        root = etree.fromstring(xml)
+        phone_number_list = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_number_list[0].phone_number_type_id, 'a_phone_type')
+
+    def test_parses_phone_phone_number(self):
+        site_id = a_string()
+        phone_type = a_string()
+        phone_number = a_phone_number()
+        xml = self.build_phone_xml(phone_number, phone_type)
+        root = etree.fromstring(xml)
+        phone_number_list = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_number_list[0].phone_number, phone_number)
+
+    def build_phone_xml(self, phone_number, phone_number_type):
+        return '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>{}</PhoneNumber>
+                    <Type>{}</Type>
+                </Phone>
+            </Site>'''.format(phone_number, phone_number_type)
