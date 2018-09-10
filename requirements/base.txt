@@ -16,14 +16,14 @@ awesome-slugify==1.6.5
 polib==1.1.0
 
 # authentication, TODO remove
-argon2-cffi==16.3.0
-django-allauth==0.34.0
+argon2-cffi==18.3.0
+django-allauth==0.37.1
 
 # postgreSQL database adapter
 psycopg2==2.7.5
 
 # static files
-whitenoise==3.3.1
+whitenoise==4.0
 
 # caching
 django-redis==4.9.0
@@ -31,7 +31,7 @@ redis>=2.10.6
 
 # front end tech, TODO remove
 django-crispy-forms==1.7.2
-Pillow==4.3.0
+Pillow==5.2.0
 
 # Time zones support, TODO remove
 pytz==2018.5
@@ -44,7 +44,7 @@ parse==1.8.4
 parse-type==0.4.2
 
 # code analysis, TODO move or remove
-astroid==1.6.0
+astroid==2.0.4
 isort==4.3.4
 
 # TODO remove
