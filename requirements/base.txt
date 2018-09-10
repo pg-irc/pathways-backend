@@ -10,8 +10,8 @@ django-environ==0.4.5
 django-model-utils==3.1.2
 django-cors-headers==2.4.0
 django-parler==1.9.2
-djangorestframework==3.7.7
-drf_yasg==1.4.0
+djangorestframework==3.8.2
+drf_yasg==1.10.1
 awesome-slugify==1.6.5
 polib==1.1.0
 
