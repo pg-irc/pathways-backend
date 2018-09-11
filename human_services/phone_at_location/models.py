@@ -6,7 +6,8 @@ from human_services.locations.models import Location
 class PhoneNumberType(models.Model):
     id = RequiredCharField(primary_key=True, max_length=200)
 
+
 class PhoneAtLocation(models.Model):
-    location = models.ForeignKey(Location, related_name='phone_numbers')
-    phone_number_type = models.ForeignKey(PhoneNumberType)
+    location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='phone_numbers')
+    phone_number_type = models.ForeignKey(PhoneNumberType, on_delete=models.PROTECT)
     phone_number = models.TextField()

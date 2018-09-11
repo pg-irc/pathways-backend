@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.core import exceptions, validators
+from django.core import validators
 from parler.models import TranslatableModel, TranslatedFields
 from human_services.organizations.models import Organization
 from human_services.addresses.models import Address, AddressType
@@ -11,7 +11,7 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True,
                            max_length=200,
                            validators=[validators.validate_slug])
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
     services = models.ManyToManyField(Service,
                                       related_name='locations',
                                       through='ServiceAtLocation')
@@ -30,8 +30,8 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
 
 
 class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.PROTECT)
+    location = models.ForeignKey(Location, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ['id']
@@ -44,9 +44,10 @@ class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
 
 
 class LocationAddress(ValidateOnSaveMixin, models.Model):
-    address = models.ForeignKey(Address)
-    location = models.ForeignKey(Location, related_name='location_addresses')
-    address_type = models.ForeignKey(AddressType)
+    address = models.ForeignKey(Address, on_delete=models.PROTECT)
+    location = models.ForeignKey(Location, on_delete=models.PROTECT,
+                                 related_name='location_addresses')
+    address_type = models.ForeignKey(AddressType, on_delete=models.PROTECT)
 
     class Meta:
         unique_together = ('location', 'address_type')
