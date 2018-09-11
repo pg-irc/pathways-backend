@@ -11,7 +11,8 @@ from common.filters import (ProximityFilter, SearchFilter, LocationIdFilter,
 class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ServiceAtLocation.objects.all()
     serializer_class = serializers.ServiceAtLocationSerializer
-    search_fields = ('location__translations__name', 'service__translations__name')
+    search_fields = ('location__translations__name', 'location__translations__description',
+                     'service__translations__name', 'service__translations__description')
     filter_backends = (ProximityFilter,
                        SearchFilter,
                        LocationIdFilter,
