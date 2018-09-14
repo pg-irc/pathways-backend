@@ -187,11 +187,12 @@ To retrieve and import the BC-211 dataset:
 wget https://s3.ca-central-1.amazonaws.com/peacegeeks-pathways-static/bc211data.xml
 
 export DJANGO_SETTINGS_MODULE=config.settings.production
-export DJANGO_SECRET_KEY="the key"
+export DJANGO_SECRET_KEY='the key'
 export DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static
-export DJANGO_MAILGUN_API_KEY="the key"
-export MAILGUN_SENDER_DOMAIN="the domain"
-export DATABASE_URL="the database url from heroku settings"
+export DJANGO_MAILGUN_API_KEY='the key'
+export MAILGUN_SENDER_DOMAIN='the domain'
+export DATABASE_URL='the database url from heroku settings'
+export DJANGO_READ_DOT_ENV_FILE=False
 
 ./manage.py import_bc211_data bc211data.xml
 
