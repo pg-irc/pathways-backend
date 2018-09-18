@@ -46,6 +46,13 @@ Create a .env file and add your database user password
 ```
 echo "POSTGRES_PASSWORD='your-secure-password'" > .env
 ```
+To execute the test suite in production, where a database connection string is used, use a command line
+```
+DATABASE_URL=postgres://pathways:password@localhost/pathways_local \
+MAILGUN_SENDER_DOMAIN=mailgun.org DJANGO_MAILGUN_API_KEY=xyz \
+DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static \
+DJANGO_SECRET_KEY=xyz ./manage.py test
+```
 
 ## PostgreSQL on Ubuntu systems
 
