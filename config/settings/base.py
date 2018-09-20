@@ -177,7 +177,11 @@ PARLER_LANGUAGES = {
     1: (
         {'code': 'en', },
         {'code': 'fr', },
-        {'code': 'nl', },
+        {'code': 'ar', },
+        {'code': 'zh-hans', },
+        {'code': 'zh-hant', },
+        {'code': 'ko', },
+        {'code': 'pa', },
     ),
     'default': {
         'fallbacks': ['en'],
