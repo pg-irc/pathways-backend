@@ -58,6 +58,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         service_name = service_at_locations[0].service.name
         response = (self.client.get('/v1/services_at_location/?search={0}'.format(service_name)))
         json = response.json()
+        self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['name'], service_name)
 
     def test_can_full_text_search_on_service_description(self):
@@ -65,6 +66,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         service_description = service_at_locations[0].service.description
         response = (self.client.get('/v1/services_at_location/?search={0}'.format(service_description)))
         json = response.json()
+        self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['description'], service_description)
 
     def test_can_full_text_search_on_location_name(self):
@@ -72,6 +74,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         location_name = service_at_locations[0].location.name
         response = (self.client.get('/v1/services_at_location/?search={0}'.format(location_name)))
         json = response.json()
+        self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['location']['name'], location_name)
 
     def test_can_full_text_search_on_location_description(self):
@@ -79,6 +82,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         location_description = service_at_locations[0].location.description
         response = (self.client.get('/v1/services_at_location/?search={0}'.format(location_description)))
         json = response.json()
+        self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['location']['description'], location_description)
 
     def test_can_filter_by_location_id(self):
