@@ -12,6 +12,8 @@ logging.disable(logging.ERROR)
 
 ONE_AGENCY_FIXTURE = 'bc211/data/BC211_data_one_agency.xml'
 MULTI_AGENCY_FIXTURE = 'bc211/data/BC211_data_excerpt.xml'
+SHARED_SERVICE_FIXTURE = 'bc211/data/BC211_data_service_53489235_at_two_sites.xml'
+
 
 class LocationImportTests(TestCase):
     def setUp(self):
@@ -55,6 +57,7 @@ class OrganizationImportTests(TestCase):
     def test_can_import_email(self):
         self.assertEqual(self.organization.email, 'info@langleycdc.com')
 
+
 class ServiceImportTests(TestCase):
     def setUp(self):
         file = open(MULTI_AGENCY_FIXTURE, 'r')
@@ -76,6 +79,11 @@ class ServiceImportTests(TestCase):
         self.assertCountEqual(last_post_fund_service_taxonomy_terms,
                               expected_last_post_fund_service_taxonony_terms)
 
+    def testTwoServicesCanBeRelatedToOneLocation(self):
+        file = open(SHARED_SERVICE_FIXTURE, 'r')
+        save_records_to_database(read_records_from_file(file))
+        self.assertEqual(Service.objects.filter(locations__id='9493390').count(), 2)
+
 
 class AddressImportTests(TestCase):
     def setUp(self):
@@ -90,6 +98,7 @@ class AddressImportTests(TestCase):
     def test_does_not_import_duplicates(self):
         self.assertEqual(len(self.addresses), 1)
 
+
 class AddressTypeTests(TestCase):
     def test_imports_correct_address_types(self):
         expected_address_types = [
@@ -97,6 +106,7 @@ class AddressTypeTests(TestCase):
             AddressType(id='postal_address')
         ]
         self.assertCountEqual(AddressType.objects.all(), expected_address_types)
+
 
 class FullDataImportTests(TestCase):
     def setUp(self):
@@ -106,7 +116,7 @@ class FullDataImportTests(TestCase):
         self.all_organizations = Organization.objects.all()
         self.all_taxonomy_terms = TaxonomyTerm.objects.all()
 
-    #breaking one-assert-per-test rule to speed up running tests by only calling setup once for all the below checks
+    # breaking one-assert-per-test rule to speed up running tests by only calling setup once for all the below checks
     def test_can_import_full_data_set(self):
         self.assertEqual(len(self.all_organizations), 16)
         self.assertEqual(len(self.all_locations), 40)
