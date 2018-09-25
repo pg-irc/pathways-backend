@@ -1,4 +1,6 @@
 import environ
+import django.conf.locale
+from django.conf import global_settings
 
 # Three levels up from pathways-backend/config/settings/base.py gives pathways-backend/
 ROOT_DIR = environ.Path(__file__) - 3
@@ -21,6 +23,7 @@ DJANGO_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'django.contrib.admin',
 ]
 
@@ -171,12 +174,41 @@ LOGGING = {
     },
 }
 
+gettext_noop = lambda s: s
+
+LANGUAGES = (
+    ('en', gettext_noop('English')),
+    ('fr', gettext_noop('French')),
+    ('ar', gettext_noop('Arabic')),
+    ('zh-hans', gettext_noop('Chinese Simplified')),
+    ('zh-hant', gettext_noop('Chinese Traditional')),
+    ('ko', gettext_noop('Korean')),
+    ('pa', gettext_noop('Punjabi')),
+    ('tl', gettext_noop('Tagalog')),
+)
+
+TAGALOG_INFO = {
+    'tl': {
+        'bidi': False,
+        'code': 'tl',
+        'name': 'Tagalog',
+        'name_local': u'Tagalog in Tagalog',
+    },
+}
+
+django.conf.locale.LANG_INFO = {**django.conf.locale.LANG_INFO, **TAGALOG_INFO}
+
 PARLER_DEFAULT_LANGUAGE_CODE = 'en'
 PARLER_LANGUAGES = {
     1: (
         {'code': 'en', },
         {'code': 'fr', },
-        {'code': 'nl', },
+        {'code': 'ar', },
+        {'code': 'zh-hans', },
+        {'code': 'zh-hant', },
+        {'code': 'ko', },
+        {'code': 'pa', },
+        {'code': 'tl', },
     ),
     'default': {
         'fallbacks': ['en'],

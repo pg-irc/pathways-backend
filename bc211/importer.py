@@ -86,7 +86,7 @@ def build_location_active_record(record):
     active_record.organization_id = record.organization_id
     has_location = record.spatial_location is not None
     if has_location:
-        active_record.point = Point(record.spatial_location.latitude, record.spatial_location.longitude)
+        active_record.point = Point(record.spatial_location.longitude, record.spatial_location.latitude)
     active_record.description = record.description
     return active_record
 
