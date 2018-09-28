@@ -2,18 +2,22 @@ class XmlParseException(Exception):
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
 
-class InvalidFloatXmlParseException(Exception):
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
 
-class InvalidNestedObjectXmlParseException(Exception):
+class InvalidFloatXmlParseException(XmlParseException):
     def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
+        XmlParseException.__init__(self, *args, **kwargs)
 
-class MissingRequiredFieldXmlParseException(Exception):
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
 
-class InvalidTypeXmlParseException(Exception):
+class InvalidNestedObjectXmlParseException(XmlParseException):
     def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
+        XmlParseException.__init__(self, *args, **kwargs)
+
+
+class MissingRequiredFieldXmlParseException(XmlParseException):
+    def __init__(self, *args, **kwargs):
+        XmlParseException.__init__(self, *args, **kwargs)
+
+
+class InvalidTypeXmlParseException(XmlParseException):
+    def __init__(self, *args, **kwargs):
+        XmlParseException.__init__(self, *args, **kwargs)

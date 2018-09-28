@@ -13,6 +13,7 @@ logging.disable(logging.ERROR)
 ONE_AGENCY_FIXTURE = 'bc211/data/BC211_data_one_agency.xml'
 MULTI_AGENCY_FIXTURE = 'bc211/data/BC211_data_excerpt.xml'
 SHARED_SERVICE_FIXTURE = 'bc211/data/BC211_data_service_53489235_at_two_sites.xml'
+INVALID_AGENCIES_FIXTURE = 'bc211/data/BC211_data_with_invalid_agencies.xml'
 
 
 class LocationImportTests(TestCase):
@@ -56,6 +57,14 @@ class OrganizationImportTests(TestCase):
 
     def test_can_import_email(self):
         self.assertEqual(self.organization.email, 'info@langleycdc.com')
+
+
+class InvalidOrganizationImportTests(TestCase):
+    def test_save_organizations_catches_exceptions(self):
+        save_records_to_database(read_records_from_file(open(INVALID_AGENCIES_FIXTURE, 'r')))
+        organizations = Organization.objects.all()
+        self.assertEqual(organizations[0].id, 'FIRST_VALID_AGENCY')
+        self.assertEqual(organizations[1].id, 'SECOND_VALID_AGENCY')
 
 
 class ServiceImportTests(TestCase):

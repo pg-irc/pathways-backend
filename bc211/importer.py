@@ -7,6 +7,7 @@ from human_services.addresses.models import Address, AddressType
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from django.contrib.gis.geos import Point
 from taxonomies.models import TaxonomyTerm
+from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,12 +52,22 @@ def save_records_to_database(organizations):
 
 
 def save_organizations(organizations, counters):
-    for organization in organizations:
+    for organization in handle_parser_errors(organizations):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization()
         LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
         save_locations(organization.locations, counters)
+
+
+def handle_parser_errors(gen):
+    while True:
+        try:
+            yield next(gen)
+        except StopIteration:
+            raise
+        except XmlParseException as error:
+            LOGGER.error(error)
 
 
 def build_organization_active_record(record):
