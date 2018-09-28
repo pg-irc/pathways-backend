@@ -63,8 +63,11 @@ class InvalidOrganizationImportTests(TestCase):
     def test_save_organizations_catches_exceptions(self):
         save_records_to_database(read_records_from_file(open(INVALID_AGENCIES_FIXTURE, 'r')))
         organizations = Organization.objects.all()
-        self.assertEqual(organizations[0].id, 'FIRST_VALID_AGENCY')
-        self.assertEqual(organizations[1].id, 'SECOND_VALID_AGENCY')
+        organization_ids = list(map(lambda x: x.id, organizations))
+
+        self.assertEqual(len(organization_ids), 2)
+        self.assertIn('SECOND_VALID_AGENCY', organization_ids)
+        self.assertIn('FIRST_VALID_AGENCY', organization_ids)
 
 
 class ServiceImportTests(TestCase):
