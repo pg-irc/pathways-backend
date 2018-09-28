@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class ValidateOnSaveMixin(object):
@@ -8,7 +9,10 @@ class ValidateOnSaveMixin(object):
     should be no empty strings in the database."""
 
     def save(self, *args, **kwargs):
-        self.full_clean()
+        try:
+            self.full_clean()
+        except ValidationError as error:
+            raise ValidationError('type=' + type(self).__name__ + ' id=' + self.id + ' error: ' + error.__str__())
         return super(ValidateOnSaveMixin, self).save(*args, **kwargs)
 
     def clean(self):
