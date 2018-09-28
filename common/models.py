@@ -12,8 +12,19 @@ class ValidateOnSaveMixin(object):
         try:
             self.full_clean()
         except ValidationError as error:
-            raise ValidationError('type=' + type(self).__name__ + ' id=' + self.id + ' error: ' + error.__str__())
+            raise self.build_validation_error_no_throw(error)
         return super(ValidateOnSaveMixin, self).save(*args, **kwargs)
+
+    def build_validation_error_no_throw(self, error):
+        try:
+            type_of_self = type(self).__name__
+            id_of_self = self.id
+            message = error.__str__()
+            return ValidationError('type={} id={} message={}'.format(type_of_self,
+                                                                     id_of_self,
+                                                                     message))
+        except:
+            return error
 
     def clean(self):
         self.set_empty_fields_to_null()
