@@ -67,8 +67,6 @@ def handle_parser_errors(generator):
             organization = next(generator)
             organization_id = organization.id
             yield organization
-        except StopIteration:
-            raise
         except XmlParseException as error:
             LOGGER.error('Error importing the organization immediately after the one with id "%s": %s',
                          organization_id, error.__str__())
