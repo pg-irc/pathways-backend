@@ -1,7 +1,6 @@
 {
   "description": "This file contains settings for review apps on heroku, these are heroku apps that spin up from PRs on github",
-  "scripts": {
-  },
+  "scripts": {},
   "env": {
     "HEROKU_APP_NAME": {
       "required": true
@@ -26,6 +25,10 @@
     },
     "MAILGUN_SENDER_DOMAIN": {
       "required": true
+    },
+    "BUILD_WITH_GEO_LIBRARIES": {
+      "required": true,
+      "value": "1"
     }
   },
   "formation": {
