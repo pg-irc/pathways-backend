@@ -8,8 +8,8 @@ pylint==2.1.1
 mccabe==0.6.1
 
 # Debug tools
-django-extensions==2.1.2
-django-debug-toolbar==1.10
+django-extensions==2.1.3
+django-debug-toolbar==1.10.1
 ipdb==0.11
 Werkzeug==0.14.1
 
@@ -19,4 +19,4 @@ docker-compose==1.22.0
 pur==5.0.0
 
 # documentation, TODO remove
-Sphinx==1.7.9
+Sphinx==1.8.1
