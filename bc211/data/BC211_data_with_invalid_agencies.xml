@@ -1,0 +1,1053 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Source xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SourceEntity="BC 211 RecordOwner = 2252 - Vancouver, BC" xsi:noNamespaceSchemaLocation="http://www.iCarol.com/schemas/AIRS_XSD_3_0.xml" OriginTimestamp="2017-01-09T05:01:43.820119-05:00" SoftwareVendor="iCarol" SoftwareVersion="3.5.0.0" TaxonomyVersion="2017-01-07T23:05:42.15" SchemaVersion="3.0">
+  <Agency RecordOwner="2252" LegalStatus="None or unknown" ExcludeFromWebsite="false" ExcludeFromDirectory="false">
+    <Key>INVALID_AGENCY</Key>
+    <ThisAgencyHasNoName>Langley Child Development Centre</ThisAgencyHasNoName>
+    <AgencyDescription>Provides inclusive, family-centred early intervention services for children with special needs, from birth to 19 years of age. The &amp;lt;b&amp;gt;Infant Development Program&amp;lt;/b&amp;gt; offers home visits to families with young children from birth to age three who have delays or are at risk for delays. The &amp;lt;b&amp;gt;Supported Child Development Program&amp;lt;/b&amp;gt; supports children and youth in their neighbourhood child care settings. The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child Development Program&amp;lt;/b&amp;gt; utilizes cultural teachings to engage children of Aboriginal heritage who have or are at risk for delays. The &amp;lt;b&amp;gt;Child and Youth Program&amp;lt;/b&amp;gt; provides recreational activities, after-school life skills, and summer day camps for school-aged children. A resource library and educational opportunities are available for parents, caregivers, and professionals. All programs provide social and networking opportunities for parents.</AgencyDescription>
+    <AKA>
+      <Name>Langley Children's Society</Name>
+      <Confidential>false</Confidential>
+      <Description />
+    </AKA>
+    <AgencyLocation>
+      <Name />
+      <SiteDescription />
+      <PhysicalAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+    </AgencyLocation>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-534-1155</PhoneNumber>
+      <Type>Phone1</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>After Hours</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Business Line</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Hotline</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Out of area</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-534-1814</PhoneNumber>
+      <Type>Fax</Type>
+    </Phone>
+    <URL>
+      <Address>www.langleycdc.com</Address>
+      <Note />
+    </URL>
+    <Email>
+      <Address>info@langleycdc.com</Address>
+    </Email>
+    <IRSStatus />
+    <Site LegalStatus="None or unknown">
+      <Key>9487364</Key>
+      <Name>Langley Child Development Centre</Name>
+      <SiteDescription>Provides inclusive, family-centred early intervention services for children with special needs, from birth to 19 years of age. The &amp;lt;b&amp;gt;Infant Development Program&amp;lt;/b&amp;gt; offers home visits to families with young children from birth to age three who have delays or are at risk for delays. The &amp;lt;b&amp;gt;Supported Child Development Program&amp;lt;/b&amp;gt; supports children and youth in their neighbourhood child care settings. The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child Development Program&amp;lt;/b&amp;gt; utilizes cultural teachings to engage children of Aboriginal heritage who have or are at risk for delays. The &amp;lt;b&amp;gt;Child and Youth Program&amp;lt;/b&amp;gt; provides recreational activities, after-school life skills, and summer day camps for school-aged children. A resource library and educational opportunities are available for parents, caregivers, and professionals. All programs provide social and networking opportunities for parents.</SiteDescription>
+      <AKA>
+        <Name>Langley Children's Society</Name>
+        <Confidential>false</Confidential>
+        <Description />
+      </AKA>
+      <PhysicalAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-534-1155</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-534-1814</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.langleycdc.com</Address>
+        <Note />
+      </URL>
+      <Email>
+        <Address>info@langleycdc.com</Address>
+      </Email>
+      <SiteService>
+        <Name>Langley Child Development Centre</Name>
+        <Key>9487364</Key>
+        <AKA>
+          <Name>Langley Children's Society</Name>
+          <Confidential>false</Confidential>
+          <Description />
+        </AKA>
+        <Description>Provides inclusive, family-centred early intervention services for children with special needs, from birth to 19 years of age. The &amp;lt;b&amp;gt;Infant Development Program&amp;lt;/b&amp;gt; offers home visits to families with young children from birth to age three who have delays or are at risk for delays. The &amp;lt;b&amp;gt;Supported Child Development Program&amp;lt;/b&amp;gt; supports children and youth in their neighbourhood child care settings. The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child Development Program&amp;lt;/b&amp;gt; utilizes cultural teachings to engage children of Aboriginal heritage who have or are at risk for delays. The &amp;lt;b&amp;gt;Child and Youth Program&amp;lt;/b&amp;gt; provides recreational activities, after-school life skills, and summer day camps for school-aged children. A resource library and educational opportunities are available for parents, caregivers, and professionals. All programs provide social and networking opportunities for parents.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-534-1155</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-534-1814</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>TJ-4400.8100</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>PL-6400.1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LR-1700</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>HD-1800.6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CAMPS (residential)',why:'disability',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INFANT DEVELOPMENT PROGRAMS'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'LIBRARIES',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RECREATION',why:'disability',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CONSULTING',why:'day care',why:'disability',why:'children',who:'Service Providers'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'developmental delay',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'disability',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'disability',who:'Youth'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Langley</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-02-01" DateLastVerified="2016-04-14" DateOfLastAction="2016-05-03">
+          <Contact Type="Resource Specialist">
+            <Title>Office Manager</Title>
+            <Name>Karla Fortin</Name>
+            <Email>
+              <Address>kfortin@langleycdc.com</Address>
+            </Email>
+            <Phone TollFree="false" Confidential="false">
+              <PhoneNumber>Local 114</PhoneNumber>
+            </Phone>
+          </Contact>
+        </ResourceInfo>
+        <URL>
+          <Address>www.langleycdc.com</Address>
+          <Note />
+        </URL>
+        <Email>
+          <Address>info@langleycdc.com</Address>
+        </Email>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.087284, -122.607918</Datum>
+        <Latitude>49.087284</Latitude>
+        <Longitude>-122.607918</Longitude>
+      </SpatialLocation>
+    </Site>
+    <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-02-01" DateLastVerified="2016-04-14" DateOfLastAction="2016-05-03">
+      <Contact Type="Resource Specialist">
+        <Title>Office Manager</Title>
+        <Name>Karla Fortin</Name>
+        <Email>
+          <Address>kfortin@langleycdc.com</Address>
+        </Email>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>Local 114</PhoneNumber>
+        </Phone>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'CAMPS (residential)',why:'disability',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INFANT DEVELOPMENT PROGRAMS'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'LIBRARIES',why:'disability'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'RECREATION',why:'disability',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'CONSULTING',why:'day care',why:'disability',why:'children',who:'Service Providers'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'developmental delay',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'disability',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'disability',who:'Youth'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+    </ResourceInfo>
+    <SpatialLocation>
+      <Datum>49.087284, -122.607918</Datum>
+      <Latitude>49.087284</Latitude>
+      <Longitude>-122.607918</Longitude>
+    </SpatialLocation>
+    <GeographicAreaServed>
+      <City>Langley</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+  </Agency>
+  <Agency RecordOwner="2252" LegalStatus="None or unknown" ExcludeFromWebsite="false" ExcludeFromDirectory="false">
+    <Key>FIRST_VALID_AGENCY</Key>
+    <Name>Stepping Stone Community Services Society</Name>
+    <AgencyDescription>Provides psychosocial rehabilitation programs for adults living in Langley who are recovering from a mental illness. Offers a clubhouse, supported work and volunteer opportunities, and community living support. Programs assist individuals to build confidence, develop skills, and improve quality of life in areas of personal life, leisure, and pre-employment. Referrals through the Langley Mental Health Centre (604-514-7940). Also provides housing in partnership with West Fraser Housing Society; see independent listing for details. Office hours are 9 am to 4:30 pm Monday to Friday; program hours vary.</AgencyDescription>
+    <AKA>
+      <Name />
+      <Confidential>false</Confidential>
+      <Description />
+    </AKA>
+    <AgencyLocation>
+      <Name />
+      <SiteDescription />
+      <PhysicalAddress Confidential="false">
+        <Line1>20101 Michaud Crescent</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 8L9</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>20101 Michaud Crescent</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 8L9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+    </AgencyLocation>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-530-5033</PhoneNumber>
+      <Type>Phone1</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>After Hours</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Business Line</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Hotline</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Out of area</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-530-3811</PhoneNumber>
+      <Type>Fax</Type>
+    </Phone>
+    <URL>
+      <Address>www.sscss.org</Address>
+      <Note />
+    </URL>
+    <IRSStatus />
+    <Site LegalStatus="None or unknown">
+      <Key>9493353</Key>
+      <Name>Employment Services</Name>
+      <SiteDescription>Provides job search assistance to individuals who have experienced barriers to employment due to mental illness. Services include assistance with identifying employment goals, resume writing help, and job search assistance. Provides ongoing support for both clients and employers. Referrals through the Langley Mental Health Centre.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>20101 Michaud Crescent</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 8L9</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>20101 Michaud Crescent</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 8L9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-530-5033</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <SiteService>
+        <Name>Employment Services</Name>
+        <Key>9493353</Key>
+        <Description>Provides job search assistance to individuals who have experienced barriers to employment due to mental illness. Services include assistance with identifying employment goals, resume writing help, and job search assistance. Provides ongoing support for both clients and employers. Referrals through the Langley Mental Health Centre.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-530-5033</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>ND-3500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EMPLOYMENT SEARCH ASSISTANCE',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Langley</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1999-10-11" DateLastVerified="2015-06-09" DateOfLastAction="2015-11-30" />
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.101741, -122.665112</Datum>
+        <Latitude>49.101741</Latitude>
+        <Longitude>-122.665112</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>14541468</Key>
+      <Name>Starting Point Outreach Services</Name>
+      <SiteDescription>Provides services to people who are homeless or at risk of becoming homeless. Services include housing search assistance, help with applying for government funding, support with housing applications, housing loss prevention, tenancy support and information, financial literacy training, support with housing applications, and short-term rent subsidies. Also offers follow-up housing support. The &amp;lt;strong&amp;gt;Homeless Outreach Program&amp;lt;/strong&amp;gt; provides outreach to adults who are homeless, at risk of becoming homeless, or difficult to house; funded by BC Housing. The &amp;lt;strong&amp;gt;Youth Homelessness Initiative&amp;lt;/strong&amp;gt; program serves youth up to and including age 25 who are homeless or at risk of homelessness; funded by Vancouver Foundation. Offers a free postal box where homeless individuals can receive mail during drop-in hours. Programs are offered in partnership with Aldergrove Neighbourhood Services Society. Serves Langley. Drop-in hours are 9 am to 1 pm Monday to Friday, with appointments from 1 pm to 4:30 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>20626 Eastleigh Crescent</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 4C4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>PO Box 26063</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 8J2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-530-6477</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-534-6468</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.sscss.org</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Starting Point Outreach Services</Name>
+        <Key>14541468</Key>
+        <Description>Provides services to people who are homeless or at risk of becoming homeless. Services include housing search assistance, help with applying for government funding, support with housing applications, housing loss prevention, tenancy support and information, financial literacy training, support with housing applications, and short-term rent subsidies. Also offers follow-up housing support. The &amp;lt;strong&amp;gt;Homeless Outreach Program&amp;lt;/strong&amp;gt; provides outreach to adults who are homeless, at risk of becoming homeless, or difficult to house; funded by BC Housing. The &amp;lt;strong&amp;gt;Youth Homelessness Initiative&amp;lt;/strong&amp;gt; program serves youth up to and including age 25 who are homeless or at risk of homelessness; funded by Vancouver Foundation. Offers a free postal box where homeless individuals can receive mail during drop-in hours. Programs are offered in partnership with Aldergrove Neighbourhood Services Society. Serves Langley. Drop-in hours are 9 am to 1 pm Monday to Friday, with appointments from 1 pm to 4:30 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-530-6477</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-534-6468</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>PH-8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>TD-1600.2600</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ADVOCACY',why:'homelessness'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOUSING SEARCH ASSISTANCE',why:'homelessness'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'homelessness'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ADVOCACY',why:'homelessness',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'homelessness',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOUSING SEARCH ASSISTANCE',why:'homelessness',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'POSTAL SERVICES'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Langley</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2013-08-21" DateLastVerified="2015-06-09" DateOfLastAction="2016-09-12" />
+        <URL>
+          <Address>www.sscss.org</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.106819, -122.651154</Datum>
+        <Latitude>49.106819</Latitude>
+        <Longitude>-122.651154</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>44029901</Key>
+      <Name>Starting Point Outreach Services - Take Home Naloxone</Name>
+      <SiteDescription>Provides harm reduction supplies, along with harm reduction education and referrals to health services, addictions services, and other social supports. Provides opioid users with free &amp;lt;strong&amp;gt;Take Home Naloxone Kits&amp;lt;/strong&amp;gt; (Narcan) that can be used to reverse the effects of overdoses from opioids like fentanyl, heroin, methadone, morphine, and oxycodone.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>20626 Eastleigh Crescent</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 4C4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>PO Box 26063</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 8J2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-530-6477</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-534-6468</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.sscss.org</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Starting Point Outreach Services - Take Home Naloxone</Name>
+        <Key>44029901</Key>
+        <Description>Provides harm reduction supplies, along with harm reduction education and referrals to health services, addictions services, and other social supports. Provides opioid users with free &amp;lt;strong&amp;gt;Take Home Naloxone Kits&amp;lt;/strong&amp;gt; (Narcan) that can be used to reverse the effects of overdoses from opioids like fentanyl, heroin, methadone, morphine, and oxycodone.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-530-6477</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-534-6468</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>PH-8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LH-5000.6300</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'equipment',why:'overdose'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EQUIPMENT',why:'overdose'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'overdose'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Langley</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2016-12-27" DateLastVerified="2016-12-27" DateOfLastAction="2016-12-27" />
+        <URL>
+          <Address>www.sscss.org</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.106819, -122.651154</Datum>
+        <Latitude>49.106819</Latitude>
+        <Longitude>-122.651154</Longitude>
+      </SpatialLocation>
+    </Site>
+    <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1986-02-28" DateLastVerified="2015-06-09" DateOfLastAction="2016-12-30">
+      <Contact Type="Resource Specialist">
+        <Title>Executive Director</Title>
+        <Name>Janet Burden</Name>
+        <Email>
+          <Address>jburden@sscss.org</Address>
+        </Email>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'COMMUNITY LIVING SUPPORT',why:'disability (mental health)'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'TRAINING',why:'disability (mental health)',why:'life skills'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'OUTREACH',why:'disability (mental health)'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'VOLUNTEERING',why:'disability (mental health)'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'CLUBHOUSES'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'RECREATION',why:'disability (mental health)'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+    </ResourceInfo>
+    <SpatialLocation>
+      <Datum>49.101741, -122.665112</Datum>
+      <Latitude>49.101741</Latitude>
+      <Longitude>-122.665112</Longitude>
+    </SpatialLocation>
+    <GeographicAreaServed>
+      <City>Langley</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+  </Agency>
+  <Agency RecordOwner="2252" LegalStatus="None or unknown" ExcludeFromWebsite="false" ExcludeFromDirectory="false">
+    <Key>SECOND_VALID_AGENCY</Key>
+    <Name>Langley Youth and Family Services</Name>
+    <AgencyDescription>Provides counselling and intervention for children and youth up to age 17 to prevent anti-social behaviour and conflict with the law. Family involvement is required. Referrals from schools, social service agencies, other community members, and the RCMP for children and youth up to 17 years of age. No fee for service. Program jointly operated by Langley City and Langley Township; serves residents of both communities. Hours are from 8:30 am to 12 noon and 1:30 pm to 4:30 pm Monday to Friday.</AgencyDescription>
+    <AKA>
+      <Name />
+      <Confidential>false</Confidential>
+      <Description />
+    </AKA>
+    <AgencyLocation>
+      <Name />
+      <SiteDescription />
+      <PhysicalAddress Confidential="false">
+        <Line1>5569 204th Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 1Z4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>5569 204th Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 1Z4</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+    </AgencyLocation>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-514-2900</PhoneNumber>
+      <Type>Phone1</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>After Hours</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Business Line</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Hotline</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Out of area</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-530-1835</PhoneNumber>
+      <Type>Fax</Type>
+    </Phone>
+    <Email>
+      <Address>lyfs@langleycity.ca</Address>
+    </Email>
+    <IRSStatus />
+    <Site LegalStatus="None or unknown">
+      <Key>9487367</Key>
+      <Name>Langley Youth and Family Services</Name>
+      <SiteDescription>Provides counselling and intervention for children and youth up to age 17 to prevent anti-social behaviour and conflict with the law. Family involvement is required. Referrals from schools, social service agencies, other community members, and the RCMP for children and youth up to 17 years of age. No fee for service. Program jointly operated by Langley City and Langley Township; serves residents of both communities. Hours are from 8:30 am to 12 noon and 1:30 pm to 4:30 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>5569 204th Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 1Z4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>5569 204th Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V3A 1Z4</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-514-2900</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-530-1835</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <Email>
+        <Address>lyfs@langleycity.ca</Address>
+      </Email>
+      <SiteService>
+        <Name>Langley Youth and Family Services</Name>
+        <Key>9487367</Key>
+        <Description>Provides counselling and intervention for children and youth up to age 17 to prevent anti-social behaviour and conflict with the law. Family involvement is required. Referrals from schools, social service agencies, other community members, and the RCMP for children and youth up to 17 years of age. No fee for service. Program jointly operated by Langley City and Langley Township; serves residents of both communities. Hours are from 8:30 am to 12 noon and 1:30 pm to 4:30 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-514-2900</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-530-1835</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LR-1700</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-1400.2500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'behaviour problems',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'behaviour problems',who:'Children'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Langley</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-05-05" DateLastVerified="2014-09-02" DateOfLastAction="2014-09-02">
+          <Contact Type="Resource Specialist">
+            <Title>Administrator</Title>
+            <Name>Tanya Rutley</Name>
+            <Email>
+              <Address>trutley@city.langley.bc.ca</Address>
+            </Email>
+          </Contact>
+        </ResourceInfo>
+        <Email>
+          <Address>lyfs@langleycity.ca</Address>
+        </Email>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.10458, -122.656166</Datum>
+        <Latitude>49.10458</Latitude>
+        <Longitude>-122.656166</Longitude>
+      </SpatialLocation>
+    </Site>
+    <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-05-05" DateLastVerified="2014-09-02" DateOfLastAction="2014-09-02">
+      <Contact Type="Resource Specialist">
+        <Title>Administrator</Title>
+        <Name>Tanya Rutley</Name>
+        <Email>
+          <Address>trutley@city.langley.bc.ca</Address>
+        </Email>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'COUNSELLING',why:'behaviour problems',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'behaviour problems',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+    </ResourceInfo>
+    <SpatialLocation>
+      <Datum>49.10458, -122.656166</Datum>
+      <Latitude>49.10458</Latitude>
+      <Longitude>-122.656166</Longitude>
+    </SpatialLocation>
+    <GeographicAreaServed>
+      <City>Langley</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+  </Agency>
+  <Agency RecordOwner="2252" LegalStatus="None or unknown" ExcludeFromWebsite="false" ExcludeFromDirectory="false">
+    <Key>ANOTHER_INVALID_AGENCY</Key>
+    <ThisAgencyHasNoName>Mrs O's Swim Group</ThisAgencyHasNoName>
+    <AgencyDescription>Promotes increased self-acceptance of, and networking among, large women size 18 or over. Offers swimming and other social/recreational opportunities. Swims are 7:30 am to 8:30 am Saturdays. Nonprofit society.</AgencyDescription>
+    <AKA>
+      <Name />
+      <Confidential>false</Confidential>
+      <Description />
+    </AKA>
+    <AgencyLocation>
+      <Name />
+      <SiteDescription />
+      <PhysicalAddress Confidential="false">
+        <Line1 />
+        <City>New Westminster</City>
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1 />
+        <City />
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </MailingAddress>
+    </AgencyLocation>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-540-7420</PhoneNumber>
+      <Type>Phone1</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>After Hours</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Business Line</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Hotline</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Out of area</Type>
+    </Phone>
+    <IRSStatus />
+    <Site LegalStatus="None or unknown">
+      <Key>9487369</Key>
+      <Name>Mrs O's Swim Group</Name>
+      <SiteDescription>Promotes increased self-acceptance of, and networking among, large women size 18 or over. Offers swimming and other social/recreational opportunities. Swims are 7:30 am to 8:30 am Saturdays. Nonprofit society.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1 />
+        <City>New Westminster</City>
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1 />
+        <City />
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-540-7420</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <SiteService>
+        <Name>Mrs O's Swim Group</Name>
+        <Key>9487369</Key>
+        <Description>Promotes increased self-acceptance of, and networking among, large women size 18 or over. Offers swimming and other social/recreational opportunities. Swims are 7:30 am to 8:30 am Saturdays. Nonprofit society.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-540-7420</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>{what:'RECREATION',why:'body image',who:'Women'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>New Westminster</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <GeographicAreaServed>
+          <City>Burnaby</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-06-15" DateLastVerified="2015-01-05" DateOfLastAction="2016-01-08" />
+      </SiteService>
+      <SpatialLocation />
+    </Site>
+    <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-06-15" DateLastVerified="2015-01-05" DateOfLastAction="2016-01-08">
+      <Contact Type="Main Contact">
+        <Title>what:'RECREATION',why:'body image',who:'Women'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+    </ResourceInfo>
+    <SpatialLocation />
+    <GeographicAreaServed>
+      <City>New Westminster</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+    <GeographicAreaServed>
+      <City>Burnaby</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+  </Agency>
+</Source>
+

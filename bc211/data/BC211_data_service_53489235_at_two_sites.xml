@@ -1,0 +1,3464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Source xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SourceEntity="BC 211 RecordOwner = 2252 - Vancouver, BC" xsi:noNamespaceSchemaLocation="http://www.iCarol.com/schemas/AIRS_XSD_3_0.xml" OriginTimestamp="2018-09-24T21:02:48.5566234-04:00" SoftwareVendor="iCarol" SoftwareVersion="3.5.0.0" TaxonomyVersion="2018-09-24T17:24:38.6" SchemaVersion="3.0">
+  <Agency RecordOwner="2252" LegalStatus="None or unknown" ExcludeFromWebsite="false" ExcludeFromDirectory="false">
+    <Key>9488086</Key>
+    <Name>Vancouver Coastal Health (VCH) - Richmond</Name>
+    <AgencyDescription>Delivers health care and support services through a network of health centres, hospitals, primary care clinics, residential care homes, and other facilities. Services include home health, mental health and substance use, health protection, public health, acute care, and other specialized programs. Free &amp;lt;strong&amp;gt;Take Home Naloxone Kits&amp;lt;/strong&amp;gt; (Narcan) used to reverse the effects of overdoses from opioids (like fentanyl, heroin, methadone, morphine, and oxycodone), are available at all hospitals, public health units, mental health and substance use offices, and other facilities throughout the health authority region. Office hours are 8:30 am to 5 pm Monday to Friday.</AgencyDescription>
+    <AKA>
+      <Name />
+      <Confidential>false</Confidential>
+      <Description />
+    </AKA>
+    <AgencyLocation>
+      <Name />
+      <SiteDescription />
+      <PhysicalAddress Confidential="false">
+        <Line1>Medical Administration - Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Medical Administration - Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+    </AgencyLocation>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-244-5141</PhoneNumber>
+      <Type>Phone1</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>After Hours</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Business Line</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Hotline</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Out of area</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-244-5552</PhoneNumber>
+      <Type>Fax</Type>
+    </Phone>
+    <URL>
+      <Address>www.vch.ca</Address>
+      <Note />
+    </URL>
+    <Email>
+      <Address>feedback@vch.ca</Address>
+    </Email>
+    <IRSStatus />
+    <Site LegalStatus="None or unknown">
+      <Key>9492113</Key>
+      <Name>Fraserview Intermediate Care Lodge</Name>
+      <SiteDescription>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>9580 Williams Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7A 1H2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>9580 Williams Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7A 1H2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-274-3510</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Home Health Office - Richmond</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-277-1844</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <Email>
+        <Address>fraserview@qwik.net</Address>
+      </Email>
+      <SiteService>
+        <Name>Fraserview Intermediate Care Lodge</Name>
+        <Key>9492113</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-274-3510</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-277-1844</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1986-05-28" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+        <Email>
+          <Address>fraserview@qwik.net</Address>
+        </Email>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.140787, -123.117406</Datum>
+        <Latitude>49.140787</Latitude>
+        <Longitude>-123.117406</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9492144</Key>
+      <Name>Richmond Lions Manor</Name>
+      <SiteDescription>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>1920 Bridgeport Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1S1</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>1920 Bridgeport Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1S1</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-675-2590</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Home Health Office - Richmond</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-274-2543</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Richmond Lions Manor</Name>
+        <Key>9492144</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-675-2590</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-274-2543</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1986-05-28" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1901981, -123.1129257</Datum>
+        <Latitude>49.1901981</Latitude>
+        <Longitude>-123.1129257</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9492593</Key>
+      <Name>Public Health - Richmond</Name>
+      <SiteDescription>Provides public health nursing services. &amp;lt;strong&amp;gt;Prenatal and Early Years&amp;lt;/strong&amp;gt; services include prenatal nutrition and lifestyle information; education and information on pregnancy and childbirth; postpartum support, including physical and emotional well-being for mothers and babies; breastfeeding assessment and support; and child health clinics and immunizations. &amp;lt;strong&amp;gt;School-age Health&amp;lt;/strong&amp;gt; services include immunization, health promotion, and nutrition education, as well as vision, hearing, speech, and dental screening. Services are coordinated through local school districts; no referral is required. Serves Richmond. Hours are 8 am to 4:30 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Public Health</Line1>
+        <Line2>8100 Granville Avenue</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Richmond Public Health</Line1>
+        <Line2>8100 Granville Avenue</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5486</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3198</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Public Health - Richmond</Name>
+        <Key>9492593</Key>
+        <Description>Provides public health nursing services. &amp;lt;strong&amp;gt;Prenatal and Early Years&amp;lt;/strong&amp;gt; services include prenatal nutrition and lifestyle information; education and information on pregnancy and childbirth; postpartum support, including physical and emotional well-being for mothers and babies; breastfeeding assessment and support; and child health clinics and immunizations. &amp;lt;strong&amp;gt;School-age Health&amp;lt;/strong&amp;gt; services include immunization, health promotion, and nutrition education, as well as vision, hearing, speech, and dental screening. Services are coordinated through local school districts; no referral is required. Serves Richmond. Hours are 8 am to 4:30 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5486</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3198</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>JP-6600</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'health promotion'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'breastfeeding',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'childbirth',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'pregnancy'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'IMMUNIZATION',who:'Babies'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'IMMUNIZATION',who:'Children'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1993-12-27" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.16259, -123.133956</Datum>
+        <Latitude>49.16259</Latitude>
+        <Longitude>-123.133956</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493188</Key>
+      <Name>Home Health Office - Richmond</Name>
+      <SiteDescription>Offers health care and support services to adults with acute, chronic, palliative, or rehabilitative health care needs, as well as to support the transition from hospital release to home life; intake is required to assess eligibility. &amp;lt;strong&amp;gt;Home Support&amp;lt;/strong&amp;gt; provides assistance with medications, bathing, and dressing for clients who are ill or recovering from illness or surgery, have physical disabilities, require personal assistance or respite for a caregiver, or need end-of-life care. &amp;lt;strong&amp;gt;Nursing Services&amp;lt;/strong&amp;gt; may include assessment, education, counselling, and medical and surgical care at home. &amp;lt;strong&amp;gt;Physiotherapy and Occupational Therapy&amp;lt;/strong&amp;gt; referrals are for clients who have a physical disability, are recovering from surgery or hospital stay, or who need rehabilitation or therapy to stay at home. Also provides assessment for access to &amp;lt;strong&amp;gt;Adult Day Services&amp;lt;/strong&amp;gt; (day respite, health monitoring, therapeutic and recreational activities, and community bathing programs), and handles intake for publicly funded &amp;lt;strong&amp;gt;Assisted Living and Residential Care Facilities&amp;lt;/strong&amp;gt;. Other services available may include personal care, medication assistance, respite care, nutrition consultation, and health education. Also provides access to specialty programs and services provided throughout the health authority. Serves Richmond. Intake and office hours are 9 am to 5 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>5th Floor-7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>5th Floor-7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-4713</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <SiteService>
+        <Name>Home Health Office - Richmond</Name>
+        <Key>9493188</Key>
+        <Description>Offers health care and support services to adults with acute, chronic, palliative, or rehabilitative health care needs, as well as to support the transition from hospital release to home life; intake is required to assess eligibility. &amp;lt;strong&amp;gt;Home Support&amp;lt;/strong&amp;gt; provides assistance with medications, bathing, and dressing for clients who are ill or recovering from illness or surgery, have physical disabilities, require personal assistance or respite for a caregiver, or need end-of-life care. &amp;lt;strong&amp;gt;Nursing Services&amp;lt;/strong&amp;gt; may include assessment, education, counselling, and medical and surgical care at home. &amp;lt;strong&amp;gt;Physiotherapy and Occupational Therapy&amp;lt;/strong&amp;gt; referrals are for clients who have a physical disability, are recovering from surgery or hospital stay, or who need rehabilitation or therapy to stay at home. Also provides assessment for access to &amp;lt;strong&amp;gt;Adult Day Services&amp;lt;/strong&amp;gt; (day respite, health monitoring, therapeutic and recreational activities, and community bathing programs), and handles intake for publicly funded &amp;lt;strong&amp;gt;Assisted Living and Residential Care Facilities&amp;lt;/strong&amp;gt;. Other services available may include personal care, medication assistance, respite care, nutrition consultation, and health education. Also provides access to specialty programs and services provided throughout the health authority. Serves Richmond. Intake and office hours are 9 am to 5 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-4713</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LT-2800</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOME SUPPORT',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOME SUPPORT',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'day programs',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'day programs',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'home support',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'disability',why:'nursing care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'disability',why:'occupational therapy'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'disability',why:'physiotherapy'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'disability',why:'residential care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'disability',why:'respite care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'home support',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'health conditions',why:'nursing care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'health conditions',why:'occupational therapy'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'health conditions',why:'physiotherapy'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'health conditions',why:'residential care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'health conditions',why:'respite care'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1998-09-16" DateLastVerified="2016-02-02" DateOfLastAction="2017-11-24" />
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.170091, -123.146412</Datum>
+        <Latitude>49.170091</Latitude>
+        <Longitude>-123.146412</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493200</Key>
+      <Name>Youth Clinic - East Richmond Community Hall</Name>
+      <SiteDescription>Provides free, confidential information and education regarding sexuality and health to youth ages 12 to 20. Services include birth control, emergency contraception, and pregnancy testing and counselling, as well as testing and treatment of sexually transmitted infections, pap tests, testing for HIV, and mental health and substance use counselling. Also refers youth to community support services such as counsellors and youth workers. BC Care Card is not needed to access these services. Serves Richmond. No referral required. Hours are 1 pm to 4 pm Tuesdays (drop-in or appointment); clinic is closed July through August.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>12360 Cambie Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6V 1G4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>12360 Cambie Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6V 1G4</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3204</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Youth Clinic - East Richmond Community Hall</Name>
+        <Key>9493200</Key>
+        <Description>Provides free, confidential information and education regarding sexuality and health to youth ages 12 to 20. Services include birth control, emergency contraception, and pregnancy testing and counselling, as well as testing and treatment of sexually transmitted infections, pap tests, testing for HIV, and mental health and substance use counselling. Also refers youth to community support services such as counsellors and youth workers. BC Care Card is not needed to access these services. Serves Richmond. No referral required. Hours are 1 pm to 4 pm Tuesdays (drop-in or appointment); clinic is closed July through August.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3204</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LJ-2000.6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LT-1750.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LN-1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-1400.2500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LJ-2000.6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LT-1750.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LN-1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'pregnancy',why:'pro-choice',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'sexually transmitted infections',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'pregnancy',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'pregnancy',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'BIRTH CONTROL'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'FREE MEDICAL CLINICS'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'FREE MEDICAL CLINICS',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'sexually transmitted infections'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'birth control'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'birth control',who:'Youth'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1998-09-24" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.184643, -123.090135</Datum>
+        <Latitude>49.184643</Latitude>
+        <Longitude>-123.090135</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493265</Key>
+      <Name>Mental Health Emergency Services</Name>
+      <SiteDescription>Provides mobile community mental health assessment and intervention to individuals experiencing a mental health crisis. Services include mobile assessments, and referrals to follow up with mental health services, health care professionals, or other agencies. Serves the city of Richmond (including Vancouver Airport). Hours are 11 am to 10 pm daily. Provides evening and weekend intervention, and support to individuals during non-office hours through the provision of crisis line service.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>n/a</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 1A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5562</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5197</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Mental Health Emergency Services</Name>
+        <Key>9493265</Key>
+        <Description>Provides mobile community mental health assessment and intervention to individuals experiencing a mental health crisis. Services include mobile assessments, and referrals to follow up with mental health services, health care professionals, or other agencies. Serves the city of Richmond (including Vancouver Airport). Hours are 11 am to 10 pm daily. Provides evening and weekend intervention, and support to individuals during non-office hours through the provision of crisis line service.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5562</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5197</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RP-1500.3300</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YF-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',what:'OUTREACH',why:'disability (mental health)',why:'emergency'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'emergency',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2004-08-20" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1559907700609, -123.137564835993</Datum>
+        <Latitude>49.1559907700609</Latitude>
+        <Longitude>-123.137564835993</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493295</Key>
+      <Name>Mental Health Outpatient Services</Name>
+      <SiteDescription>Interdisciplinary team provides treatment for adults ages 19 and up with mental health issues related to mood and/or anxiety disorders and associated problems functioning. Provides a variety of therapies and psychiatric treatments. Referral required; form available online. Office open Monday to Friday; call for daily hours of operation.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>2nd Floor-7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>2nd Floor-7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5534</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5564</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Mental Health Outpatient Services</Name>
+        <Key>9493295</Key>
+        <Description>Interdisciplinary team provides treatment for adults ages 19 and up with mental health issues related to mood and/or anxiety disorders and associated problems functioning. Provides a variety of therapies and psychiatric treatments. Referral required; form available online. Office open Monday to Friday; call for daily hours of operation.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5534</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5564</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-6400.0200</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'mood disorders'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'mood disorders'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'anxiety'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'anxiety'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1999-07-02" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.170091, -123.146412</Datum>
+        <Latitude>49.170091</Latitude>
+        <Longitude>-123.146412</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site>
+      <Key>9493390</Key>
+      <Name>Rosewood Manor</Name>
+      <SiteDescription>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care; includes a specialty dementia unit. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Governed by Richmond Intermediate Care Society. Funded by Vancouver Coastal Health.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>6260 Blundell Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7C 5C4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>6260 Blundell Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7C 5C4</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-271-3590</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Home Health Office - Richmond</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-271-3551</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Rosewood Manor</Name>
+        <Key>9493390</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care; includes a specialty dementia unit. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Governed by Richmond Intermediate Care Society. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3590</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3551</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1999-11-30" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SiteService>
+        <Name>Rosewood Manor</Name>
+        <Key>53489235</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care; includes a specialty dementia unit. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3590</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3551</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-28" DateLastVerified="2017-11-24" DateOfLastAction="2017-12-22" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1551114, -123.1549939</Datum>
+        <Latitude>49.1551114</Latitude>
+        <Longitude>-123.1549939</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493392</Key>
+      <Name>Gilwest Clinic</Name>
+      <SiteDescription>Provides HIV/AIDS and hepatitis C related services, including needle exchange.&amp;amp;nbsp;Also offers community development and education. Serves Richmond. Hours are 9 am to 11:30 am Mondays, 9 am to 12 noon Tuesdays, and 4 pm to 7 pm Thursdays.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3135</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3198</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Gilwest Clinic</Name>
+        <Key>9493392</Key>
+        <Description>Provides HIV/AIDS and hepatitis C related services, including needle exchange.&amp;amp;nbsp;Also offers community development and education. Serves Richmond. Hours are 9 am to 11:30 am Mondays, 9 am to 12 noon Tuesdays, and 4 pm to 7 pm Thursdays.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3135</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3198</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LT-1750.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>TD-6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RX-8470.1900-610</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'DISPOSAL',why:'needles'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'DISPOSAL',what:'PICK-UP',why:'needles'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'hiv/aids'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'hepatitis'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'NEEDLES'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COMMUNITY DEVELOPMENT',why:'health promotion',why:'hiv/aids'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COMMUNITY DEVELOPMENT',why:'health promotion',why:'hepatitis'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1999-11-30" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.170091, -123.146412</Datum>
+        <Latitude>49.170091</Latitude>
+        <Longitude>-123.146412</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493629</Key>
+      <Name>Health Protection Office - Richmond</Name>
+      <SiteDescription>Regulates and monitors public facilities and those aspects of the environment that have a direct impact on public health. Environmental Health Officers (EHOs) ensure that public health standards are met in restaurants and food service locations, public food handling and distribution, public swimming pools and hot tubs, and personal service establishments such as salons, spas, and tattoo parlours. Also takes steps to prevent injury and minimize the spread of communicable disease, and deals with drinking water safety. Prevents the display, promotion, and sale of tobacco and vapour products to minors, and protects the public and employees from the harmful effects of second-hand smoke through enforcement of provincial legislation. Licensing Officers ensure that residential and community care facilities comply with regulations. Serves Richmond. Hours are 8 am to 4:30 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Public Health</Line1>
+        <Line2>8100 Granville Avenue</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>1200-601 West Broadway</Line1>
+        <City>Vancouver</City>
+        <State>BC</State>
+        <ZipCode>V5Z 4C2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3147</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-736-8651</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Health Protection Office - Richmond</Name>
+        <Key>9493629</Key>
+        <Description>Regulates and monitors public facilities and those aspects of the environment that have a direct impact on public health. Environmental Health Officers (EHOs) ensure that public health standards are met in restaurants and food service locations, public food handling and distribution, public swimming pools and hot tubs, and personal service establishments such as salons, spas, and tattoo parlours. Also takes steps to prevent injury and minimize the spread of communicable disease, and deals with drinking water safety. Prevents the display, promotion, and sale of tobacco and vapour products to minors, and protects the public and employees from the harmful effects of second-hand smoke through enforcement of provincial legislation. Licensing Officers ensure that residential and community care facilities comply with regulations. Serves Richmond. Hours are 8 am to 4:30 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3147</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-736-8651</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>JP-6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CERTIFICATION AND LICENSING',why:'food',why:'safety',who:'Business/Industry'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'business/industry',why:'food',why:'safety'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CERTIFICATION AND LICENSING',why:'day care',who:'Service Providers'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CERTIFICATION AND LICENSING',why:'day programs',who:'Service Providers'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CERTIFICATION AND LICENSING',why:'residential care',who:'Service Providers'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CERTIFICATION AND LICENSING',why:'residential programs',who:'Service Providers'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'hepatitis'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'hiv/aids'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'tuberculosis'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'smoking'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'sexually transmitted infections'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'environmental health'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'day care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'day programs'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'smoking'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'residential care'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'REGULATION',why:'residential programs'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2000-02-22" DateLastVerified="2017-03-08" DateOfLastAction="2018-03-16">
+          <Contact Type="Resource Specialist">
+            <Title>NA</Title>
+            <Name>website/template</Name>
+          </Contact>
+        </ResourceInfo>
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.16259, -123.133956</Datum>
+        <Latitude>49.16259</Latitude>
+        <Longitude>-123.133956</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493746</Key>
+      <Name>Eating Disorders Program - Richmond</Name>
+      <SiteDescription>Offers free, community-based assessments and treatment for individuals of any age who have an eating disorder and for their families. Treatment includes individual, group, or family counselling; medical monitoring; and nutritional support. Also offers consultation and education to community agencies and professional to promote early intervention and awareness. Offered in Cantonese, English, and Mandarin. Physician referral is required. Serves Richmond. Hours are 8 am to 4:30 pm Monday to Friday. Funded in part by Ministry of Children and Family Development (MCFD).</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>8100 Granville Avenue</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>8100 Granville Avenue</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5486</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-5656</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Eating Disorders Program - Richmond</Name>
+        <Key>9493746</Key>
+        <Description>Offers free, community-based assessments and treatment for individuals of any age who have an eating disorder and for their families. Treatment includes individual, group, or family counselling; medical monitoring; and nutritional support. Also offers consultation and education to community agencies and professional to promote early intervention and awareness. Offered in Cantonese, English, and Mandarin. Physician referral is required. Serves Richmond. Hours are 8 am to 4:30 pm Monday to Friday. Funded in part by Ministry of Children and Family Development (MCFD).</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5486</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-5656</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LE</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-1400.2500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>TJ-6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YF-5000.2150</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YF-5000.2150</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YF-5000.2150</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'eating disorders'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'eating disorders'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'eating disorders'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'eating disorders',who:'Chinese'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'eating disorders',who:'Chinese'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'eating disorders',who:'Chinese'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'eating disorders'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2011-01-17" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.16259, -123.133956</Datum>
+        <Latitude>49.16259</Latitude>
+        <Longitude>-123.133956</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9493758</Key>
+      <Name>Adult Mental Health Program - Richmond</Name>
+      <SiteDescription>Provides community-based assessment and treatment for adults 19 years and up with functional impairment due to severe, persistent mental illness. Also provides specialized services for older adults with dementia-related behaviour or complex psychiatric and medical needs. Services include case management, outreach, and rehabilitation. Serves Richmond. Physician referral required. Open 8:15 am to 4:15 pm seven days a week.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>210-7671 Alderbridge Way</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1Z9</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>210-7671 Alderbridge Way</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1Z9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-675-3975</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-709-6785</PhoneNumber>
+        <Type>Intake</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-279-9204</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Adult Mental Health Program - Richmond</Name>
+        <Key>9493758</Key>
+        <Description>Provides community-based assessment and treatment for adults 19 years and up with functional impairment due to severe, persistent mental illness. Also provides specialized services for older adults with dementia-related behaviour or complex psychiatric and medical needs. Services include case management, outreach, and rehabilitation. Serves Richmond. Physician referral required. Open 8:15 am to 4:15 pm seven days a week.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-675-3975</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-709-6785</PhoneNumber>
+          <Type>Intake</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-279-9204</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-6400.2700</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-6400.0200</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'MENTAL HEALTH TEAMS'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'suicide'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'alzheimers disease',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'suicide',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'alzheimers disease',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2000-10-18" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1743879, -123.1439394</Datum>
+        <Latitude>49.1743879</Latitude>
+        <Longitude>-123.1439394</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9506169</Key>
+      <Name>Transitions</Name>
+      <SiteDescription>Holistic recovery program supports people dealing with substance misuse, concurrent mental health issues, and/or mental health issues, utilizing a harm reduction framework. Offers screening, assessment, referral, counselling, psychiatric consultation, and education about relapse prevention, nutrition, and emotional management. Services include individual and group counselling, and educational support for people who are impacted by a family member&amp;#39;s mental health or addiction issue. Acupuncture is also available. Accepts self-referrals; physician referrals only for mental health counselling services. Serves Richmond. Service may be available in Mandarin, depending on staff availability. Free interpretation service is available for various languages. Program hours are 8:30 am to 5 pm Mondays, Wednesdays, Thursdays, and Fridays; and 8:30 am to 7:30 pm Tuesdays.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>600-8100 Granville Avenue</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>600-8100 Granville Avenue</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5486</PhoneNumber>
+        <Type>Office</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5488</PhoneNumber>
+        <Type>Intake</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-5656</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Transitions</Name>
+        <Key>9506169</Key>
+        <Description>Holistic recovery program supports people dealing with substance misuse, concurrent mental health issues, and/or mental health issues, utilizing a harm reduction framework. Offers screening, assessment, referral, counselling, psychiatric consultation, and education about relapse prevention, nutrition, and emotional management. Services include individual and group counselling, and educational support for people who are impacted by a family member&amp;#39;s mental health or addiction issue. Acupuncture is also available. Accepts self-referrals; physician referrals only for mental health counselling services. Serves Richmond. Service may be available in Mandarin, depending on staff availability. Free interpretation service is available for various languages. Program hours are 8:30 am to 5 pm Mondays, Wednesdays, Thursdays, and Fridays; and 8:30 am to 7:30 pm Tuesdays.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5486</PhoneNumber>
+          <Type>Office</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5488</PhoneNumber>
+          <Type>Intake</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-5656</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RX-8450.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'addiction (alcohol and drug)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'addiction (alcohol and drug)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'addiction (alcohol and drug)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Languages>
+          <Name>Interpretation available</Name>
+        </Languages>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2010-06-09" DateLastVerified="2017-11-24" DateOfLastAction="2018-01-05" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1623302, -123.1350106</Datum>
+        <Latitude>49.1623302</Latitude>
+        <Longitude>-123.1350106</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9507364</Key>
+      <Name>Adult Mental Health and Substance Use Services - Richmond</Name>
+      <SiteDescription>Provides central intake services for mental health and substance use services, which provide a range of health care and support services for adults ages 19 and up with mental health and/or substance use issues. Services include assessment, treatment, counselling, education, and referral to community resources. Also provides counselling to individuals who are concerned about someone else’s substance use. In addition, provides access to other specialty substance use and mental health services. Open referral. Serves Richmond. Hours are 8:30 am to 5 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>n/a</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1 />
+        <City />
+        <State>BC</State>
+        <ZipCode />
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5488</PhoneNumber>
+        <Type>Central Intake</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5487</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Adult Mental Health and Substance Use Services - Richmond</Name>
+        <Key>9507364</Key>
+        <Description>Provides central intake services for mental health and substance use services, which provide a range of health care and support services for adults ages 19 and up with mental health and/or substance use issues. Services include assessment, treatment, counselling, education, and referral to community resources. Also provides counselling to individuals who are concerned about someone else’s substance use. In addition, provides access to other specialty substance use and mental health services. Open referral. Serves Richmond. Hours are 8:30 am to 5 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5488</PhoneNumber>
+          <Type>Central Intake</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5487</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RX-8450.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RX-8250</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-6400.0200</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-1500.3300</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YF-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'counselling',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'counselling',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'suicide'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'addiction (alcohol and drug)',who:'Significant Others'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'emergency',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'suicide'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2012-06-19" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.171194, -122.977647</Datum>
+        <Latitude>49.171194</Latitude>
+        <Longitude>-122.977647</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9508358</Key>
+      <Name>Child and Youth Mental Health - Richmond</Name>
+      <SiteDescription>&amp;lt;strong&amp;gt;Psychiatric Clinic&amp;lt;/strong&amp;gt; provides short-term assessment and treatment for children and youth ages five to 18 experiencing mental health concerns, except for ADHD and autism. Children and youth receive a psychiatric assessment and consultation with a psychiatrist. Open referral, including self-referral. &amp;lt;strong&amp;gt;Team Response to Adolescents and Children in Crisis (TRACC)&amp;lt;/strong&amp;gt; provides emergency intervention for children and youth who are at moderate to high risk of suicide. Services offered in Cantonese, English, Mandarin, and Spanish. Serves Richmond. Hours are 8:30 am to 5:30 pm Monday to Wednesday, 9 am to 7 pm Thursday, and 8:30 am to 5:30 pm Friday. Walk-in intake hours are 9 am to 3 pm on Thursdays; no appointment required.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>200-6100 Bowling Green Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 4G2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>200-6100 Bowling Green Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 4G2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-207-2511</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-207-2524</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Child and Youth Mental Health - Richmond</Name>
+        <Key>9508358</Key>
+        <Description>&amp;lt;strong&amp;gt;Psychiatric Clinic&amp;lt;/strong&amp;gt; provides short-term assessment and treatment for children and youth ages five to 18 experiencing mental health concerns, except for ADHD and autism. Children and youth receive a psychiatric assessment and consultation with a psychiatrist. Open referral, including self-referral. &amp;lt;strong&amp;gt;Team Response to Adolescents and Children in Crisis (TRACC)&amp;lt;/strong&amp;gt; provides emergency intervention for children and youth who are at moderate to high risk of suicide. Services offered in Cantonese, English, Mandarin, and Spanish. Serves Richmond. Hours are 8:30 am to 5:30 pm Monday to Wednesday, 9 am to 7 pm Thursday, and 8:30 am to 5:30 pm Friday. Walk-in intake hours are 9 am to 3 pm on Thursdays; no appointment required.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-207-2511</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-207-2524</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RP-6400.1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Children',who:'Chinese'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Chinese',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Children',who:'Spanish'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Spanish',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Children',who:'Chinese'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Chinese',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Children',who:'Spanish'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Spanish',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide',who:'Children',who:'Chinese'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide',who:'Chinese',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide',who:'Children',who:'Spanish'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',what:'OUTREACH',why:'suicide',who:'Spanish',who:'Youth'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2004-08-23" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.16876, -123.14273</Datum>
+        <Latitude>49.16876</Latitude>
+        <Longitude>-123.14273</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9509494</Key>
+      <Name>Garratt Wellness Centre</Name>
+      <SiteDescription>Offers specialized programs, education, and resources to help individuals manage their chronic care needs. Team includes clinical educators, dietitians, nurses, physiotherapists, social workers, support staff, fitness instructors, and food skills for families facilitators. Services include nutrition counselling, chronic disease management, exercise programs, support programs, and community kitchens. Free interpretation service is available for various languages; must be pre-booked. Hours are 9 am to 5 pm Monday to Friday. Provided in partnership with City of Richmond.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>7504 Chelsea Place</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7C 3S9</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>7504 Chelsea Place</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7C 3S9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-204-2007</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-204-2017</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>garrattwellness.vch.ca</Address>
+        <Note />
+      </URL>
+      <Email>
+        <Address>garrattwellnesscentre@vch.ca</Address>
+      </Email>
+      <SiteService>
+        <Name>Garratt Wellness Centre</Name>
+        <Key>9509494</Key>
+        <Description>Offers specialized programs, education, and resources to help individuals manage their chronic care needs. Team includes clinical educators, dietitians, nurses, physiotherapists, social workers, support staff, fitness instructors, and food skills for families facilitators. Services include nutrition counselling, chronic disease management, exercise programs, support programs, and community kitchens. Free interpretation service is available for various languages; must be pre-booked. Hours are 9 am to 5 pm Monday to Friday. Provided in partnership with City of Richmond.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-204-2007</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-204-2017</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LE</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COMMUNITY KITCHENS'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'nutrition'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'nutrition'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'FITNESS',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Languages>
+          <Name>Interpretation available - must be pre-booked</Name>
+        </Languages>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2006-04-20" DateLastVerified="2017-11-24" DateOfLastAction="2018-01-05" />
+        <URL>
+          <Address>garrattwellness.vch.ca</Address>
+          <Note />
+        </URL>
+        <Email>
+          <Address>garrattwellnesscentre@vch.ca</Address>
+        </Email>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.158003, -123.155222</Datum>
+        <Latitude>49.158003</Latitude>
+        <Longitude>-123.155222</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>9509817</Key>
+      <Name>Anne Vogel Clinic</Name>
+      <SiteDescription>Provides assessment, treatment, and primary care for individuals dealing with opiate dependence. An interdisciplinary team of doctors, occupational therapists, addictions counsellors, and a social worker offer a harm-reduction approach, providing needle exchange services for anyone wanting to dispose of used needles in a safe and legal way. Also provides clean needles, sterile water, alcohol wipes, and health information to encourage safer injecting practices. Offers methadone and suboxone treatment. Hosts an &amp;lt;strong&amp;gt;Opiate Users Group&amp;lt;/strong&amp;gt; open to all at 11 am Mondays. Serves Richmond. Hours are 9 am to 5:30 pm Mondays, 9 am to 6 pm Tuesdays and Wednesdays, and 9 am to 5 pm Thursdays and Fridays.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>210-7671 Alderbridge Way</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1Z9</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>210-7671 Alderbridge Way</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1Z9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-675-3975</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-303-1914</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Anne Vogel Clinic</Name>
+        <Key>9509817</Key>
+        <Description>Provides assessment, treatment, and primary care for individuals dealing with opiate dependence. An interdisciplinary team of doctors, occupational therapists, addictions counsellors, and a social worker offer a harm-reduction approach, providing needle exchange services for anyone wanting to dispose of used needles in a safe and legal way. Also provides clean needles, sterile water, alcohol wipes, and health information to encourage safer injecting practices. Offers methadone and suboxone treatment. Hosts an &amp;lt;strong&amp;gt;Opiate Users Group&amp;lt;/strong&amp;gt; open to all at 11 am Mondays. Serves Richmond. Hours are 9 am to 5:30 pm Mondays, 9 am to 6 pm Tuesdays and Wednesdays, and 9 am to 5 pm Thursdays and Fridays.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-675-3975</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-303-1914</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RX-8450.5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LE</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RX-8470.1900-610</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'SUBSTITUTION THERAPY',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'DISPOSAL',why:'needles'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'NEEDLES'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'addiction (alcohol and drug)',why:'needles'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'overdose'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'SUPPORT GROUPS',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2007-02-01" DateLastVerified="2017-11-24" DateOfLastAction="2018-09-20">
+          <Contact Type="Resource Specialist">
+            <Title>NA</Title>
+            <Name>unknown (phone)</Name>
+          </Contact>
+        </ResourceInfo>
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1743879, -123.1439394</Datum>
+        <Latitude>49.1743879</Latitude>
+        <Longitude>-123.1439394</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>44897481</Key>
+      <Name>Healthiest Babies Possible - Richmond</Name>
+      <SiteDescription>Prenatal outreach program to promote a healthy pregnancy for at-risk pregnant women ages 25 and up living in Richmond. Services offered include nutrition and prenatal lifestyle counselling; food supplement and prenatal vitamins; breastfeeding information; food coupons; labour and delivery information; community referrals; education about smoking, alcohol, and drug concerns; and prenatal and parent/infant groups. Home visits are available. Also partners with Youth Pregnancy and Parenting Program (YPPP) in Vancouver to offer youth-centred services and supports to clients 24 years and younger. Services and materials are offered in various languages; interpreters are also available. Self-referrals accepted. Hours are 8:30 am to 4:30 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Public Health</Line1>
+        <Line2>8100 Granville Avenue</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>210-1669 Broadway East</Line1>
+        <City>Vancouver</City>
+        <State>BC</State>
+        <ZipCode>V5N 1V9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-675-3982</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3158</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Healthiest Babies Possible - Richmond</Name>
+        <Key>44897481</Key>
+        <Description>Prenatal outreach program to promote a healthy pregnancy for at-risk pregnant women ages 25 and up living in Richmond. Services offered include nutrition and prenatal lifestyle counselling; food supplement and prenatal vitamins; breastfeeding information; food coupons; labour and delivery information; community referrals; education about smoking, alcohol, and drug concerns; and prenatal and parent/infant groups. Home visits are available. Also partners with Youth Pregnancy and Parenting Program (YPPP) in Vancouver to offer youth-centred services and supports to clients 24 years and younger. Services and materials are offered in various languages; interpreters are also available. Self-referrals accepted. Hours are 8:30 am to 4:30 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-675-3982</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3158</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RX-8450.6600</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'addiction (alcohol and drug)',why:'pregnancy',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'fetal alcohol and drug effects',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'pregnancy',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH',why:'nutrition',why:'pregnancy',who:'Women'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-01-20" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24">
+          <Contact Type="Resource Specialist">
+            <Title>NA</Title>
+            <Name>website</Name>
+          </Contact>
+        </ResourceInfo>
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1619605, -123.1348415</Datum>
+        <Latitude>49.1619605</Latitude>
+        <Longitude>-123.1348415</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>53414007</Key>
+      <Name>Acute Home Based Treatment (AHBT) Program</Name>
+      <SiteDescription>Offers short-term, in-home acute psychiatric care for adults with increased symptoms or distress related to mental illness or substance use, as an alternative to hospitalization. Designed to provide individuals who are currently experiencing a psychiatric crisis the opportunity of choosing where they get their acute psychiatric treatment. A referral is required from a medical professional. Serves Richmond.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>Richmond Hospital</Line1>
+        <Line2>7000 Westminster Highway</Line2>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5512</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5366</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca/your-care/mental-health-substance-use/acute-short-term-treatment-services</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Acute Home Based Treatment (AHBT) Program</Name>
+        <Key>53414007</Key>
+        <Description>Offers short-term, in-home acute psychiatric care for adults with increased symptoms or distress related to mental illness or substance use, as an alternative to hospitalization. Designed to provide individuals who are currently experiencing a psychiatric crisis the opportunity of choosing where they get their acute psychiatric treatment. A referral is required from a medical professional. Serves Richmond.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5512</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5366</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RP-6400.0200</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'OUTREACH'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',what:'OUTREACH',why:'addiction (alcohol and drug)'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-22" DateLastVerified="2017-11-22" DateOfLastAction="2017-11-22" />
+        <URL>
+          <Address>www.vch.ca/your-care/mental-health-substance-use/acute-short-term-treatment-services</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1686899, -123.1469364</Datum>
+        <Latitude>49.1686899</Latitude>
+        <Longitude>-123.1469364</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>53438930</Key>
+      <Name>Youth Clinic - Richmond Public Health</Name>
+      <SiteDescription>Provides free, confidential information and education regarding sexuality and health to youth ages 12 to 20. Services include birth control, emergency contraception, and pregnancy testing and counselling, as well as testing and treatment of sexually transmitted infections, pap tests, testing for HIV, and mental health and substance use counselling. Also refers youth to community support services such as counsellors and youth workers. BC Care Card is not needed to access these services. Serves Richmond. No referral required. Hours are 1 pm to 4 pm Tuesdays (drop-in or appointment); clinic is closed July through August.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>8100 Granville Avenue</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>8100 Granville Avenue</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 3T6</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-233-3204</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Youth Clinic - Richmond Public Health</Name>
+        <Key>53438930</Key>
+        <Description>Provides free, confidential information and education regarding sexuality and health to youth ages 12 to 20. Services include birth control, emergency contraception, and pregnancy testing and counselling, as well as testing and treatment of sexually transmitted infections, pap tests, testing for HIV, and mental health and substance use counselling. Also refers youth to community support services such as counsellors and youth workers. BC Care Card is not needed to access these services. Serves Richmond. No referral required. Hours are 1 pm to 4 pm Tuesdays (drop-in or appointment); clinic is closed July through August.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-233-3204</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>LJ-2000.6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LJ-2000.6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LN-1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LN-1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LT-1750.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LT-1750.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-1400.2500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-9500.0500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'pregnancy',why:'pro-choice',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'sexually transmitted infections',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'pregnancy',who:'Women'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'pregnancy',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'BIRTH CONTROL'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'FREE MEDICAL CLINICS'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'FREE MEDICAL CLINICS',who:'Youth'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HEALTH CARE (medical)',why:'sexually transmitted infections'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'birth control'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'birth control',who:'Youth'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-24" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1623302, -123.1350106</Datum>
+        <Latitude>49.1623302</Latitude>
+        <Longitude>-123.1350106</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site LegalStatus="None or unknown">
+      <Key>53438963</Key>
+      <Name>Older Adult Mental Health and Substance Use Services - Richmond</Name>
+      <SiteDescription>Provides central intake services for mental health and substance use services, which provide a range of health care and support services for older adults ages 60&amp;amp;nbsp;and up with mental health and/or substance use issues. Services include assessment, treatment, counselling, education, and referral to community resources. Also provides counselling to individuals who are concerned about someone else’s substance use. In addition, provides access to other specialty substance use and mental health services. Open referral. Serves Richmond. Hours are 8:15 am to 4:15 pm Monday to Friday.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>210-7671 Alderbridge Way</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1Z9</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>210-7671 Alderbridge Way</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6X 1Z9</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-675-3975</PhoneNumber>
+        <Type>Central Intake</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-270-6507</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Older Adult Mental Health and Substance Use Services - Richmond</Name>
+        <Key>53438963</Key>
+        <Description>Provides central intake services for mental health and substance use services, which provide a range of health care and support services for older adults ages 60&amp;amp;nbsp;and up with mental health and/or substance use issues. Services include assessment, treatment, counselling, education, and referral to community resources. Also provides counselling to individuals who are concerned about someone else’s substance use. In addition, provides access to other specialty substance use and mental health services. Open referral. Serves Richmond. Hours are 8:15 am to 4:15 pm Monday to Friday.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-675-3975</PhoneNumber>
+          <Type>Central Intake</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-270-6507</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>RP-1500.3300</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RX-8250</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RX-8450.8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YF-5000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>YB-8000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>RP-6400.2700</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'addiction (alcohol and drug)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'ASSESSMENT',why:'suicide',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'addiction (alcohol and drug)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',why:'addiction (alcohol and drug)',why:'seniors',who:'Significant Others'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'COUNSELLING',what:'HEALTH CARE (medical)',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'addiction (alcohol and drug)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'EDUCATION (public awareness)',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'counselling',why:'addiction (alcohol and drug)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTAKE',why:'counselling',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'emergency',why:'disability (mental health)',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'suicide',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-24" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1743879, -123.1439394</Datum>
+        <Latitude>49.1743879</Latitude>
+        <Longitude>-123.1439394</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site>
+      <Key>53439018</Key>
+      <Name>Minoru Residence</Name>
+      <SiteDescription>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>7333 Gollner Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 1Y4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>7333 Gollner Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V6Y 1Y4</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5300</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Home Health Office - Richmond</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-244-5305</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Minoru Residence</Name>
+        <Key>53439018</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5300</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-244-5305</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-24" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1687972, -123.1422803</Datum>
+        <Latitude>49.1687972</Latitude>
+        <Longitude>-123.1422803</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site>
+      <Key>53439019</Key>
+      <Name>Austin Harris Residence</Name>
+      <SiteDescription>Provides semi-independent housing for older adults ages 55 and up who require assistance with day-to-day activities such as medications, bathing, or life skills. Housing is intended for people who are able to make the range of decisions that allow them to live safely in a supportive, semi-independent environment. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Rent is 70 percent of applicant&amp;#39;s after-tax income. Registered with the Assisted Living Registry, Ministry of Health. Funded by BC Housing.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>5411 Moncton Street</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7E 0A8</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>5411 Moncton Street</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7E 0A8</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-277-9819</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Home Health Office - Richmond</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-277-8834</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Austin Harris Residence</Name>
+        <Key>53439019</Key>
+        <Description>Provides semi-independent housing for older adults ages 55 and up who require assistance with day-to-day activities such as medications, bathing, or life skills. Housing is intended for people who are able to make the range of decisions that allow them to live safely in a supportive, semi-independent environment. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Rent is 70 percent of applicant&amp;#39;s after-tax income. Registered with the Assisted Living Registry, Ministry of Health. Funded by BC Housing.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-277-9819</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-277-8834</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOUSING (supportive)',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOUSING (supportive)',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOUSING (supportive)',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'HOUSING (supportive)',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-24" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.125784, -123.164337</Datum>
+        <Latitude>49.125784</Latitude>
+        <Longitude>-123.164337</Longitude>
+      </SpatialLocation>
+    </Site>
+    <Site>
+      <Key>53489235</Key>
+      <Name>Rosewood Manor</Name>
+      <SiteDescription>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care; includes a specialty dementia unit. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</SiteDescription>
+      <PhysicalAddress Confidential="false">
+        <Line1>6260 Blundell Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7C 5C4</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>6260 Blundell Road</Line1>
+        <City>Richmond</City>
+        <State>BC</State>
+        <ZipCode>V7C 5C4</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-271-3590</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-278-3361</PhoneNumber>
+        <Type>Home Health Office - Richmond</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-271-3551</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.vch.ca</Address>
+        <Note />
+      </URL>
+      <SiteService>
+        <Name>Rosewood Manor</Name>
+        <Key>9493390</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care; includes a specialty dementia unit. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Governed by Richmond Intermediate Care Society. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3590</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3551</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1999-11-30" DateLastVerified="2017-11-24" DateOfLastAction="2017-11-24" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SiteService>
+        <Name>Rosewood Manor</Name>
+        <Key>53489235</Key>
+        <Description>Residential care facility for adults ages 19 and up with complex health care needs who require 24-hour care; includes a specialty dementia unit. Services include nursing and personal care, medication administration, meals, laundry service, and social and recreational activities. Referral required from Home Health office following a health care needs assessment; do not contact the facility directly. Monthly rate is up to 80 percent of client&amp;#39;s after-tax income. Funded by Vancouver Coastal Health.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3590</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-278-3361</PhoneNumber>
+          <Type>Home Health Office - Richmond</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-271-3551</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>BH-8400.6000</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'alzheimers disease',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'disability',who:'Seniors'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RESIDENTIAL CARE',why:'health conditions',who:'Seniors'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Richmond</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="2017-11-28" DateLastVerified="2017-11-24" DateOfLastAction="2017-12-22" />
+        <URL>
+          <Address>www.vch.ca</Address>
+          <Note />
+        </URL>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.1551114, -123.1549939</Datum>
+        <Latitude>49.1551114</Latitude>
+        <Longitude>-123.1549939</Longitude>
+      </SpatialLocation>
+    </Site>
+    <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1998-09-23" DateLastVerified="2017-11-23" DateOfLastAction="2017-11-23">
+      <Contact Type="Main Contact">
+        <Title>what:'ADMINISTRATION',why:'health care (medical)'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'HEALTH AUTHORITIES'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'EDUCATION (public awareness)',why:'equipment',why:'overdose'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'EDUCATION (public awareness)',why:'overdose'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'EQUIPMENT',why:'overdose'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+    </ResourceInfo>
+    <SpatialLocation>
+      <Datum>49.170091, -123.146412</Datum>
+      <Latitude>49.170091</Latitude>
+      <Longitude>-123.146412</Longitude>
+    </SpatialLocation>
+    <GeographicAreaServed>
+      <City>Richmond</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+  </Agency>
+</Source>
