@@ -1,10 +1,6 @@
-def log_taxonomies(stream, tasks_fixture, articles_fixture):
+def log_taxonomies(stream, tasks_fixture):
     stream.write('\nTaxonomy terms for tasks\n\n')
     lines = build_and_sort_taxonomy_log_lines(tasks_fixture)
-    print_log_lines(stream, lines)
-
-    stream.write('\nTaxonomy terms for articles\n\n')
-    lines = build_and_sort_taxonomy_log_lines(articles_fixture)
     print_log_lines(stream, lines)
 
 
@@ -39,13 +35,9 @@ def format_taxonomies(value):
     return ', '.join(result)
 
 
-def log_locales(stream, tasks_fixture, articles_fixture):
+def log_locales(stream, tasks_fixture):
     stream.write('\nLocales for tasks\n\n')
     lines = build_and_sort_locale_log_lines(tasks_fixture)
-    print_log_lines(stream, lines)
-
-    stream.write('\nLocales for articles\n\n')
-    lines = build_and_sort_locale_log_lines(articles_fixture)
     print_log_lines(stream, lines)
 
 
