@@ -1,5 +1,6 @@
 from django.test import TestCase
-from newcomers_guide.clean_data import clean_up_http_links, clean_up_email_links, clean_up_newlines
+from newcomers_guide.clean_data import (clean_up_http_links, clean_up_email_links,
+                                        clean_up_newlines, replace_unicode_newlines)
 
 # Need to replace single newlines with space, except when the line before
 # and/or after is a list item or heading. This is because the markdown
@@ -30,6 +31,10 @@ from newcomers_guide.clean_data import clean_up_http_links, clean_up_email_links
 
 
 class CleanUpNewlinesTest(TestCase):
+    def test_replaces_unicode_newlines(self):
+        text = 'abc\u2028def'
+        self.assertEqual(replace_unicode_newlines(text), 'abc\ndef')
+
     def test_removes_carriage_returns(self):
         text = 'abc\rdef'
         self.assertEqual(clean_up_newlines(text), 'abcdef')
