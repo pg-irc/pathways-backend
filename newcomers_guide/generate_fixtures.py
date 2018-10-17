@@ -25,25 +25,6 @@ def generate_task_fixture(tasks):
             footer)
 
 
-def generate_article_fixture(articles):
-    header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/articles.ts\n'
-              '// tslint:disable:quotemark trailing-comma max-line-length\n'
-              '\n'
-              'import { ArticleStore } from \'../types/articles\';\n'
-              '\n'
-              'export const buildArticlesFixture = (): ArticleStore => ({\n'
-              )
-
-    footer = '});'
-
-    articles_as_json = 'articles: ' + json.dumps(articles,
-                                                 ensure_ascii=False,
-                                                 sort_keys=True,
-                                                 indent=4)
-
-    return header + add_leading_spaces(8, articles_as_json) + footer
-
-
 def generate_taxonomy_fixture(taxonomies):
     header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/taxonomies.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'

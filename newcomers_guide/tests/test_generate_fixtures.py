@@ -1,6 +1,5 @@
 from django.test import TestCase
-from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_article_fixture,
-                                               generate_taxonomy_fixture)
+from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_taxonomy_fixture)
 from newcomers_guide.parse_data import TaxonomyTermReference
 
 
@@ -48,60 +47,6 @@ class GenerateFixtureTest(TestCase):
                     '    });\n'
                     '};')
         self.assertEqual(generate_task_fixture(data), expected)
-
-    def test_generate_article_fixture(self):
-        self.maxDiff = None
-        data = {
-            'About Elementary school': {
-                'id': 'About Elementary school',
-                'title': {
-                    'en': 'Elementary school'
-                },
-                'description': {
-                    'en': 'the content of Elementary school'
-                },
-                'taxonomyTerms': [{
-                    'taxonomyId': 'explore',
-                    'taxonomyTermId': 'Education'
-                }],
-                'relatedTasks': ['t1', 't2', 't3'],
-                'relatedArticles': ['a2'],
-                'starred': False
-            }
-        }
-        expected = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/articles.ts\n'
-                    '// tslint:disable:quotemark trailing-comma max-line-length\n'
-                    '\n'
-                    'import { ArticleStore } from \'../types/articles\';\n'
-                    '\n'
-                    'export const buildArticlesFixture = (): ArticleStore => ({\n'
-                    '        articles: {\n'
-                    '            "About Elementary school": {\n'
-                    '                "description": {\n'
-                    '                    "en": "the content of Elementary school"\n'
-                    '                },\n'
-                    '                "id": "About Elementary school",\n'
-                    '                "relatedArticles": [\n'
-                    '                    "a2"\n'
-                    '                ],\n'
-                    '                "relatedTasks": [\n'
-                    '                    "t1",\n'
-                    '                    "t2",\n'
-                    '                    "t3"\n'
-                    '                ],\n'
-                    '                "starred": false,\n'
-                    '                "taxonomyTerms": [\n'
-                    '                    {\n'
-                    '                        "taxonomyId": "explore",\n'
-                    '                        "taxonomyTermId": "Education"\n'
-                    '                    }\n'
-                    '                ],\n'
-                    '                "title": {\n'
-                    '                    "en": "Elementary school"\n'
-                    '                }\n'
-                    '            }\n'
-                    '        }});')
-        self.assertEqual(generate_article_fixture(data), expected)
 
     def test_generated_taxonomy_fixture(self):
         self.maxDiff = None

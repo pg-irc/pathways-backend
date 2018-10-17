@@ -16,27 +16,11 @@ def parse_task_files(file_specs):
         parsed_path = parse_file_path(path)
         task_id = parsed_path.id
 
-        if parsed_path.type == 'tasks':
+        if parsed_path.type == 'tasks' or parsed_path.type == 'articles':
             ensure_builder_exists_for_task(builders, task_id)
             add_properties_for_locale(builders[task_id], parsed_path, description)
 
     return make_task_map(builders)
-
-
-def parse_article_files(file_specs):
-    builders = {}
-    for spec in file_specs:
-        path = spec[0]
-        description = clean_text(spec[1])
-
-        parsed_path = parse_file_path(path)
-        article_id = parsed_path.id
-
-        if parsed_path.type == 'articles':
-            ensure_builder_exists_for_article(builders, article_id)
-            add_properties_for_locale(builders[article_id], parsed_path, description)
-
-    return make_article_map(builders)
 
 
 def parse_file_path(path):
@@ -108,7 +92,6 @@ class TaskBuilder:
     def __init__(self):
         self.task = {
             'relatedTasks': [],
-            'relatedArticles': [],
             'serviceQuery': '',
             'completed': False
         }
@@ -154,62 +137,12 @@ def make_task_map(builders):
     }
 
 
-def ensure_builder_exists_for_article(builders, article_id):
-    if article_id not in builders:
-        builders[article_id] = ArticleBuilder()
-        builders[article_id].set_id(article_id)
-
-
-class ArticleBuilder:
-    def __init__(self):
-        self.article = {
-            'relatedTasks': [],
-            'relatedArticles': [],
-            'starred': False,
-        }
-
-    def get_id(self):
-        return self.article['id']
-
-    def set_id(self, the_id):
-        self.article['id'] = the_id
-        return self
-
-    def set_chapter(self, chapter):
-        self.article['chapter'] = chapter
-        return self
-
-    def set_title_in_locale(self, locale, title):
-        self.ensure_key_exist('title')
-        self.article['title'][locale] = title
-        return self
-
-    def set_description_in_locale(self, locale, description):
-        self.ensure_key_exist('description')
-        self.article['description'][locale] = description
-        return self
-
-    def ensure_key_exist(self, key):
-        if key not in self.article:
-            self.article[key] = {}
-
-    def to_article(self):
-        return self.article
-
-
 def add_properties_for_locale(builder, parsed_path, description):
     locale = parsed_path.locale
     chapter = parsed_path.chapter
     builder.set_chapter(chapter)
     builder.set_title_in_locale(locale, parsed_path.title)
     builder.set_description_in_locale(locale, description)
-
-
-def make_article_map(builders):
-    articles = {}
-    for key in builders:
-        articles[key] = builders[key].to_article()
-    return articles
 
 
 def parse_taxonomy_files(file_specs):
