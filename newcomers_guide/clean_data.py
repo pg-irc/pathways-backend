@@ -2,6 +2,7 @@ import re
 
 
 def clean_up_newlines(text):
+    text = replace_unicode_newlines(text)
     text = remove_carriage_returns(text)
     text = remove_whitespace_between_newlines(text)
     text = remove_duplicate_space_within_lines(text)
@@ -13,6 +14,11 @@ def clean_up_newlines(text):
     text = protect_multiple_newlines(text)
     text = replace_newlines_with_space(text)
     return unprotect_newlines(text)
+
+
+def replace_unicode_newlines(text):
+    unicode_newline = r'\u2028'
+    return re.sub(unicode_newline, r'\n', text)
 
 
 def remove_carriage_returns(text):
