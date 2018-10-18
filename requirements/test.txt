@@ -2,7 +2,7 @@
 -r base.txt
 
 django-test-plus==1.1.1
-pytest-django==3.4.2
+pytest-django==3.4.3
 pytest-sugar==0.9.1
 behave==1.2.6
 behave-django==1.1.0
