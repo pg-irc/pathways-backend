@@ -4,12 +4,12 @@ from common.models import (ValidateOnSaveMixin, OptionalCharField,
 
 
 class Address(ValidateOnSaveMixin, models.Model):
-    city = RequiredCharField(max_length=200)
-    country = RequiredCharField(max_length=2)
     attention = OptionalCharField(max_length=200)
     address = OptionalTextField()
+    city = RequiredCharField(max_length=200)
     state_province = OptionalCharField(max_length=200)
     postal_code = OptionalCharField(max_length=200)
+    country = RequiredCharField(max_length=2)
 
     def __str__(self):
         return '{address}, {city} {state_province}, {country} {postal_code}'.format(

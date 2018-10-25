@@ -163,3 +163,33 @@ class PhoneAtLocation(unittest.TestCase):
     def test_throws_on_missing_phone_number(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.PhoneAtLocation(phone_number_type_id=a_string(), location_id=a_string())
+
+
+class Address(unittest.TestCase):
+    def test_can_create(self):
+        address = dtos.Address(location_id='location_id', address_type_id='address_type_id',
+                               city='city', country='country', address_lines='address_lines',
+                               state_province='state_province', postal_code='postal_code')
+        self.assertEqual(address.location_id, 'location_id')
+        self.assertEqual(address.address_type_id, 'address_type_id')
+        self.assertEqual(address.city, 'city')
+        self.assertEqual(address.country, 'country')
+        self.assertEqual(address.address_lines, 'address_lines')
+        self.assertEqual(address.state_province, 'state_province')
+        self.assertEqual(address.postal_code, 'postal_code')
+
+    def test_throws_on_missing_location_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.Address(address_type_id=a_string(), city=a_string(), country=a_string())
+
+    def test_throws_on_missing_address_type_id(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.Address(location_id=a_string(), city=a_string(), country=a_string())
+
+    def test_throws_on_missing_city(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.Address(location_id=a_string(), address_type_id=a_string(), country=a_string())
+
+    def test_throws_on_missing_country(self):
+        with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
+            dtos.Address(location_id=a_string(), address_type_id=a_string(), city=a_string())
