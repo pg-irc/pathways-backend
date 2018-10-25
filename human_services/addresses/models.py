@@ -1,14 +1,15 @@
 from django.db import models
-from common.models import ValidateOnSaveMixin, OptionalCharField, RequiredCharField
+from common.models import (ValidateOnSaveMixin, OptionalCharField,
+                           OptionalTextField, RequiredCharField)
 
 
 class Address(ValidateOnSaveMixin, models.Model):
-    attention = OptionalCharField(max_length=200)
-    address = models.TextField()
     city = RequiredCharField(max_length=200)
+    country = RequiredCharField(max_length=2)
+    attention = OptionalCharField(max_length=200)
+    address = OptionalTextField()
     state_province = OptionalCharField(max_length=200)
     postal_code = OptionalCharField(max_length=200)
-    country = RequiredCharField(max_length=2)
 
     def __str__(self):
         return '{address}, {city} {state_province}, {country} {postal_code}'.format(

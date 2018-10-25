@@ -58,6 +58,17 @@ class OptionalCharField(models.CharField):
         kwargs.pop('blank', None)
         return name, path, args, kwargs
 
+class OptionalTextField(models.TextField):
+    def __init__(self, *args, **kwargs):
+        kwargs['null'] = True
+        kwargs['blank'] = True
+        super(OptionalTextField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(OptionalTextField, self).deconstruct()
+        kwargs.pop('null', None)
+        kwargs.pop('blank', None)
+        return name, path, args, kwargs
 
 class RequiredCharField(models.CharField):
     def __init__(self, *args, **kwargs):
