@@ -129,6 +129,9 @@ class ParseTaxonomyFileTests(TestCase):
     def test_discards_whitespace(self):
         self.assertEqual(parse_taxonomy_terms(' foo:bar ')[0].taxonomy_term_id, 'bar')
 
+    def test_discards_newlines(self):
+        self.assertEqual(parse_taxonomy_terms('foo:bar\n')[0].taxonomy_term_id, 'bar')
+
     def test_can_parse_multiple_terms(self):
         self.assertEqual(parse_taxonomy_terms('foo:bar, baz:zup')[1].taxonomy_id, 'baz')
 
