@@ -294,6 +294,19 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
+    def test_fails_silently_on_missing_city(self):
+        xml_address = '''
+            <Site>
+                <MailingAddress>
+                    <Line1>Line1</Line1>
+                    <Country>Country</Country>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        site_id = a_string()
+        self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
+
     def test_fails_silently_on_empty_country(self):
         xml_address = '''
             <Site>
@@ -301,6 +314,19 @@ class AddressParserTests(unittest.TestCase):
                     <Line1>Line1</Line1>
                     <City>City</City>
                     <Country />
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        site_id = a_string()
+        self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
+
+    def test_fails_silently_on_missing_country(self):
+        xml_address = '''
+            <Site>
+                <MailingAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
                 </MailingAddress>
             </Site>'''
         root = etree.fromstring(xml_address)

@@ -193,3 +193,18 @@ class Address(unittest.TestCase):
     def test_throws_on_missing_country(self):
         with self.assertRaises(exceptions.MissingRequiredFieldXmlParseException):
             dtos.Address(location_id=a_string(), address_type_id=a_string(), city=a_string())
+
+    def test_can_create_with_no_address_lines(self):
+        address = dtos.Address(address_type_id=a_string(), location_id=a_string(), city=a_string(),
+                               country=a_string(), state_province=a_string(), postal_code=a_string())
+        self.assertIsNone(address.address_lines)
+
+    def test_can_create_with_no_state_province(self):
+        address = dtos.Address(address_type_id=a_string(), location_id=a_string(), city=a_string(),
+                               country=a_string(), address_lines=a_string(), postal_code=a_string())
+        self.assertIsNone(address.state_province)
+
+    def test_can_create_with_no_postal_code(self):
+        address = dtos.Address(address_type_id=a_string(), location_id=a_string(), city=a_string(),
+                               country=a_string(), address_lines=a_string(), state_province=a_string())
+        self.assertIsNone(address.postal_code)

@@ -218,22 +218,29 @@ def parse_postal_address(site_xml, site_id):
 
 def parse_address(address, site_id, address_type_id):
     city = parse_city(address)
+    if not city:
+        return None
     country = parse_country(address)
-    if city and country:
-        return dtos.Address(location_id=site_id, address_type_id=address_type_id, city=city, country=country,
-                            address_lines=parse_address_lines(address), state_province=parse_state_province(address),
-                            postal_code=parse_postal_code(address))
-    return None
+    if not country:
+        return None
+    return dtos.Address(location_id=site_id, address_type_id=address_type_id, city=city,
+                        country=country, address_lines=parse_address_lines(address),
+                        state_province=parse_state_province(address),
+                        postal_code=parse_postal_code(address))
 
 
 def parse_address_lines(address):
     sorted_address_children = sorted(address.getchildren(), key=lambda child: child.tag)
     address_line_tags = [child.tag for child in sorted_address_children if re.match('Line[1-9]', child.tag)]
+    if not address_line_tags:
+        return None
     address_line_tag_values = [parse_optional_field(address, tag) for tag in address_line_tags]
-    none_empty_address_lines = [address_line for address_line in address_line_tag_values if address_line]
-    if none_empty_address_lines:
-        return '\n'.join(none_empty_address_lines)
-    return None
+    if not address_line_tag_values:
+        return None
+    non_empty_address_lines = [address_line for address_line in address_line_tag_values if address_line]
+    if not non_empty_address_lines:
+        return None
+    return '\n'.join(non_empty_address_lines)
 
 
 def parse_city(address):
