@@ -107,6 +107,11 @@ class TaskBuilder:
         self.task['chapter'] = chapter
         return self
 
+    def get_chapter(self):
+        if 'chapter' not in self.task:
+            return None
+        return self.task['chapter']
+
     def set_title_in_locale(self, locale, title):
         self.ensure_key_exist('title')
         self.task['title'][locale] = title
@@ -140,6 +145,10 @@ def make_task_map(builders):
 def add_properties_for_locale(builder, parsed_path, description):
     locale = parsed_path.locale
     chapter = parsed_path.chapter
+    builder_chapter = builder.get_chapter()
+    if builder_chapter and builder_chapter != chapter:
+        message = parsed_path.id + ': don\'t use the same task id in different chapters'
+        raise exceptions.ValidationError(message)
     builder.set_chapter(chapter)
     builder.set_title_in_locale(locale, parsed_path.title)
     builder.set_description_in_locale(locale, description)
