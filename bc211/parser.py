@@ -92,8 +92,8 @@ def parse_site(site, organization_id):
     description = parse_site_description(site)
     spatial_location = parse_spatial_location_if_defined(site)
     services = parse_service_list(site, organization_id, id)
-    physical_address = parse_physical_address(site, id, name)
-    postal_address = parse_postal_address(site, id, name)
+    physical_address = parse_physical_address(site, id)
+    postal_address = parse_postal_address(site, id)
     phone_numbers = parse_site_phone_number_list(site, id)
     LOGGER.debug('Location: %s %s', id, name)
     return dtos.Location(id=id, name=name, organization_id=organization_id,
@@ -202,67 +202,53 @@ def parse_airs_taxonomy_term(code_str):
     yield dtos.TaxonomyTerm(taxonomy_id=taxonomy_id, name=code_str)
 
 
-def parse_physical_address(site_xml, site_id, site_name):
-    type_id = 'physical_address'
-    return parse_address_and_handle_errors(site_xml.find('PhysicalAddress'), site_id, site_name, type_id)
+def parse_physical_address(site_xml, site_id):
+    physical_address = site_xml.find('PhysicalAddress')
+    if physical_address:
+        return parse_address(physical_address, site_id, 'physical_address')
+    return None
 
 
-def parse_postal_address(site_xml, site_id, site_name):
-    type_id = 'postal_address'
-    return parse_address_and_handle_errors(site_xml.find('MailingAddress'), site_id, site_name, type_id)
-
-
-def parse_address_and_handle_errors(address, site_id, site_name, address_type_id):
-    try:
-        return parse_address(address, site_id, address_type_id)
-    except MissingRequiredFieldXmlParseException as error:
-        LOGGER.warning('Failed to parse address for\n\tlocation %s (%s):\n\t%s',
-                       site_id, site_name, error)
+def parse_postal_address(site_xml, site_id):
+    postal_address = site_xml.find('MailingAddress')
+    if postal_address:
+        return parse_address(postal_address, site_id, 'postal_address')
     return None
 
 
 def parse_address(address, site_id, address_type_id):
-    if not address:
-        raise MissingRequiredFieldXmlParseException('No {} element found'.format(address_type_id))
-    address_lines = parse_address_lines(address)
     city = parse_city(address)
-    country = parse_country(address)
-
-    if not address_lines and not city:
+    if not city:
         return None
-
-    if not address_lines or not city or not country:
-        message = 'Parsed "{}" for address, "{}" for city, and "{}" for country.'.format(address_lines, city, country)
-        raise MissingRequiredFieldXmlParseException(message)
-
-    state_province = parse_state_province(address)
-    postal_code = parse_postal_code(address)
-    return dtos.Address(location_id=site_id, address_lines=address_lines,
-                        city=city, state_province=state_province, postal_code=postal_code,
-                        country=country, address_type_id=address_type_id)
+    country = parse_country(address)
+    if not country:
+        return None
+    return dtos.Address(location_id=site_id, address_type_id=address_type_id, city=city,
+                        country=country, address_lines=parse_address_lines(address),
+                        state_province=parse_state_province(address),
+                        postal_code=parse_postal_code(address))
 
 
 def parse_address_lines(address):
-    line_1 = parse_required_field(address, 'Line1')
-    if not line_1:
+    sorted_address_children = sorted(address.getchildren(), key=lambda child: child.tag)
+    address_line_tags = [child.tag for child in sorted_address_children if re.match('Line[1-9]', child.tag)]
+    if not address_line_tags:
         return None
-    address_lines = [line_1]
-    address_children = sorted(address.getchildren(), key=lambda child: child.tag)
-    for child in address_children:
-        if re.match("Line[2-4]", child.tag):
-            address_line = parse_required_field(address, child.tag)
-            address_lines.append(address_line)
-        if re.match("Line[5-9]", child.tag):
-            LOGGER.warning('Tag %s encountered and has not been parsed.', child.tag)
-    return '\n'.join(address_lines)
+    address_line_tag_values = [parse_optional_field(address, tag) for tag in address_line_tags]
+    if not address_line_tag_values:
+        return None
+    non_empty_address_lines = [address_line for address_line in address_line_tag_values if address_line]
+    if not non_empty_address_lines:
+        return None
+    return '\n'.join(non_empty_address_lines)
 
 
 def parse_city(address):
-    return parse_required_field(address, 'City')
+    return parse_optional_field(address, 'City')
 
 
 def parse_country(address):
-    return parse_required_field(address, 'Country')
+    return parse_optional_field(address, 'Country')
 
 
 def parse_state_province(address):

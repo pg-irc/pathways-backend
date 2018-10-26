@@ -21,7 +21,7 @@ class TestImportBc211Data(TestCase):
         call_command('import_bc211_data', MULTI_AGENCY_FIXTURE, stdout=out)
         expected = ('Successfully imported 16 organization(s), '
                     '40 location(s), 40 service(s), '
-                    '134 taxonomy term(s), 32 address(es), 5 phone number type(s), '
+                    '134 taxonomy term(s), 36 address(es), 5 phone number type(s), '
                     'and 86 phone number(s)')
         self.assertIn(expected, out.getvalue())
 

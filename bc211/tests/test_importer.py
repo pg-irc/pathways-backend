@@ -136,6 +136,6 @@ class FullDataImportTests(TestCase):
         self.assertEqual(self.return_value.organization_count, 16)
         self.assertEqual(self.return_value.location_count, 40)
         self.assertEqual(self.return_value.taxonomy_term_count, 134)
-        self.assertEqual(self.return_value.address_count, 32)
+        self.assertEqual(self.return_value.address_count, 36)
         self.assertEqual(self.return_value.phone_number_types_count, 5)
         self.assertEqual(self.return_value.phone_at_location_count, 86)

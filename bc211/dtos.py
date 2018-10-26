@@ -47,13 +47,13 @@ class TaxonomyTerm:
 
 class Address:
     def __init__(self, **kwargs):
-        self.address_lines = validate.required_string('address_lines', kwargs)
+        self.address_lines = validate.optional_string('address_lines', kwargs)
         self.city = validate.required_string('city', kwargs)
+        self.state_province = validate.optional_string('state_province', kwargs)
+        self.postal_code = validate.optional_string('postal_code', kwargs)
         self.country = validate.required_string('country', kwargs)
         self.location_id = validate.required_string('location_id', kwargs)
         self.address_type_id = validate.required_string('address_type_id', kwargs)
-        self.state_province = validate.optional_string('state_province', kwargs)
-        self.postal_code = validate.optional_string('postal_code', kwargs)
 
 class PhoneAtLocation:
     def __init__(self, **kwargs):

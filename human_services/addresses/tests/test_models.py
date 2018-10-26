@@ -14,9 +14,9 @@ class TestAddressModel(TestCase):
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.address, address.address)
 
-    def test_address_field_cannot_be_empty(self):
-        with self.assertRaises(exceptions.ValidationError):
-            AddressBuilder().with_address('').create()
+    def test_empty_address_field_saves_as_null(self):
+        AddressBuilder().with_address('').create()
+        self.assertTrue(Address.objects.first().address is None)
 
     def test_has_city_field(self):
         address = AddressBuilder().build()
