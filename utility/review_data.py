@@ -93,16 +93,27 @@ def compare_emails(target_text, reference_text):
     return compare_pattern_content(pattern, 'email address', target_text, reference_text)
 
 
+PHONE_NUMBER_PATTERN = r'\d[\d\- ]{5,}\d'
+
+
 def compare_phone_numbers(target_text, reference_text):
-    pattern = r'\d[\d\- ]{5,}\d'
-    return compare_pattern_content(pattern, 'phone number', target_text, reference_text)
+    return compare_pattern_content(PHONE_NUMBER_PATTERN, 'phone number',
+                                   target_text, reference_text)
 
 
 def compare_pattern_content(pattern, data_type, target_text, reference_text):
+    zipped_matches = compute_pattern_mismatches(pattern, target_text, reference_text)
+    return [difference_message(data_type, target, reference) for target, reference in zipped_matches]
+
+
+def compute_pattern_mismatches(pattern, target_text, reference_text):
     target_matches = re.findall(pattern, target_text)
     reference_matches = re.findall(pattern, reference_text)
-    zipped_matches = zip_longest(target_matches, reference_matches)
-    return [difference_message(data_type, target, reference) for target, reference in zipped_matches]
+    return zip_longest(target_matches, reference_matches)
+
+
+def compute_phone_number_mismatches(target_text, reference_text):
+    return compute_pattern_mismatches(PHONE_NUMBER_PATTERN, target_text, reference_text)
 
 
 def difference_message(data_type, target, reference):

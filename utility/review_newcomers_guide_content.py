@@ -17,7 +17,7 @@ def main():
             print(
                 (
                     'Reviewing file {0}\nReference is   {1}:\n\nDifferences:\n{2}\n\n'
-                    'T: Edit target file; R: Edit reference file; N: Go to next file (T/R/N): '
+                    'T: Edit target file; R: Edit reference file; P: Fix phone numbers; N: Go to next file (T/R/P/N): '
                 ).format(
                     pair.target_file, pair.reference_file, diff
                 )
@@ -28,6 +28,9 @@ def main():
 
             elif reply in ('r', 'R'):
                 edit_reference_file(args, pair)
+
+            elif reply in ('p', 'P'):
+                fix_phone_numbers_in_target_file(pair)
 
 
 def edit_target_file(args, pair):
@@ -46,9 +49,37 @@ def edit_file(editor, file_to_edit, file_to_compare, file_to_compare_label):
     os.system(command)
 
 
+def fix_phone_numbers_in_target_file(pair):
+    reference_text = read_file_content(pair.reference_file)
+    target_text = read_file_content(pair.target_file)
+    phone_mismatches = review_data.compute_phone_number_mismatches(target_text, reference_text)
+    dirty = False
+    for target_phone, reference_phone in phone_mismatches:
+        print('Target has        "{}",'.format(target_phone))
+        print('but reference has "{}",'.format(reference_phone))
+        print('replace phone number in target text with phone number from reference? (y/N):')
+        reply = sys.stdin.readline().strip()
+        if reply in ('y', 'Y'):
+            target_text = target_text.replace(target_phone, reference_phone)
+            dirty = True
+    if dirty:
+        print('==== Updated file start ====')
+        print(target_text)
+        print('==== Updated file end ====\n')
+        print('Update the file on disk? (y/N):')
+        reply = sys.stdin.readline().strip()
+        if reply in ('y', 'Y'):
+            write_file_content(pair.target_file, target_text)
+
+
 def read_file_content(path):
     with open(path, 'r') as file:
         return file.read()
+
+
+def write_file_content(path, content):
+    with open(path, 'w') as file:
+        file.write(content)
 
 
 def find_files(root_dir):
