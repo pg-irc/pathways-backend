@@ -23,19 +23,27 @@ def main():
                 )
             )
             reply = sys.stdin.readline().strip()
-            if reply == 't' or reply == 'T':
-                print('==== Reference file start ====')
-                print(read_file_content(pair.reference_file))
-                print('==== Reference file end ====\n\n')
-                command = '{0} "{1}"'.format(args.editor, pair.target_file)
-                os.system(command)
+            if reply in ('t', 'T'):
+                edit_target_file(args, pair)
 
-            elif reply == 'r' or reply == 'R':
-                print('==== Target file start ====')
-                print(read_file_content(pair.target_file))
-                print('==== Target file end ====\n\n')
-                command = '{0} "{1}"'.format(args.editor, pair.reference_file)
-                os.system(command)
+            elif reply in ('r', 'R'):
+                edit_reference_file(args, pair)
+
+
+def edit_target_file(args, pair):
+    edit_file(args.editor, pair.target_file, pair.reference_file, 'Reference')
+
+
+def edit_reference_file(args, pair):
+    edit_file(args.editor, pair.reference_file, pair.target_file, 'Target')
+
+
+def edit_file(editor, file_to_edit, file_to_compare, file_to_compare_label):
+    print('==== {} file start ===='.format(file_to_compare_label))
+    print(read_file_content(file_to_compare))
+    print('==== {} file end ====\n\n'.format(file_to_compare_label))
+    command = '{0} "{1}"'.format(editor, file_to_edit)
+    os.system(command)
 
 
 def read_file_content(path):
