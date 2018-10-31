@@ -265,11 +265,19 @@ class CleanUpUrlLinksTest(TestCase):
         text = 'abc http://example.com, def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com), def')
 
+    def test_excludes_trailing_closing_parenthesis(self):
+        text = 'abc http://example.com) def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com)) def')
+
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
         text = 'abc foo@bar.com def'
         self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com) def')
+
+    def test_excludes_leading_opening_parenthesis(self):
+        text = 'abc (foo@bar.com def'
+        self.assertEqual(clean_up_email_links(text), 'abc ([email](mailto:foo@bar.com) def')
 
     def test_excludes_trailing_dot_from_link(self):
         text = 'abc foo@bar.com. Def'
@@ -278,3 +286,7 @@ class CleanUpMailtoLinksTest(TestCase):
     def test_excludes_trailing_comma_from_link(self):
         text = 'abc foo@bar.com, def'
         self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com), def')
+
+    def test_excludes_trailing_closing_parenthesis(self):
+        text = 'abc foo@bar.com) def'
+        self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com)) def')
