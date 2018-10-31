@@ -122,5 +122,10 @@ def difference_message(data_type, target, reference):
     elif not target:
         return 'missing {0} {1}, it\'s there in the reference'.format(data_type, reference)
     elif target != reference:
-        return 'contains {0} {1}, the reference has {2}'.format(data_type, target, reference)
+        target_line = 'contains {} '.format(data_type)
+        reference_line = 'the reference has '
+        longest = max(len(target_line), len(reference_line))
+        target_line = target_line.ljust(longest) + target
+        reference_line = reference_line.ljust(longest) + reference
+        return target_line + '\n' + reference_line + '\n'
     return ''

@@ -10,14 +10,22 @@ def main():
     args = parse_command_line()
     files = find_files(args.path)
     files = review_data.partition_files(args.reference_language, args.target_language, files)
-    for pair in files:
+
+    current_pair_index = 0
+    while current_pair_index < len(files):
+        pair = files[current_pair_index]
+        current_pair_index += 1
         diff = review_data.compare_data(read_file_content(pair.target_file),
                                         read_file_content(pair.reference_file))
         if diff != '':
             print(
                 (
                     'Reviewing file {0}\nReference is   {1}:\n\nDifferences:\n{2}\n\n'
-                    'T: Edit target file; R: Edit reference file; P: Fix phone numbers; N: Go to next file (T/R/P/N): '
+                    'T: Edit target file; '
+                    'R: Edit reference file; '
+                    'P: Fix phone numbers; '
+                    'B: Go to back to previous file; '
+                    'N: Go to next file (t/r/p/b/N): '
                 ).format(
                     pair.target_file, pair.reference_file, diff
                 )
@@ -31,6 +39,9 @@ def main():
 
             elif reply in ('p', 'P'):
                 fix_phone_numbers_in_target_file(pair)
+
+            elif reply in ('b', 'B'):
+                current_pair_index = max(0, current_pair_index - 2)
 
 
 def edit_target_file(args, pair):
