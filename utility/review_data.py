@@ -84,7 +84,7 @@ def count_instances(pattern, text):
 
 
 def compare_urls(target_text, reference_text):
-    pattern = r'https?[^\s]+'
+    pattern = r'https?[^\s]+[a-zA-Z]'
     return compare_pattern_content(pattern, 'link', target_text, reference_text)
 
 
@@ -122,6 +122,10 @@ def difference_message(data_type, target, reference):
 
     if not target:
         return 'missing {0} {1}, it\'s there in the reference'.format(data_type, reference)
+
+    https = re.compile('^https')
+    target = https.sub('http', target)
+    reference = https.sub('http', reference)
 
     if target != reference:
         target_line = 'contains {} '.format(data_type)
