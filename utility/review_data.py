@@ -119,13 +119,16 @@ def compute_phone_number_mismatches(target_text, reference_text):
 def difference_message(data_type, target, reference):
     if not reference:
         return 'extra {0} {1} is not there in the reference'.format(data_type, target)
-    elif not target:
+
+    if not target:
         return 'missing {0} {1}, it\'s there in the reference'.format(data_type, reference)
-    elif target != reference:
+
+    if target != reference:
         target_line = 'contains {} '.format(data_type)
         reference_line = 'the reference has '
         longest = max(len(target_line), len(reference_line))
         target_line = target_line.ljust(longest) + target
         reference_line = reference_line.ljust(longest) + reference
         return target_line + '\n' + reference_line + '\n'
+
     return ''

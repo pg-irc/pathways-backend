@@ -12,12 +12,14 @@ def main():
     files = review_data.partition_files(args.reference_language, args.target_language, files)
 
     current_pair_index = 0
+    history = []
     while current_pair_index < len(files):
         pair = files[current_pair_index]
         current_pair_index += 1
         diff = review_data.compare_data(read_file_content(pair.target_file),
                                         read_file_content(pair.reference_file))
         if diff != '':
+            history.append(current_pair_index - 1)
             print(
                 (
                     'Reviewing file {0}\nReference is   {1}:\n\nDifferences:\n{2}\n\n'
@@ -41,7 +43,14 @@ def main():
                 fix_phone_numbers_in_target_file(pair)
 
             elif reply in ('b', 'B'):
-                current_pair_index = max(0, current_pair_index - 2)
+                current_pair_index = pop_from(history)
+
+
+def pop_from(history):
+    if len(history) < 2:
+        return 0
+    history.pop()
+    return history.pop()
 
 
 def edit_target_file(args, pair):
