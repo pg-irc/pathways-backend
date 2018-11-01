@@ -6,14 +6,14 @@ def get_system_taxonomies():
     return {
         'explore':
         {
-            'settling_in': {'icon': 'sign-text'},
-            'education': {'icon': 'book-open-variant'},
-            'healthCare': {'icon': 'medical-bag'},
-            'money': {'icon': 'currency-usd'},
-            'housing': {'icon': 'home'},
+            'settling_in': {'icon': 'street-view'},
+            'education': {'icon': 'graduation-cap'},
+            'healthCare': {'icon': 'heartbeat'},
+            'money': {'icon': 'dollar'},
+            'housing': {'icon': 'building'},
             'employment': {'icon': 'briefcase'},
-            'legal': {'icon': 'gavel'},
+            'legal': {'icon': 'balance-scale'},
             'driving': {'icon': 'car'},
-            'helpForIndividualsAndFamilies': {'icon': 'account'}
+            'helpForIndividualsAndFamilies': {'icon': 'handshake-o'}
         },
     }
