@@ -22,14 +22,14 @@ def main():
             history.append(current_pair_index - 1)
             print(
                 (
-                    'Reviewing file {0}\nReference is   {1}:\n\nDifferences:\n{2}\n\n'
+                    'Reviewing file ({3}/{4}) {0}\nReference is   {1}:\n\nDifferences:\n{2}\n\n'
                     'T: Edit target file; '
                     'R: Edit reference file; '
                     'P: Fix phone numbers; '
                     'B: Go to back to previous file; '
                     'N: Go to next file (t/r/p/b/N): '
                 ).format(
-                    pair.target_file, pair.reference_file, diff
+                    pair.target_file, pair.reference_file, diff, current_pair_index-1, len(files)
                 )
             )
             reply = sys.stdin.readline().strip()
