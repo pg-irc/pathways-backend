@@ -111,6 +111,13 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(result['taskMap']['Registering_child_in_school']
                          ['title']['en'], 'Registering_in_public_school')
 
+    def test_throw_on_same_task_id_in_different_chapters(self):
+        first_path = 'some/path/chapter1/tasks/Registering_child_in_school/en.InEnglish.md'
+        second_path = 'some/path/chapter2/tasks/Registering_child_in_school/fr.InFrench.md'
+        error_message = 'Registering_child_in_school: don\'t use the same task id in different chapters'
+        with self.assertRaisesMessage(exceptions.ValidationError, error_message):
+            parse_task_files([[first_path, a_string()], [second_path, a_string()]])
+
     def test_parse_task_files_includes_article_content(self):
         task_path = 'some/path/chapter/tasks/To_learn_english/en.Learn_english.txt'
         article_path = 'some/path/chapter/articles/Human_rights/en.Human_rights.txt'
