@@ -47,6 +47,7 @@ LOCAL_APPS = [
     'human_services.services.apps.ServicesConfig',
     'human_services.addresses.apps.AddressesConfig',
     'human_services.phone_at_location.apps.PhoneAtLocationConfig',
+    'search.apps.SearchConfig',
     'users.apps.UsersConfig',
     'taxonomies.apps.TaxonomiesConfig',
     'translation.apps.ContentTranslationToolsConfig',
@@ -174,7 +175,9 @@ LOGGING = {
     },
 }
 
-gettext_noop = lambda s: s
+
+def gettext_noop(s): return s
+
 
 LANGUAGES = (
     ('en', gettext_noop('English')),
