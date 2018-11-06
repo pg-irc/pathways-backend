@@ -4,6 +4,8 @@ from textacy.vsm import Vectorizer
 from django.core.management.base import BaseCommand
 from newcomers_guide.read_data import read_task_data
 from newcomers_guide.parse_data import parse_task_files
+from search.models import TaskSimilarityScores
+from django.utils.text import slugify
 
 
 class Command(BaseCommand):
@@ -18,7 +20,7 @@ class Command(BaseCommand):
         root_folder = options['path']
         ids, docs = read_task_descriptions(root_folder)
         cosine_doc_similarities = compute_similarities(docs)
-        save_similarities(ids, cosine_doc_similarities)
+        save_task_similarities(ids, cosine_doc_similarities)
 
 
 def read_task_descriptions(root_folder):
@@ -31,8 +33,8 @@ def to_ids_and_descriptions(tasks):
     ids = []
     descriptions = []
     for task_id, task in tasks['taskMap'].items():
-        ids.append(task_id)
-        english_description = task['description']['en']
+        ids.append(slugify(task_id))
+        english_description = task_id + ' ' + task['description']['en']
         descriptions.append(english_description)
     return (ids, descriptions)
 
@@ -51,13 +53,14 @@ def compute_cosine_doc_similarities(matrix):
     return normalized_matrix * normalized_matrix.T
 
 
-def save_similarities(ids, cosine_doc_similarities):
+def save_task_similarities(ids, similarities):
+    TaskSimilarityScores.objects.all().delete()
     for i in range(len(ids)):
-        for j in range(len(ids)):
-            print_result(cosine_doc_similarities, ids, i, j)
-
-    print(cosine_doc_similarities.toarray())
-
-
-def print_result(matrix, ids, i, j):
-    print('id1={}, id2={}, score={}'.format(ids[i], ids[j], matrix[i, j]))
+        for j in range(i):
+            first_id = ids[i]
+            second_id = ids[j]
+            score = similarities[i, j]
+            record = TaskSimilarityScores(first_task_id=first_id,
+                                          second_task_id=second_id,
+                                          similarity_score=score)
+            record.save()
