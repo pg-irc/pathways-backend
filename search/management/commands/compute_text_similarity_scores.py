@@ -16,9 +16,15 @@ class Command(BaseCommand):
         parser.add_argument('path',
                             metavar='path',
                             help='path to root of Newcomers Guide folder structure')
+        parser.add_argument('--cutoff',
+                            dest='cutoff',
+                            type=float,
+                            default=0.5,
+                            help='do not save similarity scores lower than the CUTOFF')
 
     def handle(self, *args, **options):
         root_folder = options['path']
+        cutoff = options['cutoff']
 
         print('Reading tasks...')
         task_ids, task_descriptions = to_task_ids_and_descriptions(
@@ -33,9 +39,9 @@ class Command(BaseCommand):
         cosine_doc_similarities = compute_similarities(descriptions)
 
         print('Saving {} task similarities...'.format(len(task_ids)*(len(task_ids)-1)))
-        save_task_similarities(task_ids, cosine_doc_similarities)
+        save_task_similarities(task_ids, cosine_doc_similarities, cutoff)
         print('Saving {} task-service similarities...'.format(len(task_ids)*len(service_ids)))
-        save_task_service_similarity_scores(task_ids, service_ids, cosine_doc_similarities)
+        save_task_service_similarity_scores(task_ids, service_ids, cosine_doc_similarities, cutoff)
 
 
 def read_task_descriptions(root_folder):
