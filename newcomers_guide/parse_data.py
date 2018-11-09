@@ -2,6 +2,7 @@ import os
 import json
 import collections
 from django.core import exceptions
+from django.utils.text import slugify
 from newcomers_guide.clean_data import clean_text
 from newcomers_guide.system_data import get_system_taxonomies, get_explore_taxonomy_id
 from newcomers_guide.exceptions import TaxonomyError, ParseError
@@ -34,9 +35,10 @@ def parse_file_path(path):
     validate_filename(name)
     title = get_title_from_file_name(name)
     locale = get_locale_from_file_name(name)
+    task_id = slugify(split_path[length - 2])
     return parsed_file_path(chapter=split_path[length - 4],
                             type=split_path[length - 3],
-                            id=split_path[length - 2],
+                            id=task_id,
                             title=title,
                             locale=locale)
 
