@@ -4,7 +4,7 @@ from search.models import TaskSimilarityScore, TaskServiceSimilarityScore
 def save_task_similarities(ids, similarities, count):
     TaskSimilarityScore.objects.all().delete()
     for i in range(len(ids)):
-        similarities_for_task = [similarities[i, j] for j in range(len(ids))]
+        similarities_for_task = [similarities[i, j] for j in range(len(ids)) if i != j]
         cutoff = compute_cutoff(similarities_for_task, count)
         for j in range(len(ids)):
             score = similarities[i, j]
@@ -15,9 +15,9 @@ def save_task_similarities(ids, similarities, count):
                 record.save()
 
 
-def compute_cutoff(scores, element_count):
+def compute_cutoff(scores, count):
     scores.sort(reverse=True)
-    return scores[element_count]
+    return scores[min(count, len(scores)) - 1]
 
 
 def save_task_service_similarity_scores(task_ids, service_ids, similarities, count):
@@ -37,7 +37,7 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
         for j in range(service_count):
             score = similarities[i, to_service_similarity_offset(j)]
             if score >= cutoff:
-                record = TaskServiceSimilarityScore(task_id=task_ids[i],
-                                                    service_id=service_ids[j],
-                                                    similarity_score=score)
-                record.save()
+                (TaskServiceSimilarityScore(task_id=task_ids[i],
+                                            service_id=service_ids[j],
+                                            similarity_score=score).
+                 save())
