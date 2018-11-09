@@ -7,6 +7,7 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.models import ServiceAtLocation
 from search.models import TaskServiceSimilarityScores
 from taxonomies.tests.helpers import TaxonomyTermBuilder
+from common.testhelpers.random_test_values import a_float
 
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
@@ -55,23 +56,21 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[2]['location']['name'], third_location.name)
         self.assertEqual(json[3]['location']['name'], fourth_location.name)
 
+    def set_service_similarity_score(self, task_id, service_id, similarity_score):
+        TaskServiceSimilarityScores.objects.create(
+            task_id=task_id,
+            service_id=service_id,
+            similarity_score=similarity_score
+        )
+
     def test_can_order_by_similarity_to_task(self):
         task_id = 'the-task-id'
 
-        first_similarity_score = 0.9
-        similar_service = ServiceBuilder(self.organization).create()
-        TaskServiceSimilarityScores.objects.create(
-            task_id=task_id, service=similar_service, similarity_score=first_similarity_score)
-        ServiceAtLocation.objects.create(service=similar_service, location=self.location)
+        similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
+        dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
 
-        second_similarity_score = 0.1
-        dissimilar_service = ServiceBuilder(self.organization).create()
-        TaskServiceSimilarityScores.objects.create(
-            task_id=task_id, service=dissimilar_service, similarity_score=second_similarity_score)
-        ServiceAtLocation.objects.create(service=dissimilar_service, location=self.location)
-
-        unrelated_service = ServiceBuilder(self.organization).create()
-        ServiceAtLocation.objects.create(service=unrelated_service, location=self.location)
+        self.set_service_similarity_score(task_id, similar_service.id, 0.9)
+        self.set_service_similarity_score(task_id, dissimilar_service.id, 0.1)
 
         url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
 
@@ -80,6 +79,19 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 2)
         self.assertEqual(json[0]['service']['name'], similar_service.name)
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
+
+    def test_does_not_return_unrelated_services(self):
+        task_id = 'the-task-id'
+        related_service = ServiceBuilder(self.organization).with_location(self.location).create()
+        self.set_service_similarity_score(task_id, related_service.id, a_float())
+
+        unrelated_service = ServiceBuilder(self.organization).with_location(self.location).create()
+
+        url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
+
+        json = self.client.get(url).json()
+        self.assertEqual(len(json), 1)
+        self.assertEqual(json[0]['service']['name'], related_service.name)
 
     def test_can_full_text_search_on_service_name(self):
         service_at_locations = ServiceAtLocationBuilder().create_many()
