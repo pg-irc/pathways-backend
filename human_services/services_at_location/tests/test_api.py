@@ -5,6 +5,7 @@ from human_services.services_at_location.tests.helpers import ServiceAtLocationB
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.models import ServiceAtLocation
+from search.models import TaskServiceSimilarityScores
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 
@@ -12,6 +13,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
         self.service = ServiceBuilder(self.organization).create()
+        self.location = LocationBuilder(self.organization).create()
 
     def test_200_response_when_proximity_includes_plus(self):
         url = '/v1/services_at_location/?proximity=+11.1111,+222.2222'
@@ -52,6 +54,32 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['location']['name'], first_location.name)
         self.assertEqual(json[2]['location']['name'], third_location.name)
         self.assertEqual(json[3]['location']['name'], fourth_location.name)
+
+    def test_can_order_by_similarity_to_task(self):
+        task_id = 'the-task-id'
+
+        first_similarity_score = 0.9
+        similar_service = ServiceBuilder(self.organization).create()
+        TaskServiceSimilarityScores.objects.create(
+            task_id=task_id, service=similar_service, similarity_score=first_similarity_score)
+        ServiceAtLocation.objects.create(service=similar_service, location=self.location)
+
+        second_similarity_score = 0.1
+        dissimilar_service = ServiceBuilder(self.organization).create()
+        TaskServiceSimilarityScores.objects.create(
+            task_id=task_id, service=dissimilar_service, similarity_score=second_similarity_score)
+        ServiceAtLocation.objects.create(service=dissimilar_service, location=self.location)
+
+        unrelated_service = ServiceBuilder(self.organization).create()
+        ServiceAtLocation.objects.create(service=unrelated_service, location=self.location)
+
+        url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
+
+        response = self.client.get(url)
+        json = response.json()
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], similar_service.name)
+        self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_can_full_text_search_on_service_name(self):
         service_at_locations = ServiceAtLocationBuilder().create_many()

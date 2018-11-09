@@ -1,6 +1,7 @@
 from rest_framework import filters
 from config.settings.base import SRID
 from django.contrib.gis.geos import Point
+from django.db.models import F
 from django.contrib.gis.db.models.functions import Distance
 from common.filter_parameter_parsers import ProximityParser, TaxonomyParser
 from human_services.locations.models import ServiceAtLocation, Location
@@ -59,6 +60,24 @@ class ProximityFilter(filters.BaseFilterBackend):
         return queryset
 
 
+class SimilarityFilter(filters.BaseFilterBackend):
+    filter_description = ('')
+
+    def filter_queryset(self, request, queryset, view):
+        parameter = request.query_params.get('related_to_task', None)
+        if not parameter:
+            return queryset
+
+        if queryset.model is not ServiceAtLocation:
+            return queryset
+
+        score_field = 'service__taskservicesimilarityscores__similarity_score'
+        return (queryset.
+                annotate(score=F(score_field)).
+                filter(score__isnull=False).
+                order_by('-score'))
+
+
 class TaxonomyFilter(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
@@ -72,7 +91,6 @@ class TaxonomyFilter(filters.BaseFilterBackend):
                 elif queryset.model is ServiceAtLocation:
                     queryset = queryset.filter(service__taxonomy_terms__taxonomy_id=term[0],
                                                service__taxonomy_terms__name=term[1])
-
         return queryset
 
 
