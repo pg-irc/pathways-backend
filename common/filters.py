@@ -4,9 +4,8 @@ from django.contrib.gis.geos import Point
 from django.db.models import F
 from django.contrib.gis.db.models.functions import Distance
 from common.filter_parameter_parsers import ProximityParser, TaxonomyParser
-from human_services.locations.models import ServiceAtLocation, Location
+from human_services.locations.models import ServiceAtLocation
 from human_services.services.models import Service
-from human_services.organizations.models import Organization
 
 
 class MultiFieldOrderingFilter(filters.OrderingFilter):
@@ -71,9 +70,10 @@ class SimilarityFilter(filters.BaseFilterBackend):
         if queryset.model is not ServiceAtLocation:
             return queryset
 
-        score_field = 'service__taskservicesimilarityscores__similarity_score'
         return (queryset.
-                annotate(score=F(score_field)).
+                annotate(score=F('service__taskservicesimilarityscores__similarity_score')).
+                annotate(task_id=F('service__taskservicesimilarityscores__task_id')).
+                filter(task_id__exact=parameter).
                 filter(score__isnull=False).
                 order_by('-score'))
 

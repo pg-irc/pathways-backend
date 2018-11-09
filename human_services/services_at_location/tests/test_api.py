@@ -73,9 +73,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.set_service_similarity_score(task_id, dissimilar_service.id, 0.1)
 
         url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
+        json = self.client.get(url).json()
 
-        response = self.client.get(url)
-        json = response.json()
         self.assertEqual(len(json), 2)
         self.assertEqual(json[0]['service']['name'], similar_service.name)
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
@@ -88,10 +87,35 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         unrelated_service = ServiceBuilder(self.organization).with_location(self.location).create()
 
         url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
-
         json = self.client.get(url).json()
+
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['name'], related_service.name)
+
+    def test_ignores_task_not_passed_to_the_query(self):
+        task_passed_to_query = 'the-task-id'
+        task_to_ignore = 'some-other-task'
+
+        similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
+        dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
+
+        lower_score = 0.1
+        low_score = 0.2
+        high_score = 0.8
+        higher_score = 0.9
+
+        self.set_service_similarity_score(task_passed_to_query, similar_service.id, high_score)
+        self.set_service_similarity_score(task_passed_to_query, dissimilar_service.id, low_score)
+
+        self.set_service_similarity_score(task_to_ignore, similar_service.id, lower_score)
+        self.set_service_similarity_score(task_to_ignore, dissimilar_service.id, higher_score)
+
+        url = '/v1/services_at_location/?related_to_task={0}'.format(task_passed_to_query)
+        json = self.client.get(url).json()
+
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], similar_service.name)
+        self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_can_full_text_search_on_service_name(self):
         service_at_locations = ServiceAtLocationBuilder().create_many()
