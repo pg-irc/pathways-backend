@@ -5,7 +5,7 @@ from human_services.services_at_location.tests.helpers import ServiceAtLocationB
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.models import ServiceAtLocation
-from search.models import TaskServiceSimilarityScores
+from search.models import TaskServiceSimilarityScore
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
 
@@ -57,7 +57,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[3]['location']['name'], fourth_location.name)
 
     def set_service_similarity_score(self, task_id, service_id, similarity_score):
-        TaskServiceSimilarityScores.objects.create(
+        TaskServiceSimilarityScore.objects.create(
             task_id=task_id,
             service_id=service_id,
             similarity_score=similarity_score
@@ -92,7 +92,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['name'], related_service.name)
 
-    def test_ignores_task_not_passed_to_the_query(self):
+    def test_orders_by_task_passed_to_the_query(self):
         task_passed_to_query = 'the-task-id'
         task_to_ignore = 'some-other-task'
 
@@ -107,6 +107,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.set_service_similarity_score(task_passed_to_query, similar_service.id, high_score)
         self.set_service_similarity_score(task_passed_to_query, dissimilar_service.id, low_score)
 
+        # Test verifies that these scores are ignored,
+        # if they were considered then dissimilar_service would be returned as the first element
         self.set_service_similarity_score(task_to_ignore, similar_service.id, lower_score)
         self.set_service_similarity_score(task_to_ignore, dissimilar_service.id, higher_score)
 

@@ -8,7 +8,7 @@ from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_string
 
 
-class TestTaskSimilarityScores(TestCase):
+class TestTaskSimilarityScore(TestCase):
     def setUp(self):
         self.task_id = a_string()
         self.english_task_title = a_string()
@@ -44,10 +44,9 @@ class TestTaskSimilarityScores(TestCase):
                          self.english_task_title + ' ' + self.english_task_description)
 
     def test_getting_id_for_service_returns_id(self):
-        service_id = a_string()
-        ServiceBuilder(self.organization).with_id(service_id).create()
+        service = ServiceBuilder(self.organization).create()
         ids, _ = to_service_ids_and_descriptions(Service.objects.all())
-        self.assertEqual(ids[0], service_id)
+        self.assertEqual(ids[0], service.id)
 
     def test_getting_description_for_service_returns_name_and_description(self):
         name = a_string()

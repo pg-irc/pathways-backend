@@ -1,44 +1,43 @@
-from search.models import TaskSimilarityScores, TaskServiceSimilarityScores
+from search.models import TaskSimilarityScore, TaskServiceSimilarityScore
 
 
 def save_task_similarities(ids, similarities, count):
-    TaskSimilarityScores.objects.all().delete()
+    TaskSimilarityScore.objects.all().delete()
     for i in range(len(ids)):
-        sorted_scores = [similarities[i, j] for j in range(len(ids))]
-        sorted_scores.sort(reverse=True)
-        cutoff = sorted_scores[count]
-        print('for task {}, similarity cutoff for related tasks is {}'.format(ids[i], cutoff))
+        similarities_for_task = [similarities[i, j] for j in range(len(ids))]
+        cutoff = compute_cutoff(similarities_for_task, count)
         for j in range(len(ids)):
             score = similarities[i, j]
             if i != j and score >= cutoff:
-                first_id = ids[i]
-                second_id = ids[j]
-                record = TaskSimilarityScores(first_task_id=first_id,
-                                              second_task_id=second_id,
-                                              similarity_score=score)
+                record = TaskSimilarityScore(first_task_id=ids[i],
+                                             second_task_id=ids[j],
+                                             similarity_score=score)
                 record.save()
 
 
-def save_task_service_similarity_scores(task_ids, service_ids, similarities, count):
-    TaskServiceSimilarityScores.objects.all().delete()
+def compute_cutoff(scores, element_count):
+    scores.sort(reverse=True)
+    return scores[element_count]
 
+
+def save_task_service_similarity_scores(task_ids, service_ids, similarities, count):
+    TaskServiceSimilarityScore.objects.all().delete()
     task_count = len(task_ids)
     service_count = len(service_ids)
 
-    def to_service_offset(service_index):
+    # Assuming that the similarities are computed from a document vector
+    # containing task descriptions *followed by* service descriptions
+    def to_service_similarity_offset(service_index):
         return task_count + service_index
 
-    for task in range(task_count):
-        sorted_scores_for_task = [similarities[task, to_service_offset(service)] for service in range(service_count)]
-        sorted_scores_for_task.sort(reverse=True)
-        cutoff = sorted_scores_for_task[count]
-        print('for task {}, similarity cutoff for related services is {}'.format(task_ids[task], cutoff))
-        for service in range(service_count):
-            score = similarities[task, to_service_offset(service)]
+    for i in range(task_count):
+        similarities_for_task = [similarities[i, to_service_similarity_offset(j)]
+                                 for j in range(service_count)]
+        cutoff = compute_cutoff(similarities_for_task, count)
+        for j in range(service_count):
+            score = similarities[i, to_service_similarity_offset(j)]
             if score >= cutoff:
-                task_id = task_ids[task]
-                service_id = service_ids[service]
-                record = TaskServiceSimilarityScores(task_id=task_id,
-                                                     service_id=service_id,
-                                                     similarity_score=score)
+                record = TaskServiceSimilarityScore(task_id=task_ids[i],
+                                                    service_id=service_ids[j],
+                                                    similarity_score=score)
                 record.save()

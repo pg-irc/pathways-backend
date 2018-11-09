@@ -74,8 +74,8 @@ class ServiceSimilarityFilter(filters.BaseFilterBackend):
             return queryset
 
         return (queryset.
-                annotate(score=F('service__taskservicesimilarityscores__similarity_score')).
-                annotate(task_id=F('service__taskservicesimilarityscores__task_id')).
+                annotate(score=F('service__taskservicesimilarityscore__similarity_score')).
+                annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
                 filter(task_id__exact=task_id).
                 order_by('-score'))
 
