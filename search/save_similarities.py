@@ -37,7 +37,7 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
         for j in range(service_count):
             score = similarities[i, to_service_similarity_offset(j)]
             if score >= cutoff:
-                (TaskServiceSimilarityScore(task_id=task_ids[i],
-                                            service_id=service_ids[j],
-                                            similarity_score=score).
-                 save())
+                record = TaskServiceSimilarityScore(task_id=task_ids[i],
+                                                    service_id=service_ids[j],
+                                                    similarity_score=score)
+                record.save()
