@@ -86,8 +86,13 @@ def get_locale_from_file_name(file_name):
 
 def ensure_builder_exists_for_task(builders, task_id):
     if task_id not in builders:
-        builders[task_id] = TaskBuilder()
-        builders[task_id].set_id(task_id)
+        builders[task_id] = create_task_builder(task_id)
+
+
+def create_task_builder(task_id):
+    builder = TaskBuilder()
+    builder.set_id(task_id)
+    return builder
 
 
 class TaskBuilder:
