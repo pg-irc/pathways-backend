@@ -59,22 +59,24 @@ class ProximityFilter(filters.BaseFilterBackend):
         return queryset
 
 
-class SimilarityFilter(filters.BaseFilterBackend):
-    filter_description = ('')
+class ServiceSimilarityFilter(filters.BaseFilterBackend):
+    filter_description = (
+        'Order by relatedness to the task with the given task id. '
+        'Services with missing similarity score in the database are omitted from the result'
+    )
 
     def filter_queryset(self, request, queryset, view):
-        parameter = request.query_params.get('related_to_task', None)
-        if not parameter:
+        if queryset.model is not ServiceAtLocation:
             return queryset
 
-        if queryset.model is not ServiceAtLocation:
+        task_id = request.query_params.get('related_to_task', None)
+        if not task_id:
             return queryset
 
         return (queryset.
                 annotate(score=F('service__taskservicesimilarityscores__similarity_score')).
                 annotate(task_id=F('service__taskservicesimilarityscores__task_id')).
-                filter(task_id__exact=parameter).
-                filter(score__isnull=False).
+                filter(task_id__exact=task_id).
                 order_by('-score'))
 
 

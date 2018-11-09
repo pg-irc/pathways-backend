@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from human_services.locations import models
 from human_services.services_at_location import documentation, serializers
 from common.filters import (ProximityFilter, SearchFilter, LocationIdFilter,
-                            ServiceIdFilter, TaxonomyFilter, SimilarityFilter)
+                            ServiceIdFilter, TaxonomyFilter, ServiceSimilarityFilter)
 
 
 # pylint: disable=too-many-ancestors
@@ -18,5 +18,5 @@ class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
                        LocationIdFilter,
                        ServiceIdFilter,
                        TaxonomyFilter,
-                       SimilarityFilter,
+                       ServiceSimilarityFilter,
                        )
