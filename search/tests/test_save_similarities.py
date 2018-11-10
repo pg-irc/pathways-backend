@@ -59,6 +59,48 @@ class TestSavingTaskSimilarities(TestCase):
         self.assertEqual(records[6].similarity_score, 14.0)
         self.assertEqual(records[7].similarity_score, 15.0)
 
+    def test_saves_elements_with_first_task_id(self):
+        ids = [a_string() for i in range(4)]
+        scores = scipy.sparse.csr_matrix([[1, 2, 3, 4],
+                                          [5, 6, 7, 8],
+                                          [9, 10, 11, 12],
+                                          [13, 14, 15, 16]])
+
+        records_to_save_per_row = 2
+        save_task_similarities(ids, scores, records_to_save_per_row)
+
+        records = TaskSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 8)
+        self.assertEqual(records[0].first_task_id, ids[0])
+        self.assertEqual(records[1].first_task_id, ids[0])
+        self.assertEqual(records[2].first_task_id, ids[1])
+        self.assertEqual(records[3].first_task_id, ids[1])
+        self.assertEqual(records[4].first_task_id, ids[2])
+        self.assertEqual(records[5].first_task_id, ids[2])
+        self.assertEqual(records[6].first_task_id, ids[3])
+        self.assertEqual(records[7].first_task_id, ids[3])
+
+    def test_saves_elements_with_second_task_id(self):
+        ids = [a_string() for i in range(4)]
+        scores = scipy.sparse.csr_matrix([[1, 2, 3, 4],
+                                          [5, 6, 7, 8],
+                                          [9, 10, 11, 12],
+                                          [13, 14, 15, 16]])
+
+        records_to_save_per_row = 2
+        save_task_similarities(ids, scores, records_to_save_per_row)
+
+        records = TaskSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 8)
+        self.assertEqual(records[0].second_task_id, ids[2])
+        self.assertEqual(records[1].second_task_id, ids[3])
+        self.assertEqual(records[2].second_task_id, ids[2])
+        self.assertEqual(records[3].second_task_id, ids[3])
+        self.assertEqual(records[4].second_task_id, ids[1])
+        self.assertEqual(records[5].second_task_id, ids[3])
+        self.assertEqual(records[6].second_task_id, ids[1])
+        self.assertEqual(records[7].second_task_id, ids[2])
+
 
 class TestSavingTaskServiceSimilarities(TestCase):
     def setUp(self):
@@ -120,3 +162,47 @@ class TestSavingTaskServiceSimilarities(TestCase):
         self.assertEqual(records[3].similarity_score, 6.0)
         self.assertEqual(records[4].similarity_score, 8.0)
         self.assertEqual(records[5].similarity_score, 9.0)
+
+    def test_saves_elements_with_task_ids(self):
+        task_ids = [a_string() for i in range(3)]
+        services = [ServiceBuilder(self.organization).create() for i in range(3)]
+        service_ids = [service.id for service in services]
+        scores = scipy.sparse.csr_matrix([[0, 0, 0, 1, 2, 3],
+                                          [0, 0, 0, 4, 5, 6],
+                                          [0, 0, 0, 7, 8, 9],
+                                          [0, 0, 0, 0, 0, 0],
+                                          [0, 0, 0, 0, 0, 0],
+                                          [0, 0, 0, 0, 0, 0]])
+        records_to_save_per_row = 2
+        save_task_service_similarity_scores(task_ids, service_ids, scores, records_to_save_per_row)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 6)
+        self.assertEqual(records[0].task_id, task_ids[0])
+        self.assertEqual(records[1].task_id, task_ids[0])
+        self.assertEqual(records[2].task_id, task_ids[1])
+        self.assertEqual(records[3].task_id, task_ids[1])
+        self.assertEqual(records[4].task_id, task_ids[2])
+        self.assertEqual(records[5].task_id, task_ids[2])
+
+    def test_saves_elements_with_service_ids(self):
+        task_ids = [a_string() for i in range(3)]
+        services = [ServiceBuilder(self.organization).create() for i in range(3)]
+        service_ids = [service.id for service in services]
+        scores = scipy.sparse.csr_matrix([[0, 0, 0, 1, 2, 3],
+                                          [0, 0, 0, 4, 5, 6],
+                                          [0, 0, 0, 7, 8, 9],
+                                          [0, 0, 0, 0, 0, 0],
+                                          [0, 0, 0, 0, 0, 0],
+                                          [0, 0, 0, 0, 0, 0]])
+        records_to_save_per_row = 2
+        save_task_service_similarity_scores(task_ids, service_ids, scores, records_to_save_per_row)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 6)
+        self.assertEqual(records[0].service_id, service_ids[1])
+        self.assertEqual(records[1].service_id, service_ids[2])
+        self.assertEqual(records[2].service_id, service_ids[1])
+        self.assertEqual(records[3].service_id, service_ids[2])
+        self.assertEqual(records[4].service_id, service_ids[1])
+        self.assertEqual(records[5].service_id, service_ids[2])
