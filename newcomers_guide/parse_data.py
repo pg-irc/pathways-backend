@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from newcomers_guide.clean_data import clean_text
 from newcomers_guide.system_data import get_system_taxonomies, get_explore_taxonomy_id
 from newcomers_guide.exceptions import TaxonomyError, ParseError
+from search.models import TaskSimilarityScore
 
 
 def parse_task_files(file_specs):
@@ -92,7 +93,13 @@ def ensure_builder_exists_for_task(builders, task_id):
 def create_task_builder(task_id):
     builder = TaskBuilder()
     builder.set_id(task_id)
+    builder.set_related_tasks(find_related_tasks(task_id))
     return builder
+
+
+def find_related_tasks(task_id):
+    related_tasks = TaskSimilarityScore.objects.filter(first_task_id=task_id).order_by('-similarity_score')
+    return [task.second_task_id for task in related_tasks]
 
 
 class TaskBuilder:
@@ -108,6 +115,10 @@ class TaskBuilder:
 
     def set_id(self, the_id):
         self.task['id'] = the_id
+        return self
+
+    def set_related_tasks(self, related_tasks):
+        self.task['relatedTasks'] = related_tasks
         return self
 
     def set_chapter(self, chapter):

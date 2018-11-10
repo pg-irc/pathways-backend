@@ -1,11 +1,12 @@
 from django.core import exceptions
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_string
-from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_files, parse_task_files,
-                                        parse_file_path, TaxonomyTermReference,
+from common.testhelpers.random_test_values import a_string, a_float
+from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_files,
+                                        parse_task_files, parse_file_path, TaxonomyTermReference,
                                         parse_service_query_files, ServiceQuery)
 from newcomers_guide.generate_fixtures import (set_taxonomy_term_references_on_content,
                                                set_service_query_on_content)
+from search.models import TaskSimilarityScore
 
 
 class FilePathParseTests(TestCase):
@@ -102,6 +103,25 @@ class ProcessTaskFilesTests(TestCase):
                                    [french_path, french_description]])
         self.assertEqual(result['taskMap']['to_learn_english']['description']['en'], english_description)
         self.assertEqual(result['taskMap']['to_learn_english']['description']['fr'], french_description)
+
+    def test_includes_related_articles_from_database_in_order_of_declining_similarity_score(self):
+        task_id = a_string()
+
+        similar_task_id = a_string()
+        a_high_score = 0.9
+        TaskSimilarityScore(first_task_id=task_id,
+                            second_task_id=similar_task_id,
+                            similarity_score=a_high_score).save()
+
+        dissimilar_task_id = a_string()
+        a_low_score = 0.1
+        TaskSimilarityScore(first_task_id=task_id,
+                            second_task_id=dissimilar_task_id,
+                            similarity_score=a_low_score).save()
+
+        path = 'some/path/chapter/tasks/{0}/en.Learn_english.txt'.format(task_id)
+        result = parse_task_files([[path, a_string()]])
+        self.assertEqual(result['taskMap'][task_id]['relatedTasks'], [similar_task_id, dissimilar_task_id])
 
     def test_combine_files_for_different_content(self):
         secondary_path = 'some/path/chapter/tasks/Registering_child_in_school/en.Registering_in_public_school.txt'
