@@ -1,6 +1,7 @@
 import logging
 from bc211.importer import save_records_to_database
 from bc211.parser import read_records_from_file
+from bc211.import_counters import ImportCounters
 from django.test import TestCase
 from human_services.locations.models import Location
 from human_services.organizations.models import Organization
@@ -20,7 +21,7 @@ class LocationImportTests(TestCase):
     def setUp(self):
         file = open(ONE_AGENCY_FIXTURE, 'r')
         records = read_records_from_file(file)
-        save_records_to_database(records)
+        save_records_to_database(records, ImportCounters())
         all_records_from_database = Location.objects.all()
         self.location = all_records_from_database[0]
 
@@ -39,7 +40,7 @@ class LocationImportTests(TestCase):
 
 class OrganizationImportTests(TestCase):
     def setUp(self):
-        save_records_to_database(read_records_from_file(open(ONE_AGENCY_FIXTURE, 'r')))
+        save_records_to_database(read_records_from_file(open(ONE_AGENCY_FIXTURE, 'r')), ImportCounters())
         organizations = Organization.objects.all()
         self.organization = organizations[0]
 
@@ -61,7 +62,7 @@ class OrganizationImportTests(TestCase):
 
 class InvalidOrganizationImportTests(TestCase):
     def test_save_organizations_catches_exceptions(self):
-        save_records_to_database(read_records_from_file(open(INVALID_AGENCIES_FIXTURE, 'r')))
+        save_records_to_database(read_records_from_file(open(INVALID_AGENCIES_FIXTURE, 'r')), ImportCounters())
         organizations = Organization.objects.all()
         organization_ids = list(map(lambda x: x.id, organizations))
 
@@ -73,7 +74,7 @@ class InvalidOrganizationImportTests(TestCase):
 class ServiceImportTests(TestCase):
     def setUp(self):
         file = open(MULTI_AGENCY_FIXTURE, 'r')
-        save_records_to_database(read_records_from_file(file))
+        save_records_to_database(read_records_from_file(file), ImportCounters())
         self.all_taxonomy_terms = TaxonomyTerm.objects.all()
         self.all_services = Service.objects.all()
 
@@ -93,7 +94,7 @@ class ServiceImportTests(TestCase):
 
     def testTwoServicesCanBeRelatedToOneLocation(self):
         file = open(SHARED_SERVICE_FIXTURE, 'r')
-        save_records_to_database(read_records_from_file(file))
+        save_records_to_database(read_records_from_file(file), ImportCounters())
         self.assertEqual(Service.objects.filter(locations__id='9493390').count(), 2)
 
 
@@ -101,7 +102,7 @@ class AddressImportTests(TestCase):
     def setUp(self):
         file = open(ONE_AGENCY_FIXTURE, 'r')
         records = read_records_from_file(file)
-        save_records_to_database(records)
+        save_records_to_database(records, ImportCounters())
         self.addresses = Address.objects.all()
 
     def test_can_import_address(self):
@@ -123,7 +124,8 @@ class AddressTypeTests(TestCase):
 class FullDataImportTests(TestCase):
     def setUp(self):
         file = open(MULTI_AGENCY_FIXTURE, 'r')
-        self.return_value = save_records_to_database(read_records_from_file(file))
+        self.counts = ImportCounters()
+        save_records_to_database(read_records_from_file(file), self.counts)
         self.all_locations = Location.objects.all()
         self.all_organizations = Organization.objects.all()
         self.all_taxonomy_terms = TaxonomyTerm.objects.all()
@@ -133,9 +135,9 @@ class FullDataImportTests(TestCase):
         self.assertEqual(len(self.all_organizations), 16)
         self.assertEqual(len(self.all_locations), 40)
         self.assertEqual(len(self.all_taxonomy_terms), 134)
-        self.assertEqual(self.return_value.organization_count, 16)
-        self.assertEqual(self.return_value.location_count, 40)
-        self.assertEqual(self.return_value.taxonomy_term_count, 134)
-        self.assertEqual(self.return_value.address_count, 36)
-        self.assertEqual(self.return_value.phone_number_types_count, 5)
-        self.assertEqual(self.return_value.phone_at_location_count, 86)
+        self.assertEqual(self.counts.organization_count, 16)
+        self.assertEqual(self.counts.location_count, 40)
+        self.assertEqual(self.counts.taxonomy_term_count, 134)
+        self.assertEqual(self.counts.address_count, 36)
+        self.assertEqual(self.counts.phone_number_types_count, 5)
+        self.assertEqual(self.counts.phone_at_location_count, 86)
