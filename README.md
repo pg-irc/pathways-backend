@@ -20,10 +20,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Install the required python libraries for local development
+Install the required python libraries for local development, including the English SpaCy data set for natural language processing
 
 ```
 pip install -r requirements/local.txt
+python -m spacy download en
 ```
 ## PostgreSQL on non-Ubuntu systems
 

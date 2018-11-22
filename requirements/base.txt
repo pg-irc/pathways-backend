@@ -24,6 +24,11 @@ django-allauth==0.38.0
 # once we hit version 2,8 the --no-binary can be removed
 psycopg2==2.7.5 --no-binary psycopg2
 
+# Natural language processing
+spacy==2.0.16
+scipy==1.1.0
+textacy==0.6.2
+
 # static files
 whitenoise==4.1
 

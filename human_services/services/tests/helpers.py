@@ -1,5 +1,7 @@
 from human_services.services import models
+from human_services.locations.models import ServiceAtLocation
 from common.testhelpers.random_test_values import a_string
+
 
 class ServiceBuilder:
     def __init__(self, organization):
@@ -8,6 +10,7 @@ class ServiceBuilder:
         self.name = a_string()
         self.description = a_string()
         self.taxonomy_terms = []
+        self.location_ids = []
 
     def with_id(self, service_id):
         self.service_id = service_id
@@ -25,6 +28,10 @@ class ServiceBuilder:
         self.taxonomy_terms = taxonomy_terms
         return self
 
+    def with_location(self, location):
+        self.location_ids.append(location.id)
+        return self
+
     def build(self):
         result = models.Service()
         result.id = self.service_id
@@ -33,9 +40,12 @@ class ServiceBuilder:
         result.description = self.description
         for taxonomy_term in self.taxonomy_terms:
             result.taxonomy_terms.add(taxonomy_term)
+
         return result
 
     def create(self):
         result = self.build()
         result.save()
+        for location_id in self.location_ids:
+            ServiceAtLocation.objects.create(service_id=result.id, location_id=location_id)
         return result
