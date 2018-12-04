@@ -2,10 +2,12 @@ from django.utils import translation
 from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string, a_float
-from search.models import Task, TaskSimilarityScore
+from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
+from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.services.tests.helpers import ServiceBuilder
 
 
-class TaskApiTests(rest_test.APITestCase):
+class RelatedTasksApiTests(rest_test.APITestCase):
     def setUp(self):
         translation.activate('en')
         self.first_task_id = a_string()
@@ -80,3 +82,24 @@ class TaskApiTests(rest_test.APITestCase):
         url = '/v1/tasks/{}/related_tasks/'.format(first_task_id)
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 2)
+
+
+class RelatesServicesApiTests(rest_test.APITestCase):
+    def setUp(self):
+        translation.activate('en')
+        self.task_id = a_string()
+
+        self.task = Task(id=self.task_id, name=a_string(), description=a_string())
+        self.task.save()
+
+        organization = OrganizationBuilder().create()
+        self.service = ServiceBuilder(organization).create()
+
+        self.similarity_score = a_float()
+        TaskServiceSimilarityScore(task=self.task, service=self.service,
+                                   similarity_score=self.similarity_score).save()
+
+    def test_can_get_response(self):
+        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -10,3 +10,12 @@ class RelatedTasksViewSet(viewsets.ReadOnlyModelViewSet):
         return models.TaskSimilarityScore.objects.filter(first_task=task_id).order_by('second_task__id')
 
     serializer_class = serializers.RelatedTaskSerializer
+
+
+class RelatedServicesViewSet(viewsets.ReadOnlyModelViewSet):
+
+    def get_queryset(self):
+        task_id = self.kwargs['task_id']
+        return models.TaskServiceSimilarityScore.objects.filter(task=task_id).order_by('service_id')
+
+    serializer_class = serializers.RelatedServiceSerializer
