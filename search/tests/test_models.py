@@ -1,7 +1,7 @@
 from django.test import TestCase
 from common.testhelpers.database import validate_save_and_reload
 from common.testhelpers.random_test_values import a_string, a_float
-from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
+from search.models import TaskSimilarityScore, TaskServiceSimilarityScore
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from search.tests.helpers import create_tasks

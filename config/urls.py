@@ -8,6 +8,7 @@ from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import (LocationViewSet, LocationViewSetUnderOrganizations)
 from human_services.services_at_location.viewsets import ServiceAtLocationViewSet
 from human_services.services.viewsets import ServiceViewSet
+from search.viewsets import RelatedTasksViewSet
 from rest_framework import routers
 from config import documentation
 
@@ -33,6 +34,7 @@ def build_router():
     router.register(r'locations/(?P<location_id>\w+)/services/(?P<service_id>\w+)/services_at_location',
                     ServiceAtLocationViewSet)
     router.register(r'services_at_location', ServiceAtLocationViewSet, base_name='services_at_location')
+    router.register(r'tasks/(?P<task_id>\w+)/related_tasks', RelatedTasksViewSet, base_name='tasks')
 
     return router
 
