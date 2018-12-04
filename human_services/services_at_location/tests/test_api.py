@@ -6,6 +6,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.models import ServiceAtLocation
 from search.models import TaskServiceSimilarityScore
+from search.tests.helpers import create_tasks
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
 
@@ -65,6 +66,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_can_order_by_similarity_to_task(self):
         task_id = 'the-task-id'
+        create_tasks([task_id])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -81,6 +83,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_does_not_return_unrelated_services(self):
         task_id = 'the-task-id'
+        create_tasks([task_id])
         related_service = ServiceBuilder(self.organization).with_location(self.location).create()
         self.set_service_similarity_score(task_id, related_service.id, a_float())
 
@@ -95,6 +98,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def test_orders_by_task_passed_to_the_query(self):
         task_passed_to_query = 'the-task-id'
         task_to_ignore = 'some-other-task'
+        create_tasks([task_passed_to_query, task_to_ignore])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
