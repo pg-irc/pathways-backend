@@ -32,17 +32,11 @@ class RelatedTasksApiTests(rest_test.APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_can_get_the_task_id(self):
-        url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['first_task_id'], self.first_task_id)
-
     def test_can_get_related_task_id(self):
         url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['second_task_id'], self.second_task_id)
+        self.assertEqual(response.json()[0]['task_id'], self.second_task_id)
 
     def test_can_get_related_task_name(self):
         url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
@@ -80,8 +74,8 @@ class RelatedTasksApiTests(rest_test.APITestCase):
 
         url = '/v1/tasks/{}/related_tasks/'.format(the_task.id)
         response = self.client.get(url)
-        self.assertEqual(response.json()[0]['second_task_id'], more_related_task.id)
-        self.assertEqual(response.json()[1]['second_task_id'], less_related_task.id)
+        self.assertEqual(response.json()[0]['task_id'], more_related_task.id)
+        self.assertEqual(response.json()[1]['task_id'], less_related_task.id)
 
 
 class RelatesServicesApiTests(rest_test.APITestCase):
@@ -104,11 +98,6 @@ class RelatesServicesApiTests(rest_test.APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
-
-    def test_can_get_task_id(self):
-        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
-        response = self.client.get(url)
-        self.assertEqual(response.json()[0]['task_id'], self.task_id)
 
     def test_can_get_related_service_id(self):
         url = '/v1/tasks/{}/related_services/'.format(self.task_id)
