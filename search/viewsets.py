@@ -1,7 +1,9 @@
 from rest_framework import viewsets
-from search import models, serializers
+from django.utils.decorators import method_decorator
+from search import models, serializers, documentation
 
 
+@method_decorator(name='list', decorator=documentation.get_related_tasks_schema())
 class RelatedTasksViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
@@ -11,6 +13,7 @@ class RelatedTasksViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.RelatedTaskSerializer
 
 
+@method_decorator(name='list', decorator=documentation.get_related_services_schema())
 class RelatedServicesViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
