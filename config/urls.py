@@ -8,6 +8,7 @@ from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import (LocationViewSet, LocationViewSetUnderOrganizations)
 from human_services.services_at_location.viewsets import ServiceAtLocationViewSet
 from human_services.services.viewsets import ServiceViewSet
+from search.viewsets import RelatedTasksViewSet, RelatedServicesViewSet
 from rest_framework import routers
 from config import documentation
 
@@ -16,23 +17,25 @@ def build_router():
     router = routers.DefaultRouter()
 
     router.register(r'organizations', OrganizationViewSet, base_name='organization')
-    router.register(r'organizations/(?P<organization_id>\w+)/locations',
+    router.register(r'organizations/(?P<organization_id>[\w-]+)/locations',
                     LocationViewSetUnderOrganizations, base_name='organization-location')
-    router.register(r'organizations/(?P<organization_id>\w+)/services', ServiceViewSet, base_name='service')
-    router.register(r'organizations/(?P<organization_id>\w+)/locations/(?P<location_id>\w+)/services',
+    router.register(r'organizations/(?P<organization_id>[\w-]+)/services', ServiceViewSet, base_name='service')
+    router.register(r'organizations/(?P<organization_id>[\w-]+)/locations/(?P<location_id>[\w-]+)/services',
                     ServiceViewSet, base_name='service')
     router.register(r'services', ServiceViewSet, base_name='service')
-    router.register(r'services/(?P<service_id>\w+)/services_at_location', ServiceAtLocationViewSet)
-    router.register(r'services/(?P<service_id>\w+)/locations/(?P<location_id>\w+)/services_at_location',
+    router.register(r'services/(?P<service_id>[\w-]+)/services_at_location', ServiceAtLocationViewSet)
+    router.register(r'services/(?P<service_id>[\w-]+)/locations/(?P<location_id>[\w-]+)/services_at_location',
                     ServiceAtLocationViewSet)
     router.register(r'locations', LocationViewSet, base_name='location')
-    router.register(r'locations/(?P<location_id>\w+)/services', ServiceViewSet, base_name='service')
-    router.register(r'locations/(?P<location_id>\w+)/organizations/(?P<organization_id>\w+)/services',
+    router.register(r'locations/(?P<location_id>[\w-]+)/services', ServiceViewSet, base_name='service')
+    router.register(r'locations/(?P<location_id>[\w-]+)/organizations/(?P<organization_id>[\w-]+)/services',
                     ServiceViewSet, base_name='service')
-    router.register(r'locations/(?P<location_id>\w+)/services_at_location', ServiceAtLocationViewSet)
-    router.register(r'locations/(?P<location_id>\w+)/services/(?P<service_id>\w+)/services_at_location',
+    router.register(r'locations/(?P<location_id>[\w-]+)/services_at_location', ServiceAtLocationViewSet)
+    router.register(r'locations/(?P<location_id>[\w-]+)/services/(?P<service_id>[\w-]+)/services_at_location',
                     ServiceAtLocationViewSet)
     router.register(r'services_at_location', ServiceAtLocationViewSet, base_name='services_at_location')
+    router.register(r'tasks/(?P<task_id>[\w-]+)/related_tasks', RelatedTasksViewSet, base_name='tasks')
+    router.register(r'tasks/(?P<task_id>[\w-]+)/related_services', RelatedServicesViewSet, base_name='tasks')
 
     return router
 
