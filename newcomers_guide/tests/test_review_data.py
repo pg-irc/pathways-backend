@@ -165,7 +165,9 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'http://www.foo.com'
         reference_text = 'http://www.bar.com'
         result = compare_data(target_text, reference_text)
-        self.assertEqual(result, 'contains link http://www.foo.com, the reference has http://www.bar.com')
+        self.assertEqual(result, ('contains link     http://www.foo.com\n'
+                                  'the reference has http://www.bar.com')
+        )
 
     def test_detects_missing_url(self):
         target_text = ''
@@ -189,7 +191,9 @@ class CompareDataForReviewTests(TestCase):
         target_text = 'user@foo.com'
         reference_text = 'user@bar.com'
         result = compare_data(target_text, reference_text)
-        self.assertEqual(result, 'contains email address user@foo.com, the reference has user@bar.com')
+        self.assertEqual(result, ('contains email address user@foo.com\n'
+                                  'the reference has      user@bar.com')
+                        )
 
     def test_detects_missing_email_address(self):
         target_text = ''
@@ -213,7 +217,9 @@ class CompareDataForReviewTests(TestCase):
         target_text = '888-888-8888'
         reference_text = '111-888-8888'
         result = compare_data(target_text, reference_text)
-        self.assertEqual(result, 'contains phone number 888-888-8888, the reference has 111-888-8888')
+        self.assertEqual(result, ('contains phone number 888-888-8888\n'
+                                  'the reference has     111-888-8888')
+                        )
 
     def test_detects_mising_phone_number(self):
         target_text = ''
@@ -233,6 +239,8 @@ class CompareDataForReviewTests(TestCase):
         result = compare_data(target_text, reference_text)
         self.assertEqual(
             result,
-            ('contains link http://www.example.com, the reference has http://www.example2.com\n'
-             'contains phone number 1-800-345-6789, the reference has 1-800-987-6543')
+            ('contains link     http://www.example.com\n'
+             'the reference has http://www.example2.com\n\n'
+             'contains phone number 1-800-345-6789\n'
+             'the reference has     1-800-987-6543')
         )
