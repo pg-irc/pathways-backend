@@ -1,12 +1,23 @@
 from drf_yasg import openapi
-from common.filters import ProximityFilter, TaxonomyFilter
 
 
-def get_proximity_manual_parameter():
+def get_proximity_sort_manual_parameter():
     return (openapi.Parameter('proximity',
                               openapi.IN_QUERY,
                               description=('Order by proximity to a point. Accepts two comma separated values '
-                                           'representing a latitude and a longitude. Example: "+49.2827,-123.1207".'),
+                                           'representing a longitude and a latitude. Example: "-123.1207,+49.2827".'),
+                              type=openapi.TYPE_STRING,
+                              # Regex representing a latitude and longitude.
+                              # Valid patterns consist of two integers or floats, comma separated, with
+                              # optional + or - prefixes. One space after the comma is allowed here.
+                              pattern=r'^[-+]?[0-9]+\.?[0-9]*,\s?[-+]?[0-9]+\.?[0-9]*$'))
+
+
+def get_proximity_filter_manual_parameter():
+    return (openapi.Parameter('user_location',
+                              openapi.IN_QUERY,
+                              description=('Filter by proximity to a point. Accepts two comma separated values '
+                                           'representing a longitude and a latitude. Example: "-123.1207,+49.2827".'),
                               type=openapi.TYPE_STRING,
                               # Regex representing a latitude and longitude.
                               # Valid patterns consist of two integers or floats, comma separated, with
