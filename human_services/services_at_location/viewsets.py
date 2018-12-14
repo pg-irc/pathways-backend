@@ -2,7 +2,9 @@ from rest_framework import viewsets
 from django.utils.decorators import method_decorator
 from human_services.locations import models
 from human_services.services_at_location import documentation, serializers
-from common.filters import (ProximityFilter, SearchFilter, LocationIdFilter,
+# TODO move common.filters to human_services.filters, 
+# LocationIdFilter and similar should be with the location code
+from common.filters import (ProximityFilter, ProximityCutoffFilter, SearchFilter, LocationIdFilter,
                             ServiceIdFilter, TaxonomyFilter, ServiceSimilarityFilter)
 
 
@@ -14,6 +16,7 @@ class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ('location__translations__name', 'location__translations__description',
                      'service__translations__name', 'service__translations__description')
     filter_backends = (ProximityFilter,
+                       ProximityCutoffFilter,
                        SearchFilter,
                        LocationIdFilter,
                        ServiceIdFilter,

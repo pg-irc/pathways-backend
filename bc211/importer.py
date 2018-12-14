@@ -1,11 +1,11 @@
 import logging
 from django.utils import translation
+from django.contrib.gis.geos import Point
 from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
 from human_services.organizations.models import Organization
 from human_services.services.models import Service
 from human_services.addresses.models import Address, AddressType
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
-from django.contrib.gis.geos import Point
 from taxonomies.models import TaxonomyTerm
 from bc211.exceptions import XmlParseException
 

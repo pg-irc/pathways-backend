@@ -111,7 +111,7 @@ class LocationsApiTests(rest_test.APITestCase):
         self.location_has_address_of_type('postal_address')
 
     def test_has_point_values(self):
-        location = LocationBuilder(self.organization).with_point(a_float(), a_float()).create()
+        location = LocationBuilder(self.organization).with_long_lat(a_float(), a_float()).create()
         url = '/v1/locations/'
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['latitude'], location.point.x)
