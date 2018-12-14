@@ -58,5 +58,8 @@ echo "computing similarity scores ..."
 ./manage.py compute_text_similarity_scores --related_tasks 3 --related_services 20 $NewcomersGuidePath
 checkForSuccess "compute similarity scores"
 
+./manage.py import_newcomers_guide $NewcomersGuidePath
+checkForSuccess "create newcomers guide fixtures"
+
 ./manage.py dumpdata > $OutputFile
 checkForSuccess "dump data"
