@@ -58,6 +58,30 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[2]['location']['name'], third_location.name)
         self.assertEqual(json[3]['location']['name'], fourth_location.name)
 
+    def test_proximity_sorts_in_km_not_in_degrees(self):
+        # using points far north where one degree distance east/west is
+        # much shorter in km than one degree distance north/south
+        origin = Point(-34.515754, 83.561941)
+        west_by_94_km = Point(-41.960183, 83.540722)
+        south_by_101_km = Point(-34.845335, 82.655271)
+
+        origin_location = LocationBuilder(self.organization).with_point(origin).create()
+        location_101km_away = LocationBuilder(self.organization).with_point(south_by_101_km).create()
+        location_94km_away = LocationBuilder(self.organization).with_point(west_by_94_km).create()
+
+        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
+        ServiceAtLocation.objects.create(service=self.service, location=location_101km_away)
+        ServiceAtLocation.objects.create(service=self.service, location=location_94km_away)
+
+        url_with_proximity_to_origin = ('/v1/services_at_location/?proximity={0},{1}'
+                                        .format(origin.x, origin.y))
+
+        response = self.client.get(url_with_proximity_to_origin)
+        json = response.json()
+        self.assertEqual(json[0]['location']['name'], origin_location.name)
+        self.assertEqual(json[1]['location']['name'], location_94km_away.name)
+        self.assertEqual(json[2]['location']['name'], location_101km_away.name)
+
     def test_can_filter_by_proximity(self):
         origin_location = LocationBuilder(self.organization).with_long_lat(0, 0).create()
         near_location = LocationBuilder(self.organization).with_long_lat(0.1, 0).create()
