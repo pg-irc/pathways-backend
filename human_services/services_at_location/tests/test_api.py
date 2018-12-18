@@ -9,6 +9,7 @@ from search.models import TaskServiceSimilarityScore
 from search.tests.helpers import create_tasks
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
+from django.contrib.gis.geos import Point
 
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
@@ -30,16 +31,16 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def test_can_order_by_proximity(self):
         first_location = (LocationBuilder(self.organization)
                           .with_name('First')
-                          .with_point(0, 0).create())
+                          .with_long_lat(0, 0).create())
         second_location = (LocationBuilder(self.organization)
                            .with_name('Second')
-                           .with_point(10, 10).create())
+                           .with_long_lat(10, 10).create())
         third_location = (LocationBuilder(self.organization)
                           .with_name('Third')
-                          .with_point(25, 25).create())
+                          .with_long_lat(25, 25).create())
         fourth_location = (LocationBuilder(self.organization)
                            .with_name('Fourth')
-                           .with_point(30, 30).create())
+                           .with_long_lat(30, 30).create())
 
         ServiceAtLocation.objects.create(service=self.service, location=first_location)
         ServiceAtLocation.objects.create(service=self.service, location=second_location)
@@ -56,6 +57,72 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['location']['name'], first_location.name)
         self.assertEqual(json[2]['location']['name'], third_location.name)
         self.assertEqual(json[3]['location']['name'], fourth_location.name)
+
+    def test_proximity_sorts_in_km_not_in_degrees(self):
+        # using points far north where one degree distance east/west is
+        # much shorter in km than one degree distance north/south
+        origin = Point(-34.515754, 83.561941)
+        west_by_94_km = Point(-41.960183, 83.540722)
+        south_by_101_km = Point(-34.845335, 82.655271)
+
+        origin_location = LocationBuilder(self.organization).with_point(origin).create()
+        location_101km_away = LocationBuilder(self.organization).with_point(south_by_101_km).create()
+        location_94km_away = LocationBuilder(self.organization).with_point(west_by_94_km).create()
+
+        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
+        ServiceAtLocation.objects.create(service=self.service, location=location_101km_away)
+        ServiceAtLocation.objects.create(service=self.service, location=location_94km_away)
+
+        url_with_proximity_to_origin = ('/v1/services_at_location/?proximity={0},{1}'
+                                        .format(origin.x, origin.y))
+
+        response = self.client.get(url_with_proximity_to_origin)
+        json = response.json()
+        self.assertEqual(json[0]['location']['name'], origin_location.name)
+        self.assertEqual(json[1]['location']['name'], location_94km_away.name)
+        self.assertEqual(json[2]['location']['name'], location_101km_away.name)
+
+    def test_can_filter_by_proximity(self):
+        origin_location = LocationBuilder(self.organization).with_long_lat(0, 0).create()
+        near_location = LocationBuilder(self.organization).with_long_lat(0.1, 0).create()
+        far_location = LocationBuilder(self.organization).with_long_lat(1.0, 0).create()
+
+        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
+        ServiceAtLocation.objects.create(service=self.service, location=near_location)
+        ServiceAtLocation.objects.create(service=self.service, location=far_location)
+
+        url_with_user_location = ('/v1/services_at_location/?user_location={0},{1}'
+                                  .format(origin_location.point.x, origin_location.point.y))
+
+        response = self.client.get(url_with_user_location)
+        names_in_response = [row['location']['name'] for row in response.json()]
+
+        self.assertEqual(len(names_in_response), 2)
+        self.assertIn(origin_location.name, names_in_response)
+        self.assertIn(near_location.name, names_in_response)
+
+    def test_proximity_filter_excludes_points_more_than_25km_away(self):
+        origin = Point(-123.060015, 49.270545)
+        point_24km_away = Point(-122.729581, 49.260617)
+        point_26km_away = Point(-122.701997, 49.260414)
+
+        origin_location = LocationBuilder(self.organization).with_point(origin).create()
+        near_location = LocationBuilder(self.organization).with_point(point_24km_away).create()
+        far_location = LocationBuilder(self.organization).with_point(point_26km_away).create()
+
+        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
+        ServiceAtLocation.objects.create(service=self.service, location=near_location)
+        ServiceAtLocation.objects.create(service=self.service, location=far_location)
+
+        url_with_user_location = ('/v1/services_at_location/?user_location={0},{1}'
+                                  .format(origin_location.point.x, origin_location.point.y))
+
+        response = self.client.get(url_with_user_location)
+        names_in_response = [row['location']['name'] for row in response.json()]
+
+        self.assertEqual(len(names_in_response), 2)
+        self.assertIn(origin_location.name, names_in_response)
+        self.assertIn(near_location.name, names_in_response)
 
     def set_service_similarity_score(self, task_id, service_id, similarity_score):
         TaskServiceSimilarityScore.objects.create(

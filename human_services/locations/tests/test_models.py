@@ -60,7 +60,7 @@ class TestLocationModel(TestCase):
             validate_save_and_reload(location)
 
     def test_can_create_and_retrieve_point(self):
-        location = LocationBuilder(self.organization).with_point(a_float(), a_float()).build()
+        location = LocationBuilder(self.organization).with_long_lat(a_float(), a_float()).build()
         location_from_db = validate_save_and_reload(location)
         self.assertEqual(location_from_db.point, location.point)
 

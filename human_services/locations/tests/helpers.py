@@ -19,8 +19,12 @@ class LocationBuilder:
         self.name = name
         return self
 
-    def with_point(self, latitude, longitude):
-        self.point = Point(latitude, longitude)
+    def with_long_lat(self, longitude, latitude):
+        self.point = Point(longitude, latitude)
+        return self
+
+    def with_point(self, point):
+        self.point = point
         return self
 
     def with_description(self, description):

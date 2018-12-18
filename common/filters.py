@@ -3,6 +3,7 @@ from config.settings.base import SRID
 from django.contrib.gis.geos import Point
 from django.db.models import F
 from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.measure import Distance as DistanceMeasure
 from common.filter_parameter_parsers import ProximityParser, TaxonomyParser
 from human_services.locations.models import ServiceAtLocation
 from human_services.services.models import Service
@@ -44,8 +45,8 @@ class SearchFilter(filters.SearchFilter):
 
 class ProximityFilter(filters.BaseFilterBackend):
     filter_description = ('Order by proximity to a point. '
-                          'Accepts two comma separated values representing a latitude and a longitude. '
-                          'Example: "+49.2827,-123.1207".')
+                          'Accepts two comma separated values representing a longitude and a latitude. '
+                          'Example: "-123.1207,+49.2827".')
 
     def filter_queryset(self, request, queryset, view):
         proximity_parameter = request.query_params.get('proximity', None)
@@ -56,6 +57,22 @@ class ProximityFilter(filters.BaseFilterBackend):
                 queryset = (queryset
                             .annotate(distance=Distance('location__point', reference_point))
                             .order_by('distance'))
+        return queryset
+
+
+class ProximityCutoffFilter(filters.BaseFilterBackend):
+    filter_description = ('Exclude results more than 25KM (hard-coded value) from a given point. '
+                          'Accepts two comma separated values representing a longitude and a latitude. '
+                          'Example: "-123.1207,+49.2827".')
+
+    def filter_queryset(self, request, queryset, view):
+        user_location = request.query_params.get('user_location', None)
+        if user_location and queryset.model is ServiceAtLocation:
+            location = ProximityParser(user_location)
+            location_point = Point(location.latitude, location.longitude, srid=SRID)
+            queryset = (queryset
+                        .annotate(distance=Distance('location__point', location_point))
+                        .filter(distance__lte=DistanceMeasure(km=25)))
         return queryset
 
 
