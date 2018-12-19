@@ -61,5 +61,6 @@ checkForSuccess "compute similarity scores"
 ./manage.py import_newcomers_guide $NewcomersGuidePath
 checkForSuccess "create newcomers guide fixtures"
 
-./manage.py dumpdata > $OutputFile
+./manage.py dumpdata --natural-foreign --exclude auth.permission --exclude contenttypes --indent 4 > $OutputFile
+
 checkForSuccess "dump data"
