@@ -1,17 +1,17 @@
 # Package management
-wheel==0.32.1
+wheel==0.32.3
 
 # python 2 compatibility
-six==1.11.0
+six==1.12.0
 
 # django
-django==2.1.2
+django==2.1.4
 django-environ==0.4.5
 django-model-utils==3.1.2
 django-cors-headers==2.4.0
 django-parler==1.9.2
-djangorestframework==3.8.2
-drf_yasg==1.10.2
+djangorestframework==3.9.0
+drf_yasg==1.11.1
 awesome-slugify==1.6.5
 polib==1.1.0
 
@@ -22,28 +22,28 @@ django-allauth==0.38.0
 # postgreSQL database adapter
 # see http://initd.org/psycopg/docs/install.html#disabling-wheel-packages-for-psycopg-2-7
 # once we hit version 2,8 the --no-binary can be removed
-psycopg2==2.7.5 --no-binary psycopg2
+psycopg2==2.7.6.1 --no-binary psycopg2
 
 # Natural language processing
-spacy==2.0.16
-scipy==1.1.0
+spacy==2.0.18
+scipy==1.2.0
 textacy==0.6.2
 # see https://github.com/explosion/spaCy/issues/2995, resolves error "ValueError: 1792000 exceeds max_bin_len(1048576)"
 msgpack==0.5.6
 
 # static files
-whitenoise==4.1
+whitenoise==4.1.2
 
 # caching
 django-redis==4.10.0
-redis>=2.10.6
+redis>=3.0.1
 
 # front end tech, TODO remove
 django-crispy-forms==1.7.2
 Pillow==5.3.0
 
 # Time zones support, TODO remove
-pytz==2018.5
+pytz==2018.7
 
 # testing, TODO move to test.txt
 lazy-object-proxy==1.3.1
@@ -53,7 +53,7 @@ parse==1.9.0
 parse-type==0.4.2
 
 # code analysis, TODO move or remove
-astroid==2.0.4
+astroid==2.1.0
 isort==4.3.4
 
 # TODO remove

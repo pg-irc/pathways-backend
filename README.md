@@ -149,6 +149,7 @@ rm -r .venv-local/
 python3 -m venv .venv-local
 source ./.venv-local/bin/activate
 pip install -r requirements/local.txt
+python -m spacy download en
 ```
 
 Then run the upgrade script for either local, rest or production environment, e.g.:
