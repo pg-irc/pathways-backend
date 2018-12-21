@@ -1,4 +1,5 @@
 from django.test import TestCase
+from rest_framework import status
 from main import version
 
 
@@ -16,3 +17,9 @@ class TestVersion(TestCase):
         version_tuple = version.get_version_info()
         version_string = '{}.{}.{}'.format(version_tuple[0], version_tuple[1], version_tuple[2])
         self.assertEqual(version_string, self.version)
+
+    def test_get_version_from_api(self):
+        url = '/version/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content.decode("utf-8"), self.version)
