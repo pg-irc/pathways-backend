@@ -51,6 +51,7 @@ install_packages_in_clean_environment()
     python3 -m venv $VENV_PATH
     source $VENV_PATH/bin/activate
     pip install -r $REQUIREMENTS
+    python -m spacy download en
 }
 
 run_tests() {
