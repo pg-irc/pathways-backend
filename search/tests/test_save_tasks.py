@@ -19,7 +19,17 @@ class TestSavingTasks(TestCase):
                     },
                     'description': {
                         'en': self.english_task_description,
-                    }
+                    },
+                    'taxonomyTerms': [
+                        {
+                            'taxonomyId': 'colour',
+                            'taxonomyTermId': 'blue',
+                        },
+                        {
+                            'taxonomyId': 'size',
+                            'taxonomyTermId': 'large',
+                        }
+                    ],
                 }
             }
         }
@@ -45,3 +55,19 @@ class TestSavingTasks(TestCase):
         save_tasks(self.one_task)
         records = Task.objects.all()
         self.assertEqual(records[0].description, self.english_task_description)
+
+    def test_saves_taxonomy_term_id(self):
+        save_tasks(self.one_task)
+        record = Task.objects.all()[0]
+        self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
+
+    def test_saves_taxonomy_term(self):
+        save_tasks(self.one_task)
+        record = Task.objects.all()[0]
+        self.assertEqual(record.taxonomy_terms.all()[0].name, 'blue')
+
+    def test_saves_multiple_taxonomy_terms(self):
+        save_tasks(self.one_task)
+        record = Task.objects.all()[0]
+        self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
+        self.assertEqual(record.taxonomy_terms.all()[1].taxonomy_id, 'size')
