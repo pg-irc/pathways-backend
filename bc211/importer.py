@@ -11,9 +11,11 @@ from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
+
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
         save_organization(organization, counters)
+
 
 def save_organization(organization, counters):
     translation.activate('en')
