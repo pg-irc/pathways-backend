@@ -5,7 +5,7 @@ from human_services.services.models import Service
 from search.compute_similarities import (to_task_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
                                          compute_similarities)
-from search.save_tasks import save_tasks
+from search.save_topics import save_topics
 from search.save_similarities import (save_task_similarities,
                                       save_task_service_similarity_scores)
 
@@ -47,7 +47,7 @@ class Command(BaseCommand):
         cosine_doc_similarities = compute_similarities(descriptions)
 
         print('Saving {} tasks...'.format(len(tasks)))
-        save_tasks(tasks)
+        save_topics(tasks)
         print('Saving {} task similarities...'.format(len(task_ids)*(len(task_ids)-1)))
         save_task_similarities(task_ids, cosine_doc_similarities, related_task_count)
         print('Saving {} task-service similarities...'.format(len(task_ids)*len(service_ids)))

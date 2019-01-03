@@ -3,7 +3,7 @@ from search.models import Task
 from taxonomies.models import TaxonomyTerm
 
 
-def save_tasks(tasks):
+def save_topics(tasks):
     Task.objects.all().delete()
     translation.activate('en')
     for _, task in tasks['taskMap'].items():

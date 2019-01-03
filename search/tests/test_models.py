@@ -4,7 +4,7 @@ from common.testhelpers.random_test_values import a_string, a_float
 from search.models import TaskSimilarityScore, TaskServiceSimilarityScore
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from search.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_tasks
 
 
 class TestTaskSimilarityScores(TestCase):
