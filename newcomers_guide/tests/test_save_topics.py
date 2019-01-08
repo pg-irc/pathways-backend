@@ -58,7 +58,7 @@ class TestSavingTasks(TestCase):
         records = Task.objects.all()
         self.assertEqual(records[0].description, self.english_task_description)
 
-    def test_saves_taxonomy_term_id(self):
+    def test_saves_taxonomy_id(self):
         save_topics(self.one_task, self.counts)
         record = Task.objects.all()[0]
         self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
