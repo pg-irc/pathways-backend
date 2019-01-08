@@ -55,12 +55,15 @@ class HTMLRemover(HTMLParser):
     def handle_endtag(self, tag):
         pass
 
+    def error(self, message):
+        raise RuntimeError(message)
+
 
 def compute_similarities(docs):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
     tokenized_docs = ([tok.lemma_ for tok in doc] for doc in spacy_docs)
-    vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
+    vectorizer = Vectorizer(tf_type='bm25', apply_idf=True, idf_type='bm25', apply_dl=True)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
     return compute_cosine_doc_similarities(term_matrix)
 
