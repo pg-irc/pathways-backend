@@ -51,7 +51,7 @@ To execute the test suite in production, where a database connection string is u
 ```
 DATABASE_URL=postgres://pathways:password@localhost/pathways_local \
 MAILGUN_SENDER_DOMAIN=mailgun.org DJANGO_MAILGUN_API_KEY=xyz \
-DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static \
+DJANGO_AWS_STORAGE_BUCKET_NAME=*bucket* \
 DJANGO_SECRET_KEY=xyz ./manage.py test
 ```
 
@@ -160,37 +160,9 @@ Then run the upgrade script for either local, rest or production environment, e.
 
 You will be prompted to decide which of the possible upgrades you will take (this is using [pur](https://pypi.python.org/pypi/pur) in interactive mode), the requirement files are updated and a new environment is created using the new packages for use in testing before the upgrades are committed.
 
-## Getting started with Heroku
+## Deploying to Heroku
 
-Create a Heroku instance with these environment variables:
-
-* DATABASE_URL (managed by Heroku)
-* DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static
-* DJANGO_SECRET_KEY
-* DJANGO_SETTINGS_MODULE=config.settings.production
-
-Update ALLOWED_HOSTS production settings to include the name of the heroku instance
-
-To clear out the database content
-
-```
-% heroku restart
-% heroku pg:reset DATABASE
-```
-
-To initialize the database schema
-
-```
-% heroku run ./manage.py migrate
-```
-
-To connect to the heroku instance over SSH:
-
-```
-heroku ps:exec
-```
-
-### Deployment on Heroku
+### Prepare data
 
 To deploy on Heroku from an empty production database: First prepare the deployment
 files locally using the `utility/prepare_deploy.sh` script. It should be called with three
@@ -200,26 +172,56 @@ arguments
   * Path to the folder containing the Newcomers Guide content
   * Path to the output file to generate, must end in `.json`
 
-Upload the json file to AWS so that it can be accessed from Heroku. Then log into heroku
-using `ps:exec`, set the environment variables including the correct DB URL
+Upload the resulting json file to AWS so that it can be accessed from Heroku.
 
+### Create the server
+
+Ensure ALLOWED_HOSTS in the production settings include the name of the heroku instance.
+
+These steps are for creating a new Heroku instance from scratch:
+
+* Create an instance on Heroku, give it a name
+* Under Resources, add a Heroku Postgres add-on, using the Hbby Basic level to support our amount of data
+* Under Deploy, connect it to github using the pg-irc organization and the pathways-backend repo
+* Under Settings, set all the environment variables (DATABASE_URL should already be there from the step above, you'll need that later)
+
+```
+DJANGO_SETTINGS_MODULE = config.settings.production_heroku
+DJANGO_READ_DOT_ENV_FILE = False
+BUILD_WITH_GEO_LIBRARIES = 1
+MAILGUN_SENDER_DOMAIN = mailgun.org
+DJANGO_AWS_STORAGE_BUCKET_NAME = the bucket
+DJANGO_SERVER_EMAIL = the email
+DJANGO_MAILGUN_API_KEY = the key
+DJANGO_SECRET_KEY = the key
+```
+* Under Deploy, Manual deploy, select git branch to deploy to the instance, then deploy it. This will take a while.
+
+### Populate the server
+
+* From bash, log into the server with 
+```
+heroku ps:exec -a *appname*
+```
+* Set environment variables in shell, using the DATABASE_URL from the Settings, see abovve
 ```
 export DJANGO_SETTINGS_MODULE=config.settings.production
-export DJANGO_SECRET_KEY='the key'
-export DJANGO_AWS_STORAGE_BUCKET_NAME=peacegeeks-pathways-static
-export DJANGO_MAILGUN_API_KEY='the key'
-export MAILGUN_SENDER_DOMAIN='the domain'
-export DATABASE_URL='the database url from heroku settings'
-export DJANGO_READ_DOT_ENV_FILE=False
-```
+export DJANGO_READ_DOT_ENV_FILE = False
+export DJANGO_AWS_STORAGE_BUCKET_NAME="the bucket"
+export MAILGUN_SENDER_DOMAIN="example.com"
+export GDAL_LIBRARY_PATH="/app/.heroku/vendor/lib/libgdal.so"
+export GEOS_LIBRARY_PATH="/app/.heroku/vendor/lib/libgeos_c.so"
 
-and load the data into the empty database
+export DJANGO_SECRET_KEY="the key"
+export DJANGO_MAILGUN_API_KEY="the key"
+export DATABASE_URL="value from Settings"
 ```
-./manage.py reset_db
-./manage.py migrate
-wget https://path/to/amazon/s3/storage/deploy_data.json
-./manage.py loaddata deploy_data.json
+* Use wget to get the database dump file from AWS-S3
+* Load the data
 ```
+./manage.py loaddata *file.json*
+```
+* Then open the app, go to swagger and fire requests
 
 ## Getting started with docker
 
