@@ -6,7 +6,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.models import ServiceAtLocation
 from search.models import TaskServiceSimilarityScore
-from search.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_tasks
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
 from django.contrib.gis.geos import Point

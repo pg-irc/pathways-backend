@@ -5,7 +5,7 @@ from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_fil
                                         parse_task_files, parse_file_path, TaxonomyTermReference)
 from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_content
 from search.models import TaskSimilarityScore
-from search.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_tasks
 
 
 class FilePathParseTests(TestCase):

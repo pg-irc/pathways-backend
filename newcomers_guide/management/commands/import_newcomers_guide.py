@@ -4,6 +4,8 @@ from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_t
 from newcomers_guide.read_data import read_task_data, read_taxonomy_data
 from newcomers_guide.parse_data import parse_task_files, parse_taxonomy_files
 from newcomers_guide.log_data import log_taxonomies, log_locales
+from newcomers_guide.save_topics import save_topics
+from bc211.import_counters import ImportCounters
 
 
 # invoke as follows:
@@ -17,9 +19,12 @@ class Command(BaseCommand):
         parser.add_argument('path',
                             metavar='path',
                             help='path to root of Newcomers Guide folder structure')
+        parser.add_argument('--save_topics_to_db', action='store_true',
+                            help='Save topics to the database.')
 
     def handle(self, *args, **options):
         root_folder = options['path']
+        is_updating_db = options['save_topics_to_db']
 
         self.stdout.write('Reading Newcomers Guide data from {}'.format(root_folder))
 
@@ -38,3 +43,7 @@ class Command(BaseCommand):
 
         with open('taxonomies.ts', 'w') as file:
             file.write(generate_taxonomy_fixture(taxonomies))
+
+        if is_updating_db:
+            counts = ImportCounters()
+            save_topics(tasks, counts)
