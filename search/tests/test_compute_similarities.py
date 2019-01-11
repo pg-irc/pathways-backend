@@ -55,7 +55,7 @@ class TestTaskSimilarityScore(TestCase):
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertEqual(descriptions[0], name + ' ' + description)
 
-    def test_import_removes_doubly_escaped_bold_markup_from_service_descriptioin(self):
+    def test_import_removes_doubly_escaped_bold_markup_from_service_description(self):
         name = 'Langley Child Development Centre'
         description_with_markup = ('The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child '
                                    'Development Program&amp;lt;/b&amp;gt; utilizes cultural '
@@ -70,7 +70,7 @@ class TestTaskSimilarityScore(TestCase):
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertEqual(descriptions[0], expected_without_markup)
 
-    def test_import_removes_doubly_escaped_strong_markup_from_service_descriptioin(self):
+    def test_import_removes_doubly_escaped_strong_markup_from_service_description(self):
         name = 'Last Post Fund'
         description_with_markup = ('Delivers the &amp;lt;strong&amp;gt;Veterans Affairs Canada '
                                    'Funeral and Burial Program&amp;lt;/strong&amp;gt; for veterans '
