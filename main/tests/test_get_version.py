@@ -9,7 +9,7 @@ class TestVersion(TestCase):
         with open('VERSION.txt', 'r') as file:
             self.version = file.read().strip()
 
-    def test_get_version_string_matches_version_dot_txt(self):
+    def test_version_string_in_main_init_py_matches_version_dot_txt(self):
         version_string = version.get_version_string()
         self.assertEqual(version_string, self.version)
 
