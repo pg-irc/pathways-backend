@@ -18,10 +18,13 @@ def main():
         current_pair_index += 1
         diff = review_data.compare_data(read_file_content(pair.target_file),
                                         read_file_content(pair.reference_file))
-        if diff != '':
+        if diff == '':
+            print('.', end='')
+        else:
             history.append(current_pair_index - 1)
             print(
                 (
+                    '\n'
                     'Reviewing file ({3}/{4}) {0}\nReference is   {1}:\n\nDifferences:\n{2}\n\n'
                     'T: Edit target file; '
                     'R: Edit reference file; '
