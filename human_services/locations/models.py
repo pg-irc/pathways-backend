@@ -16,7 +16,6 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
                                       related_name='locations',
                                       through='ServiceAtLocation')
     point = models.PointField(blank=True, null=True)
-    addresses = models.ManyToManyField(Address, related_name='locations', through='LocationAddress')
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
         description=models.TextField(blank=True, null=True)
