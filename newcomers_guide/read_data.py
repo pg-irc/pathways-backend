@@ -7,7 +7,7 @@ def read_task_data(root_folder):
     for root, _, filenames in os.walk(root_folder, topdown=False):
         for filename in filenames:
             path = os.path.join(root, filename)
-            if is_task_file(path) or is_article_file(path):
+            if is_topic_file(path):
                 task_data.append([path, read_file_content(path)])
     return task_data
 
@@ -31,14 +31,9 @@ def read_file_content(path):
             raise exceptions.DecodeError(path)
 
 
-def is_task_file(path):
+def is_topic_file(path):
     sep = os.sep
-    return path.find(sep + 'tasks' + sep) > 0 and is_content_file(path)
-
-
-def is_article_file(path):
-    sep = os.sep
-    return path.find(sep + 'articles' + sep) > 0 and is_content_file(path)
+    return path.find(sep + 'topics' + sep) > 0 and is_content_file(path)
 
 
 def is_content_file(path):

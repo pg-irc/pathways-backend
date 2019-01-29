@@ -50,7 +50,7 @@ class GenerateFixtureTest(TestCase):
 
     def test_generated_taxonomy_fixture(self):
         self.maxDiff = None
-        data = [TaxonomyTermReference('TheTaxId', 'TheTaxTermId', 'tasks', 'TheContentId')]
+        data = [TaxonomyTermReference('TheTaxId', 'TheTaxTermId', 'topics', 'TheContentId')]
         expected = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/taxonomies.ts\n'
                     '// tslint:disable:quotemark trailing-comma max-line-length\n'
                     'import { TaxonomyStore } from \'../types/taxonomies\';\n'
@@ -84,6 +84,9 @@ class GenerateFixtureTest(TestCase):
                     '            },\n'
                     '            "money": {\n'
                     '                "icon": "dollar"\n'
+                    '            },\n'
+                    '            "rightaway": {\n'
+                    '                "icon": "briefcase"\n'
                     '            },\n'
                     '            "settling_in": {\n'
                     '                "icon": "street-view"\n'

@@ -10,14 +10,14 @@ from newcomers_guide.tests.helpers import create_tasks
 
 class FilePathParseTests(TestCase):
     def setUp(self):
-        self.path = 'some/path/chapter_6_education/tasks/To_learn_english/fr.Apprendre l\'anglais.md'
+        self.path = 'some/path/chapter_6_education/topics/To_learn_english/fr.Apprendre l\'anglais.md'
         self.parsed_path = parse_file_path(self.path)
 
     def test_can_extract_chapter(self):
         self.assertEqual(self.parsed_path.chapter, 'chapter_6_education')
 
     def test_can_extract_content_type(self):
-        self.assertEqual(self.parsed_path.type, 'tasks')
+        self.assertEqual(self.parsed_path.type, 'topics')
 
     def test_can_extract_content_id(self):
         self.assertEqual(self.parsed_path.id, 'to_learn_english')
@@ -29,33 +29,33 @@ class FilePathParseTests(TestCase):
         self.assertEqual(self.parsed_path.title, 'Apprendre l\'anglais')
 
     def test_can_handle_titles_with_period(self):
-        path = 'some/path/chapter/articles/articleId/en.article.name.with.periods.md'
+        path = 'some/path/chapter/topics/articleId/en.article.name.with.periods.md'
         parsed_path = parse_file_path(path)
         self.assertEqual(parsed_path.title, 'article.name.with.periods')
 
     def test_throw_if_filename_contains_one_period(self):
-        path = 'some/path/chapter/articles/articleId/name.md'
+        path = 'some/path/chapter/topics/articleId/name.md'
         with self.assertRaisesMessage(exceptions.ValidationError, 'name.md: Invalid file name'):
             parse_file_path(path)
 
     def test_throw_if_filename_contains_empty_language_code(self):
-        path = 'some/path/chapter/articles/articleId/.name.md'
+        path = 'some/path/chapter/topics/articleId/.name.md'
         with self.assertRaisesMessage(exceptions.ValidationError, '.name.md: Invalid file name'):
             parse_file_path(path)
 
     def test_throw_if_filename_contains_empty_article_name(self):
-        path = 'some/path/chapter/articles/articleId/en..md'
+        path = 'some/path/chapter/topics/articleId/en..md'
         with self.assertRaisesMessage(exceptions.ValidationError, 'en..md: Invalid file name'):
             parse_file_path(path)
 
     def test_dont_throw_on_non_content_file(self):
-        path = 'some/path/chapter/articles/articleId/en.txt'
+        path = 'some/path/chapter/topics/articleId/en.txt'
         parse_file_path(path)
 
 
 class ProcessTaskFilesTests(TestCase):
     def setUp(self):
-        self.english_path = 'some/path/chapter/tasks/To_learn_english/en.Learn_english.txt'
+        self.english_path = 'some/path/chapter/topics/To_learn_english/en.Learn_english.txt'
 
         self.content = a_string()
         self.result = parse_task_files([[self.english_path, self.content]])
@@ -70,7 +70,7 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(self.result['taskMap']['to_learn_english']['completed'], False)
 
     def test_handles_unicode_in_title(self):
-        self.english_path = "some/path/chapter/tasks/the_id/fr.Système_d'éducation.txt"
+        self.english_path = "some/path/chapter/topics/the_id/fr.Système_d'éducation.txt"
         self.result = parse_task_files([[self.english_path, a_string()]])
         self.assertEqual(self.result['taskMap']['the_id']['title']['fr'], "Système_d'éducation")
 
@@ -88,14 +88,14 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(description, 'abc [link](http://example.com) def')
 
     def test_handle_localized_titles_when_processing_the_same_content_in_different_locales(self):
-        french_path = 'some/path/chapter/tasks/To_learn_english/fr.Apprendre_l_anglais.txt'
+        french_path = 'some/path/chapter/topics/To_learn_english/fr.Apprendre_l_anglais.txt'
         result = parse_task_files([[self.english_path, a_string()],
                                    [french_path, a_string()]])
         self.assertEqual(result['taskMap']['to_learn_english']['title']['en'], 'Learn_english')
         self.assertEqual(result['taskMap']['to_learn_english']['title']['fr'], 'Apprendre_l_anglais')
 
     def test_handle_localized_description_when_processing_the_same_content_in_different_locales(self):
-        french_path = 'some/path/chapter/tasks/To_learn_english/fr.Apprendre_l_anglais.txt'
+        french_path = 'some/path/chapter/topics/To_learn_english/fr.Apprendre_l_anglais.txt'
         english_description = a_string()
         french_description = a_string()
         result = parse_task_files([[self.english_path, english_description],
@@ -103,7 +103,7 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(result['taskMap']['to_learn_english']['description']['en'], english_description)
         self.assertEqual(result['taskMap']['to_learn_english']['description']['fr'], french_description)
 
-    def test_includes_related_articles_from_database_in_order_of_declining_similarity_score(self):
+    def test_includes_related_topics_from_database_in_order_of_declining_similarity_score(self):
         task_id = a_string()
         similar_task_id = a_string()
         create_tasks([task_id, similar_task_id])
@@ -120,12 +120,12 @@ class ProcessTaskFilesTests(TestCase):
                             second_task_id=dissimilar_task_id,
                             similarity_score=a_low_score).save()
 
-        path = 'some/path/chapter/tasks/{0}/en.Learn_english.txt'.format(task_id)
+        path = 'some/path/chapter/topics/{0}/en.Learn_english.txt'.format(task_id)
         result = parse_task_files([[path, a_string()]])
         self.assertEqual(result['taskMap'][task_id]['relatedTasks'], [similar_task_id, dissimilar_task_id])
 
     def test_combine_files_for_different_content(self):
-        secondary_path = 'some/path/chapter/tasks/Registering_child_in_school/en.Registering_in_public_school.txt'
+        secondary_path = 'some/path/chapter/topics/Registering_child_in_school/en.Registering_in_public_school.txt'
         result = parse_task_files([[self.english_path, a_string()],
                                    [secondary_path, a_string()]])
         self.assertEqual(result['taskMap']['to_learn_english']['title']['en'], 'Learn_english')
@@ -133,15 +133,15 @@ class ProcessTaskFilesTests(TestCase):
                          ['title']['en'], 'Registering_in_public_school')
 
     def test_throw_on_same_task_id_in_different_chapters(self):
-        first_path = 'some/path/chapter1/tasks/Registering_child_in_school/en.InEnglish.md'
-        second_path = 'some/path/chapter2/tasks/Registering_child_in_school/fr.InFrench.md'
+        first_path = 'some/path/chapter1/topics/Registering_child_in_school/en.InEnglish.md'
+        second_path = 'some/path/chapter2/topics/Registering_child_in_school/fr.InFrench.md'
         error_message = 'registering_child_in_school: don\'t use the same task id in different chapters'
         with self.assertRaisesMessage(exceptions.ValidationError, error_message):
             parse_task_files([[first_path, a_string()], [second_path, a_string()]])
 
     def test_parse_task_files_includes_article_content(self):
-        task_path = 'some/path/chapter/tasks/To_learn_english/en.Learn_english.txt'
-        article_path = 'some/path/chapter/articles/Human_rights/en.Human_rights.txt'
+        task_path = 'some/path/chapter/topics/To_learn_english/en.Learn_english.txt'
+        article_path = 'some/path/chapter/topics/Human_rights/en.Human_rights.txt'
         result = parse_task_files([[task_path, a_string()], [article_path, a_string()]])
         self.assertIn('to_learn_english', result['taskMap'])
         self.assertIn('human_rights', result['taskMap'])
@@ -180,7 +180,7 @@ class ParseTaxonomyFileTests(TestCase):
 
 class ProcessAllTaxonomyFilesTests(TestCase):
     def setUp(self):
-        self.references = parse_taxonomy_files([['some/path/tasks/TaskId/en.name.txt', 'TaxId:TaxTermId']])
+        self.references = parse_taxonomy_files([['some/path/topics/TaskId/en.name.txt', 'TaxId:TaxTermId']])
 
     def test_creates_reference_with_taxonomy_id_from_file_content(self):
         self.assertEqual(self.references[0].taxonomy_id, 'TaxId')
@@ -189,20 +189,20 @@ class ProcessAllTaxonomyFilesTests(TestCase):
         self.assertEqual(self.references[0].taxonomy_term_id, 'TaxTermId')
 
     def test_creates_reference_with_content_type_from_path(self):
-        self.assertEqual(self.references[0].content_type, 'tasks')
+        self.assertEqual(self.references[0].content_type, 'topics')
 
     def test_creates_reference_with_content_id_from_path(self):
         self.assertEqual(self.references[0].content_id, 'taskid')
 
     def test_creates_one_reference_for_each_element_in_content(self):
         self.references = parse_taxonomy_files(
-            [['some/path/tasks/TaskId/en.name.txt', 'FooTaxId:FooTaxTermId, BarTaxId:BarTaxTermId']])
+            [['some/path/topics/TaskId/en.name.txt', 'FooTaxId:FooTaxTermId, BarTaxId:BarTaxTermId']])
         self.assertEqual(self.references[0].taxonomy_id, 'FooTaxId')
         self.assertEqual(self.references[1].taxonomy_id, 'BarTaxId')
 
     def test_all_one_reference_tagged_with_content_id(self):
         self.references = parse_taxonomy_files(
-            [['some/path/tasks/TaskId/en.name.txt', 'FooTaxId:FooTaxTermId, BarTaxId:BarTaxTermId']])
+            [['some/path/topics/TaskId/en.name.txt', 'FooTaxId:FooTaxTermId, BarTaxId:BarTaxTermId']])
         self.assertEqual(self.references[0].content_id, 'taskid')
         self.assertEqual(self.references[1].content_id, 'taskid')
 
