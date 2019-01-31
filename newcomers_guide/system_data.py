@@ -12,6 +12,7 @@ def get_system_taxonomies():
             'money': {'icon': 'dollar'},
             'housing': {'icon': 'building'},
             'employment': {'icon': 'briefcase'},
+            'rightaway': {'icon': 'briefcase'},
             'legal': {'icon': 'balance-scale'},
             'driving': {'icon': 'car'},
             'helpForIndividualsAndFamilies': {'icon': 'handshake-o'}

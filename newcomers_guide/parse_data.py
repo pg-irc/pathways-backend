@@ -18,7 +18,7 @@ def parse_task_files(file_specs):
         parsed_path = parse_file_path(path)
         task_id = parsed_path.id
 
-        if parsed_path.type == 'tasks' or parsed_path.type == 'articles':
+        if parsed_path.type == 'topics':
             ensure_builder_exists_for_task(builders, task_id)
             add_properties_for_locale(builders[task_id], parsed_path, description)
 
