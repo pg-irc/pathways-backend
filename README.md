@@ -185,16 +185,17 @@ These steps are for creating a new Heroku instance from scratch:
 * Under Deploy, connect it to github using the pg-irc organization and the pathways-backend repo
 * Under Settings, set all the environment variables (DATABASE_URL should already be there from the step above, you'll need that later)
 
-```
-DJANGO_SETTINGS_MODULE = config.settings.production_heroku
-DJANGO_READ_DOT_ENV_FILE = False
-BUILD_WITH_GEO_LIBRARIES = 1
-MAILGUN_SENDER_DOMAIN = mailgun.org
-DJANGO_AWS_STORAGE_BUCKET_NAME = the bucket
-DJANGO_SERVER_EMAIL = the email
-DJANGO_MAILGUN_API_KEY = the key
-DJANGO_SECRET_KEY = the key
-```
+Variable                       | Value
+-------------------------------|-------------------------------------
+DJANGO_SETTINGS_MODULE         | config.settings.production_heroku
+DJANGO_READ_DOT_ENV_FILE       | False
+BUILD_WITH_GEO_LIBRARIES       | 1
+MAILGUN_SENDER_DOMAIN          | mailgun.org
+DJANGO_AWS_STORAGE_BUCKET_NAME | the bucket
+DJANGO_SERVER_EMAIL            | the email
+DJANGO_MAILGUN_API_KEY         | the key
+DJANGO_SECRET_KEY              | the key
+
 * Under Deploy, Manual deploy, select git branch to deploy to the instance, then deploy it. This will take a while.
 
 ### Populate the server
@@ -206,12 +207,12 @@ heroku ps:exec -a *appname*
 * Set environment variables in shell, using the DATABASE_URL from the Settings, see abovve
 ```
 export DJANGO_SETTINGS_MODULE=config.settings.production
-export DJANGO_READ_DOT_ENV_FILE = False
-export DJANGO_AWS_STORAGE_BUCKET_NAME="the bucket"
+export DJANGO_READ_DOT_ENV_FILE=False
 export MAILGUN_SENDER_DOMAIN="example.com"
 export GDAL_LIBRARY_PATH="/app/.heroku/vendor/lib/libgdal.so"
 export GEOS_LIBRARY_PATH="/app/.heroku/vendor/lib/libgeos_c.so"
 
+export DJANGO_AWS_STORAGE_BUCKET_NAME="the bucket"
 export DJANGO_SECRET_KEY="the key"
 export DJANGO_MAILGUN_API_KEY="the key"
 export DATABASE_URL="value from Settings"
