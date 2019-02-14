@@ -15,6 +15,7 @@ class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
                 select_related('service').
                 select_related('location').
                 prefetch_related('service__translations').
+                prefetch_related('service__organization').
                 prefetch_related('location__translations').
                 prefetch_related('location__location_addresses__address').
                 prefetch_related('location__phone_numbers'))
