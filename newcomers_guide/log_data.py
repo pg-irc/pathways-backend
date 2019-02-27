@@ -8,7 +8,7 @@ def build_and_sort_taxonomy_log_lines(tasks_fixture):
     log_lines = []
     for key, value in tasks_fixture.items():
         taxonomy_terms = format_taxonomies(value)
-        logdata = '{:<50} TaxTerms: {}'.format(key, taxonomy_terms)
+        logdata = '{:<50} TaxTerms: {}'.format(key[:50], taxonomy_terms)
         log_lines.append(LogLine(value['chapter'], value['id'], logdata))
 
     return sorted(log_lines, key=key_for_sorting)
@@ -45,7 +45,7 @@ def build_and_sort_locale_log_lines(tasks_fixture):
     log_lines = []
     for key, value in tasks_fixture.items():
         locales = format_locales(value)
-        logdata = '{:<50} Locales: {}'.format(key, locales)
+        logdata = '{:<50} Locales: {}'.format(key[:50], locales)
         log_lines.append(LogLine(value['chapter'], value['id'], logdata))
 
     return sorted(log_lines, key=key_for_sorting)
