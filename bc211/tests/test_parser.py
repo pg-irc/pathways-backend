@@ -14,7 +14,7 @@ MINIMAL_211_DATA_SET = '''
 <Source>
     <Agency>
         <Key>the agency key</Key>
-        <Name>the agency name</Name>
+        <Name>the &amp;lt;b&amp;gt;agency name&amp;lt;b&amp;gt;</Name>
         <AgencyDescription>the agency description</AgencyDescription>
         <URL>
             <Address>http://www.the-agency.org</Address>
