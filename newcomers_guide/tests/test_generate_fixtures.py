@@ -86,7 +86,7 @@ class GenerateFixtureTest(TestCase):
                     '                "icon": "dollar"\n'
                     '            },\n'
                     '            "rightaway": {\n'
-                    '                "icon": "briefcase"\n'
+                    '                "icon": "check-square-o"\n'
                     '            },\n'
                     '            "settling_in": {\n'
                     '                "icon": "street-view"\n'
