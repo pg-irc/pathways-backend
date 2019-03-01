@@ -291,13 +291,15 @@ def convert_phone_type_to_type_id(phone_type):
 
 
 def remove_double_escaped_html_markup(data):
-    if data: 
-        unescaped_once = html.unescape(data)
-        unescaped_twice = html.unescape(unescaped_once)
+    if data is None:
+        return None
 
-        remover = HTMLRemover()
-        remover.feed(unescaped_twice)
-        return remover.get_data()
+    unescaped_once = html.unescape(data)
+    unescaped_twice = html.unescape(unescaped_once)
+
+    remover = HTMLRemover()
+    remover.feed(unescaped_twice)
+    return remover.get_data()
 
 
 class HTMLRemover(HTMLParser):
