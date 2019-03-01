@@ -43,8 +43,8 @@ def parse_agency_key(agency):
 
 def parse_required_field(parent, field):
     try:
-        text_of_field = parent.find(field).text
-        return remove_double_escaped_html_markup(text_of_field)
+        field_text = parent.find(field).text
+        return remove_double_escaped_html_markup(field_text)
     except AttributeError:
         raise MissingRequiredFieldXmlParseException('Missing required field: "{0}"'.format(field))
 
@@ -53,8 +53,8 @@ def parse_optional_field(parent, field):
     value = parent.find(field)
     if value is None:
         return None
-    text_of_field = value.text
-    return remove_double_escaped_html_markup(text_of_field)
+    field_text = value.text
+    return remove_double_escaped_html_markup(field_text)
 
 
 def parse_agency_name(agency):
