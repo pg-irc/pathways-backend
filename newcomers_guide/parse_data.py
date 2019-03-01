@@ -33,7 +33,7 @@ def parse_file_path(path):
     if length < 5:
         raise exceptions.ValidationError(path + ': path is too short')
     name = split_path[length-1]
-    validate_filename(name)
+    validate_filename(name, path)
     title = get_title_from_file_name(name)
     locale = get_locale_from_file_name(name)
     task_id = slugify(split_path[length - 2])
@@ -44,7 +44,7 @@ def parse_file_path(path):
                             locale=locale)
 
 
-def validate_filename(file_name):
+def validate_filename(file_name, path):
     first, last = find_periods_in_filename(file_name)
 
     file_extension = file_name[last+1:]
@@ -57,7 +57,7 @@ def validate_filename(file_name):
     no_file_extension = last == len(file_name) - 1
 
     if (too_few_periods or no_language_code or no_article_name or no_file_extension):
-        raise_invalid_filename_error(file_name)
+        raise_invalid_filename_error(path)
 
 
 def find_periods_in_filename(file_name):
@@ -71,9 +71,9 @@ def is_content_file(file_extension):
     return file_extension == content_file_extension
 
 
-def raise_invalid_filename_error(file_name):
+def raise_invalid_filename_error(path):
     message = ': Invalid file name, should be <language code>.<article name>.md'
-    raise exceptions.ValidationError(file_name + message)
+    raise exceptions.ValidationError(path + message)
 
 
 def get_title_from_file_name(file_name):
