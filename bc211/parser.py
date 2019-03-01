@@ -53,8 +53,7 @@ def parse_optional_field(parent, field):
     value = parent.find(field)
     if value is None:
         return None
-    field_text = value.text
-    return remove_double_escaped_html_markup(field_text)
+    return remove_double_escaped_html_markup(value.text)
 
 
 def parse_agency_name(agency):

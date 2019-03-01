@@ -463,28 +463,28 @@ class PhoneNumberParserTests(unittest.TestCase):
 
 class HTMLMarkupParserTests(unittest.TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self): 
-        xml_id = '''
+        xml_agency_key = '''
         <Source>
             <Agency>
                 <Key>&amp;lt;b&amp;gt;abc</Key>
             </Agency>
         </Source>
         '''
-        root = etree.fromstring(xml_id)
-        self.html_markup = parser.parse_agency_key(root.find('Agency'))
-        self.assertEqual(self.html_markup, 'abc')
+        root = etree.fromstring(xml_agency_key)
+        html_markup = parser.parse_agency_key(root.find('Agency'))
+        self.assertEqual(html_markup, 'abc')
 
     def test_removes_doubly_escaped_strong_markup_from_required_field(self):
-        xml_id = '''
+        xml_agency_key = '''
         <Source>
             <Agency>
                 <Key>&amp;lt;strong&amp;gt;abc</Key>
             </Agency>
         </Source>
         '''
-        root = etree.fromstring(xml_id)
-        self.html_markup = parser.parse_agency_key(root.find('Agency'))
-        self.assertEqual(self.html_markup, 'abc')
+        root = etree.fromstring(xml_agency_key)
+        html_markup = parser.parse_agency_key(root.find('Agency'))
+        self.assertEqual(html_markup, 'abc')
     
     def test_removes_doubly_escaped_bold_markup_from_optional_field(self): 
         xml_address = '''
