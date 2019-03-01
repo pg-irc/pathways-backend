@@ -14,7 +14,7 @@ MINIMAL_211_DATA_SET = '''
 <Source>
     <Agency>
         <Key>the agency key</Key>
-        <Name>the &amp;lt;b&amp;gt;agency name&amp;lt;b&amp;gt;</Name>
+        <Name>the agency name</Name>
         <AgencyDescription>the agency description</AgencyDescription>
         <URL>
             <Address>http://www.the-agency.org</Address>
@@ -118,6 +118,7 @@ class OrganizationParserTests(unittest.TestCase):
     def test_can_parse_id(self):
         self.assertEqual(self.from_real_data.id, '9487364')
         self.assertEqual(self.from_minimal_data.id, 'the agency key')
+
 
     def test_can_parse_name(self):
         self.assertEqual(self.from_real_data.name, 'Langley Child Development Centre')
@@ -458,3 +459,55 @@ class PhoneNumberParserTests(unittest.TestCase):
                     <Type>{}</Type>
                 </Phone>
             </Site>'''.format(phone_number, phone_number_type)
+
+
+class HTMLMarkupParserTests(unittest.TestCase):
+    def test_removes_doubly_escaped_bold_markup_from_required_field(self): 
+        xml_id = '''
+        <Source>
+            <Agency>
+                <Key>&amp;lt;b&amp;gt;abc</Key>
+            </Agency>
+        </Source>
+        '''
+        root = etree.fromstring(xml_id)
+        self.html_markup = parser.parse_agency_key(root.find('Agency'))
+        self.assertEqual(self.html_markup, 'abc')
+
+    def test_removes_doubly_escaped_strong_markup_from_required_field(self):
+        xml_id = '''
+        <Source>
+            <Agency>
+                <Key>&amp;lt;strong&amp;gt;abc</Key>
+            </Agency>
+        </Source>
+        '''
+        root = etree.fromstring(xml_id)
+        self.html_markup = parser.parse_agency_key(root.find('Agency'))
+        self.assertEqual(self.html_markup, 'abc')
+    
+    def test_removes_doubly_escaped_bold_markup_from_optional_field(self): 
+        xml_address = '''
+        <Site>
+            <MailingAddress>
+                <Line1>&amp;lt;b&amp;gt;Line1</Line1>
+            </MailingAddress>
+        </Site>
+        '''
+        root = etree.fromstring(xml_address)
+        address_lines = parser.parse_address_lines(root.find('MailingAddress'))
+        self.assertEqual(address_lines, 'Line1')
+    
+    def test_removes_doubly_escaped_strong_markup_from_optional_field(self): 
+        xml_address = '''
+        <Site>
+            <MailingAddress>
+                <Line1>&amp;lt;strong&amp;gt;Line1</Line1>
+            </MailingAddress>
+        </Site>
+        '''
+        root = etree.fromstring(xml_address)
+        address_lines = parser.parse_address_lines(root.find('MailingAddress'))
+        self.assertEqual(address_lines, 'Line1')
+    
+ 
