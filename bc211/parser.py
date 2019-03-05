@@ -8,6 +8,9 @@ from urllib import parse as urlparse
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
 
+import html
+from html.parser import HTMLParser
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -40,14 +43,17 @@ def parse_agency_key(agency):
 
 def parse_required_field(parent, field):
     try:
-        return parent.find(field).text
+        field_text = parent.find(field).text
+        return remove_double_escaped_html_markup(field_text)
     except AttributeError:
         raise MissingRequiredFieldXmlParseException('Missing required field: "{0}"'.format(field))
 
 
 def parse_optional_field(parent, field):
     value = parent.find(field)
-    return None if value is None else value.text
+    if value is None:
+        return None
+    return remove_double_escaped_html_markup(value.text)
 
 
 def parse_agency_name(agency):
@@ -281,3 +287,39 @@ def phone_has_number_and_type(phone):
 
 def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
+
+
+def remove_double_escaped_html_markup(data):
+    if data is None:
+        return None
+
+    unescaped_once = html.unescape(data)
+    unescaped_twice = html.unescape(unescaped_once)
+
+    remover = HTMLRemover()
+    remover.feed(unescaped_twice)
+    return remover.get_data()
+
+
+class HTMLRemover(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.strict = False
+        self.convert_charrefs = False
+        self.handled_data = []
+
+    def handle_data(self, data):
+        self.handled_data.append(data)
+
+    def get_data(self):
+        return ''.join(self.handled_data)
+
+    def handle_starttag(self, tag, attrs):
+        pass
+
+    def handle_endtag(self, tag):
+        pass
+
+    def error(self, message):
+        raise RuntimeError(message)
