@@ -6,6 +6,7 @@ def get_system_taxonomies():
     return {
         'explore':
         {
+            'rightaway': {'icon': 'check-square-o'},
             'settling_in': {'icon': 'street-view'},
             'education': {'icon': 'graduation-cap'},
             'healthCare': {'icon': 'heartbeat'},
