@@ -269,6 +269,9 @@ class CleanUpUrlLinksTest(TestCase):
         text = 'abc http://example.com) def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com)) def')
 
+    def test_http_link_does_not_truncate_equals_sign(self):
+        text = 'abc http://example.com=434 def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com=434) def')
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
