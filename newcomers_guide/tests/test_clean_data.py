@@ -280,6 +280,11 @@ class CleanUpUrlLinksTest(TestCase):
     def test_http_link_does_not_truncate_query(self):
         text = 'abc http://example.com/search?source=abc def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=abc) def')
+    
+    def test_http_link_does_not_truncate_query_with_ampersand(self):
+        text = 'abc http://example.com/search?source=a&page=b def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b) def')
+
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
