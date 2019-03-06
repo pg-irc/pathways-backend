@@ -273,6 +273,14 @@ class CleanUpUrlLinksTest(TestCase):
         text = 'abc http://example.com=434 def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com=434) def')
 
+    def test_http_link_does_not_truncate_forward_slash(self):
+        text = 'abc http://example.com/ def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/) def')
+
+    def test_http_link_does_not_truncate_query(self):
+        text = 'abc http://example.com/search?source=abc def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=abc) def')
+
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
         text = 'abc foo@bar.com def'
