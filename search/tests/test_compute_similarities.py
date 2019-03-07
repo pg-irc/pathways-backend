@@ -62,3 +62,20 @@ class TestTaskSimilarityScore(TestCase):
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.85)
         self.assertLess(similarity_matrix[0, 2], 0.10)
+
+    def test_removes_local_phone_numbers_from_description(self):
+        name = 'Government of Canada'
+        description_with_phone_numbers = 'Call 778-123-4567 or 604-123-4567.'
+        description_without_phone_numbers = 'Government of Canada Call  or .'
+        ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertEqual(descriptions[0], description_without_phone_numbers)
+    
+    
+    def test_removes_international_phone_numbers_from_description(self):
+        name = 'Government of Canada'
+        description_with_phone_numbers = 'Call 1-800-123-4567 or 604-123-4567.'
+        description_without_phone_numbers = 'Government of Canada Call  or .'
+        ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertEqual(descriptions[0], description_without_phone_numbers)

@@ -2,6 +2,7 @@ import spacy
 import sklearn.preprocessing
 from textacy.vsm import Vectorizer
 from django.utils.text import slugify
+import re
 
 
 def to_task_ids_and_descriptions(tasks):
@@ -19,7 +20,8 @@ def to_service_ids_and_descriptions(services):
     descriptions = []
     for service in services:
         ids.append(service.id)
-        descriptions.append(service.name + ' ' + service.description)
+        description_without_phone_numbers = remove_phone_numbers(service.description)
+        descriptions.append(service.name + ' ' + description_without_phone_numbers)
     return (ids, descriptions)
 
 
@@ -36,3 +38,6 @@ def compute_similarities(docs):
 def compute_cosine_doc_similarities(matrix):
     normalized_matrix = sklearn.preprocessing.normalize(matrix, axis=1)
     return normalized_matrix * normalized_matrix.T
+
+def remove_phone_numbers(description):
+    return re.sub(r'([1]{1,2}-|\d{3}-\d{3}-\d{4})', '', description)
