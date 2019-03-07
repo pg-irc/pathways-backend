@@ -284,6 +284,19 @@ class CleanUpUrlLinksTest(TestCase):
     def test_http_link_does_not_truncate_query_with_ampersand(self):
         text = 'abc http://example.com/search?source=a&page=b def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b) def')
+    
+    def test_http_link_does_not_truncate_path_ending_with_word_character(self):
+        text = 'abc http://example.com/search def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search) def')
+
+    def test_excludes_trailing_dot_at_end_of_query(self):
+        text = 'abc http://example.com/search?source=a&page=b. def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b). def')
+
+    def test_excludes_trailing_comma_at_end_of_query(self):
+        text = 'abc http://example.com/search?source=a&page=b, def'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b), def')
+    
 
 
 class CleanUpMailtoLinksTest(TestCase):
