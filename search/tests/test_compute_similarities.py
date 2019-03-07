@@ -65,17 +65,54 @@ class TestTaskSimilarityScore(TestCase):
 
     def test_removes_local_phone_numbers_from_description(self):
         name = 'Government of Canada'
-        description_with_phone_numbers = 'Call 778-123-4567 or 604-123-4567.'
-        description_without_phone_numbers = 'Government of Canada Call  or .'
+        description_with_phone_numbers = 'Call 778-123-4567 or 604-123-4567 for more information.'
+        description_without_phone_numbers = ('Government of Canada ' 
+                                             'Call  or  for more information.')
         ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertEqual(descriptions[0], description_without_phone_numbers)
-    
     
     def test_removes_international_phone_numbers_from_description(self):
         name = 'Government of Canada'
-        description_with_phone_numbers = 'Call 1-800-123-4567 or 604-123-4567.'
-        description_without_phone_numbers = 'Government of Canada Call  or .'
+        description_with_phone_numbers = 'Call 1-800-123-4567 for more information.'
+        description_without_phone_numbers = ('Government of Canada ' 
+                                             'Call  for more information.')
         ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertEqual(descriptions[0], description_without_phone_numbers)
+
+    def test_removes_phone_numbers_in_brackets_from_description(self):
+        name = 'Government of Canada'
+        description_with_phone_numbers = 'Call 1-(800)-123-4567 or (604)-123-4567 for more information.'
+        description_without_phone_numbers = ('Government of Canada ' 
+                                             'Call  or  for more information.')
+        ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertEqual(descriptions[0], description_without_phone_numbers)
+
+    def test_removes_phone_numbers_beginning_with_plus_sign_from_description(self):
+        name = 'Government of Canada'
+        description_with_phone_numbers = 'Call +1-800-123-4567 or +604-123-4567 for more information.'
+        description_without_phone_numbers = ('Government of Canada ' 
+                                             'Call  or  for more information.')
+        ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertEqual(descriptions[0], description_without_phone_numbers)
+
+    def test_removes_phone_numbers_beginning_with_plus_sign_and_two_numbers_from_description(self):
+        name = 'Government of Canada'
+        description_with_phone_numbers = 'Call +49-800-123-4567 for more information.'
+        description_without_phone_numbers = ('Government of Canada ' 
+                                             'Call  for more information.')
+        ServiceBuilder(self.organization).with_name(name).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertEqual(descriptions[0], description_without_phone_numbers)
+    
+    def test_does_not_remove_numbers_that_are_not_phone_numbers(self):
+        name = 'Government of Canada'
+        description_with_numbers = 'In 2017 the Canadian population was approximately 36,710,0000.'
+        expected_description = ('Government of Canada '  
+                                'In 2017 the Canadian population was approximately 36,710,0000.')
+        ServiceBuilder(self.organization).with_name(name).with_description(description_with_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertEqual(descriptions[0], expected_description)

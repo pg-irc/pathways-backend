@@ -40,4 +40,4 @@ def compute_cosine_doc_similarities(matrix):
     return normalized_matrix * normalized_matrix.T
 
 def remove_phone_numbers(description):
-    return re.sub(r'([1]{1,2}-|\d{3}-\d{3}-\d{4})', '', description)
+    return re.sub(r'(\+?[0-9]{1,2}-|\+?[\(\)\d]{3,5}-\d{3}-\d{4})', '', description)
