@@ -27,8 +27,8 @@ def compute_similarities(docs):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
     tokenized_docs = ([tok.lemma_ for tok in doc] for doc in spacy_docs)
-    # lucene-style tf-idf
-    vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=True, dl_type='sqrt')
+    # tf-idf
+    vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
     return compute_cosine_doc_similarities(term_matrix)
 
