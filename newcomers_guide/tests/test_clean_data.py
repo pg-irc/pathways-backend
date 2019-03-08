@@ -280,11 +280,11 @@ class CleanUpUrlLinksTest(TestCase):
     def test_http_link_does_not_truncate_query(self):
         text = 'abc http://example.com/search?source=abc def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=abc) def')
-    
+
     def test_http_link_does_not_truncate_query_with_ampersand(self):
         text = 'abc http://example.com/search?source=a&page=b def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b) def')
-    
+
     def test_http_link_does_not_truncate_path_ending_with_word_character(self):
         text = 'abc http://example.com/search def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search) def')
@@ -296,7 +296,14 @@ class CleanUpUrlLinksTest(TestCase):
     def test_excludes_trailing_comma_at_end_of_query(self):
         text = 'abc http://example.com/search?source=a&page=b, def'
         self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b), def')
-    
+
+    def test_link_at_the_start_of_a_file(self):
+        text = 'http://example.com/search?source=a&page=b def'
+        self.assertEqual(clean_up_http_links(text), '[link](http://example.com/search?source=a&page=b) def')
+
+    def test_link_at_the_end_of_a_file(self):
+        text = 'abc http://example.com/search?source=a&page=b'
+        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b)')
 
 
 class CleanUpMailtoLinksTest(TestCase):
