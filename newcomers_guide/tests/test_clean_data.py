@@ -241,88 +241,88 @@ class CleanUpNewlinesTest(TestCase):
 class CleanUpUrlLinksTest(TestCase):
     def test_replaces_http_link_with_markdown(self):
         text = 'abc http://example.com def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com](http://example.com) def')
 
     def test_replaces_two_links_with_markdown(self):
         text = 'abc http://example.com def http://example.org ghi'
-        expected = 'abc [link](http://example.com) def [link](http://example.org) ghi'
+        expected = 'abc Web: [http://example.com](http://example.com) def Web: [http://example.org](http://example.org) ghi'
         self.assertEqual(clean_up_http_links(text), expected)
 
     def test_replaces_https_link_with_markdown(self):
         text = 'https://example.com'
-        self.assertEqual(clean_up_http_links(text), '[link](https://example.com)')
+        self.assertEqual(clean_up_http_links(text), 'Web: [https://example.com](https://example.com)')
 
     def test_handles_urls_with_dash_in_the_host_name(self):
         text = 'http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html'
-        expected = '[link](http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html)'
+        expected = 'Web: [http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html](http://www.cra-arc.gc.ca/tx/ndvdls/vlntr/menu-eng.html)'
         self.assertEqual(clean_up_http_links(text), expected)
 
     def test_excludes_trailing_dot_from_link(self):
         text = 'abc http://example.com. Def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com). Def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com](http://example.com). Def')
 
     def test_excludes_trailing_comma_from_link(self):
         text = 'abc http://example.com, def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com), def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com](http://example.com), def')
 
     def test_excludes_trailing_closing_parenthesis(self):
         text = 'abc http://example.com) def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com)) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com](http://example.com)) def')
 
     def test_http_link_does_not_truncate_equals_sign(self):
         text = 'abc http://example.com=434 def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com=434) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com=434](http://example.com=434) def')
 
     def test_http_link_does_not_truncate_forward_slash(self):
         text = 'abc http://example.com/ def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/](http://example.com/) def')
 
     def test_http_link_does_not_truncate_query(self):
         text = 'abc http://example.com/search?source=abc def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=abc) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search?source=abc](http://example.com/search?source=abc) def')
 
     def test_http_link_does_not_truncate_query_with_ampersand(self):
         text = 'abc http://example.com/search?source=a&page=b def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search?source=a&page=b](http://example.com/search?source=a&page=b) def')
 
     def test_http_link_does_not_truncate_path_ending_with_word_character(self):
         text = 'abc http://example.com/search def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search) def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search](http://example.com/search) def')
 
     def test_excludes_trailing_dot_at_end_of_query(self):
         text = 'abc http://example.com/search?source=a&page=b. def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b). def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search?source=a&page=b](http://example.com/search?source=a&page=b). def')
 
     def test_excludes_trailing_comma_at_end_of_query(self):
         text = 'abc http://example.com/search?source=a&page=b, def'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b), def')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search?source=a&page=b](http://example.com/search?source=a&page=b), def')
 
     def test_link_at_the_start_of_a_file(self):
         text = 'http://example.com/search?source=a&page=b def'
-        self.assertEqual(clean_up_http_links(text), '[link](http://example.com/search?source=a&page=b) def')
+        self.assertEqual(clean_up_http_links(text), 'Web: [http://example.com/search?source=a&page=b](http://example.com/search?source=a&page=b) def')
 
     def test_link_at_the_end_of_a_file(self):
         text = 'abc http://example.com/search?source=a&page=b'
-        self.assertEqual(clean_up_http_links(text), 'abc [link](http://example.com/search?source=a&page=b)')
+        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search?source=a&page=b](http://example.com/search?source=a&page=b)')
 
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
         text = 'abc foo@bar.com def'
-        self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com) def')
+        self.assertEqual(clean_up_email_links(text), 'abc Email: [foo@bar.com](mailto:foo@bar.com) def')
 
     def test_excludes_leading_opening_parenthesis(self):
         text = 'abc (foo@bar.com def'
-        self.assertEqual(clean_up_email_links(text), 'abc ([email](mailto:foo@bar.com) def')
+        self.assertEqual(clean_up_email_links(text), 'abc (Email: [foo@bar.com](mailto:foo@bar.com) def')
 
     def test_excludes_trailing_dot_from_link(self):
         text = 'abc foo@bar.com. Def'
-        self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com). Def')
+        self.assertEqual(clean_up_email_links(text), 'abc Email: [foo@bar.com](mailto:foo@bar.com). Def')
 
     def test_excludes_trailing_comma_from_link(self):
         text = 'abc foo@bar.com, def'
-        self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com), def')
+        self.assertEqual(clean_up_email_links(text), 'abc Email: [foo@bar.com](mailto:foo@bar.com), def')
 
     def test_excludes_trailing_closing_parenthesis(self):
         text = 'abc foo@bar.com) def'
-        self.assertEqual(clean_up_email_links(text), 'abc [email](mailto:foo@bar.com)) def')
+        self.assertEqual(clean_up_email_links(text), 'abc Email: [foo@bar.com](mailto:foo@bar.com)) def')

@@ -101,11 +101,11 @@ def unprotect_newlines(text):
 
 
 def clean_up_http_links(text):
-    return re.sub(r'(https?://[^\s/][^\s]*[a-zA-Z0-9/])', r'[link](\1)', text)
+    return re.sub(r'(https?://[^\s/][^\s]*[a-zA-Z0-9/])', r'Web: [\1](\1)', text)
     
 
 def clean_up_email_links(text):
-    return re.sub(r'([a-zA-Z]+@[^@\s]+\.[^@\s]+[a-zA-Z])', r'[email](mailto:\1)', text)
+    return re.sub(r'([a-zA-Z]+@[^@\s]+\.[^@\s]+[a-zA-Z])', r'Email: [\1](mailto:\1)', text)
 
 
 def clean_text(text):
