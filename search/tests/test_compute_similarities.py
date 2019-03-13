@@ -62,3 +62,45 @@ class TestTaskSimilarityScore(TestCase):
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.85)
         self.assertLess(similarity_matrix[0, 2], 0.10)
+
+    def test_removes_local_phone_numbers_from_description(self):
+        description_with_phone_numbers = 'Call 778-123-4567 or 604-123-4567 for more information.'
+        description_without_phone_numbers = ('Call  or  for more information.')
+        ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertIn(description_without_phone_numbers, descriptions[0])
+    
+    def test_removes_international_phone_numbers_from_description(self):
+        description_with_phone_numbers = 'Call 1-800-123-4567 for more information.'
+        description_without_phone_numbers = ('Call  for more information.')
+        ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertIn(description_without_phone_numbers, descriptions[0])
+
+    def test_removes_phone_numbers_in_brackets_from_description(self):
+        description_with_phone_numbers = 'Call 1-(800)-123-4567 or (604)-123-4567 for more information.'
+        description_without_phone_numbers = ('Call  or  for more information.')
+        ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertIn(description_without_phone_numbers, descriptions[0])
+
+    def test_removes_phone_numbers_beginning_with_plus_sign_from_description(self):
+        description_with_phone_numbers = 'Call +1-800-123-4567 or +604-123-4567 for more information.'
+        description_without_phone_numbers = ('Call  or  for more information.')
+        ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertIn(description_without_phone_numbers, descriptions[0])
+
+    def test_removes_phone_numbers_beginning_with_plus_sign_and_two_numbers_from_description(self):
+        description_with_phone_numbers = 'Call +49-800-123-4567 for more information.'
+        description_without_phone_numbers = ('Call  for more information.')
+        ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertIn(description_without_phone_numbers, descriptions[0])
+    
+    def test_does_not_remove_numbers_that_are_not_phone_numbers(self):
+        description_with_numbers = 'In 2017 the Canadian population was approximately 36,710,0000.'
+        expected_description = ('In 2017 the Canadian population was approximately 36,710,0000.')
+        ServiceBuilder(self.organization).with_description(description_with_numbers).create()
+        _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
+        self.assertIn(expected_description, descriptions[0])
