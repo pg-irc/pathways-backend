@@ -265,40 +265,6 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service']['name'], near_service.name)
         self.assertEqual(json[1]['service']['name'], far_service.name)
 
-    def test_orders_two_equally_close_by_similarity(self):
-        task_id = 'the-task-id'
-        create_tasks([task_id])
-
-        latitude = 0
-        user_longitude = 0
-        service_longitude = 0.0001
-
-        near_location = (LocationBuilder(self.organization).
-                         with_long_lat(service_longitude, latitude).
-                         create())
-
-        good_match_service = (ServiceBuilder(self.organization).
-                              with_location(near_location).
-                              create())
-        poor_match_service = (ServiceBuilder(self.organization).
-                              with_location(near_location).
-                              create())
-
-        poor_match_score = 0.2
-        good_match_score = 0.8
-
-        self.set_service_similarity_score(task_id, good_match_service.id, good_match_score)
-        self.set_service_similarity_score(task_id, poor_match_service.id, poor_match_score)
-
-        url = ('/v1/services_at_location/?related_to_task={0}&user_location={1},{2}&proximity={1},{2}'.
-               format(task_id, user_longitude, latitude))
-
-        json = self.client.get(url).json()
-
-        self.assertEqual(len(json), 2)
-        self.assertEqual(json[0]['service']['name'], good_match_service.name)
-        self.assertEqual(json[1]['service']['name'], poor_match_service.name)
-
     def test_can_full_text_search_on_service_name(self):
         service_at_locations = ServiceAtLocationBuilder().create_many()
         service_name = service_at_locations[0].service.name
