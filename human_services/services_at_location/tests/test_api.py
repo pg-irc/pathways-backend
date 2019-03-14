@@ -190,6 +190,81 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service']['name'], similar_service.name)
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
+    def test_orders_poor_match_close_by_before_good_match_further_away(self):
+        task_id = 'the-task-id'
+        create_tasks([task_id])
+
+        latitude = 0
+        user_longitude = 0
+        near_longitude = 0.0001
+        far_longitude = 0.0002
+
+        far_location = (LocationBuilder(self.organization).
+                        with_long_lat(far_longitude, latitude).
+                        create())
+        far_service = (ServiceBuilder(self.organization).
+                       with_location(far_location).
+                       create())
+
+        near_location = (LocationBuilder(self.organization).
+                         with_long_lat(near_longitude, latitude).
+                         create())
+        near_service = (ServiceBuilder(self.organization).
+                        with_location(near_location).
+                        create())
+
+        poor_match_score = 0.2
+        good_match_score = 0.8
+
+        self.set_service_similarity_score(task_id, far_service.id, good_match_score)
+        self.set_service_similarity_score(task_id, near_service.id, poor_match_score)
+
+        url = ('/v1/services_at_location/?related_to_task={0}&user_location={1},{2}&proximity={1},{2}'.
+               format(task_id, user_longitude, latitude))
+
+        json = self.client.get(url).json()
+
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], near_service.name)
+        self.assertEqual(json[1]['service']['name'], far_service.name)
+
+    def test_orders_two_equally_good_match_by_distance(self):
+        task_id = 'the-task-id'
+        create_tasks([task_id])
+
+        latitude = 0
+        user_longitude = 0
+        near_longitude = 0.0001
+        far_longitude = 0.0002
+
+        far_location = (LocationBuilder(self.organization).
+                        with_long_lat(far_longitude, latitude).
+                        create())
+        far_service = (ServiceBuilder(self.organization).
+                       with_location(far_location).
+                       create())
+
+        near_location = (LocationBuilder(self.organization).
+                         with_long_lat(near_longitude, latitude).
+                         create())
+        near_service = (ServiceBuilder(self.organization).
+                        with_location(near_location).
+                        create())
+
+        good_match_score = 0.8
+
+        self.set_service_similarity_score(task_id, far_service.id, good_match_score)
+        self.set_service_similarity_score(task_id, near_service.id, good_match_score)
+
+        url = ('/v1/services_at_location/?related_to_task={0}&user_location={1},{2}&proximity={1},{2}'.
+               format(task_id, user_longitude, latitude))
+
+        json = self.client.get(url).json()
+
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], near_service.name)
+        self.assertEqual(json[1]['service']['name'], far_service.name)
+
     def test_can_full_text_search_on_service_name(self):
         service_at_locations = ServiceAtLocationBuilder().create_many()
         service_name = service_at_locations[0].service.name
