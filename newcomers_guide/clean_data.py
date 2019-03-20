@@ -118,7 +118,7 @@ def check_length_of_http_links(matchobj):
 
 def truncate_http_links(link):
     tuple_of_link = urlparse(link)
-    if len(tuple_of_link.netloc) >= 24:
+    if len(tuple_of_link.netloc) >= 21:
         long_http_link_without_path = tuple_of_link.scheme + '://'+ tuple_of_link.netloc
         return 'Web: [%s...](%s)'%(long_http_link_without_path, link)
     else:
