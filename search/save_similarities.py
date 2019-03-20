@@ -44,9 +44,10 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
 
 
 def save_manual_similarities(manual_similarities):
+    manual_similarity_score = 1.0
     for task_id, service_ids in manual_similarities.items():
         for service_id in service_ids:
             record = TaskServiceSimilarityScore(task_id=task_id,
                                                 service_id=service_id,
-                                                similarity_score=1.0)
+                                                similarity_score=manual_similarity_score)
             record.save()
