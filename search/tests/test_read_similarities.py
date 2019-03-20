@@ -46,8 +46,8 @@ class TestReadingManualTaskSimilarities(TestCase):
         data = [
             ['topic1', 'topic2'],
             ['service1', 'service2'],
-            ['', 'service3'],  # TODO need to confirm what the CSV library does here
-            [None, 'service4'],  # TODO need to confirm what the CSV library does here
+            ['', 'service3'],
+            [None, 'service4'],
         ]
         expected_result = {
             'topic1': ['service1'],
