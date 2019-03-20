@@ -1,7 +1,9 @@
 from django.test import TestCase
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
-from search.save_similarities import save_task_similarities, save_task_service_similarity_scores
+from search.save_similarities import (save_task_similarities,
+                                      save_task_service_similarity_scores,
+                                      save_manual_similarities)
 from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
 from common.testhelpers.random_test_values import a_string, a_float
 from newcomers_guide.tests.helpers import create_tasks
@@ -212,3 +214,70 @@ class TestSavingTaskServiceSimilarities(TestCase):
         self.assertEqual(records[3].service_id, self.three_service_ids[2])
         self.assertEqual(records[4].service_id, self.three_service_ids[1])
         self.assertEqual(records[5].service_id, self.three_service_ids[2])
+
+
+class TestSavingManualTaskServiceSimilarities(TestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().create()
+        self.task_id = a_string()
+        create_tasks([self.task_id])
+
+    def test_creates_task_service_similarity_record_from_manual_data(self):
+        service_id = a_string()
+
+        ServiceBuilder(self.organization).with_id(service_id).create()
+
+        manual_similarity_data = {self.task_id: [service_id]}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0].service_id, service_id)
+        self.assertEqual(records[0].task_id, self.task_id)
+
+    def test_sets_similarity_score_to_a_large_value(self):
+        service_id = a_string()
+
+        ServiceBuilder(self.organization).with_id(service_id).create()
+
+        manual_similarity_data = {self.task_id: [service_id]}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
+        # NLP computed similarity scores are between 0 and 1, so this is a "large" value
+        self.assertEqual(records[0].similarity_score, 1.0)
+
+    def test_can_set_similarity_score_from_one_task_to_several_services(self):
+        services = [ServiceBuilder(self.organization).create() for i in range(3)]
+        service_ids = [service.id for service in services]
+
+        manual_similarity_data = {self.task_id: service_ids}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
+        self.assertEqual(len(records), 3)
+        self.assertTrue(records[0].service_id in service_ids)
+        self.assertTrue(records[1].service_id in service_ids)
+        self.assertTrue(records[2].service_id in service_ids)
+
+    def test_can_set_similarity_score_from_several_tasks(self):
+        task_ids = [a_string() for i in range(3)]
+        create_tasks(task_ids)
+
+        services = [ServiceBuilder(self.organization).create() for i in range(3)]
+        service_ids = [service.id for service in services]
+
+        manual_similarity_data = {task_ids[0]: [service_ids[0]],
+                                  task_ids[1]: [service_ids[1]],
+                                  task_ids[2]: [service_ids[2]]}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
+        self.assertEqual(len(records), 3)
+        self.assertTrue(records[0].task_id in task_ids)
+        self.assertTrue(records[1].task_id in task_ids)
+        self.assertTrue(records[2].task_id in task_ids)
