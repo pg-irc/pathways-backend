@@ -224,7 +224,6 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
     def test_creates_task_service_similarity_record_from_manual_data(self):
         service_id = a_string()
-
         ServiceBuilder(self.organization).with_id(service_id).create()
 
         manual_similarity_data = {self.task_id: [service_id]}
@@ -238,7 +237,6 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
     def test_sets_similarity_score_to_a_large_value(self):
         service_id = a_string()
-
         ServiceBuilder(self.organization).with_id(service_id).create()
 
         manual_similarity_data = {self.task_id: [service_id]}
@@ -246,7 +244,20 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
 
-        # NLP computed similarity scores are between 0 and 1, so this is a "large" value
+        # NLP computed similarity scores are between 0 and 1, so 1.0 is a "large" value
+        self.assertEqual(records[0].similarity_score, 1.0)
+
+    def test_updates_record_if_it_already_exists(self):
+        service_id = a_string()
+        ServiceBuilder(self.organization).with_id(service_id).create()
+
+        TaskServiceSimilarityScore(task_id=self.task_id, service_id=service_id, similarity_score=0.2).save()
+
+        manual_similarity_data = {self.task_id: [service_id]}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
         self.assertEqual(records[0].similarity_score, 1.0)
 
     def test_can_set_similarity_score_from_one_task_to_several_services(self):

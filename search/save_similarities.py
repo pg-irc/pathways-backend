@@ -52,10 +52,13 @@ def save_manual_similarities(manual_similarities):
     for task_id, service_ids in manual_similarities.items():
         for service_id in service_ids:
             if is_task_id_valid(task_id) and is_service_id_valid(service_id):
-                record = TaskServiceSimilarityScore(task_id=task_id,
-                                                    service_id=service_id,
-                                                    similarity_score=manual_similarity_score)
-                record.save()
+                TaskServiceSimilarityScore.objects.update_or_create(
+                    task_id=task_id,
+                    service_id=service_id,
+                    defaults={
+                        'similarity_score': manual_similarity_score
+                    }
+                )
 
 
 def is_task_id_valid(task_id):
