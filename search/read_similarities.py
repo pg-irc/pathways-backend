@@ -14,16 +14,16 @@ def build_manual_similarity_map(csv_data):
     result = {}
 
     topics = csv_data[0]
-    for topic in topics:
-        result[topic] = []
+    for topic_id in topics:
+        result[topic_id] = []
 
     grid = csv_data[1:]
     for row in grid:
         column = 0
-        for cell in row:
-            topic = topics[column]
-            if cell:
-                result[topic].append(cell)
+        for service_id in row:
+            if service_id:
+                topic_id = topics[column]
+                result[topic_id].append(service_id)
             column += 1
 
     return result

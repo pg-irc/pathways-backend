@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from newcomers_guide.read_data import read_task_data
 from newcomers_guide.parse_data import parse_task_files
 from human_services.services.models import Service
-from search.read_similarities import read_manual_similarities
+from search.read_similarities import read_manual_similarities, build_manual_similarity_map
 from search.compute_similarities import (to_task_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
                                          compute_similarities)
@@ -57,9 +57,10 @@ class Command(BaseCommand):
         print('Saving {} task-service similarities...'.format(len(task_ids)*len(service_ids)))
         save_task_service_similarity_scores(task_ids, service_ids, cosine_doc_similarities, related_service_count)
 
-        manual_similarities = read_manual_similarities(manual_similarities_path)
-        print('Saving {} manual similarities...'.format(0))
-        save_manual_similarities(manual_similarities)
+        manual_similarities_csv = read_manual_similarities(manual_similarities_path)
+        manual_similarities_map = build_manual_similarity_map(manual_similarities_csv)
+        print('Saving manual task-service similarities...')
+        save_manual_similarities(manual_similarities_map)
 
 
 def read_task_descriptions(root_folder):
