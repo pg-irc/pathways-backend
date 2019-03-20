@@ -281,3 +281,29 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
         self.assertTrue(records[0].task_id in task_ids)
         self.assertTrue(records[1].task_id in task_ids)
         self.assertTrue(records[2].task_id in task_ids)
+
+    def test_with_non_existent_task_id_emit_warning_and_do_not_save(self):
+        task_id = a_string()
+
+        service_id = a_string()
+        ServiceBuilder(self.organization).with_id(service_id).create()
+
+        manual_similarity_data = {task_id: [service_id]}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
+        self.assertEqual(len(records), 0)
+
+    def test_with_non_existent_service_id_emit_warning_and_do_not_save(self):
+        task_id = a_string()
+        create_tasks([task_id])
+
+        service_id = a_string()
+
+        manual_similarity_data = {task_id: [service_id]}
+        save_manual_similarities(manual_similarity_data)
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+
+        self.assertEqual(len(records), 0)
