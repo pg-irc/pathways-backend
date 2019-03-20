@@ -22,7 +22,8 @@ def build_manual_similarity_map(csv_data):
         column = 0
         for cell in row:
             topic = topics[column]
+            if cell:
+                result[topic].append(cell)
             column += 1
-            result[topic].append(cell)
 
     return result
