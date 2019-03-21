@@ -1,4 +1,8 @@
-from search.models import TaskSimilarityScore, TaskServiceSimilarityScore
+import logging
+from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
+from human_services.services.models import Service
+
+LOGGER = logging.getLogger(__name__)
 
 
 def save_task_similarities(ids, similarities, count):
@@ -41,3 +45,35 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
                                                     service_id=service_ids[j],
                                                     similarity_score=score)
                 record.save()
+
+
+def save_manual_similarities(manual_similarities):
+    manual_similarity_score = 1.0
+    for task_id, service_ids in manual_similarities.items():
+        for service_id in service_ids:
+            if is_task_id_valid(task_id) and is_service_id_valid(service_id):
+                TaskServiceSimilarityScore.objects.update_or_create(
+                    task_id=task_id,
+                    service_id=service_id,
+                    defaults={
+                        'similarity_score': manual_similarity_score
+                    }
+                )
+
+
+def is_task_id_valid(task_id):
+    try:
+        Task.objects.get(id=task_id)
+        return True
+    except Task.DoesNotExist:
+        LOGGER.warning('%s: Failed to save manual similarity, no such task', task_id)
+        return False
+
+
+def is_service_id_valid(service_id):
+    try:
+        Service.objects.get(id=service_id)
+        return True
+    except Service.DoesNotExist:
+        LOGGER.warning('%s: Failed to save manual similarity, no such service', service_id)
+        return False
