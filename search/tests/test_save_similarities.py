@@ -388,10 +388,9 @@ class TestRemovingTaskTopicSimilarities(TestCase):
 
         a_different_task_id = a_string()
         logger_name = 'remove_similarities_for_topics'
-        expected_log_output = 'WARNING:{}:{}: Invalid topic id'.format(logger_name,
-                                                                       a_different_task_id)
+        expected_log_output = 'WARNING:{}:{}: Invalid topic id'.format(logger_name, a_different_task_id)
 
-        with self.assertLogs('remove_similarities_for_topics', level='WARN') as context_manager:
+        with self.assertLogs(logger_name, level='WARN') as context_manager:
             remove_similarities_for_topics([a_different_task_id])
 
         self.assertEqual(context_manager.output, [expected_log_output])
