@@ -32,4 +32,4 @@ def build_manual_similarity_map(csv_data):
 def read_topics_list(topics_path):
     with open(topics_path) as file:
         content = file.readlines()
-        return [x.strip() for x in content]
+        return [x.strip() for x in content if x.strip() != '']
