@@ -1,3 +1,4 @@
+import logging
 from django.test import TestCase
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
@@ -323,7 +324,11 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
 class TestRemovingTaskTopicSimilarities(TestCase):
     def setUp(self):
+        logging.disable(logging.INFO)
         self.organization = OrganizationBuilder().create()
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
 
     def test_can_remove_one_similarity_score(self):
         service = ServiceBuilder(self.organization).create()
