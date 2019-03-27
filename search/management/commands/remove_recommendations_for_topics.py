@@ -1,7 +1,5 @@
 from django.core.management.base import BaseCommand
-from search.read_similarities import (read_manual_similarities,
-                                      build_manual_similarity_map,
-                                      save_manual_similarities)
+from search.read_similarities import read_topics_list
 from search.remove_similarities_for_topics import remove_similarities_for_topics
 
 
@@ -18,6 +16,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         topics_list_path = options['topics_list']
 
-        topics_ids = read_manual_similarities(topics_list_path)
-        print('Saving manual task-service similarities...')
+        topics_ids = read_topics_list(topics_list_path)
+        print('Removing similarities for {} topics...'.format(len(topics_ids)))
         remove_similarities_for_topics(topics_ids)

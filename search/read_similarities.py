@@ -27,3 +27,9 @@ def build_manual_similarity_map(csv_data):
             column += 1
 
     return result
+
+
+def read_topics_list(topics_path):
+    with open(topics_path) as file:
+        content = file.readlines()
+        return [x.strip() for x in content]
