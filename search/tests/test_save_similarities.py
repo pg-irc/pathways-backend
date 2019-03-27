@@ -365,19 +365,33 @@ class TestRemovingTaskTopicSimilarities(TestCase):
         self.assertEqual(len(records), 0)
 
     def test_called_with_invalid_task_id_does_nothing(self):
-        service = ServiceBuilder(self.organization).create()
         task_id = a_string()
         create_tasks([task_id])
-        record = TaskServiceSimilarityScore(task_id=task_id,
-                                            service=service,
-                                            similarity_score=a_float())
-        record.save()
+        service = ServiceBuilder(self.organization).create()
+        TaskServiceSimilarityScore(task_id=task_id,
+                                   service=service,
+                                   similarity_score=a_float()).save()
+
         a_different_task_id = a_string()
+        remove_similarities_for_topics([a_different_task_id])
 
-        with self.assertLogs('remove_similarities_for_topics', level='WARN') as cm:
-            remove_similarities_for_topics([a_different_task_id])
-
-        self.assertEqual(
-            cm.output, ['WARNING:remove_similarities_for_topics:{}: Invalid topic id'.format(a_different_task_id)])
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 1)
+
+    def test_called_with_invalid_task_id_logs_warning(self):
+        task_id = a_string()
+        create_tasks([task_id])
+        service = ServiceBuilder(self.organization).create()
+        TaskServiceSimilarityScore(task_id=task_id,
+                                   service=service,
+                                   similarity_score=a_float()).save()
+
+        a_different_task_id = a_string()
+        logger_name = 'remove_similarities_for_topics'
+        expected_log_output = 'WARNING:{}:{}: Invalid topic id'.format(logger_name,
+                                                                       a_different_task_id)
+
+        with self.assertLogs('remove_similarities_for_topics', level='WARN') as context_manager:
+            remove_similarities_for_topics([a_different_task_id])
+
+        self.assertEqual(context_manager.output, [expected_log_output])
