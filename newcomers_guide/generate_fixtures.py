@@ -6,19 +6,19 @@ def generate_task_fixture(tasks):
     header = ('// intended to be located at pathways-frontend/src/fixtures/newcomers_guide/tasks.ts\n'
               '// tslint:disable:quotemark trailing-comma max-line-length\n'
               '\n'
-              'import { ValidTaskStore } from \'../types/tasks\';\n'
+              'import { ValidTopicStore } from \'../types/topics\';\n'
               '\n'
-              'export const buildTasksFixture = (): ValidTaskStore => {\n'
-              '    return new ValidTaskStore({\n'
-              '        savedTasksList: [],\n')
+              'export const buildTasksFixture = (): ValidTopicStore => {\n'
+              '    return new ValidTopicStore({\n'
+              '        savedTopicsList: [],\n')
 
     footer = ('    });\n'
               '};')
 
-    task_map_as_json = 'taskMap: ' + json.dumps(tasks['taskMap'],
-                                                ensure_ascii=False,
-                                                sort_keys=True,
-                                                indent=4)
+    task_map_as_json = 'topicMap: ' + json.dumps(tasks['taskMap'],
+                                                 ensure_ascii=False,
+                                                 sort_keys=True,
+                                                 indent=4)
 
     return (header +
             add_leading_spaces(8, task_map_as_json) + '\n' +
