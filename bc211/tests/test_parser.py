@@ -88,6 +88,7 @@ MINIMAL_211_DATA_SET = '''
     </Agency>
 </Source>'''
 
+
 class BC211ParserTests(unittest.TestCase):
     def test_parse_many_locations(self):
         file_open_for_reading = open(MULTI_AGENCY__211_DATA_SET, 'r')
@@ -118,7 +119,6 @@ class OrganizationParserTests(unittest.TestCase):
     def test_can_parse_id(self):
         self.assertEqual(self.from_real_data.id, '9487364')
         self.assertEqual(self.from_minimal_data.id, 'the agency key')
-
 
     def test_can_parse_name(self):
         self.assertEqual(self.from_real_data.name, 'Langley Child Development Centre')
@@ -234,6 +234,7 @@ class ServiceParserTests(unittest.TestCase):
         self.assertEqual(self.from_minimal_data.site_id,
                          self.site_id_passed_to_parser)
 
+
 class AddressParserTests(unittest.TestCase):
     def test_parses_physical_address(self):
         xml_address = '''
@@ -280,6 +281,32 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         address = parser.parse_address(root.find('MailingAddress'), site_id, address_type_id)
         self.assertIsInstance(address, dtos.Address)
+
+    def test_replaces_canada_with_corresponding_two_letter_code(self):
+        xml_address = '''
+            <Site>
+                <PhysicalAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>Canada</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
+        self.assertEqual(address.country, 'CA')
+
+    def test_replaces_united_states_with_corresponding_two_letter_code(self):
+        xml_address = '''
+            <Site>
+                <PhysicalAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>United States</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
+        self.assertEqual(address.country, 'US')
 
     def test_fails_silently_on_empty_city(self):
         xml_address = '''
@@ -334,6 +361,7 @@ class AddressParserTests(unittest.TestCase):
         address_type_id = 'postal_address'
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
+
 
 class AddressLineParserTests(unittest.TestCase):
 
@@ -462,7 +490,7 @@ class PhoneNumberParserTests(unittest.TestCase):
 
 
 class HTMLMarkupParserTests(unittest.TestCase):
-    def test_removes_doubly_escaped_bold_markup_from_required_field(self): 
+    def test_removes_doubly_escaped_bold_markup_from_required_field(self):
         xml_agency_key = '''
         <Source>
             <Agency>
@@ -485,8 +513,8 @@ class HTMLMarkupParserTests(unittest.TestCase):
         root = etree.fromstring(xml_agency_key)
         html_markup = parser.parse_agency_key(root.find('Agency'))
         self.assertEqual(html_markup, 'abc')
-    
-    def test_removes_doubly_escaped_bold_markup_from_optional_field(self): 
+
+    def test_removes_doubly_escaped_bold_markup_from_optional_field(self):
         xml_address = '''
         <Site>
             <MailingAddress>
@@ -497,8 +525,8 @@ class HTMLMarkupParserTests(unittest.TestCase):
         root = etree.fromstring(xml_address)
         address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, 'Line1')
-    
-    def test_removes_doubly_escaped_strong_markup_from_optional_field(self): 
+
+    def test_removes_doubly_escaped_strong_markup_from_optional_field(self):
         xml_address = '''
         <Site>
             <MailingAddress>
@@ -509,5 +537,3 @@ class HTMLMarkupParserTests(unittest.TestCase):
         root = etree.fromstring(xml_address)
         address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, 'Line1')
-    
- 

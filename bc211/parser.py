@@ -254,7 +254,12 @@ def parse_city(address):
 
 
 def parse_country(address):
-    return parse_optional_field(address, 'Country')
+    country = parse_optional_field(address, 'Country')
+    if country == 'Canada':
+        return 'CA'
+    if country == 'United States':
+        return 'US'
+    return country
 
 
 def parse_state_province(address):
