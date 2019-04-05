@@ -105,7 +105,7 @@ def find_related_tasks(task_id):
 class TaskBuilder:
     def __init__(self):
         self.task = {
-            'relatedTasks': [],
+            'relatedTopics': [],
             'completed': False
         }
 
@@ -117,7 +117,7 @@ class TaskBuilder:
         return self
 
     def set_related_tasks(self, related_tasks):
-        self.task['relatedTasks'] = related_tasks
+        self.task['relatedTopics'] = related_tasks
         return self
 
     def set_chapter(self, chapter):

@@ -122,7 +122,7 @@ class ProcessTaskFilesTests(TestCase):
 
         path = 'some/path/chapter/topics/{0}/en.Learn_english.txt'.format(task_id)
         result = parse_task_files([[path, a_string()]])
-        self.assertEqual(result['taskMap'][task_id]['relatedTasks'], [similar_task_id, dissimilar_task_id])
+        self.assertEqual(result['taskMap'][task_id]['relatedTopics'], [similar_task_id, dissimilar_task_id])
 
     def test_combine_files_for_different_content(self):
         secondary_path = 'some/path/chapter/topics/Registering_child_in_school/en.Registering_in_public_school.txt'
