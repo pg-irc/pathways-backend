@@ -1,9 +1,11 @@
+import logging
 from django.test import TestCase
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from search.save_similarities import (save_task_similarities,
                                       save_task_service_similarity_scores,
                                       save_manual_similarities)
+from search.remove_similarities_for_topics import remove_similarities_for_topics
 from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
 from common.testhelpers.random_test_values import a_string, a_float
 from newcomers_guide.tests.helpers import create_tasks
@@ -318,3 +320,82 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
 
         self.assertEqual(len(records), 0)
+
+
+class TestRemovingTaskTopicSimilarities(TestCase):
+    def setUp(self):
+        logging.disable(logging.INFO)
+        self.organization = OrganizationBuilder().create()
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
+
+    def test_can_remove_one_similarity_score(self):
+        service = ServiceBuilder(self.organization).create()
+        task_id = a_string()
+        create_tasks([task_id])
+        record = TaskServiceSimilarityScore(task_id=task_id,
+                                            service=service,
+                                            similarity_score=a_float())
+        record.save()
+
+        remove_similarities_for_topics([task_id])
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 0)
+
+    def test_can_remove_several_similarity_scores_for_the_same_task(self):
+        services = [ServiceBuilder(self.organization).create() for i in range(4)]
+        the_task_id = a_string()
+        create_tasks([the_task_id])
+        for service in services:
+            TaskServiceSimilarityScore(task_id=the_task_id,
+                                       service=service,
+                                       similarity_score=a_float()).save()
+
+        remove_similarities_for_topics([the_task_id])
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 0)
+
+    def test_can_remove_similarity_score_for_different_tasks(self):
+        service = ServiceBuilder(self.organization).create()
+        task_ids = [a_string() for i in range(3)]
+        create_tasks(task_ids)
+        for task_id in task_ids:
+            TaskServiceSimilarityScore(task_id=task_id,
+                                       service=service,
+                                       similarity_score=a_float()).save()
+
+        remove_similarities_for_topics(task_ids)
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 0)
+
+    def test_called_with_invalid_task_id_does_nothing(self):
+        task_id = a_string()
+        create_tasks([task_id])
+        service = ServiceBuilder(self.organization).create()
+        TaskServiceSimilarityScore(task_id=task_id,
+                                   service=service,
+                                   similarity_score=a_float()).save()
+
+        a_different_task_id = a_string()
+        remove_similarities_for_topics([a_different_task_id])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 1)
+
+    def test_called_with_invalid_task_id_logs_warning(self):
+        task_id = a_string()
+        create_tasks([task_id])
+        service = ServiceBuilder(self.organization).create()
+        TaskServiceSimilarityScore(task_id=task_id,
+                                   service=service,
+                                   similarity_score=a_float()).save()
+
+        a_different_task_id = a_string()
+        logger_name = 'remove_similarities_for_topics'
+        expected_log_output = 'WARNING:{}:{}: Invalid topic id'.format(logger_name, a_different_task_id)
+
+        with self.assertLogs(logger_name, level='WARN') as context_manager:
+            remove_similarities_for_topics([a_different_task_id])
+
+        self.assertEqual(context_manager.output, [expected_log_output])
