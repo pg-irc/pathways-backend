@@ -1,14 +1,16 @@
 #!/bin/bash
 
-if [ "$#" != "3" ]
+if [ "$#" != "5" ]
 then
-    echo "Expected three arguments: BC211 file path, Newcomers Guide folder path, output file path"
+    echo "Expected five arguments: BC211 file path, Newcomers Guide folder path, Topics to remove, Manual recommendations, output file path"
     exit
 fi
 
 BC211Path=$1
 NewcomersGuidePath=$2
-OutputFile=$3
+TopicsToRemove=$3
+ManualRecommendations=$4
+OutputFile=$5
 
 if [ ! -f $BC211Path ]; then
     echo "$BC211Path: BC211 data file not found"
@@ -17,6 +19,16 @@ fi
 
 if [ ! -d $NewcomersGuidePath ]; then
     echo "$NewcomersGuidePath: Newcomers Guide content not found"
+    exit
+fi
+
+if [ ! -f $TopicsToRemove ]; then
+    echo "$TopicsToRemove: topics to remove not found"
+    exit
+fi
+
+if [ ! -f $ManualRecommendations ]; then
+    echo "$ManualRecommendations: Manual recommendations not found"
     exit
 fi
 
@@ -30,10 +42,12 @@ if [ "${OutputFile:(-5)}" != ".json" ]; then
     exit
 fi
 
-echo "About to reinitialize database with BC211 data at"
-echo "$BC211Path and Newcomers Guide data at"
-echo "$NewcomersGuidePath, saving result to"
-echo "$OutputFile for upload"
+echo "About to reinitialize database with data from:"
+echo "BC211 data at:           $BC211Path"
+echo "Newcomers data at:       $NewcomersGuidePath"
+echo "Topics to not recommend: $TopicsToRemove"
+echo "Manual recommendations:  $ManualRecommendations"
+echo "Output file locaiton:    $OutputFile"
 read -p "Enter to continue, Ctrl-C to abort "
 
 checkForSuccess () {
@@ -58,8 +72,16 @@ checkForSuccess "import BC211 data"
 checkForSuccess "create newcomers guide fixtures"
 
 echo "computing similarity scores ..."
-./manage.py compute_text_similarity_scores --related_tasks 3 --related_services 20 $NewcomersGuidePath
+./manage.py compute_text_similarity_scores --related_tasks 3 --related_services 100 $NewcomersGuidePath
 checkForSuccess "compute similarity scores"
+
+echo "removing invalid similarity scores ..."
+./manage.py remove_recommendations_for_topics $TopicsToRemove
+checkForSuccess "remove similarity scores"
+
+echo "adding manual similarity scores ..."
+./manage.py set_manual_similarity_scores $ManualRecommendations
+checkForSuccess "add manual similarity scores"
 
 ./manage.py dumpdata --natural-foreign --exclude auth.permission --exclude contenttypes --indent 4 > $OutputFile
 
