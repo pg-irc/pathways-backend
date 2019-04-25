@@ -242,7 +242,7 @@ class AddressParserTests(unittest.TestCase):
                 <PhysicalAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
-                    <Country>Country</Country>
+                    <Country>Canada</Country>
                 </PhysicalAddress>
             </Site>'''
         root = etree.fromstring(xml_address)
@@ -258,7 +258,7 @@ class AddressParserTests(unittest.TestCase):
                 <MailingAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
-                    <Country>Country</Country>
+                    <Country>Canada</Country>
                 </MailingAddress>
             </Site>'''
         root = etree.fromstring(xml_address)
@@ -273,7 +273,7 @@ class AddressParserTests(unittest.TestCase):
             <Site>
                 <MailingAddress>
                     <City>City</City>
-                    <Country>Country</Country>
+                    <Country>Canada</Country>
                 </MailingAddress>
             </Site>'''
         root = etree.fromstring(xml_address)
