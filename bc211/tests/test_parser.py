@@ -308,6 +308,19 @@ class AddressParserTests(unittest.TestCase):
         address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
         self.assertEqual(address.country, 'US')
 
+    def test_fails_silently_on_non_country(self):
+        xml_address = '''
+            <Site>
+                <PhysicalAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>All Countries</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
+        self.assertIsNone(address)
+
     def test_fails_silently_on_empty_city(self):
         xml_address = '''
             <Site>
