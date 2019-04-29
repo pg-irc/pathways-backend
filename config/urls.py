@@ -12,6 +12,7 @@ from human_services.services.viewsets import ServiceViewSet
 from search.viewsets import RelatedTasksViewSet, RelatedServicesViewSet
 from rest_framework import routers
 from config import documentation
+from bc211.last_update import LastUpdateView
 
 
 def build_router():
@@ -47,6 +48,7 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^version/$', VersionView.as_view(), name='version'),
+    url(r'^dbversion/$', LastUpdateView.as_view(), name='last_update'),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
