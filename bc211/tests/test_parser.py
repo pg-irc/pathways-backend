@@ -308,7 +308,7 @@ class AddressParserTests(unittest.TestCase):
         address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
         self.assertEqual(address.country, 'US')
 
-    def test_fails_silently_on_non_country(self):
+    def test_sets_address_to_none_on_invalid_country(self):
         xml_address = '''
             <Site>
                 <PhysicalAddress>
