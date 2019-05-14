@@ -1,24 +1,19 @@
 from common.testhelpers.random_test_values import a_float
 
 
-def create_scores(test_range):
-    scores = [[a_float() for i in range(test_range)] for j in range(test_range)]
+def create_square_matrix_of_unique_floats(number):
+    scores = [[a_float() for i in range(number)] for j in range(number)]
     
-    if check_if_scores_has_duplicate(scores):
-        create_scores(test_range)
+    while is_there_a_duplicate_score_in_square_matrix(scores):
+        create_square_matrix_of_unique_floats(number)
     return scores
 
 
-def check_if_scores_has_duplicate(scores):
+def is_there_a_duplicate_score_in_square_matrix(scores):
     float_dictionary = {}
-    has_duplicate = None
-    
+
     for i in scores:
         for j in i:
             if j in float_dictionary:
-                has_duplicate = True
-                break
-            else: 
-                float_dictionary[j] = 1
-                has_duplicate = False
-    return has_duplicate
+                True          
+    return False

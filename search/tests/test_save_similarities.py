@@ -10,7 +10,7 @@ from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
 from common.testhelpers.random_test_values import a_string, a_float
 from newcomers_guide.tests.helpers import create_tasks
 import scipy
-from search.tests.helpers import create_scores
+from search.tests.helpers import create_square_matrix_of_unique_floats
 
 
 class TestSavingTaskSimilarities(TestCase):
@@ -31,7 +31,7 @@ class TestSavingTaskSimilarities(TestCase):
     def test_saves_required_number_of_records_for_each_row(self):
         ids = [a_string() for i in range(5)]
         create_tasks(ids)
-        scores = create_scores(5)
+        scores = create_square_matrix_of_unique_floats(5)
         scores_matrix = scipy.sparse.csr_matrix(scores)
 
         scores_to_save_per_row = 2
@@ -141,7 +141,7 @@ class TestSavingTaskServiceSimilarities(TestCase):
         self.assertEqual(TaskServiceSimilarityScore.objects.count(), 0)
 
     def test_saves_required_number_of_records_for_each_row(self):
-        scores = create_scores(6)
+        scores = create_square_matrix_of_unique_floats(6)
         scores_matrix = scipy.sparse.csr_matrix([[a_float() for i in range(6)] for j in range(6)])
 
         scores_to_save_per_row = 2
