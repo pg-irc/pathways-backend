@@ -3,7 +3,7 @@ from rest_framework import status
 from bc211 import version
 
 
-class TestLastUpdate(TestCase):
+class TestVersion(TestCase):
 
     def test_get_version_from_api(self):
         self.bc211_version_string = version.get_version_string()
