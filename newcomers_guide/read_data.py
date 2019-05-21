@@ -2,6 +2,7 @@ import os
 from newcomers_guide import exceptions
 from glob import glob 
 
+
 def read_task_data(root_folder):
     task_data = []
     for root, _, filenames in os.walk(root_folder, topdown=False):
@@ -56,10 +57,10 @@ def is_taxonomy_file_missing(root_folder):
     return False
 
 
-def get_paths_to_topic_folders(root_folder):
-    return glob(root_folder + '/*/topics/*/')  
-
 def validate_taxonomy_data(root_folder):
     if is_taxonomy_file_missing(root_folder):
         raise Exception('There is a taxonomy file missing in the Newcomers Guide')
 
+
+def get_paths_to_topic_folders(root_folder):
+    return glob(root_folder + '/*/topics/*/')  
