@@ -12,7 +12,7 @@ from human_services.services.viewsets import ServiceViewSet
 from search.viewsets import RelatedTasksViewSet, RelatedServicesViewSet
 from rest_framework import routers
 from config import documentation
-from bc211.version import Bc211VersionView
+from bc211.views import Bc211VersionView
 
 
 def build_router():
