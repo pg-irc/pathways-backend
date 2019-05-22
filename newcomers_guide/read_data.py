@@ -48,18 +48,18 @@ def is_taxonomy_file(path):
     return path.endswith(sep + 'taxonomy.txt')
 
 
-def is_taxonomy_file_missing(root_folder):
-    paths = get_paths_to_topic_folders(root_folder)
-    for path in paths:
-            exists = os.path.isfile(path + '/taxonomy.txt')
-            if not exists:
-                return True
-    return False
-
-
 def validate_taxonomy_data(root_folder):
     if is_taxonomy_file_missing(root_folder):
         raise Exception('There is a taxonomy file missing in the Newcomers Guide')
+
+
+def is_taxonomy_file_missing(root_folder):
+    paths = get_paths_to_topic_folders(root_folder)
+    for path in paths:
+        exists = os.path.isfile(path + '/taxonomy.txt')
+        if not exists:
+            return True
+    return False
 
 
 def get_paths_to_topic_folders(root_folder):
