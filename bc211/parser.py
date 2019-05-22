@@ -259,6 +259,10 @@ def parse_country(address):
         return 'CA'
     if country == 'United States':
         return 'US'
+    if country is None:
+        return None
+    if len(country) > 2:
+        return None
     return country
 
 

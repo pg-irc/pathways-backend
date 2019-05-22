@@ -242,7 +242,7 @@ class AddressParserTests(unittest.TestCase):
                 <PhysicalAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
-                    <Country>Country</Country>
+                    <Country>Canada</Country>
                 </PhysicalAddress>
             </Site>'''
         root = etree.fromstring(xml_address)
@@ -258,7 +258,7 @@ class AddressParserTests(unittest.TestCase):
                 <MailingAddress>
                     <Line1>Line1</Line1>
                     <City>City</City>
-                    <Country>Country</Country>
+                    <Country>Canada</Country>
                 </MailingAddress>
             </Site>'''
         root = etree.fromstring(xml_address)
@@ -273,7 +273,7 @@ class AddressParserTests(unittest.TestCase):
             <Site>
                 <MailingAddress>
                     <City>City</City>
-                    <Country>Country</Country>
+                    <Country>Canada</Country>
                 </MailingAddress>
             </Site>'''
         root = etree.fromstring(xml_address)
@@ -308,7 +308,20 @@ class AddressParserTests(unittest.TestCase):
         address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
         self.assertEqual(address.country, 'US')
 
-    def test_fails_silently_on_empty_city(self):
+    def test_sets_address_to_none_on_invalid_country(self):
+        xml_address = '''
+            <Site>
+                <PhysicalAddress>
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>All Countries</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address = parser.parse_address(root.find('PhysicalAddress'), a_string(), 'physical_address')
+        self.assertIsNone(address)
+
+    def test_sets_city_to_none_when_empty(self):
         xml_address = '''
             <Site>
                 <MailingAddress>
@@ -322,7 +335,7 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
-    def test_fails_silently_on_missing_city(self):
+    def test_sets_city_to_none_when_missing(self):
         xml_address = '''
             <Site>
                 <MailingAddress>
@@ -335,7 +348,7 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
-    def test_fails_silently_on_empty_country(self):
+    def test_sets_country_to_none_when_empty(self):
         xml_address = '''
             <Site>
                 <MailingAddress>
@@ -349,7 +362,7 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
-    def test_fails_silently_on_missing_country(self):
+    def test_sets_country_to_none_when_missing(self):
         xml_address = '''
             <Site>
                 <MailingAddress>
@@ -384,7 +397,7 @@ class AddressLineParserTests(unittest.TestCase):
         address_lines = parser.parse_address_lines(root.find('MailingAddress'))
         self.assertEqual(address_lines, 'Line1\nLine2\nLine3\nLine4\nLine5\nLine6\nLine7\nLine8\nLine9')
 
-    def test_fails_silently_on_empty_address_line(self):
+    def test_sets_address_to_none_when_empty(self):
         xml_address = '''
             <Site>
                 <MailingAddress>
