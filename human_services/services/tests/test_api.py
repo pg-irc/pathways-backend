@@ -1,8 +1,10 @@
-from rest_framework import test as rest_test
-from rest_framework import status
+from common.testhelpers.random_test_values import a_string, a_float
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from common.testhelpers.random_test_values import a_string
+from newcomers_guide.tests.helpers import create_tasks
+from rest_framework import test as rest_test
+from rest_framework import status
+from search.models import TaskServiceSimilarityScore
 
 class ServicesApiTests(rest_test.APITestCase):
     def setUp(self):
@@ -79,3 +81,21 @@ class ServicesApiTests(rest_test.APITestCase):
         url = '/v1/organizations/{0}/services/{1}/'.format(self.organization_id, service.pk)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_can_get_topics_for_service(self):
+        service_id = a_string()
+        task_id = a_string()
+
+        ServiceBuilder(self.organization).with_id(service_id).create()
+        create_tasks([task_id])
+
+        TaskServiceSimilarityScore.objects.create(
+            task_id=task_id,
+            service_id=service_id,
+            similarity_score=a_float()
+        )
+        url = '/v1/services/{0}/related_topics/'.format(service_id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
