@@ -28,28 +28,28 @@ class RelatedTasksApiTests(rest_test.APITestCase):
                             similarity_score=self.similarity_score).save()
 
     def test_can_get_response(self):
-        url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
+        url = '/v1/topics/{}/related_topics/'.format(self.first_task_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_can_get_related_task_id(self):
-        url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
+        url = '/v1/topics/{}/related_topics/'.format(self.first_task_id)
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['task_id'], self.second_task_id)
 
     def test_can_get_related_task_name(self):
-        url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
+        url = '/v1/topics/{}/related_topics/'.format(self.first_task_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['name'], self.second_task_name)
 
     def test_can_get_related_task_description(self):
-        url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
+        url = '/v1/topics/{}/related_topics/'.format(self.first_task_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['description'], self.second_task_description)
 
     def test_can_get_similarity_score(self):
-        url = '/v1/tasks/{}/related_tasks/'.format(self.first_task_id)
+        url = '/v1/topics/{}/related_topics/'.format(self.first_task_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertAlmostEqual(response.json()[0]['similarity_score'], self.similarity_score)
@@ -72,7 +72,7 @@ class RelatedTasksApiTests(rest_test.APITestCase):
         TaskSimilarityScore(first_task=the_task, second_task=less_related_task,
                             similarity_score=low_score).save()
 
-        url = '/v1/tasks/{}/related_tasks/'.format(the_task.id)
+        url = '/v1/topics/{}/related_topics/'.format(the_task.id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['task_id'], more_related_task.id)
         self.assertEqual(response.json()[1]['task_id'], less_related_task.id)
@@ -94,28 +94,28 @@ class RelatesServicesApiTests(rest_test.APITestCase):
                                    similarity_score=self.similarity_score).save()
 
     def test_can_get_response(self):
-        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.task_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
 
     def test_can_get_related_service_id(self):
-        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.task_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['service_id'], self.service.id)
 
     def test_can_get_related_service_name(self):
-        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.task_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['name'], self.service.name)
 
     def test_can_get_related_service_description(self):
-        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.task_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['description'], self.service.description)
 
     def test_can_get_related_service_similarity_score(self):
-        url = '/v1/tasks/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.task_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['similarity_score'], self.similarity_score)
 
@@ -136,7 +136,7 @@ class RelatesServicesApiTests(rest_test.APITestCase):
         TaskServiceSimilarityScore(task=task, service=less_related_service,
                                    similarity_score=lower_score).save()
 
-        url = '/v1/tasks/{}/related_services/'.format(task_id)
+        url = '/v1/topics/{}/related_services/'.format(task_id)
         response = self.client.get(url)
 
         self.assertEqual(response.json()[0]['service_id'], more_related_service.id)
