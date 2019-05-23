@@ -89,13 +89,18 @@ class ServicesApiTests(rest_test.APITestCase):
         ServiceBuilder(self.organization).with_id(service_id).create()
         create_tasks([task_id])
 
+        similarity_score = a_float()
         TaskServiceSimilarityScore.objects.create(
             task_id=task_id,
             service_id=service_id,
-            similarity_score=a_float()
+            similarity_score=similarity_score
         )
+
         url = '/v1/services/{0}/related_topics/'.format(service_id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['service_id'], service_id)
+        self.assertEqual(response.json()[0]['similarity_score'], similarity_score)
+        self.assertEqual(response.json()[0]['task_id'], task_id)
