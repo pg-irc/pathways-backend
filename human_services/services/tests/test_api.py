@@ -1,10 +1,10 @@
 from common.testhelpers.random_test_values import a_string, a_float
-from human_services.services.tests.helpers import ServiceBuilder
+from human_services.services.tests.helpers import ServiceBuilder, create_related_topic
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from newcomers_guide.tests.helpers import create_tasks
+from search.models import TaskServiceSimilarityScore
 from rest_framework import test as rest_test
 from rest_framework import status
-from search.models import TaskServiceSimilarityScore
 
 class ServicesApiTests(rest_test.APITestCase):
     def setUp(self):
@@ -84,15 +84,9 @@ class ServicesApiTests(rest_test.APITestCase):
 
     def test_can_get_topics_for_service(self):
         service_id = a_string()
-        task_id = a_string()
-
         ServiceBuilder(self.organization).with_id(service_id).create()
-        create_tasks([task_id])
-        TaskServiceSimilarityScore.objects.create(
-            task_id=task_id,
-            service_id=service_id,
-            similarity_score=a_float()
-        )
+        similarity_score = a_float()
+        create_related_topic(service_id, similarity_score)
 
         url = '/v1/services/{0}/related_topics/'.format(service_id)
         response = self.client.get(url)
@@ -102,17 +96,9 @@ class ServicesApiTests(rest_test.APITestCase):
 
     def test_response_contains_attributes(self):
         service_id = a_string()
-        task_id = a_string()
-
-        ServiceBuilder(self.organization).with_id(service_id).create()
-        create_tasks([task_id])
-
         similarity_score = a_float()
-        TaskServiceSimilarityScore.objects.create(
-            task_id=task_id,
-            service_id=service_id,
-            similarity_score=similarity_score
-        )
+        ServiceBuilder(self.organization).with_id(service_id).create()
+        task_id = create_related_topic(service_id, similarity_score)
 
         url = '/v1/services/{0}/related_topics/'.format(service_id)
         response = self.client.get(url)
@@ -123,24 +109,15 @@ class ServicesApiTests(rest_test.APITestCase):
 
     def test_related_topics_are_sorted_by_similarity_score_descending(self):
         service_id = a_string()
-
         ServiceBuilder(self.organization).with_id(service_id).create()
-
         for i in range(3):
-            task_id = a_string()
-            create_tasks([task_id])
-
             similarity_score = i
-            TaskServiceSimilarityScore.objects.create(
-                task_id=task_id,
-                service_id=service_id,
-                similarity_score=similarity_score
-            )
+            create_related_topic(service_id, similarity_score)
 
         url = '/v1/services/{0}/related_topics/'.format(service_id)
         response = self.client.get(url)
-        self.assertEqual(len(response.json()), 3)
 
+        self.assertEqual(len(response.json()), 3)
         self.assertEqual(response.json()[0]['similarity_score'], 2.0)
         self.assertEqual(response.json()[1]['similarity_score'], 1.0)
         self.assertEqual(response.json()[2]['similarity_score'], 0.0)
