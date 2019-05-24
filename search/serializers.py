@@ -36,3 +36,10 @@ class RelatedServiceSerializer(serializers.ModelSerializer):
 
     def related_service_description(self, record):
         return record.service.description
+
+
+class RelatedTopicsForGivenServiceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TaskServiceSimilarityScore
+        fields = ('service_id', 'task_id', 'similarity_score')

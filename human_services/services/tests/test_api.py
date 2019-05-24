@@ -1,8 +1,6 @@
 from common.testhelpers.random_test_values import a_string, a_float
 from human_services.services.tests.helpers import ServiceBuilder, create_related_topic
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from newcomers_guide.tests.helpers import create_tasks
-from search.models import TaskServiceSimilarityScore
 from rest_framework import test as rest_test
 from rest_framework import status
 

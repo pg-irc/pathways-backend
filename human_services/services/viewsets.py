@@ -4,7 +4,7 @@ from human_services.services import models, serializers, documentation
 from common.filters import (SearchFilter, OrganizationIdFilter, LocationIdFilter,
                             TaxonomyFilter, MultiFieldOrderingFilter)
 from search.models import TaskServiceSimilarityScore
-from search.serializers import RelatedServiceSerializer
+from search.serializers import RelatedTopicsForGivenServiceSerializer
 
 # pylint: disable=too-many-ancestors
 @method_decorator(name='list', decorator=documentation.get_service_list_schema())
@@ -24,4 +24,4 @@ class ServiceTopicsViewSet(viewsets.ReadOnlyModelViewSet):
                 filter(service=service_id).
                 order_by('-similarity_score'))
 
-    serializer_class = RelatedServiceSerializer
+    serializer_class = RelatedTopicsForGivenServiceSerializer
