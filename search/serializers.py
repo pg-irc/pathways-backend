@@ -26,7 +26,7 @@ class RelatedServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.TaskServiceSimilarityScore
-        fields = ('service_id', 'task_id', 'similarity_score', 'name', 'description')
+        fields = ('service_id', 'similarity_score', 'name', 'description')
 
     name = serializers.SerializerMethodField('related_service_name')
     description = serializers.SerializerMethodField('related_service_description')
