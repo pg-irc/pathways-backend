@@ -5,14 +5,14 @@ from newcomers_guide.tests.helpers import create_tasks
 from search.models import TaskServiceSimilarityScore
 
 def create_related_topic(service_id, similarity_score):
-    task_id = a_string()
-    create_tasks([task_id])
+    topic_id = a_string()
+    create_tasks([topic_id])
     TaskServiceSimilarityScore.objects.create(
-        task_id=task_id,
+        task_id=topic_id,
         service_id=service_id,
         similarity_score=similarity_score
     )
-    return task_id
+    return topic_id
 
 class ServiceBuilder:
     def __init__(self, organization):

@@ -98,13 +98,13 @@ class ServicesApiTests(rest_test.APITestCase):
         service_id = a_string()
         similarity_score = a_float()
         ServiceBuilder(self.organization).with_id(service_id).create()
-        task_id = create_related_topic(service_id, similarity_score)
+        topic_id = create_related_topic(service_id, similarity_score)
 
         url = '/v1/services/{0}/related_topics/'.format(service_id)
         response = self.client.get(url)
 
         self.assertEqual(response.json()[0]['service_id'], service_id)
-        self.assertEqual(response.json()[0]['task_id'], task_id)
+        self.assertEqual(response.json()[0]['task_id'], topic_id)
         self.assertEqual(response.json()[0]['similarity_score'], similarity_score)
 
     def test_related_topics_are_sorted_by_similarity_score_descending(self):
