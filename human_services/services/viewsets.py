@@ -20,6 +20,8 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
 class ServiceTopicsViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         service_id = self.kwargs['service_id']
-        return TaskServiceSimilarityScore.objects.filter(service=service_id)
+        return (TaskServiceSimilarityScore.objects.
+                filter(service=service_id).
+                order_by('-similarity_score'))
 
     serializer_class = RelatedServiceSerializer

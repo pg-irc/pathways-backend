@@ -120,3 +120,27 @@ class ServicesApiTests(rest_test.APITestCase):
         self.assertEqual(response.json()[0]['service_id'], service_id)
         self.assertEqual(response.json()[0]['task_id'], task_id)
         self.assertEqual(response.json()[0]['similarity_score'], similarity_score)
+
+    def test_related_topics_are_sorted_by_similarity_score_descending(self):
+        service_id = a_string()
+
+        ServiceBuilder(self.organization).with_id(service_id).create()
+
+        for i in range(3):
+            task_id = a_string()
+            create_tasks([task_id])
+
+            similarity_score = i
+            TaskServiceSimilarityScore.objects.create(
+                task_id=task_id,
+                service_id=service_id,
+                similarity_score=similarity_score
+            )
+
+        url = '/v1/services/{0}/related_topics/'.format(service_id)
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 3)
+
+        self.assertEqual(response.json()[0]['similarity_score'], 2.0)
+        self.assertEqual(response.json()[1]['similarity_score'], 1.0)
+        self.assertEqual(response.json()[2]['similarity_score'], 0.0)
