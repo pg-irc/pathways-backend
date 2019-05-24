@@ -17,6 +17,8 @@ class ServiceViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = '__all__'
 
 
+# pylint: disable=too-many-ancestors
+@method_decorator(name='list', decorator=documentation.get_topic_list_schema())
 class ServiceTopicsViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         service_id = self.kwargs['service_id']
