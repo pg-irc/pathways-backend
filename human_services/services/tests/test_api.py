@@ -1,8 +1,8 @@
+from common.testhelpers.random_test_values import a_string, a_float
+from human_services.services.tests.helpers import ServiceBuilder, create_related_topic
+from human_services.organizations.tests.helpers import OrganizationBuilder
 from rest_framework import test as rest_test
 from rest_framework import status
-from human_services.services.tests.helpers import ServiceBuilder
-from human_services.organizations.tests.helpers import OrganizationBuilder
-from common.testhelpers.random_test_values import a_string
 
 class ServicesApiTests(rest_test.APITestCase):
     def setUp(self):
@@ -79,3 +79,43 @@ class ServicesApiTests(rest_test.APITestCase):
         url = '/v1/organizations/{0}/services/{1}/'.format(self.organization_id, service.pk)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_can_get_topics_for_service(self):
+        service_id = a_string()
+        ServiceBuilder(self.organization).with_id(service_id).create()
+        similarity_score = a_float()
+        create_related_topic(service_id, similarity_score)
+
+        url = '/v1/services/{0}/related_topics/'.format(service_id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+
+    def test_response_contains_attributes(self):
+        service_id = a_string()
+        similarity_score = a_float()
+        ServiceBuilder(self.organization).with_id(service_id).create()
+        topic_id = create_related_topic(service_id, similarity_score)
+
+        url = '/v1/services/{0}/related_topics/'.format(service_id)
+        response = self.client.get(url)
+
+        self.assertEqual(response.json()[0]['service_id'], service_id)
+        self.assertEqual(response.json()[0]['task_id'], topic_id)
+        self.assertEqual(response.json()[0]['similarity_score'], similarity_score)
+
+    def test_related_topics_are_sorted_by_similarity_score_descending(self):
+        service_id = a_string()
+        ServiceBuilder(self.organization).with_id(service_id).create()
+        for i in range(3):
+            similarity_score = i
+            create_related_topic(service_id, similarity_score)
+
+        url = '/v1/services/{0}/related_topics/'.format(service_id)
+        response = self.client.get(url)
+
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(response.json()[0]['similarity_score'], 2.0)
+        self.assertEqual(response.json()[1]['similarity_score'], 1.0)
+        self.assertEqual(response.json()[2]['similarity_score'], 0.0)

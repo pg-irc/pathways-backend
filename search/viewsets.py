@@ -4,11 +4,11 @@ from search import models, serializers, documentation
 
 
 @method_decorator(name='list', decorator=documentation.get_related_tasks_schema())
-class RelatedTasksViewSet(viewsets.ReadOnlyModelViewSet):
+class RelatedTopicsViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
-        task_id = self.kwargs['task_id']
-        return models.TaskSimilarityScore.objects.filter(first_task=task_id).order_by('-similarity_score')
+        topic_id = self.kwargs['topic_id']
+        return models.TaskSimilarityScore.objects.filter(first_task=topic_id).order_by('-similarity_score')
 
     serializer_class = serializers.RelatedTaskSerializer
 
@@ -17,7 +17,7 @@ class RelatedTasksViewSet(viewsets.ReadOnlyModelViewSet):
 class RelatedServicesViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
-        task_id = self.kwargs['task_id']
-        return models.TaskServiceSimilarityScore.objects.filter(task=task_id).order_by('-similarity_score')
+        topic_id = self.kwargs['topic_id']
+        return models.TaskServiceSimilarityScore.objects.filter(task=topic_id).order_by('-similarity_score')
 
     serializer_class = serializers.RelatedServiceSerializer

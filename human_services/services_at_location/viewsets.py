@@ -29,5 +29,4 @@ class ServiceAtLocationViewSet(viewsets.ReadOnlyModelViewSet):
                        ProximityCutoffFilter,
                        ServiceIdFilter,
                        TaxonomyFilter,
-
                        )
