@@ -10,17 +10,17 @@ class TestSavingTasks(TestCase):
     def setUp(self):
         self.counts = ImportCounters()
         self.topic_id = 'the-topic-id'
-        self.english_task_name = a_string()
-        self.english_task_description = a_string()
-        self.one_task = {
+        self.english_topic_name = a_string()
+        self.english_topic_description = a_string()
+        self.one_topic = {
             'taskMap': {
                 'the-topic-id': {
                     'id': 'the-topic-id',
                     'title': {
-                        'en': self.english_task_name,
+                        'en': self.english_topic_name,
                     },
                     'description': {
-                        'en': self.english_task_description,
+                        'en': self.english_topic_description,
                     },
                     'taxonomyTerms': [
                         {
@@ -37,39 +37,39 @@ class TestSavingTasks(TestCase):
         }
 
     def test_deletes_existing_records(self):
-        two_preexisting_tasks = [a_string(), a_string()]
-        helpers.create_topics(two_preexisting_tasks)
+        two_preexisting_topics = [a_string(), a_string()]
+        helpers.create_topics(two_preexisting_topics)
 
-        save_topics(self.one_task, self.counts)
+        save_topics(self.one_topic, self.counts)
         self.assertEqual(Task.objects.count(), 1)
 
-    def test_saves_task_id(self):
-        save_topics(self.one_task, self.counts)
+    def test_saves_topic_id(self):
+        save_topics(self.one_topic, self.counts)
         records = Task.objects.all()
         self.assertEqual(records[0].id, self.topic_id)
 
-    def test_saves_task_title_in_english(self):
-        save_topics(self.one_task, self.counts)
+    def test_saves_topic_title_in_english(self):
+        save_topics(self.one_topic, self.counts)
         records = Task.objects.all()
-        self.assertEqual(records[0].name, self.english_task_name)
+        self.assertEqual(records[0].name, self.english_topic_name)
 
-    def test_saves_task_description_in_english(self):
-        save_topics(self.one_task, self.counts)
+    def test_saves_topic_description_in_english(self):
+        save_topics(self.one_topic, self.counts)
         records = Task.objects.all()
-        self.assertEqual(records[0].description, self.english_task_description)
+        self.assertEqual(records[0].description, self.english_topic_description)
 
     def test_saves_taxonomy_id(self):
-        save_topics(self.one_task, self.counts)
+        save_topics(self.one_topic, self.counts)
         record = Task.objects.all()[0]
         self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
 
     def test_saves_taxonomy_term(self):
-        save_topics(self.one_task, self.counts)
+        save_topics(self.one_topic, self.counts)
         record = Task.objects.all()[0]
         self.assertEqual(record.taxonomy_terms.all()[0].name, 'blue')
 
     def test_saves_multiple_taxonomy_terms(self):
-        save_topics(self.one_task, self.counts)
+        save_topics(self.one_topic, self.counts)
         record = Task.objects.all()[0]
         self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
         self.assertEqual(record.taxonomy_terms.all()[1].taxonomy_id, 'size')

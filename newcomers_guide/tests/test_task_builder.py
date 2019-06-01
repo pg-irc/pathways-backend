@@ -27,7 +27,7 @@ class TopicBuilderTest(TestCase):
         self.assertJSONEqual(self.topic.to_json(),
                              '{"completed": false, "relatedTopics": [], "description": {"en": "xyz"}}')
 
-    def test_can_create_complete_task(self):
+    def test_can_create_complete_topic(self):
         self.topic.set_id('the topic id').\
             set_title_in_locale('en', 'the title in English').\
             set_title_in_locale('fr', 'the title in French').\
