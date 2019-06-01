@@ -131,7 +131,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
             similarity_score=similarity_score
         )
 
-    def test_can_order_by_similarity_to_task(self):
+    def test_can_order_by_similarity_to_topic(self):
         topic_id = 'the-topic-id'
         create_topics([topic_id])
 
@@ -162,10 +162,10 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['name'], related_service.name)
 
-    def test_orders_by_task_passed_to_the_query(self):
-        task_passed_to_query = 'the-topic-id'
-        task_to_ignore = 'some-other-topic'
-        create_topics([task_passed_to_query, task_to_ignore])
+    def test_orders_by_topic_passed_to_the_query(self):
+        topic_passed_to_query = 'the-topic-id'
+        topic_to_ignore = 'some-other-topic'
+        create_topics([topic_passed_to_query, topic_to_ignore])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -175,15 +175,15 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         high_score = 0.8
         higher_score = 0.9
 
-        self.set_service_similarity_score(task_passed_to_query, similar_service.id, high_score)
-        self.set_service_similarity_score(task_passed_to_query, dissimilar_service.id, low_score)
+        self.set_service_similarity_score(topic_passed_to_query, similar_service.id, high_score)
+        self.set_service_similarity_score(topic_passed_to_query, dissimilar_service.id, low_score)
 
         # Test verifies that these scores are ignored,
         # if they were considered then dissimilar_service would be returned as the first element
-        self.set_service_similarity_score(task_to_ignore, similar_service.id, lower_score)
-        self.set_service_similarity_score(task_to_ignore, dissimilar_service.id, higher_score)
+        self.set_service_similarity_score(topic_to_ignore, similar_service.id, lower_score)
+        self.set_service_similarity_score(topic_to_ignore, dissimilar_service.id, higher_score)
 
-        url = '/v1/services_at_location/?related_to_topic={0}'.format(task_passed_to_query)
+        url = '/v1/services_at_location/?related_to_topic={0}'.format(topic_passed_to_query)
         json = self.client.get(url).json()
 
         self.assertEqual(len(json), 2)
