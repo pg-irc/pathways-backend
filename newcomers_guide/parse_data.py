@@ -9,7 +9,7 @@ from newcomers_guide.exceptions import TaxonomyError, ParseError
 from search.models import TaskSimilarityScore
 
 
-def parse_task_files(file_specs):
+def parse_topic_files(file_specs):
     builders = {}
     for spec in file_specs:
         path = spec[0]

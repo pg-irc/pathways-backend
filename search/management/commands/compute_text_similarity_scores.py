@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from newcomers_guide.read_data import read_task_data
-from newcomers_guide.parse_data import parse_task_files
+from newcomers_guide.read_data import read_topic_data
+from newcomers_guide.parse_data import parse_topic_files
 from human_services.services.models import Service
 from search.compute_similarities import (to_task_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
@@ -52,5 +52,5 @@ class Command(BaseCommand):
 
 
 def read_task_descriptions(root_folder):
-    task_data = read_task_data(root_folder)
-    return parse_task_files(task_data)
+    task_data = read_topic_data(root_folder)
+    return parse_topic_files(task_data)

@@ -3,7 +3,7 @@ from newcomers_guide import exceptions
 from glob import glob 
 
 
-def read_task_data(root_folder):
+def read_topic_data(root_folder):
     task_data = []
     for root, _, filenames in os.walk(root_folder, topdown=False):
         for filename in filenames:
