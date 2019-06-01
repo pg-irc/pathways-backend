@@ -151,11 +151,11 @@ class TopicBuilder:
 
 
 def make_topic_map(builders):
-    tasks = {}
+    topics = {}
     for key in builders:
-        tasks[key] = builders[key].to_topic()
+        topics[key] = builders[key].to_topic()
     return {
-        'taskMap': tasks,
+        'taskMap': topics,
     }
 
 

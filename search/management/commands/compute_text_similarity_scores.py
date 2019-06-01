@@ -5,8 +5,8 @@ from human_services.services.models import Service
 from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
                                          compute_similarities)
-from search.save_similarities import (save_task_similarities,
-                                      save_task_service_similarity_scores)
+from search.save_similarities import (save_topic_similarities,
+                                      save_topic_service_similarity_scores)
 
 
 class Command(BaseCommand):
@@ -46,9 +46,9 @@ class Command(BaseCommand):
         cosine_doc_similarities = compute_similarities(descriptions)
 
         print('Saving {} topic similarities...'.format(len(topic_ids)*(len(topic_ids)-1)))
-        save_task_similarities(topic_ids, cosine_doc_similarities, related_task_count)
+        save_topic_similarities(topic_ids, cosine_doc_similarities, related_task_count)
         print('Saving {} topic-service similarities...'.format(len(topic_ids)*len(service_ids)))
-        save_task_service_similarity_scores(topic_ids, service_ids, cosine_doc_similarities, related_service_count)
+        save_topic_service_similarity_scores(topic_ids, service_ids, cosine_doc_similarities, related_service_count)
 
 
 def read_task_descriptions(root_folder):
