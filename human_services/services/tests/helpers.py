@@ -1,12 +1,12 @@
 from human_services.services import models
 from human_services.locations.models import ServiceAtLocation
 from common.testhelpers.random_test_values import a_string
-from newcomers_guide.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_topics
 from search.models import TaskServiceSimilarityScore
 
 def create_related_topic(service_id, similarity_score):
     topic_id = a_string()
-    create_tasks([topic_id])
+    create_topics([topic_id])
     TaskServiceSimilarityScore.objects.create(
         task_id=topic_id,
         service_id=service_id,

@@ -8,7 +8,7 @@ from search.save_similarities import (save_task_similarities,
 from search.remove_similarities_for_topics import remove_similarities_for_topics
 from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
 from common.testhelpers.random_test_values import a_string, a_float
-from newcomers_guide.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_topics
 import scipy
 from search.tests.helpers import create_square_matrix_of_unique_floats
 
@@ -18,7 +18,7 @@ class TestSavingTaskSimilarities(TestCase):
     def test_deletes_existing_records(self):
         first_task_id = a_string()
         second_task_id = a_string()
-        create_tasks([first_task_id, second_task_id])
+        create_topics([first_task_id, second_task_id])
         record = TaskSimilarityScore(first_task_id=first_task_id,
                                      second_task_id=second_task_id,
                                      similarity_score=a_float())
@@ -30,7 +30,7 @@ class TestSavingTaskSimilarities(TestCase):
 
     def test_saves_required_number_of_records_for_each_row(self):
         ids = [a_string() for i in range(5)]
-        create_tasks(ids)
+        create_topics(ids)
         scores = create_square_matrix_of_unique_floats(5)
         scores_matrix = scipy.sparse.csr_matrix(scores)
 
@@ -42,7 +42,7 @@ class TestSavingTaskSimilarities(TestCase):
 
     def test_saves_all_off_diagonal_scores_if_number_of_scores_to_save_is_large(self):
         ids = [a_string() for i in range(5)]
-        create_tasks(ids)
+        create_topics(ids)
         scores = scipy.sparse.csr_matrix([[a_float() for i in range(5)] for j in range(5)])
 
         too_many_records_to_save = 2000
@@ -53,7 +53,7 @@ class TestSavingTaskSimilarities(TestCase):
 
     def test_saves_two_non_diagonal_elements_with_the_highest_scores_in_each_row(self):
         ids = [a_string() for i in range(4)]
-        create_tasks(ids)
+        create_topics(ids)
         scores = scipy.sparse.csr_matrix([[1, 2, 3, 4],
                                           [5, 6, 7, 8],
                                           [9, 10, 11, 12],
@@ -75,7 +75,7 @@ class TestSavingTaskSimilarities(TestCase):
 
     def test_saves_elements_with_first_task_id(self):
         ids = [a_string() for i in range(4)]
-        create_tasks(ids)
+        create_topics(ids)
         scores = scipy.sparse.csr_matrix([[1, 2, 3, 4],
                                           [5, 6, 7, 8],
                                           [9, 10, 11, 12],
@@ -97,7 +97,7 @@ class TestSavingTaskSimilarities(TestCase):
 
     def test_saves_elements_with_second_task_id(self):
         ids = [a_string() for i in range(4)]
-        create_tasks(ids)
+        create_topics(ids)
         scores = scipy.sparse.csr_matrix([[1, 2, 3, 4],
                                           [5, 6, 7, 8],
                                           [9, 10, 11, 12],
@@ -122,7 +122,7 @@ class TestSavingTaskServiceSimilarities(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
         self.three_task_ids = [a_string() for i in range(3)]
-        create_tasks(self.three_task_ids)
+        create_topics(self.three_task_ids)
 
         services = [ServiceBuilder(self.organization).create() for i in range(3)]
         self.three_service_ids = [service.id for service in services]
@@ -225,7 +225,7 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
         self.topic_id = a_string()
-        create_tasks([self.topic_id])
+        create_topics([self.topic_id])
 
     def test_creates_task_service_similarity_record_from_manual_data(self):
         service_id = a_string()
@@ -281,7 +281,7 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
     def test_can_set_similarity_score_from_several_tasks(self):
         topic_ids = [a_string() for i in range(3)]
-        create_tasks(topic_ids)
+        create_topics(topic_ids)
 
         services = [ServiceBuilder(self.organization).create() for i in range(3)]
         service_ids = [service.id for service in services]
@@ -313,7 +313,7 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
     def test_with_non_existent_service_id_emit_warning_and_do_not_save(self):
         topic_id = a_string()
-        create_tasks([topic_id])
+        create_topics([topic_id])
 
         service_id = a_string()
 
@@ -336,7 +336,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
     def test_can_remove_one_similarity_score(self):
         service = ServiceBuilder(self.organization).create()
         topic_id = a_string()
-        create_tasks([topic_id])
+        create_topics([topic_id])
         record = TaskServiceSimilarityScore(task_id=topic_id,
                                             service=service,
                                             similarity_score=a_float())
@@ -349,7 +349,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
     def test_can_remove_several_similarity_scores_for_the_same_task(self):
         services = [ServiceBuilder(self.organization).create() for i in range(4)]
         the_task_id = a_string()
-        create_tasks([the_task_id])
+        create_topics([the_task_id])
         for service in services:
             TaskServiceSimilarityScore(task_id=the_task_id,
                                        service=service,
@@ -362,7 +362,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
     def test_can_remove_similarity_score_for_different_tasks(self):
         service = ServiceBuilder(self.organization).create()
         topic_ids = [a_string() for i in range(3)]
-        create_tasks(topic_ids)
+        create_topics(topic_ids)
         for topic_id in topic_ids:
             TaskServiceSimilarityScore(task_id=topic_id,
                                        service=service,
@@ -374,7 +374,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
 
     def test_called_with_invalid_task_id_does_nothing(self):
         topic_id = a_string()
-        create_tasks([topic_id])
+        create_topics([topic_id])
         service = ServiceBuilder(self.organization).create()
         TaskServiceSimilarityScore(task_id=topic_id,
                                    service=service,
@@ -388,7 +388,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
 
     def test_called_with_invalid_task_id_logs_warning(self):
         topic_id = a_string()
-        create_tasks([topic_id])
+        create_topics([topic_id])
         service = ServiceBuilder(self.organization).create()
         TaskServiceSimilarityScore(task_id=topic_id,
                                    service=service,

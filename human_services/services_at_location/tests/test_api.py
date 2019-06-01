@@ -6,7 +6,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.models import ServiceAtLocation
 from search.models import TaskServiceSimilarityScore
-from newcomers_guide.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_topics
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float
 from django.contrib.gis.geos import Point
@@ -133,7 +133,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_can_order_by_similarity_to_task(self):
         topic_id = 'the-topic-id'
-        create_tasks([topic_id])
+        create_topics([topic_id])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -150,7 +150,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_does_not_return_unrelated_services(self):
         topic_id = 'the-topic-id'
-        create_tasks([topic_id])
+        create_topics([topic_id])
         related_service = ServiceBuilder(self.organization).with_location(self.location).create()
         self.set_service_similarity_score(topic_id, related_service.id, a_float())
 
@@ -165,7 +165,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def test_orders_by_task_passed_to_the_query(self):
         task_passed_to_query = 'the-topic-id'
         task_to_ignore = 'some-other-topic'
-        create_tasks([task_passed_to_query, task_to_ignore])
+        create_topics([task_passed_to_query, task_to_ignore])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -192,7 +192,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_orders_poor_match_close_by_before_good_match_further_away(self):
         topic_id = 'the-topic-id'
-        create_tasks([topic_id])
+        create_topics([topic_id])
 
         latitude = 0
         user_longitude = 0
@@ -230,7 +230,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_orders_two_equally_good_match_by_distance(self):
         topic_id = 'the-topic-id'
-        create_tasks([topic_id])
+        create_topics([topic_id])
 
         latitude = 0
         user_longitude = 0

@@ -4,7 +4,7 @@ from common.testhelpers.random_test_values import a_string, a_float
 from search.models import TaskSimilarityScore, TaskServiceSimilarityScore
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from newcomers_guide.tests.helpers import create_tasks
+from newcomers_guide.tests.helpers import create_topics
 
 
 class TestTaskSimilarityScores(TestCase):
@@ -12,7 +12,7 @@ class TestTaskSimilarityScores(TestCase):
         first_id = a_string()
         second_id = a_string()
         score = a_float()
-        create_tasks([first_id, second_id])
+        create_topics([first_id, second_id])
         score_record = TaskSimilarityScore(first_task_id=first_id,
                                            second_task_id=second_id,
                                            similarity_score=score)
@@ -30,7 +30,7 @@ class TestTaskServiceSimilarityScores(TestCase):
         topic_id = a_string()
         score = a_float()
 
-        create_tasks([topic_id])
+        create_topics([topic_id])
         score_record = TaskServiceSimilarityScore(task_id=topic_id,
                                                   service=service,
                                                   similarity_score=score)
