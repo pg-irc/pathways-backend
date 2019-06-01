@@ -4,10 +4,10 @@ from search.models import Task
 from bc211.importer import create_taxonomy_term_active_record
 
 
-def save_topics(tasks, counts):
+def save_topics(topics, counts):
     Task.objects.all().delete()
     translation.activate('en')
-    for _, topic in tasks['taskMap'].items():
+    for _, topic in topics['taskMap'].items():
         record = Task()
         record.id = topic['id']
         record.name = topic['title']['en']
