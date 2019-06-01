@@ -20,7 +20,7 @@ class Command(BaseCommand):
                             dest='related_topics',
                             type=int,
                             default=10,
-                            help='for each topic, store this many related tasks')
+                            help='for each topic, store this many related topics')
         parser.add_argument('--related_services',
                             dest='related_services',
                             type=int,
@@ -29,28 +29,28 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         root_folder = options['newcomers_guide_path']
-        related_task_count = options['related_topics']
+        related_topic_count = options['related_topics']
         related_service_count = options['related_services']
 
         print('All topic data and topic/service similarity data will be deleted and reimported')
 
-        print('Reading tasks...')
-        tasks = read_task_descriptions(root_folder)
-        topic_ids, task_descriptions = to_topic_ids_and_descriptions(tasks)
-        print('{} tasks read, reading services...'.format(len(topic_ids)))
+        print('Reading topics...')
+        topics = read_topic_descriptions(root_folder)
+        topic_ids, topic_descriptions = to_topic_ids_and_descriptions(topics)
+        print('{} topics read, reading services...'.format(len(topic_ids)))
         service_ids, service_descriptions = to_service_ids_and_descriptions(Service.objects.all())
 
-        descriptions = task_descriptions + service_descriptions
+        descriptions = topic_descriptions + service_descriptions
 
         print('{} services read, computing similarities...'.format(len(service_ids)))
         cosine_doc_similarities = compute_similarities(descriptions)
 
         print('Saving {} topic similarities...'.format(len(topic_ids)*(len(topic_ids)-1)))
-        save_topic_similarities(topic_ids, cosine_doc_similarities, related_task_count)
+        save_topic_similarities(topic_ids, cosine_doc_similarities, related_topic_count)
         print('Saving {} topic-service similarities...'.format(len(topic_ids)*len(service_ids)))
         save_topic_service_similarity_scores(topic_ids, service_ids, cosine_doc_similarities, related_service_count)
 
 
-def read_task_descriptions(root_folder):
-    task_data = read_topic_data(root_folder)
-    return parse_topic_files(task_data)
+def read_topic_descriptions(root_folder):
+    topic_data = read_topic_data(root_folder)
+    return parse_topic_files(topic_data)
