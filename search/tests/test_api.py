@@ -83,14 +83,14 @@ class RelatesServicesApiTests(rest_test.APITestCase):
         translation.activate('en')
         self.task_id = a_string()
 
-        self.task = Task(id=self.task_id, name=a_string(), description=a_string())
-        self.task.save()
+        self.topic = Task(id=self.task_id, name=a_string(), description=a_string())
+        self.topic.save()
 
         organization = OrganizationBuilder().create()
         self.service = ServiceBuilder(organization).create()
 
         self.similarity_score = a_float()
-        TaskServiceSimilarityScore(task=self.task, service=self.service,
+        TaskServiceSimilarityScore(task=self.topic, service=self.service,
                                    similarity_score=self.similarity_score).save()
 
     def test_can_get_response(self):
@@ -121,8 +121,8 @@ class RelatesServicesApiTests(rest_test.APITestCase):
 
     def test_returns_services_ordered_by_score(self):
         task_id = a_string()
-        task = Task(id=task_id, name=a_string(), description=a_string())
-        task.save()
+        topic = Task(id=task_id, name=a_string(), description=a_string())
+        topic.save()
 
         organization = OrganizationBuilder().create()
         more_related_service = ServiceBuilder(organization).create()
@@ -130,10 +130,10 @@ class RelatesServicesApiTests(rest_test.APITestCase):
 
         higher_score = 0.9
         lower_score = 0.1
-        TaskServiceSimilarityScore(task=task, service=more_related_service,
+        TaskServiceSimilarityScore(task=topic, service=more_related_service,
                                    similarity_score=higher_score).save()
 
-        TaskServiceSimilarityScore(task=task, service=less_related_service,
+        TaskServiceSimilarityScore(task=topic, service=less_related_service,
                                    similarity_score=lower_score).save()
 
         url = '/v1/topics/{}/related_services/'.format(task_id)

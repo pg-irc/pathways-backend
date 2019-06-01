@@ -124,24 +124,24 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertIn(origin_location.name, names_in_response)
         self.assertIn(near_location.name, names_in_response)
 
-    def set_service_similarity_score(self, task_id, service_id, similarity_score):
+    def set_service_similarity_score(self, topic_id, service_id, similarity_score):
         TaskServiceSimilarityScore.objects.create(
-            task_id=task_id,
+            task_id=topic_id,
             service_id=service_id,
             similarity_score=similarity_score
         )
 
     def test_can_order_by_similarity_to_task(self):
-        task_id = 'the-topic-id'
-        create_tasks([task_id])
+        topic_id = 'the-topic-id'
+        create_tasks([topic_id])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
 
-        self.set_service_similarity_score(task_id, similar_service.id, 0.9)
-        self.set_service_similarity_score(task_id, dissimilar_service.id, 0.1)
+        self.set_service_similarity_score(topic_id, similar_service.id, 0.9)
+        self.set_service_similarity_score(topic_id, dissimilar_service.id, 0.1)
 
-        url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
+        url = '/v1/services_at_location/?related_to_task={0}'.format(topic_id)
         json = self.client.get(url).json()
 
         self.assertEqual(len(json), 2)
@@ -149,14 +149,14 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_does_not_return_unrelated_services(self):
-        task_id = 'the-topic-id'
-        create_tasks([task_id])
+        topic_id = 'the-topic-id'
+        create_tasks([topic_id])
         related_service = ServiceBuilder(self.organization).with_location(self.location).create()
-        self.set_service_similarity_score(task_id, related_service.id, a_float())
+        self.set_service_similarity_score(topic_id, related_service.id, a_float())
 
         unrelated_service = ServiceBuilder(self.organization).with_location(self.location).create()
 
-        url = '/v1/services_at_location/?related_to_task={0}'.format(task_id)
+        url = '/v1/services_at_location/?related_to_task={0}'.format(topic_id)
         json = self.client.get(url).json()
 
         self.assertEqual(len(json), 1)
@@ -191,8 +191,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_orders_poor_match_close_by_before_good_match_further_away(self):
-        task_id = 'the-topic-id'
-        create_tasks([task_id])
+        topic_id = 'the-topic-id'
+        create_tasks([topic_id])
 
         latitude = 0
         user_longitude = 0
@@ -216,11 +216,11 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         poor_match_score = 0.2
         good_match_score = 0.8
 
-        self.set_service_similarity_score(task_id, far_service.id, good_match_score)
-        self.set_service_similarity_score(task_id, near_service.id, poor_match_score)
+        self.set_service_similarity_score(topic_id, far_service.id, good_match_score)
+        self.set_service_similarity_score(topic_id, near_service.id, poor_match_score)
 
         url = ('/v1/services_at_location/?related_to_task={0}&user_location={1},{2}&proximity={1},{2}'.
-               format(task_id, user_longitude, latitude))
+               format(topic_id, user_longitude, latitude))
 
         json = self.client.get(url).json()
 
@@ -229,8 +229,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], far_service.name)
 
     def test_orders_two_equally_good_match_by_distance(self):
-        task_id = 'the-topic-id'
-        create_tasks([task_id])
+        topic_id = 'the-topic-id'
+        create_tasks([topic_id])
 
         latitude = 0
         user_longitude = 0
@@ -253,11 +253,11 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
         good_match_score = 0.8
 
-        self.set_service_similarity_score(task_id, far_service.id, good_match_score)
-        self.set_service_similarity_score(task_id, near_service.id, good_match_score)
+        self.set_service_similarity_score(topic_id, far_service.id, good_match_score)
+        self.set_service_similarity_score(topic_id, near_service.id, good_match_score)
 
         url = ('/v1/services_at_location/?related_to_task={0}&user_location={1},{2}&proximity={1},{2}'.
-               format(task_id, user_longitude, latitude))
+               format(topic_id, user_longitude, latitude))
 
         json = self.client.get(url).json()
 

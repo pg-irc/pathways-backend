@@ -16,11 +16,11 @@ def parse_task_files(file_specs):
         description = clean_text(spec[1])
 
         parsed_path = parse_file_path(path)
-        task_id = parsed_path.id
+        topic_id = parsed_path.id
 
         if parsed_path.type == 'topics':
-            ensure_builder_exists_for_task(builders, task_id)
-            add_properties_for_locale(builders[task_id], parsed_path, description)
+            ensure_builder_exists_for_task(builders, topic_id)
+            add_properties_for_locale(builders[topic_id], parsed_path, description)
 
     return make_task_map(builders)
 
@@ -36,10 +36,10 @@ def parse_file_path(path):
     validate_filename(name, path)
     title = get_title_from_file_name(name)
     locale = get_locale_from_file_name(name)
-    task_id = slugify(split_path[length - 2])
+    topic_id = slugify(split_path[length - 2])
     return parsed_file_path(chapter=split_path[length - 4],
                             type=split_path[length - 3],
-                            id=task_id,
+                            id=topic_id,
                             title=title,
                             locale=locale)
 
@@ -85,20 +85,20 @@ def get_locale_from_file_name(file_name):
     return file_name.split('.')[0]
 
 
-def ensure_builder_exists_for_task(builders, task_id):
-    if task_id not in builders:
-        builders[task_id] = create_task_builder(task_id)
+def ensure_builder_exists_for_task(builders, topic_id):
+    if topic_id not in builders:
+        builders[topic_id] = create_task_builder(topic_id)
 
 
-def create_task_builder(task_id):
+def create_task_builder(topic_id):
     builder = TaskBuilder()
-    builder.set_id(task_id)
-    builder.set_related_tasks(find_related_tasks(task_id))
+    builder.set_id(topic_id)
+    builder.set_related_tasks(find_related_tasks(topic_id))
     return builder
 
 
-def find_related_tasks(task_id):
-    related_tasks = TaskSimilarityScore.objects.filter(first_task_id=task_id).order_by('-similarity_score')
+def find_related_tasks(topic_id):
+    related_tasks = TaskSimilarityScore.objects.filter(first_task_id=topic_id).order_by('-similarity_score')
     return [topic.second_task_id for topic in related_tasks]
 
 

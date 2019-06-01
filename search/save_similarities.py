@@ -30,7 +30,7 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
     service_count = len(service_ids)
 
     # Assuming that the similarities are computed from a document vector
-    # containing task descriptions *followed by* service descriptions
+    # containing topic descriptions *followed by* service descriptions
     def to_service_similarity_offset(service_index):
         return task_count + service_index
 
@@ -66,7 +66,7 @@ def is_task_id_valid(task_id):
         Task.objects.get(id=task_id)
         return True
     except Task.DoesNotExist:
-        LOGGER.warning('%s: Failed to save manual similarity, no such task', task_id)
+        LOGGER.warning('%s: Failed to save manual similarity, no such topic', task_id)
         return False
 
 
