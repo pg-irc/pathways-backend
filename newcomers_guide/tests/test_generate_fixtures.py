@@ -1,5 +1,5 @@
 from django.test import TestCase
-from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_taxonomy_fixture)
+from newcomers_guide.generate_fixtures import (generate_topic_fixture, generate_taxonomy_fixture)
 from newcomers_guide.parse_data import TaxonomyTermReference
 
 
@@ -46,7 +46,7 @@ class GenerateFixtureTest(TestCase):
                     '        }\n'
                     '    });\n'
                     '};')
-        self.assertEqual(generate_task_fixture(data), expected)
+        self.assertEqual(generate_topic_fixture(data), expected)
 
     def test_generated_taxonomy_fixture(self):
         self.maxDiff = None

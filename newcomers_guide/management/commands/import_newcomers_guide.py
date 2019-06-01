@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from newcomers_guide.generate_fixtures import (generate_task_fixture, generate_taxonomy_fixture,
+from newcomers_guide.generate_fixtures import (generate_topic_fixture, generate_taxonomy_fixture,
                                                set_taxonomy_term_references_on_content)
 from newcomers_guide.read_data import read_topic_data, read_taxonomy_data
 from newcomers_guide.parse_data import parse_topic_files, parse_taxonomy_files
@@ -39,7 +39,7 @@ class Command(BaseCommand):
         log_locales(self.stdout, tasks['taskMap'])
 
         with open('tasks.ts', 'w') as file:
-            file.write(generate_task_fixture(tasks))
+            file.write(generate_topic_fixture(tasks))
 
         with open('taxonomies.ts', 'w') as file:
             file.write(generate_taxonomy_fixture(taxonomies))
