@@ -98,8 +98,8 @@ def create_topic_builder(topic_id):
 
 
 def find_related_topics(topic_id):
-    related_tasks = TaskSimilarityScore.objects.filter(first_task_id=topic_id).order_by('-similarity_score')
-    return [topic.second_task_id for topic in related_tasks]
+    related_topics = TaskSimilarityScore.objects.filter(first_task_id=topic_id).order_by('-similarity_score')
+    return [topic.second_task_id for topic in related_topics]
 
 
 class TopicBuilder:
@@ -116,8 +116,8 @@ class TopicBuilder:
         self.topic['id'] = the_id
         return self
 
-    def set_related_topics(self, related_tasks):
-        self.topic['relatedTopics'] = related_tasks
+    def set_related_topics(self, related_topics):
+        self.topic['relatedTopics'] = related_topics
         return self
 
     def set_chapter(self, chapter):
@@ -143,7 +143,7 @@ class TopicBuilder:
         if key not in self.topic:
             self.topic[key] = {}
 
-    def to_task(self):
+    def to_topic(self):
         return self.topic
 
     def to_json(self):
@@ -153,7 +153,7 @@ class TopicBuilder:
 def make_topic_map(builders):
     tasks = {}
     for key in builders:
-        tasks[key] = builders[key].to_task()
+        tasks[key] = builders[key].to_topic()
     return {
         'taskMap': tasks,
     }

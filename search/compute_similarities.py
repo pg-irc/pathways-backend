@@ -5,7 +5,7 @@ from django.utils.text import slugify
 import re
 
 
-def to_task_ids_and_descriptions(tasks):
+def to_topic_ids_and_descriptions(tasks):
     ids = []
     descriptions = []
     for _, topic in tasks['taskMap'].items():

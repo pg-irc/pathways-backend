@@ -1,5 +1,5 @@
 from django.test import TestCase
-from search.compute_similarities import (to_task_ids_and_descriptions,
+from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
                                          compute_similarities)
 from human_services.services.models import Service
@@ -30,16 +30,16 @@ class TestTaskSimilarityScore(TestCase):
         self.organization = OrganizationBuilder().create()
 
     def test_getting_ids_for_task_returns_task_id(self):
-        ids, _ = to_task_ids_and_descriptions(self.data)
+        ids, _ = to_topic_ids_and_descriptions(self.data)
         self.assertEqual(ids[0], self.topic_id)
 
     def test_converts_task_id_to_slug(self):
         self.data['taskMap'][self.topic_id]['id'] = 'This is the id'
-        ids, _ = to_task_ids_and_descriptions(self.data)
+        ids, _ = to_topic_ids_and_descriptions(self.data)
         self.assertEqual(ids[0], 'this-is-the-id')
 
     def test_getting_description_for_task_returns_task_title_and_description(self):
-        _, descriptions = to_task_ids_and_descriptions(self.data)
+        _, descriptions = to_topic_ids_and_descriptions(self.data)
         self.assertEqual(descriptions[0],
                          self.english_task_title + ' ' + self.english_task_description)
 

@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from newcomers_guide.read_data import read_topic_data
 from newcomers_guide.parse_data import parse_topic_files
 from human_services.services.models import Service
-from search.compute_similarities import (to_task_ids_and_descriptions,
+from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
                                          compute_similarities)
 from search.save_similarities import (save_task_similarities,
@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
         print('Reading tasks...')
         tasks = read_task_descriptions(root_folder)
-        topic_ids, task_descriptions = to_task_ids_and_descriptions(tasks)
+        topic_ids, task_descriptions = to_topic_ids_and_descriptions(tasks)
         print('{} tasks read, reading services...'.format(len(topic_ids)))
         service_ids, service_descriptions = to_service_ids_and_descriptions(Service.objects.all())
 
