@@ -105,24 +105,24 @@ class ProcessTaskFilesTests(TestCase):
 
     def test_includes_related_topics_from_database_in_order_of_declining_similarity_score(self):
         topic_id = a_string()
-        similar_task_id = a_string()
-        create_topics([topic_id, similar_task_id])
+        similar_topic_id = a_string()
+        create_topics([topic_id, similar_topic_id])
 
         a_high_score = 0.9
         TaskSimilarityScore(first_task_id=topic_id,
-                            second_task_id=similar_task_id,
+                            second_task_id=similar_topic_id,
                             similarity_score=a_high_score).save()
 
-        dissimilar_task_id = a_string()
-        create_topics([dissimilar_task_id])
+        dissimilar_topic_id = a_string()
+        create_topics([dissimilar_topic_id])
         a_low_score = 0.1
         TaskSimilarityScore(first_task_id=topic_id,
-                            second_task_id=dissimilar_task_id,
+                            second_task_id=dissimilar_topic_id,
                             similarity_score=a_low_score).save()
 
         path = 'some/path/chapter/topics/{0}/en.Learn_english.txt'.format(topic_id)
         result = parse_topic_files([[path, a_string()]])
-        self.assertEqual(result['taskMap'][topic_id]['relatedTopics'], [similar_task_id, dissimilar_task_id])
+        self.assertEqual(result['taskMap'][topic_id]['relatedTopics'], [similar_topic_id, dissimilar_topic_id])
 
     def test_combine_files_for_different_content(self):
         secondary_path = 'some/path/chapter/topics/Registering_child_in_school/en.Registering_in_public_school.txt'
@@ -132,7 +132,7 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(result['taskMap']['registering_child_in_school']
                          ['title']['en'], 'Registering_in_public_school')
 
-    def test_throw_on_same_task_id_in_different_chapters(self):
+    def test_throw_on_same_topic_id_in_different_chapters(self):
         first_path = 'some/path/chapter1/topics/Registering_child_in_school/en.InEnglish.md'
         second_path = 'some/path/chapter2/topics/Registering_child_in_school/fr.InFrench.md'
         error_message = 'registering_child_in_school: don\'t use the same topic id in different chapters'
@@ -140,9 +140,9 @@ class ProcessTaskFilesTests(TestCase):
             parse_topic_files([[first_path, a_string()], [second_path, a_string()]])
 
     def test_parse_topic_files_includes_article_content(self):
-        task_path = 'some/path/chapter/topics/To_learn_english/en.Learn_english.txt'
+        topic_path = 'some/path/chapter/topics/To_learn_english/en.Learn_english.txt'
         article_path = 'some/path/chapter/topics/Human_rights/en.Human_rights.txt'
-        result = parse_topic_files([[task_path, a_string()], [article_path, a_string()]])
+        result = parse_topic_files([[topic_path, a_string()], [article_path, a_string()]])
         self.assertIn('to_learn_english', result['taskMap'])
         self.assertIn('human_rights', result['taskMap'])
 
@@ -208,7 +208,7 @@ class ProcessAllTaxonomyFilesTests(TestCase):
 
 
 class SetTaxonomiesOnContentTests(TestCase):
-    def test_adds_taxonomy_term_reference_collection_on_task(self):
+    def test_adds_taxonomy_term_reference_collection_on_topic(self):
         taxonomy_reference = TaxonomyTermReference('taxId', 'taxTermId', 'contentType', 'contentId')
         content = {'contentId': {'id': 'contentId'}}
         set_taxonomy_term_references_on_content([taxonomy_reference], content)
@@ -218,7 +218,7 @@ class SetTaxonomiesOnContentTests(TestCase):
                 'taxonomyTermId': 'taxTermId'
             }])
 
-    def test_appends_taxonomy_term_references_to_existing_collection_on_task(self):
+    def test_appends_taxonomy_term_references_to_existing_collection_on_topic(self):
         taxonomy_reference = TaxonomyTermReference('taxId', 'taxTermId', 'contentType', 'contentId')
         content = {'contentId': {'id': 'contentId',
                                  'taxonomyTerms': [{
@@ -236,7 +236,7 @@ class SetTaxonomiesOnContentTests(TestCase):
                 'taxonomyTermId': 'taxTermId'
             }])
 
-    def test_appends_multiple_taxonomy_term_references_to_collection_on_task(self):
+    def test_appends_multiple_taxonomy_term_references_to_collection_on_topic(self):
         first_taxonomy_reference = TaxonomyTermReference('taxId',
                                                          'taxTermId',
                                                          'contentType',
@@ -258,7 +258,7 @@ class SetTaxonomiesOnContentTests(TestCase):
             }
         ])
 
-    def test_does_not_change_task_with_different_id(self):
+    def test_does_not_change_topic_with_different_id(self):
         taxonomy_reference = TaxonomyTermReference('taxId',
                                                    'taxTermId',
                                                    'contentType',
