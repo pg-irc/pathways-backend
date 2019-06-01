@@ -86,7 +86,7 @@ class ServiceSimilarityFilter(filters.BaseFilterBackend):
         if queryset.model is not ServiceAtLocation:
             return queryset
 
-        topic_id = request.query_params.get('related_to_task', None)
+        topic_id = request.query_params.get('related_to_topic', None)
         if not topic_id:
             return queryset
 
