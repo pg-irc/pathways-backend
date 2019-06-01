@@ -3,7 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 from search.serializers import RelatedTaskSerializer, RelatedServiceSerializer
 
 
-def get_related_tasks_schema():
+def get_related_topics_schema():
     operation_description = 'Get a list tasks related to the given topic, sorted by relatedness'
     responses = {
         200: openapi.Response('A list of zero or more related tasks',

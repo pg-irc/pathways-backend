@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from search import models, serializers, documentation
 
 
-@method_decorator(name='list', decorator=documentation.get_related_tasks_schema())
+@method_decorator(name='list', decorator=documentation.get_related_topics_schema())
 class RelatedTopicsViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):

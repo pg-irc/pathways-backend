@@ -72,7 +72,7 @@ checkForSuccess "import BC211 data"
 checkForSuccess "create newcomers guide fixtures"
 
 echo "computing similarity scores ..."
-./manage.py compute_text_similarity_scores --related_tasks 3 --related_services 100 $NewcomersGuidePath
+./manage.py compute_text_similarity_scores --related_topics 3 --related_services 100 $NewcomersGuidePath
 checkForSuccess "compute similarity scores"
 
 echo "removing invalid similarity scores ..."

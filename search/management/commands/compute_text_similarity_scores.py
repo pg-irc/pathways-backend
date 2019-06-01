@@ -16,8 +16,8 @@ class Command(BaseCommand):
         parser.add_argument('newcomers_guide_path',
                             metavar='newcomers_guide_path',
                             help='path to root of Newcomers Guide folder structure')
-        parser.add_argument('--related_tasks',
-                            dest='related_tasks',
+        parser.add_argument('--related_topics',
+                            dest='related_topics',
                             type=int,
                             default=10,
                             help='for each topic, store this many related tasks')
@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         root_folder = options['newcomers_guide_path']
-        related_task_count = options['related_tasks']
+        related_task_count = options['related_topics']
         related_service_count = options['related_services']
 
         print('All topic data and topic/service similarity data will be deleted and reimported')

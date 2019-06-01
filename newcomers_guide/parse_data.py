@@ -19,10 +19,10 @@ def parse_topic_files(file_specs):
         topic_id = parsed_path.id
 
         if parsed_path.type == 'topics':
-            ensure_builder_exists_for_task(builders, topic_id)
+            ensure_builder_exists_for_topic(builders, topic_id)
             add_properties_for_locale(builders[topic_id], parsed_path, description)
 
-    return make_task_map(builders)
+    return make_topic_map(builders)
 
 
 def parse_file_path(path):
@@ -85,24 +85,24 @@ def get_locale_from_file_name(file_name):
     return file_name.split('.')[0]
 
 
-def ensure_builder_exists_for_task(builders, topic_id):
+def ensure_builder_exists_for_topic(builders, topic_id):
     if topic_id not in builders:
-        builders[topic_id] = create_task_builder(topic_id)
+        builders[topic_id] = create_topic_builder(topic_id)
 
 
-def create_task_builder(topic_id):
-    builder = TaskBuilder()
+def create_topic_builder(topic_id):
+    builder = TopicBuilder()
     builder.set_id(topic_id)
-    builder.set_related_tasks(find_related_tasks(topic_id))
+    builder.set_related_topics(find_related_topics(topic_id))
     return builder
 
 
-def find_related_tasks(topic_id):
+def find_related_topics(topic_id):
     related_tasks = TaskSimilarityScore.objects.filter(first_task_id=topic_id).order_by('-similarity_score')
     return [topic.second_task_id for topic in related_tasks]
 
 
-class TaskBuilder:
+class TopicBuilder:
     def __init__(self):
         self.topic = {
             'relatedTopics': [],
@@ -116,7 +116,7 @@ class TaskBuilder:
         self.topic['id'] = the_id
         return self
 
-    def set_related_tasks(self, related_tasks):
+    def set_related_topics(self, related_tasks):
         self.topic['relatedTopics'] = related_tasks
         return self
 
@@ -150,7 +150,7 @@ class TaskBuilder:
         return json.dumps(self.topic)
 
 
-def make_task_map(builders):
+def make_topic_map(builders):
     tasks = {}
     for key in builders:
         tasks[key] = builders[key].to_task()
