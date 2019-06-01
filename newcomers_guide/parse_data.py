@@ -99,55 +99,55 @@ def create_task_builder(task_id):
 
 def find_related_tasks(task_id):
     related_tasks = TaskSimilarityScore.objects.filter(first_task_id=task_id).order_by('-similarity_score')
-    return [task.second_task_id for task in related_tasks]
+    return [topic.second_task_id for topic in related_tasks]
 
 
 class TaskBuilder:
     def __init__(self):
-        self.task = {
+        self.topic = {
             'relatedTopics': [],
             'completed': False
         }
 
     def get_id(self):
-        return self.task['id']
+        return self.topic['id']
 
     def set_id(self, the_id):
-        self.task['id'] = the_id
+        self.topic['id'] = the_id
         return self
 
     def set_related_tasks(self, related_tasks):
-        self.task['relatedTopics'] = related_tasks
+        self.topic['relatedTopics'] = related_tasks
         return self
 
     def set_chapter(self, chapter):
-        self.task['chapter'] = chapter
+        self.topic['chapter'] = chapter
         return self
 
     def get_chapter(self):
-        if 'chapter' not in self.task:
+        if 'chapter' not in self.topic:
             return None
-        return self.task['chapter']
+        return self.topic['chapter']
 
     def set_title_in_locale(self, locale, title):
         self.ensure_key_exist('title')
-        self.task['title'][locale] = title
+        self.topic['title'][locale] = title
         return self
 
     def set_description_in_locale(self, locale, description):
         self.ensure_key_exist('description')
-        self.task['description'][locale] = description
+        self.topic['description'][locale] = description
         return self
 
     def ensure_key_exist(self, key):
-        if key not in self.task:
-            self.task[key] = {}
+        if key not in self.topic:
+            self.topic[key] = {}
 
     def to_task(self):
-        return self.task
+        return self.topic
 
     def to_json(self):
-        return json.dumps(self.task)
+        return json.dumps(self.topic)
 
 
 def make_task_map(builders):
@@ -164,7 +164,7 @@ def add_properties_for_locale(builder, parsed_path, description):
     chapter = parsed_path.chapter
     builder_chapter = builder.get_chapter()
     if builder_chapter and builder_chapter != chapter:
-        message = parsed_path.id + ': don\'t use the same task id in different chapters'
+        message = parsed_path.id + ': don\'t use the same topic id in different chapters'
         raise exceptions.ValidationError(message)
     builder.set_chapter(chapter)
     builder.set_title_in_locale(locale, parsed_path.title)

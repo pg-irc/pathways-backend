@@ -28,7 +28,7 @@ def get_proximity_filter_manual_parameter():
 def get_related_to_task_manual_parameter():
     return (openapi.Parameter('related_to_task',
                               openapi.IN_QUERY,
-                              description=('Order by services\' similarity to a given task. Accepts a task id.'),
+                              description=('Order by services\' similarity to a given topic. Accepts a topic id.'),
                               type=openapi.TYPE_STRING,
                               pattern=r'^[a-zA-Z0-9\-\_]+$'))
 

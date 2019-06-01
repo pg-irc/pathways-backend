@@ -135,7 +135,7 @@ class ProcessTaskFilesTests(TestCase):
     def test_throw_on_same_task_id_in_different_chapters(self):
         first_path = 'some/path/chapter1/topics/Registering_child_in_school/en.InEnglish.md'
         second_path = 'some/path/chapter2/topics/Registering_child_in_school/fr.InFrench.md'
-        error_message = 'registering_child_in_school: don\'t use the same task id in different chapters'
+        error_message = 'registering_child_in_school: don\'t use the same topic id in different chapters'
         with self.assertRaisesMessage(exceptions.ValidationError, error_message):
             parse_task_files([[first_path, a_string()], [second_path, a_string()]])
 

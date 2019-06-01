@@ -132,7 +132,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         )
 
     def test_can_order_by_similarity_to_task(self):
-        task_id = 'the-task-id'
+        task_id = 'the-topic-id'
         create_tasks([task_id])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -149,7 +149,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_does_not_return_unrelated_services(self):
-        task_id = 'the-task-id'
+        task_id = 'the-topic-id'
         create_tasks([task_id])
         related_service = ServiceBuilder(self.organization).with_location(self.location).create()
         self.set_service_similarity_score(task_id, related_service.id, a_float())
@@ -163,8 +163,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service']['name'], related_service.name)
 
     def test_orders_by_task_passed_to_the_query(self):
-        task_passed_to_query = 'the-task-id'
-        task_to_ignore = 'some-other-task'
+        task_passed_to_query = 'the-topic-id'
+        task_to_ignore = 'some-other-topic'
         create_tasks([task_passed_to_query, task_to_ignore])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -191,7 +191,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_orders_poor_match_close_by_before_good_match_further_away(self):
-        task_id = 'the-task-id'
+        task_id = 'the-topic-id'
         create_tasks([task_id])
 
         latitude = 0
@@ -229,7 +229,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], far_service.name)
 
     def test_orders_two_equally_good_match_by_distance(self):
-        task_id = 'the-task-id'
+        task_id = 'the-topic-id'
         create_tasks([task_id])
 
         latitude = 0

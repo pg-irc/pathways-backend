@@ -78,7 +78,7 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
 
 class ServiceSimilarityFilter(filters.BaseFilterBackend):
     filter_description = (
-        'Order by relatedness to the task with the given task id. '
+        'Order by relatedness to the topic with the given topic id. '
         'Services with missing similarity score in the database are omitted from the result'
     )
 
