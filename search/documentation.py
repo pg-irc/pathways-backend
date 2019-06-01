@@ -4,7 +4,7 @@ from search.serializers import RelatedTaskSerializer, RelatedServiceSerializer
 
 
 def get_related_tasks_schema():
-    operation_description = 'Get a list tasks related to the given task, sorted by relatedness'
+    operation_description = 'Get a list tasks related to the given topic, sorted by relatedness'
     responses = {
         200: openapi.Response('A list of zero or more related tasks',
                               RelatedTaskSerializer(many=True),
@@ -18,7 +18,7 @@ def get_related_tasks_schema():
 
 
 def get_related_services_schema():
-    operation_description = 'Get a list services related to the given task, sorted by relatedness'
+    operation_description = 'Get a list services related to the given topic, sorted by relatedness'
     responses = {
         200: openapi.Response('A list of zero or more related services',
                               RelatedServiceSerializer(many=True),

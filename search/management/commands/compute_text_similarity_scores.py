@@ -20,19 +20,19 @@ class Command(BaseCommand):
                             dest='related_tasks',
                             type=int,
                             default=10,
-                            help='for each task, store this many related tasks')
+                            help='for each topic, store this many related tasks')
         parser.add_argument('--related_services',
                             dest='related_services',
                             type=int,
                             default=50,
-                            help='for each task, store this many related services')
+                            help='for each topic, store this many related services')
 
     def handle(self, *args, **options):
         root_folder = options['newcomers_guide_path']
         related_task_count = options['related_tasks']
         related_service_count = options['related_services']
 
-        print('All task data and task/service similarity data will be deleted and reimported')
+        print('All topic data and topic/service similarity data will be deleted and reimported')
 
         print('Reading tasks...')
         tasks = read_task_descriptions(root_folder)
@@ -45,9 +45,9 @@ class Command(BaseCommand):
         print('{} services read, computing similarities...'.format(len(service_ids)))
         cosine_doc_similarities = compute_similarities(descriptions)
 
-        print('Saving {} task similarities...'.format(len(task_ids)*(len(task_ids)-1)))
+        print('Saving {} topic similarities...'.format(len(task_ids)*(len(task_ids)-1)))
         save_task_similarities(task_ids, cosine_doc_similarities, related_task_count)
-        print('Saving {} task-service similarities...'.format(len(task_ids)*len(service_ids)))
+        print('Saving {} topic-service similarities...'.format(len(task_ids)*len(service_ids)))
         save_task_service_similarity_scores(task_ids, service_ids, cosine_doc_similarities, related_service_count)
 
 

@@ -8,9 +8,9 @@ import re
 def to_task_ids_and_descriptions(tasks):
     ids = []
     descriptions = []
-    for _, task in tasks['taskMap'].items():
-        ids.append(slugify(task['id']))
-        english_description = task['title']['en'] + ' ' + task['description']['en']
+    for _, topic in tasks['taskMap'].items():
+        ids.append(slugify(topic['id']))
+        english_description = topic['title']['en'] + ' ' + topic['description']['en']
         descriptions.append(english_description)
     return (ids, descriptions)
 

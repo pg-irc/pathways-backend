@@ -9,13 +9,13 @@ from bc211.import_counters import ImportCounters
 class TestSavingTasks(TestCase):
     def setUp(self):
         self.counts = ImportCounters()
-        self.task_id = 'the-task-id'
+        self.task_id = 'the-topic-id'
         self.english_task_name = a_string()
         self.english_task_description = a_string()
         self.one_task = {
             'taskMap': {
-                'the-task-id': {
-                    'id': 'the-task-id',
+                'the-topic-id': {
+                    'id': 'the-topic-id',
                     'title': {
                         'en': self.english_task_name,
                     },
