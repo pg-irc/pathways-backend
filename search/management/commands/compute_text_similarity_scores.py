@@ -36,8 +36,8 @@ class Command(BaseCommand):
 
         print('Reading tasks...')
         tasks = read_task_descriptions(root_folder)
-        task_ids, task_descriptions = to_task_ids_and_descriptions(tasks)
-        print('{} tasks read, reading services...'.format(len(task_ids)))
+        topic_ids, task_descriptions = to_task_ids_and_descriptions(tasks)
+        print('{} tasks read, reading services...'.format(len(topic_ids)))
         service_ids, service_descriptions = to_service_ids_and_descriptions(Service.objects.all())
 
         descriptions = task_descriptions + service_descriptions
@@ -45,10 +45,10 @@ class Command(BaseCommand):
         print('{} services read, computing similarities...'.format(len(service_ids)))
         cosine_doc_similarities = compute_similarities(descriptions)
 
-        print('Saving {} topic similarities...'.format(len(task_ids)*(len(task_ids)-1)))
-        save_task_similarities(task_ids, cosine_doc_similarities, related_task_count)
-        print('Saving {} topic-service similarities...'.format(len(task_ids)*len(service_ids)))
-        save_task_service_similarity_scores(task_ids, service_ids, cosine_doc_similarities, related_service_count)
+        print('Saving {} topic similarities...'.format(len(topic_ids)*(len(topic_ids)-1)))
+        save_task_similarities(topic_ids, cosine_doc_similarities, related_task_count)
+        print('Saving {} topic-service similarities...'.format(len(topic_ids)*len(service_ids)))
+        save_task_service_similarity_scores(topic_ids, service_ids, cosine_doc_similarities, related_service_count)
 
 
 def read_task_descriptions(root_folder):
