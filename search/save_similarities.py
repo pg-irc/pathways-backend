@@ -24,9 +24,9 @@ def compute_cutoff(scores, count):
     return scores[min(count, len(scores)) - 1]
 
 
-def save_task_service_similarity_scores(task_ids, service_ids, similarities, count):
+def save_task_service_similarity_scores(topic_ids, service_ids, similarities, count):
     TaskServiceSimilarityScore.objects.all().delete()
-    task_count = len(task_ids)
+    task_count = len(topic_ids)
     service_count = len(service_ids)
 
     # Assuming that the similarities are computed from a document vector
@@ -41,7 +41,7 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
         for j in range(service_count):
             score = similarities[i, to_service_similarity_offset(j)]
             if score >= cutoff:
-                record = TaskServiceSimilarityScore(task_id=task_ids[i],
+                record = TaskServiceSimilarityScore(task_id=topic_ids[i],
                                                     service_id=service_ids[j],
                                                     similarity_score=score)
                 record.save()
