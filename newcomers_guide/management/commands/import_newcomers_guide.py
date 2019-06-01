@@ -31,15 +31,15 @@ class Command(BaseCommand):
         taxonomy_data = read_taxonomy_data(root_folder)
         taxonomies = parse_taxonomy_files(taxonomy_data)
 
-        task_data = read_topic_data(root_folder)
-        tasks = parse_topic_files(task_data)
-        set_taxonomy_term_references_on_content(taxonomies, tasks['taskMap'])
+        topic_data = read_topic_data(root_folder)
+        topics = parse_topic_files(topic_data)
+        set_taxonomy_term_references_on_content(taxonomies, topics['taskMap'])
 
-        log_taxonomies(self.stdout, tasks['taskMap'])
-        log_locales(self.stdout, tasks['taskMap'])
+        log_taxonomies(self.stdout, topics['taskMap'])
+        log_locales(self.stdout, topics['taskMap'])
 
         with open('tasks.ts', 'w') as file:
-            file.write(generate_topic_fixture(tasks))
+            file.write(generate_topic_fixture(topics))
 
         with open('taxonomies.ts', 'w') as file:
             file.write(generate_taxonomy_fixture(taxonomies))
