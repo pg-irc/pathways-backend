@@ -81,9 +81,9 @@ class RelatedTasksApiTests(rest_test.APITestCase):
 class RelatesServicesApiTests(rest_test.APITestCase):
     def setUp(self):
         translation.activate('en')
-        self.task_id = a_string()
+        self.topic_id = a_string()
 
-        self.topic = Task(id=self.task_id, name=a_string(), description=a_string())
+        self.topic = Task(id=self.topic_id, name=a_string(), description=a_string())
         self.topic.save()
 
         organization = OrganizationBuilder().create()
@@ -94,34 +94,34 @@ class RelatesServicesApiTests(rest_test.APITestCase):
                                    similarity_score=self.similarity_score).save()
 
     def test_can_get_response(self):
-        url = '/v1/topics/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.topic_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
 
     def test_can_get_related_service_id(self):
-        url = '/v1/topics/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.topic_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['service_id'], self.service.id)
 
     def test_can_get_related_service_name(self):
-        url = '/v1/topics/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.topic_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['name'], self.service.name)
 
     def test_can_get_related_service_description(self):
-        url = '/v1/topics/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.topic_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['description'], self.service.description)
 
     def test_can_get_related_service_similarity_score(self):
-        url = '/v1/topics/{}/related_services/'.format(self.task_id)
+        url = '/v1/topics/{}/related_services/'.format(self.topic_id)
         response = self.client.get(url)
         self.assertEqual(response.json()[0]['similarity_score'], self.similarity_score)
 
     def test_returns_services_ordered_by_score(self):
-        task_id = a_string()
-        topic = Task(id=task_id, name=a_string(), description=a_string())
+        topic_id = a_string()
+        topic = Task(id=topic_id, name=a_string(), description=a_string())
         topic.save()
 
         organization = OrganizationBuilder().create()
@@ -136,7 +136,7 @@ class RelatesServicesApiTests(rest_test.APITestCase):
         TaskServiceSimilarityScore(task=topic, service=less_related_service,
                                    similarity_score=lower_score).save()
 
-        url = '/v1/topics/{}/related_services/'.format(task_id)
+        url = '/v1/topics/{}/related_services/'.format(topic_id)
         response = self.client.get(url)
 
         self.assertEqual(response.json()[0]['service_id'], more_related_service.id)
