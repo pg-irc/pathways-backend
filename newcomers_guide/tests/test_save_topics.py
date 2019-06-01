@@ -9,7 +9,7 @@ from bc211.import_counters import ImportCounters
 class TestSavingTasks(TestCase):
     def setUp(self):
         self.counts = ImportCounters()
-        self.task_id = 'the-topic-id'
+        self.topic_id = 'the-topic-id'
         self.english_task_name = a_string()
         self.english_task_description = a_string()
         self.one_task = {
@@ -46,7 +46,7 @@ class TestSavingTasks(TestCase):
     def test_saves_task_id(self):
         save_topics(self.one_task, self.counts)
         records = Task.objects.all()
-        self.assertEqual(records[0].id, self.task_id)
+        self.assertEqual(records[0].id, self.topic_id)
 
     def test_saves_task_title_in_english(self):
         save_topics(self.one_task, self.counts)

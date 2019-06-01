@@ -104,25 +104,25 @@ class ProcessTaskFilesTests(TestCase):
         self.assertEqual(result['taskMap']['to_learn_english']['description']['fr'], french_description)
 
     def test_includes_related_topics_from_database_in_order_of_declining_similarity_score(self):
-        task_id = a_string()
+        topic_id = a_string()
         similar_task_id = a_string()
-        create_tasks([task_id, similar_task_id])
+        create_tasks([topic_id, similar_task_id])
 
         a_high_score = 0.9
-        TaskSimilarityScore(first_task_id=task_id,
+        TaskSimilarityScore(first_task_id=topic_id,
                             second_task_id=similar_task_id,
                             similarity_score=a_high_score).save()
 
         dissimilar_task_id = a_string()
         create_tasks([dissimilar_task_id])
         a_low_score = 0.1
-        TaskSimilarityScore(first_task_id=task_id,
+        TaskSimilarityScore(first_task_id=topic_id,
                             second_task_id=dissimilar_task_id,
                             similarity_score=a_low_score).save()
 
-        path = 'some/path/chapter/topics/{0}/en.Learn_english.txt'.format(task_id)
+        path = 'some/path/chapter/topics/{0}/en.Learn_english.txt'.format(topic_id)
         result = parse_task_files([[path, a_string()]])
-        self.assertEqual(result['taskMap'][task_id]['relatedTopics'], [similar_task_id, dissimilar_task_id])
+        self.assertEqual(result['taskMap'][topic_id]['relatedTopics'], [similar_task_id, dissimilar_task_id])
 
     def test_combine_files_for_different_content(self):
         secondary_path = 'some/path/chapter/topics/Registering_child_in_school/en.Registering_in_public_school.txt'
