@@ -49,11 +49,11 @@ def save_task_service_similarity_scores(task_ids, service_ids, similarities, cou
 
 def save_manual_similarities(manual_similarities):
     manual_similarity_score = 1.0
-    for task_id, service_ids in manual_similarities.items():
+    for topic_id, service_ids in manual_similarities.items():
         for service_id in service_ids:
-            if is_task_id_valid(task_id) and is_service_id_valid(service_id):
+            if is_task_id_valid(topic_id) and is_service_id_valid(service_id):
                 TaskServiceSimilarityScore.objects.update_or_create(
-                    task_id=task_id,
+                    task_id=topic_id,
                     service_id=service_id,
                     defaults={
                         'similarity_score': manual_similarity_score
@@ -61,12 +61,12 @@ def save_manual_similarities(manual_similarities):
                 )
 
 
-def is_task_id_valid(task_id):
+def is_task_id_valid(topic_id):
     try:
-        Task.objects.get(id=task_id)
+        Task.objects.get(id=topic_id)
         return True
     except Task.DoesNotExist:
-        LOGGER.warning('%s: Failed to save manual similarity, no such topic', task_id)
+        LOGGER.warning('%s: Failed to save manual similarity, no such topic', topic_id)
         return False
 
 
