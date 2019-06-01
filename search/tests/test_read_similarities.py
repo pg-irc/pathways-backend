@@ -1,9 +1,8 @@
 from django.test import TestCase
 from search.read_similarities import build_manual_similarity_map
-from common.testhelpers.random_test_values import a_string, a_float
 
 
-class TestReadingManualTaskSimilarities(TestCase):
+class TestReadingManualTopicSimilarities(TestCase):
     def test_convert_matrix_to_map_from_topic_to_array_of_services(self):
         data = [
             ['topic1', 'topic2'],
