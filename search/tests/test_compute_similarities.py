@@ -10,14 +10,14 @@ from common.testhelpers.random_test_values import a_string
 
 class TestTaskSimilarityScore(TestCase):
     def setUp(self):
-        self.task_id = a_string()
+        self.topic_id = a_string()
         self.english_task_title = a_string()
         self.english_task_description = a_string()
         self.data = {
             'taskMap': {
-                self.task_id: {
+                self.topic_id: {
                     'completed': False,
-                    'id': self.task_id,
+                    'id': self.topic_id,
                     'title': {
                         'en': self.english_task_title,
                     },
@@ -31,10 +31,10 @@ class TestTaskSimilarityScore(TestCase):
 
     def test_getting_ids_for_task_returns_task_id(self):
         ids, _ = to_task_ids_and_descriptions(self.data)
-        self.assertEqual(ids[0], self.task_id)
+        self.assertEqual(ids[0], self.topic_id)
 
     def test_converts_task_id_to_slug(self):
-        self.data['taskMap'][self.task_id]['id'] = 'This is the id'
+        self.data['taskMap'][self.topic_id]['id'] = 'This is the id'
         ids, _ = to_task_ids_and_descriptions(self.data)
         self.assertEqual(ids[0], 'this-is-the-id')
 
