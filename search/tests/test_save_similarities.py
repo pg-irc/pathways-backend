@@ -128,10 +128,10 @@ class TestSavingTaskServiceSimilarities(TestCase):
         self.three_service_ids = [service.id for service in services]
 
     def test_deletes_existing_records(self):
-        task_id = a_string()
-        Task(id=task_id, name=a_string(), description=a_string()).save()
+        topic_id = a_string()
+        Task(id=topic_id, name=a_string(), description=a_string()).save()
         service = ServiceBuilder(self.organization).create()
-        record = TaskServiceSimilarityScore(task_id=task_id,
+        record = TaskServiceSimilarityScore(task_id=topic_id,
                                             service=service,
                                             similarity_score=a_float())
         record.save()
@@ -224,27 +224,27 @@ class TestSavingTaskServiceSimilarities(TestCase):
 class TestSavingManualTaskServiceSimilarities(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
-        self.task_id = a_string()
-        create_tasks([self.task_id])
+        self.topic_id = a_string()
+        create_tasks([self.topic_id])
 
     def test_creates_task_service_similarity_record_from_manual_data(self):
         service_id = a_string()
         ServiceBuilder(self.organization).with_id(service_id).create()
 
-        manual_similarity_data = {self.task_id: [service_id]}
+        manual_similarity_data = {self.topic_id: [service_id]}
         save_manual_similarities(manual_similarity_data)
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
 
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0].service_id, service_id)
-        self.assertEqual(records[0].task_id, self.task_id)
+        self.assertEqual(records[0].task_id, self.topic_id)
 
     def test_sets_similarity_score_to_a_large_value(self):
         service_id = a_string()
         ServiceBuilder(self.organization).with_id(service_id).create()
 
-        manual_similarity_data = {self.task_id: [service_id]}
+        manual_similarity_data = {self.topic_id: [service_id]}
         save_manual_similarities(manual_similarity_data)
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
@@ -256,9 +256,9 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
         service_id = a_string()
         ServiceBuilder(self.organization).with_id(service_id).create()
 
-        TaskServiceSimilarityScore(task_id=self.task_id, service_id=service_id, similarity_score=0.2).save()
+        TaskServiceSimilarityScore(task_id=self.topic_id, service_id=service_id, similarity_score=0.2).save()
 
-        manual_similarity_data = {self.task_id: [service_id]}
+        manual_similarity_data = {self.topic_id: [service_id]}
         save_manual_similarities(manual_similarity_data)
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
@@ -269,7 +269,7 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
         services = [ServiceBuilder(self.organization).create() for i in range(3)]
         service_ids = [service.id for service in services]
 
-        manual_similarity_data = {self.task_id: service_ids}
+        manual_similarity_data = {self.topic_id: service_ids}
         save_manual_similarities(manual_similarity_data)
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
@@ -299,12 +299,12 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
         self.assertTrue(records[2].task_id in task_ids)
 
     def test_with_non_existent_task_id_emit_warning_and_do_not_save(self):
-        task_id = a_string()
+        topic_id = a_string()
 
         service_id = a_string()
         ServiceBuilder(self.organization).with_id(service_id).create()
 
-        manual_similarity_data = {task_id: [service_id]}
+        manual_similarity_data = {topic_id: [service_id]}
         save_manual_similarities(manual_similarity_data)
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
@@ -312,12 +312,12 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
         self.assertEqual(len(records), 0)
 
     def test_with_non_existent_service_id_emit_warning_and_do_not_save(self):
-        task_id = a_string()
-        create_tasks([task_id])
+        topic_id = a_string()
+        create_tasks([topic_id])
 
         service_id = a_string()
 
-        manual_similarity_data = {task_id: [service_id]}
+        manual_similarity_data = {topic_id: [service_id]}
         save_manual_similarities(manual_similarity_data)
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
@@ -335,14 +335,14 @@ class TestRemovingTaskTopicSimilarities(TestCase):
 
     def test_can_remove_one_similarity_score(self):
         service = ServiceBuilder(self.organization).create()
-        task_id = a_string()
-        create_tasks([task_id])
-        record = TaskServiceSimilarityScore(task_id=task_id,
+        topic_id = a_string()
+        create_tasks([topic_id])
+        record = TaskServiceSimilarityScore(task_id=topic_id,
                                             service=service,
                                             similarity_score=a_float())
         record.save()
 
-        remove_similarities_for_topics([task_id])
+        remove_similarities_for_topics([topic_id])
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 0)
 
@@ -363,8 +363,8 @@ class TestRemovingTaskTopicSimilarities(TestCase):
         service = ServiceBuilder(self.organization).create()
         task_ids = [a_string() for i in range(3)]
         create_tasks(task_ids)
-        for task_id in task_ids:
-            TaskServiceSimilarityScore(task_id=task_id,
+        for topic_id in task_ids:
+            TaskServiceSimilarityScore(task_id=topic_id,
                                        service=service,
                                        similarity_score=a_float()).save()
 
@@ -373,10 +373,10 @@ class TestRemovingTaskTopicSimilarities(TestCase):
         self.assertEqual(len(records), 0)
 
     def test_called_with_invalid_task_id_does_nothing(self):
-        task_id = a_string()
-        create_tasks([task_id])
+        topic_id = a_string()
+        create_tasks([topic_id])
         service = ServiceBuilder(self.organization).create()
-        TaskServiceSimilarityScore(task_id=task_id,
+        TaskServiceSimilarityScore(task_id=topic_id,
                                    service=service,
                                    similarity_score=a_float()).save()
 
@@ -387,10 +387,10 @@ class TestRemovingTaskTopicSimilarities(TestCase):
         self.assertEqual(len(records), 1)
 
     def test_called_with_invalid_task_id_logs_warning(self):
-        task_id = a_string()
-        create_tasks([task_id])
+        topic_id = a_string()
+        create_tasks([topic_id])
         service = ServiceBuilder(self.organization).create()
-        TaskServiceSimilarityScore(task_id=task_id,
+        TaskServiceSimilarityScore(task_id=topic_id,
                                    service=service,
                                    similarity_score=a_float()).save()
 
