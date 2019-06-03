@@ -46,4 +46,4 @@ class Command(BaseCommand):
 
         if is_updating_db:
             counts = ImportCounters()
-            save_topics(tasks, counts)
+            save_topics(topics, counts)
