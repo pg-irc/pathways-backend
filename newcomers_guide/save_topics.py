@@ -4,17 +4,17 @@ from search.models import Task
 from bc211.importer import create_taxonomy_term_active_record
 
 
-def save_topics(tasks, counts):
+def save_topics(topics, counts):
     Task.objects.all().delete()
     translation.activate('en')
-    for _, task in tasks['taskMap'].items():
+    for _, topic in topics['taskMap'].items():
         record = Task()
-        record.id = task['id']
-        record.name = task['title']['en']
-        record.description = task['description']['en']
+        record.id = topic['id']
+        record.name = topic['title']['en']
+        record.description = topic['description']['en']
         record.save()
 
-        for taxonomy_term in task['taxonomyTerms']:
+        for taxonomy_term in topic['taxonomyTerms']:
             taxonomy_term_record = get_or_create_taxonomy_term(taxonomy_term, counts)
             record.taxonomy_terms.add(taxonomy_term_record)
 

@@ -17,5 +17,5 @@ class Command(BaseCommand):
 
         manual_similarities_csv = read_manual_similarities(manual_similarities_path)
         manual_similarities_map = build_manual_similarity_map(manual_similarities_csv)
-        print('Saving manual task-service similarities...')
+        print('Saving manual topic-service similarities...')
         save_manual_similarities(manual_similarities_map)

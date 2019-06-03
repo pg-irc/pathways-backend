@@ -5,12 +5,12 @@ from django.utils.text import slugify
 import re
 
 
-def to_task_ids_and_descriptions(tasks):
+def to_topic_ids_and_descriptions(topics):
     ids = []
     descriptions = []
-    for _, task in tasks['taskMap'].items():
-        ids.append(slugify(task['id']))
-        english_description = task['title']['en'] + ' ' + task['description']['en']
+    for _, topic in topics['taskMap'].items():
+        ids.append(slugify(topic['id']))
+        english_description = topic['title']['en'] + ' ' + topic['description']['en']
         descriptions.append(english_description)
     return (ids, descriptions)
 

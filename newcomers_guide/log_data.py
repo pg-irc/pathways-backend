@@ -1,12 +1,12 @@
-def log_taxonomies(stream, tasks_fixture):
-    stream.write('\nTaxonomy terms for tasks\n\n')
-    lines = build_and_sort_taxonomy_log_lines(tasks_fixture)
+def log_taxonomies(stream, topics_fixture):
+    stream.write('\nTaxonomy terms for topics\n\n')
+    lines = build_and_sort_taxonomy_log_lines(topics_fixture)
     print_log_lines(stream, lines)
 
 
-def build_and_sort_taxonomy_log_lines(tasks_fixture):
+def build_and_sort_taxonomy_log_lines(topics_fixture):
     log_lines = []
-    for key, value in tasks_fixture.items():
+    for key, value in topics_fixture.items():
         taxonomy_terms = format_taxonomies(value)
         logdata = '{:<50} TaxTerms: {}'.format(key[:50], taxonomy_terms)
         log_lines.append(LogLine(value['chapter'], value['id'], logdata))
@@ -35,15 +35,15 @@ def format_taxonomies(value):
     return ', '.join(result)
 
 
-def log_locales(stream, tasks_fixture):
-    stream.write('\nLocales for tasks\n\n')
-    lines = build_and_sort_locale_log_lines(tasks_fixture)
+def log_locales(stream, topics_fixture):
+    stream.write('\nLocales for topics\n\n')
+    lines = build_and_sort_locale_log_lines(topics_fixture)
     print_log_lines(stream, lines)
 
 
-def build_and_sort_locale_log_lines(tasks_fixture):
+def build_and_sort_locale_log_lines(topics_fixture):
     log_lines = []
-    for key, value in tasks_fixture.items():
+    for key, value in topics_fixture.items():
         locales = format_locales(value)
         logdata = '{:<50} Locales: {}'.format(key[:50], locales)
         log_lines.append(LogLine(value['chapter'], value['id'], logdata))

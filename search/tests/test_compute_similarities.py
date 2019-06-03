@@ -1,5 +1,5 @@
 from django.test import TestCase
-from search.compute_similarities import (to_task_ids_and_descriptions,
+from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
                                          compute_similarities)
 from human_services.services.models import Service
@@ -8,40 +8,40 @@ from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_string
 
 
-class TestTaskSimilarityScore(TestCase):
+class TestTopicSimilarityScore(TestCase):
     def setUp(self):
-        self.task_id = a_string()
-        self.english_task_title = a_string()
-        self.english_task_description = a_string()
+        self.topic_id = a_string()
+        self.english_topic_title = a_string()
+        self.english_topic_description = a_string()
         self.data = {
             'taskMap': {
-                self.task_id: {
+                self.topic_id: {
                     'completed': False,
-                    'id': self.task_id,
+                    'id': self.topic_id,
                     'title': {
-                        'en': self.english_task_title,
+                        'en': self.english_topic_title,
                     },
                     'description': {
-                        'en': self.english_task_description
+                        'en': self.english_topic_description
                     }
                 }
             }
         }
         self.organization = OrganizationBuilder().create()
 
-    def test_getting_ids_for_task_returns_task_id(self):
-        ids, _ = to_task_ids_and_descriptions(self.data)
-        self.assertEqual(ids[0], self.task_id)
+    def test_getting_ids_for_topic_returns_topic_id(self):
+        ids, _ = to_topic_ids_and_descriptions(self.data)
+        self.assertEqual(ids[0], self.topic_id)
 
-    def test_converts_task_id_to_slug(self):
-        self.data['taskMap'][self.task_id]['id'] = 'This is the id'
-        ids, _ = to_task_ids_and_descriptions(self.data)
+    def test_converts_topic_id_to_slug(self):
+        self.data['taskMap'][self.topic_id]['id'] = 'This is the id'
+        ids, _ = to_topic_ids_and_descriptions(self.data)
         self.assertEqual(ids[0], 'this-is-the-id')
 
-    def test_getting_description_for_task_returns_task_title_and_description(self):
-        _, descriptions = to_task_ids_and_descriptions(self.data)
+    def test_getting_description_for_topic_returns_topic_title_and_description(self):
+        _, descriptions = to_topic_ids_and_descriptions(self.data)
         self.assertEqual(descriptions[0],
-                         self.english_task_title + ' ' + self.english_task_description)
+                         self.english_topic_title + ' ' + self.english_topic_description)
 
     def test_getting_id_for_service_returns_id(self):
         service = ServiceBuilder(self.organization).create()

@@ -78,7 +78,7 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
 
 class ServiceSimilarityFilter(filters.BaseFilterBackend):
     filter_description = (
-        'Order by relatedness to the task with the given task id. '
+        'Order by relatedness to the topic with the given topic id. '
         'Services with missing similarity score in the database are omitted from the result'
     )
 
@@ -86,14 +86,14 @@ class ServiceSimilarityFilter(filters.BaseFilterBackend):
         if queryset.model is not ServiceAtLocation:
             return queryset
 
-        task_id = request.query_params.get('related_to_task', None)
-        if not task_id:
+        topic_id = request.query_params.get('related_to_topic', None)
+        if not topic_id:
             return queryset
 
         return (queryset.
                 annotate(score=F('service__taskservicesimilarityscore__similarity_score')).
                 annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
-                filter(task_id__exact=task_id).
+                filter(task_id__exact=topic_id).
                 order_by('-score'))
 
 
