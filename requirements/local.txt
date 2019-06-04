@@ -7,8 +7,9 @@ flake8==3.7.7 # pyup: != 2.6.0
 pylint==2.3.1
 mccabe==0.6.1
 
-# Debug tools
-django-extensions==2.1.7
+# Debug tools - Note that upgrading django-extensions to 2.1.7 gave error "CommandError:
+# Unknown database engine django.contrib.gis.db.backends.postgis" on Ubuntu only.
+django-extensions==2.1.4
 django-debug-toolbar==1.11
 ipdb==0.12
 Werkzeug==0.15.4
