@@ -43,6 +43,34 @@ class SearchFilter(filters.SearchFilter):
                           'widely.')
 
 
+class NewFilter(filters.BaseFilterBackend):
+    filter_description = (
+        'Given both a topic and a user location, rank returned services by '
+        'similarity to the topic and the distance to the user'
+    )
+
+    def filter_queryset(self, request, queryset, view):
+        if queryset.model is not ServiceAtLocation:
+            return queryset
+
+        topic_id = request.query_params.get('related_to_topic', None)
+        proximity_parameter = request.query_params.get('proximity', None)
+
+        if (not topic_id) or (not proximity_parameter):
+            return queryset
+
+        proximity = ProximityParser(proximity_parameter)
+        reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
+
+        return (queryset.
+                annotate(score=F('service__taskservicesimilarityscore__similarity_score')).
+                annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
+                annotate(distance=Distance('location__point', reference_point)).
+                annotate(foo=F('distance')*F('score')).
+                filter(task_id__exact=topic_id).
+                order_by('foo'))
+
+
 class ServiceSimilarityFilter(filters.BaseFilterBackend):
     filter_description = (
         'Order by relatedness to the topic with the given topic id. '
@@ -54,7 +82,9 @@ class ServiceSimilarityFilter(filters.BaseFilterBackend):
             return queryset
 
         topic_id = request.query_params.get('related_to_topic', None)
-        if not topic_id:
+        proximity_parameter = request.query_params.get('proximity', None)
+
+        if (not topic_id) or (proximity_parameter):
             return queryset
 
         return (queryset.
@@ -70,15 +100,20 @@ class ProximityFilter(filters.BaseFilterBackend):
                           'Example: "-123.1207,+49.2827".')
 
     def filter_queryset(self, request, queryset, view):
+        if queryset.model is not ServiceAtLocation:
+            return queryset
+
+        topic_id = request.query_params.get('related_to_topic', None)
         proximity_parameter = request.query_params.get('proximity', None)
-        if proximity_parameter:
-            proximity = ProximityParser(proximity_parameter)
-            if queryset.model is ServiceAtLocation:
-                reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
-                queryset = (queryset
-                            .annotate(distance=Distance('location__point', reference_point))
-                            .order_by('distance'))
-        return queryset
+
+        if (topic_id) or (not proximity_parameter):
+            return queryset
+
+        proximity = ProximityParser(proximity_parameter)
+        reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
+        return (queryset
+                .annotate(distance=Distance('location__point', reference_point))
+                .order_by('distance'))
 
 
 class ProximityCutoffFilter(filters.BaseFilterBackend):
