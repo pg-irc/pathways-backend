@@ -131,9 +131,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
             similarity_score=similarity_score
         )
 
-    # delete? Need to test use of location or topic parameters by themselves
     def test_can_order_by_similarity_to_topic(self):
-        topic_id = 'the-topic-id'
+        topic_id = a_string()
         create_topics([topic_id])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -163,10 +162,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['name'], related_service.name)
 
-    # delete?
-    def test_orders_by_topic_passed_to_the_query(self):
-        topic_passed_to_query = 'the-topic-id'
-        topic_to_ignore = 'some-other-topic'
+    def test_orders_by_similarity_to_topic_passed_to_the_query(self):
+        topic_passed_to_query = a_string()
+        topic_to_ignore = a_string()
         create_topics([topic_passed_to_query, topic_to_ignore])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -192,9 +190,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service']['name'], similar_service.name)
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
-    # delete
-    def test_orders_two_equally_good_match_by_distance(self):
-        topic_id = 'the-topic-id'
+    def test_orders_by_distance_to_user_location(self):
+        topic_id = a_string()
         create_topics([topic_id])
 
         latitude = 0
@@ -216,22 +213,13 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
                         with_location(near_location).
                         create())
 
-        good_match_score = 0.8
-
-        self.set_service_similarity_score(topic_id, far_service.id, good_match_score)
-        self.set_service_similarity_score(topic_id, near_service.id, good_match_score)
-
-        url = ('/v1/services_at_location/?related_to_topic={0}&user_location={1},{2}&proximity={1},{2}'.
-               format(topic_id, user_longitude, latitude))
+        url = ('/v1/services_at_location/?&user_location={1},{2}&proximity={1},{2}'.format(topic_id, user_longitude, latitude))
 
         json = self.client.get(url).json()
 
         self.assertEqual(len(json), 2)
         self.assertEqual(json[0]['service']['name'], near_service.name)
         self.assertEqual(json[1]['service']['name'], far_service.name)
-
-
-    ## New tests #########################################################
 
     def test_returns_services_ordered_by_location_if_similarity_is_the_same(self):
         topic_id = a_string()
@@ -383,8 +371,6 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 2)
         self.assertEqual(json[0]['service']['name'], near_service.name)
         self.assertEqual(json[1]['service']['name'], far_service.name)
-
-    ## New tests end #####################################################
 
     def test_can_full_text_search_on_service_name(self):
         service_at_locations = ServiceAtLocationBuilder().create_many()
