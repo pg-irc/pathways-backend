@@ -60,8 +60,7 @@ checkForSuccess () {
 }
 
 echo "updating BC211 version string in bc211/__init.py__"
-sed -i '' -e 's/__bc211_version__ = .*/__bc211_version__= '"'$CurrentDate'"'/' ./bc211/__init__.py 
-checkForSuccess "update BC211 version string"
+echo "__bc211_version__ = '$CurrentDate'" > ./bc211/__init__.py
 
 ./manage.py reset_db
 checkForSuccess "reset database"
