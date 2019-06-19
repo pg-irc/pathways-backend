@@ -63,11 +63,11 @@ class NewFilter(filters.BaseFilterBackend):
         reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
 
         return (queryset.
-                annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
                 annotate(distance=Distance('location__point', reference_point)).
-                annotate(score=F('distance')*F('service__taskservicesimilarityscore__similarity_score')).
+                annotate(score=F('distance')/F('service__taskservicesimilarityscore__similarity_score')).
+                annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
                 filter(task_id__exact=topic_id).
-                order_by('-score'))
+                order_by('score'))
 
 
 class ServiceSimilarityFilter(filters.BaseFilterBackend):
