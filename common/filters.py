@@ -43,6 +43,27 @@ class SearchFilter(filters.SearchFilter):
                           'widely.')
 
 
+class ServiceSimilarityFilter(filters.BaseFilterBackend):
+    filter_description = (
+        'Order by relatedness to the topic with the given topic id. '
+        'Services with missing similarity score in the database are omitted from the result'
+    )
+
+    def filter_queryset(self, request, queryset, view):
+        if queryset.model is not ServiceAtLocation:
+            return queryset
+
+        topic_id = request.query_params.get('related_to_topic', None)
+        if not topic_id:
+            return queryset
+
+        return (queryset.
+                annotate(score=F('service__taskservicesimilarityscore__similarity_score')).
+                annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
+                filter(task_id__exact=topic_id).
+                order_by('-score'))
+
+
 class ProximityFilter(filters.BaseFilterBackend):
     filter_description = ('Order by proximity to a point. '
                           'Accepts two comma separated values representing a longitude and a latitude. '
@@ -74,27 +95,6 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
                         .annotate(distance=Distance('location__point', location_point))
                         .filter(distance__lte=DistanceMeasure(km=25)))
         return queryset
-
-
-class ServiceSimilarityFilter(filters.BaseFilterBackend):
-    filter_description = (
-        'Order by relatedness to the topic with the given topic id. '
-        'Services with missing similarity score in the database are omitted from the result'
-    )
-
-    def filter_queryset(self, request, queryset, view):
-        if queryset.model is not ServiceAtLocation:
-            return queryset
-
-        topic_id = request.query_params.get('related_to_topic', None)
-        if not topic_id:
-            return queryset
-
-        return (queryset.
-                annotate(score=F('service__taskservicesimilarityscore__similarity_score')).
-                annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
-                filter(task_id__exact=topic_id).
-                order_by('-score'))
 
 
 class TaxonomyFilter(filters.BaseFilterBackend):
