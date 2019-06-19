@@ -43,7 +43,7 @@ class SearchFilter(filters.SearchFilter):
                           'widely.')
 
 
-class NewFilter(filters.BaseFilterBackend):
+class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
     filter_description = (
         'Given both a topic and a user location, rank returned services by '
         'similarity to the topic and the distance to the user'
@@ -64,13 +64,13 @@ class NewFilter(filters.BaseFilterBackend):
 
         return (queryset.
                 annotate(distance=Distance('location__point', reference_point)).
-                annotate(score=F('distance')/F('service__taskservicesimilarityscore__similarity_score')).
+                annotate(inverse_score=F('distance')/F('service__taskservicesimilarityscore__similarity_score')).
                 annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
                 filter(task_id__exact=topic_id).
-                order_by('score'))
+                order_by('inverse_score'))
 
 
-class ServiceSimilarityFilter(filters.BaseFilterBackend):
+class TopicSimilaritySortFilter(filters.BaseFilterBackend):
     filter_description = (
         'Order by relatedness to the topic with the given topic id. '
         'Services with missing similarity score in the database are omitted from the result'
@@ -93,7 +93,7 @@ class ServiceSimilarityFilter(filters.BaseFilterBackend):
                 order_by('-score'))
 
 
-class ProximityFilter(filters.BaseFilterBackend):
+class ProximitySortFilter(filters.BaseFilterBackend):
     filter_description = ('Order by proximity to a point. '
                           'Accepts two comma separated values representing a longitude and a latitude. '
                           'Example: "-123.1207,+49.2827".')
