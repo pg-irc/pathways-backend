@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from django.utils.decorators import method_decorator
 from human_services.locations import models, serializers, documentation
-from common.filters import (ProximityFilter, SearchFilter, LocationIdFilter,
+from common.filters import (SearchFilter, LocationIdFilter,
                             ServiceIdFilter, TaxonomyFilter)
 
 # pylint: disable=too-many-ancestors

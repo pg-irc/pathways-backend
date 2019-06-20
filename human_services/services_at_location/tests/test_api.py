@@ -8,7 +8,7 @@ from human_services.locations.models import ServiceAtLocation
 from search.models import TaskServiceSimilarityScore
 from newcomers_guide.tests.helpers import create_topics
 from taxonomies.tests.helpers import TaxonomyTermBuilder
-from common.testhelpers.random_test_values import a_float
+from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
 
 
@@ -132,7 +132,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         )
 
     def test_can_order_by_similarity_to_topic(self):
-        topic_id = 'the-topic-id'
+        topic_id = a_string()
         create_topics([topic_id])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -162,9 +162,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['service']['name'], related_service.name)
 
-    def test_orders_by_topic_passed_to_the_query(self):
-        topic_passed_to_query = 'the-topic-id'
-        topic_to_ignore = 'some-other-topic'
+    def test_orders_by_similarity_to_topic_passed_to_the_query(self):
+        topic_passed_to_query = a_string()
+        topic_to_ignore = a_string()
         create_topics([topic_passed_to_query, topic_to_ignore])
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -190,8 +190,36 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service']['name'], similar_service.name)
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
-    def test_orders_poor_match_close_by_before_good_match_further_away(self):
-        topic_id = 'the-topic-id'
+    def test_orders_by_distance_to_user_location(self):
+        latitude = 0
+        user_longitude = 0
+        near_longitude = 0.0001
+        far_longitude = 0.0002
+
+        far_location = (LocationBuilder(self.organization).
+                        with_long_lat(far_longitude, latitude).
+                        create())
+        far_service = (ServiceBuilder(self.organization).
+                       with_location(far_location).
+                       create())
+
+        near_location = (LocationBuilder(self.organization).
+                         with_long_lat(near_longitude, latitude).
+                         create())
+        near_service = (ServiceBuilder(self.organization).
+                        with_location(near_location).
+                        create())
+
+        url = ('/v1/services_at_location/?&user_location={0},{1}&proximity={0},{1}'.format(user_longitude, latitude))
+
+        json = self.client.get(url).json()
+
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], near_service.name)
+        self.assertEqual(json[1]['service']['name'], far_service.name)
+
+    def test_returns_services_ordered_by_location_if_similarity_is_the_same(self):
+        topic_id = a_string()
         create_topics([topic_id])
 
         latitude = 0
@@ -213,11 +241,10 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
                         with_location(near_location).
                         create())
 
-        poor_match_score = 0.2
-        good_match_score = 0.8
+        similarity_score = a_float()
 
-        self.set_service_similarity_score(topic_id, far_service.id, good_match_score)
-        self.set_service_similarity_score(topic_id, near_service.id, poor_match_score)
+        self.set_service_similarity_score(topic_id, far_service.id, similarity_score)
+        self.set_service_similarity_score(topic_id, near_service.id, similarity_score)
 
         url = ('/v1/services_at_location/?related_to_topic={0}&user_location={1},{2}&proximity={1},{2}'.
                format(topic_id, user_longitude, latitude))
@@ -228,8 +255,84 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[0]['service']['name'], near_service.name)
         self.assertEqual(json[1]['service']['name'], far_service.name)
 
-    def test_orders_two_equally_good_match_by_distance(self):
-        topic_id = 'the-topic-id'
+    def test_returns_services_ordered_by_similarity_if_location_is_the_same(self):
+        topic_id = a_string()
+        create_topics([topic_id])
+
+        latitude = 0
+        user_longitude = 0
+        service_longitude = 0.0001
+
+        similar_location = (LocationBuilder(self.organization).
+                            with_long_lat(service_longitude, latitude).
+                            create())
+        similar_service = (ServiceBuilder(self.organization).
+                           with_location(similar_location).
+                           create())
+
+        disimilar_location = (LocationBuilder(self.organization).
+                              with_long_lat(service_longitude, latitude).
+                              create())
+        disimilar_service = (ServiceBuilder(self.organization).
+                             with_location(disimilar_location).
+                             create())
+
+        high_similarity_score = 0.9
+        low_similarity_score = 0.1
+
+        self.set_service_similarity_score(topic_id, similar_service.id, high_similarity_score)
+        self.set_service_similarity_score(topic_id, disimilar_service.id, low_similarity_score)
+
+        url = ('/v1/services_at_location/?related_to_topic={0}&user_location={1},{2}&proximity={1},{2}'.
+               format(topic_id, user_longitude, latitude))
+
+        json = self.client.get(url).json()
+
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], similar_service.name)
+        self.assertEqual(json[1]['service']['name'], disimilar_service.name)
+
+
+    def test_returns_more_similar_service_first_if_location_slightly_further_away(self):
+        topic_id = a_string()
+        create_topics([topic_id])
+
+        latitude = 0
+        user_longitude = 0
+        near_longitude = 0.00010001
+        far_longitude = 0.00010002
+
+        far_location = (LocationBuilder(self.organization).
+                        with_long_lat(far_longitude, latitude).
+                        create())
+        far_service = (ServiceBuilder(self.organization).
+                       with_location(far_location).
+                       create())
+
+        near_location = (LocationBuilder(self.organization).
+                         with_long_lat(near_longitude, latitude).
+                         create())
+        near_service = (ServiceBuilder(self.organization).
+                        with_location(near_location).
+                        create())
+
+        high_similarity_score = 0.9
+        low_similarity_score = 0.1
+
+        self.set_service_similarity_score(topic_id, far_service.id, high_similarity_score)
+        self.set_service_similarity_score(topic_id, near_service.id, low_similarity_score)
+
+        url = ('/v1/services_at_location/?related_to_topic={0}&user_location={1},{2}&proximity={1},{2}'.
+               format(topic_id, user_longitude, latitude))
+
+        json = self.client.get(url).json()
+
+        self.assertEqual(len(json), 2)
+        self.assertEqual(json[0]['service']['name'], far_service.name)
+        self.assertEqual(json[1]['service']['name'], near_service.name)
+
+    def test_returns_closer_service_first_if_similarity_is_slightly_less(self):
+        topic_id = a_string()
         create_topics([topic_id])
 
         latitude = 0
@@ -251,10 +354,11 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
                         with_location(near_location).
                         create())
 
-        good_match_score = 0.8
+        high_similarity_score = 0.90001
+        low_similarity_score = 0.9
 
-        self.set_service_similarity_score(topic_id, far_service.id, good_match_score)
-        self.set_service_similarity_score(topic_id, near_service.id, good_match_score)
+        self.set_service_similarity_score(topic_id, far_service.id, high_similarity_score)
+        self.set_service_similarity_score(topic_id, near_service.id, low_similarity_score)
 
         url = ('/v1/services_at_location/?related_to_topic={0}&user_location={1},{2}&proximity={1},{2}'.
                format(topic_id, user_longitude, latitude))
