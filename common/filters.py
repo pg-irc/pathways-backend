@@ -53,12 +53,22 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
         if queryset.model is not ServiceAtLocation:
             return queryset
 
-        topic_id = request.query_params.get('related_to_topic', None)
         proximity_parameter = request.query_params.get('proximity', None)
+        topic_id = request.query_params.get('related_to_topic', None)
 
-        if (not topic_id) or (not proximity_parameter):
-            return queryset
+        if proximity_parameter and topic_id:
+            return self.sort_by_proximity_and_topic(queryset, proximity_parameter, topic_id)
 
+        if topic_id:
+            return self.sort_by_topic_similarity(queryset, topic_id)
+
+        if proximity_parameter:
+            return self.sort_by_proximity(queryset, proximity_parameter)
+
+        return queryset
+
+
+    def sort_by_proximity_and_topic(self, queryset, proximity_parameter, topic_id):
         proximity = ProximityParser(proximity_parameter)
         reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
 
@@ -69,47 +79,17 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
                 filter(task_id__exact=topic_id).
                 order_by('inverse_score'))
 
-
-class TopicSimilaritySortFilter(filters.BaseFilterBackend):
-    filter_description = (
-        'Order by relatedness to the topic with the given topic id. '
-        'Services with missing similarity score in the database are omitted from the result'
-    )
-
-    def filter_queryset(self, request, queryset, view):
-        if queryset.model is not ServiceAtLocation:
-            return queryset
-
-        topic_id = request.query_params.get('related_to_topic', None)
-        proximity_parameter = request.query_params.get('proximity', None)
-
-        if (not topic_id) or (proximity_parameter):
-            return queryset
-
+    def sort_by_topic_similarity(self, queryset, topic_id):
         return (queryset.
                 annotate(score=F('service__taskservicesimilarityscore__similarity_score')).
                 annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
                 filter(task_id__exact=topic_id).
                 order_by('-score'))
 
-
-class ProximitySortFilter(filters.BaseFilterBackend):
-    filter_description = ('Order by proximity to a point. '
-                          'Accepts two comma separated values representing a longitude and a latitude. '
-                          'Example: "-123.1207,+49.2827".')
-
-    def filter_queryset(self, request, queryset, view):
-        if queryset.model is not ServiceAtLocation:
-            return queryset
-
-        topic_id = request.query_params.get('related_to_topic', None)
-        proximity_parameter = request.query_params.get('proximity', None)
-
-        if (topic_id) or (not proximity_parameter):
-            return queryset
-
+    def sort_by_proximity(self, queryset, proximity_parameter):
         proximity = ProximityParser(proximity_parameter)
         reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
+
         return (queryset
                 .annotate(distance=Distance('location__point', reference_point))
                 .order_by('distance'))
