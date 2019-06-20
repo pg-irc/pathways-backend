@@ -69,15 +69,17 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
 
 
     def sort_by_proximity_and_topic(self, queryset, proximity_parameter, topic_id):
-        proximity = ProximityParser(proximity_parameter)
-        reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
-
+        reference_point = self.to_point(proximity_parameter)
         return (queryset.
                 annotate(distance=Distance('location__point', reference_point)).
                 annotate(inverse_score=F('distance')/F('service__taskservicesimilarityscore__similarity_score')).
                 annotate(task_id=F('service__taskservicesimilarityscore__task_id')).
                 filter(task_id__exact=topic_id).
                 order_by('inverse_score'))
+
+    def to_point(self, proximity_parameter):
+        proximity = ProximityParser(proximity_parameter)
+        return Point(proximity.latitude, proximity.longitude, srid=SRID)
 
     def sort_by_topic_similarity(self, queryset, topic_id):
         return (queryset.
@@ -87,9 +89,7 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
                 order_by('-score'))
 
     def sort_by_proximity(self, queryset, proximity_parameter):
-        proximity = ProximityParser(proximity_parameter)
-        reference_point = Point(proximity.latitude, proximity.longitude, srid=SRID)
-
+        reference_point = self.to_point(proximity_parameter)
         return (queryset
                 .annotate(distance=Distance('location__point', reference_point))
                 .order_by('distance'))
