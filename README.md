@@ -26,6 +26,17 @@ Install the required python libraries for local development, including the Engli
 pip install -r requirements/local.txt
 python -m spacy download en
 ```
+## Psycopg2 on Mac
+PostgreSQL and Postgis are prerequisites for installing psycopg2
+```
+brew install postgres
+brew install postgis
+```
+If the pip install consistenly breaks for installing psycopg2, install the biniary version as follows
+```
+pip install psycopg2-binary
+```
+
 ## PostgreSQL on non-Ubuntu systems
 
 Create a PostgreSQL user and database for your local development and enable the PostGIS extension.
@@ -197,7 +208,7 @@ DJANGO_MAILGUN_API_KEY         | the key
 DJANGO_SECRET_KEY              | the key
 
 * Under Deploy, Manual deploy, select git branch to deploy to the instance, then deploy it. This will take a while.
-asdfasdf
+
 ### Populate the server
 
 * From bash, log into the server with 
