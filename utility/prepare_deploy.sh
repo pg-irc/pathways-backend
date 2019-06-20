@@ -10,7 +10,8 @@ BC211Path=$1
 NewcomersGuidePath=$2
 TopicsToRemove=$3
 ManualRecommendations=$4
-OutputFile=$5
+CurrentDate=`date '+%Y'-'%m'-'%d'`
+OutputFile=$5/$CurrentDate.json
 
 if [ ! -f $BC211Path ]; then
     echo "$BC211Path: BC211 data file not found"
@@ -47,7 +48,7 @@ echo "BC211 data at:           $BC211Path"
 echo "Newcomers data at:       $NewcomersGuidePath"
 echo "Topics to not recommend: $TopicsToRemove"
 echo "Manual recommendations:  $ManualRecommendations"
-echo "Output file locaiton:    $OutputFile"
+echo "Path to place output file eg ../build/ : $OutputFile"
 read -p "Enter to continue, Ctrl-C to abort "
 
 checkForSuccess () {
@@ -57,6 +58,9 @@ checkForSuccess () {
         exit
     fi
 }
+
+echo "updating BC211 version string in bc211/__init.py__"
+echo "__bc211_version__ = '$CurrentDate'" > ./bc211/__init__.py
 
 ./manage.py reset_db
 checkForSuccess "reset database"
