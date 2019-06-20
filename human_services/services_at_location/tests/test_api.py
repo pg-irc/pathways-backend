@@ -191,9 +191,6 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(json[1]['service']['name'], dissimilar_service.name)
 
     def test_orders_by_distance_to_user_location(self):
-        topic_id = a_string()
-        create_topics([topic_id])
-
         latitude = 0
         user_longitude = 0
         near_longitude = 0.0001
@@ -213,7 +210,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
                         with_location(near_location).
                         create())
 
-        url = ('/v1/services_at_location/?&user_location={1},{2}&proximity={1},{2}'.format(topic_id, user_longitude, latitude))
+        url = ('/v1/services_at_location/?&user_location={0},{1}&proximity={0},{1}'.format(user_longitude, latitude))
 
         json = self.client.get(url).json()
 
