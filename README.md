@@ -197,7 +197,7 @@ DJANGO_MAILGUN_API_KEY         | the key
 DJANGO_SECRET_KEY              | the key
 
 * Under Deploy, Manual deploy, select git branch to deploy to the instance, then deploy it. This will take a while.
-
+asdfasdf
 ### Populate the server
 
 * From bash, log into the server with 
