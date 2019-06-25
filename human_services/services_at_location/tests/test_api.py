@@ -10,7 +10,11 @@ from newcomers_guide.tests.helpers import create_topics
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
+from django.test.testcases import LiveServerTestCase
 
+class ServicesAtLocationIntegrationTests(LiveServerTestCase):
+    def test_foo(self):
+        self.assertEqual(self.live_server_url, 'foo')
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
     def setUp(self):
