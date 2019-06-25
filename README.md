@@ -301,3 +301,10 @@ Required string fields should never be null and never be the empty string. Optio
 ### Commit messages
 
 All commits are labelled with the issue they are being done under. This ensures that we don't do work that is not tracked, and history of why every change is made is maintained. Most front end and back end work is tracked by issues in their respective repositories, in which case the commit message should start with "Issue #N", e.g. "Issue #13". Occasionally, front end work may be tracked under backend issues, in which case each commits message should start with "Issue pg-irc/pathways-backend#13".
+
+## Change log
+
+Changes that are made in each release are tracked following [Expo's](https://github.com/expo/expo/blob/master/CHANGELOG.md) procedure.
+
+* changelog is updated with every PR that affects functionality.
+* a new heading is added to the changelog as part of every PR that bumps version strings.
