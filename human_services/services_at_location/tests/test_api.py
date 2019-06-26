@@ -1,3 +1,4 @@
+import subprocess
 from rest_framework import test as rest_test
 from rest_framework import status
 from human_services.locations.tests.helpers import LocationBuilder
@@ -11,14 +12,27 @@ from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
 from django.test.testcases import LiveServerTestCase
-import subprocess
 
 
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_foo(self):
-        output = subprocess.run(["ls", "-l"])
-        self.assertEqual(output, 'bar')
-        self.assertEqual(self.live_server_url, 'foo')
+        host = self.live_server_url
+        topic = 'help-for-young-people'
+        longitude = '-123.1207'
+        latitude = '49.2827'
+        working_directory = '../pathways-frontend/'
+        output = subprocess.run(args=["yarn", "run", "ts-node", "src/api/integratinon_test.ts",
+                                      "--host", host,
+                                      "--topic", topic,
+                                      "--latitude", latitude,
+                                      "--longitude", longitude],
+                                cwd=working_directory,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                shell=True,
+                                check=True
+                                )
+        self.assertEqual(output.stdout, 'bar')
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
     def setUp(self):
