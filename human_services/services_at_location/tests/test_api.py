@@ -11,9 +11,13 @@ from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
 from django.test.testcases import LiveServerTestCase
+import subprocess
+
 
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_foo(self):
+        output = subprocess.run(["ls", "-l"])
+        self.assertEqual(output, 'bar')
         self.assertEqual(self.live_server_url, 'foo')
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
