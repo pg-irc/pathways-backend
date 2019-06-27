@@ -6,7 +6,7 @@ from human_services.services_at_location.tests.helpers import (ServiceAtLocation
                                                                set_service_similarity_score)
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
-from newcomers_guide.tests.helpers import create_topics
+from newcomers_guide.tests.helpers import create_topic
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
@@ -126,7 +126,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_can_order_by_similarity_to_topic(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -143,7 +143,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_does_not_return_unrelated_services(self):
         topic_id = 'the-topic-id'
-        create_topics([topic_id])
+        create_topic(topic_id)
         related_service = ServiceBuilder(self.organization).with_location(self.location).create()
         set_service_similarity_score(topic_id, related_service.id, a_float())
 
@@ -158,7 +158,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
     def test_orders_by_similarity_to_topic_passed_to_the_query(self):
         topic_passed_to_query = a_string()
         topic_to_ignore = a_string()
-        create_topics([topic_passed_to_query, topic_to_ignore])
+        create_topic(topic_passed_to_query)
+        create_topic(topic_to_ignore)
 
         similar_service = ServiceBuilder(self.organization).with_location(self.location).create()
         dissimilar_service = ServiceBuilder(self.organization).with_location(self.location).create()
@@ -213,7 +214,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_returns_services_ordered_by_location_if_similarity_is_the_same(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
 
         latitude = 0
         user_longitude = 0
@@ -250,7 +251,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_returns_services_ordered_by_similarity_if_location_is_the_same(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
 
         latitude = 0
         user_longitude = 0
@@ -288,7 +289,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_returns_more_similar_service_first_if_location_slightly_further_away(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
 
         latitude = 0
         user_longitude = 0
@@ -326,7 +327,7 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
 
     def test_returns_closer_service_first_if_similarity_is_slightly_less(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
 
         latitude = 0
         user_longitude = 0

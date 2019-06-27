@@ -5,7 +5,7 @@ from human_services.services_at_location.tests.helpers import (set_location_for_
                                                                set_service_similarity_score)
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
-from newcomers_guide.tests.helpers import create_topics
+from newcomers_guide.tests.helpers import create_topic
 from common.testhelpers.random_test_values import a_string, a_latitude, a_longitude
 from django.test.testcases import LiveServerTestCase
 
@@ -18,7 +18,7 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
         location = LocationBuilder(organization).with_long_lat(longitude, latitude).create()
         set_location_for_service(service.id, location.id)
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
         set_service_similarity_score(topic_id, service.id, 0.9)
         host = self.live_server_url
         working_directory = '../pathways-frontend/'
