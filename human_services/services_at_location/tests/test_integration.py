@@ -6,15 +6,15 @@ from human_services.services_at_location.tests.helpers import (set_location_for_
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from newcomers_guide.tests.helpers import create_topics
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, a_latitude, a_longitude
 from django.test.testcases import LiveServerTestCase
 
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_get_service_from_server(self):
         organization = OrganizationBuilder().create()
         service = ServiceBuilder(organization).create()
-        longitude = -123.1207
-        latitude = 49.2827
+        longitude = a_longitude()
+        latitude = a_latitude()
         location = LocationBuilder(organization).with_long_lat(longitude, latitude).create()
         set_location_for_service(service.id, location.id)
         topic_id = a_string()
