@@ -1,5 +1,6 @@
 import subprocess
 import json
+import os
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services_at_location.tests.helpers import (set_location_for_service,
                                                                set_service_similarity_score)
@@ -11,6 +12,10 @@ from django.test.testcases import LiveServerTestCase
 
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_get_service_from_server(self):
+        if not os.path.isfile('./run_integration_tests'):
+            print('Integration test not run, create file run_integration_tests to run them')
+            return
+
         organization = OrganizationBuilder().create()
         service = ServiceBuilder(organization).create()
         longitude = a_longitude()
