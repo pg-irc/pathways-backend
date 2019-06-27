@@ -1,5 +1,3 @@
-import subprocess
-import json
 from rest_framework import test as rest_test
 from rest_framework import status
 from human_services.locations.tests.helpers import LocationBuilder
@@ -12,38 +10,7 @@ from newcomers_guide.tests.helpers import create_topics
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
-from django.test.testcases import LiveServerTestCase
 
-class ServicesAtLocationIntegrationTests(LiveServerTestCase):
-    def test_foo(self):
-        organization = OrganizationBuilder().create()
-        service = ServiceBuilder(organization).create()
-        longitude = -123.1207
-        latitude = 49.2827
-        location = LocationBuilder(organization).with_long_lat(longitude, latitude).create()
-        set_location_for_service(service.id, location.id)
-        topic_id = a_string()
-        create_topics([topic_id])
-        set_service_similarity_score(topic_id, service.id, 0.9)
-        host = self.live_server_url
-        working_directory = '../pathways-frontend/'
-        output = subprocess.run(args=[("yarn run ts-node src/api/integratinon_test.ts" +
-                                       " --host " + host +
-                                       " --topic " + topic_id +
-                                       " --latitude " + str(latitude) +
-                                       " --longitude " + str(longitude))],
-                                cwd=working_directory,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                shell=True,
-                                check=True
-                                )
-        response = output.stdout.decode('utf-8')
-        start_index = response.find('START_OF_RESPONSE') + len('START_OF_RESPONSE')
-        end_index = response.find('END_OF_RESPONSE')
-        response = response[start_index:end_index].strip()
-        response = json.loads(response)
-        self.assertEqual(response['results'][0]['service']['id'], service.id)
 
 class ServicesAtLocationApiTests(rest_test.APITestCase):
     def setUp(self):
