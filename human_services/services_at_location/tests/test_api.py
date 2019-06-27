@@ -46,9 +46,9 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
                                 check=True
                                 )
         response = output.stdout.decode('utf-8')
-        index = 9 + response.find('RESPONSE:')
-        end_index = response.find('Done in ')
-        response = response[index:end_index].strip()
+        start_index = response.find('START_OF_RESPONSE') + len('START_OF_RESPONSE')
+        end_index = response.find('END_OF_RESPONSE')
+        response = response[start_index:end_index].strip()
         response = json.loads(response)
         self.assertEqual(response['results'][0]['service']['id'], service.id)
 
