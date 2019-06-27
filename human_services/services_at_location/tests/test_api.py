@@ -21,6 +21,9 @@ def set_service_similarity_score(topic_id, service_id, similarity_score):
         similarity_score=similarity_score
     )
 
+def set_location_for_service(service_id, location_id):
+    return ServiceAtLocation.objects.create(service_id=service_id, location_id=location_id)
+
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_foo(self):
         organization = OrganizationBuilder().create()
@@ -28,7 +31,7 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
         longitude = -123.1207
         latitude = 49.2827
         location = LocationBuilder(organization).with_long_lat(longitude, latitude).create()
-        ServiceAtLocation.objects.create(service=service, location=location)
+        set_location_for_service(service.id, location.id)
         topic_id = a_string()
         create_topics([topic_id])
         set_service_similarity_score(topic_id, service.id, 0.9)
@@ -82,10 +85,10 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
                            .with_name('Fourth')
                            .with_long_lat(30, 30).create())
 
-        ServiceAtLocation.objects.create(service=self.service, location=first_location)
-        ServiceAtLocation.objects.create(service=self.service, location=second_location)
-        ServiceAtLocation.objects.create(service=self.service, location=third_location)
-        ServiceAtLocation.objects.create(service=self.service, location=fourth_location)
+        set_location_for_service(self.service.id, first_location.id)
+        set_location_for_service(self.service.id, second_location.id)
+        set_location_for_service(self.service.id, third_location.id)
+        set_location_for_service(self.service.id, fourth_location.id)
 
         at_second_location_services_url = ('/v1/services_at_location/?proximity={0},{1}'
                                            .format(second_location.point.x,
@@ -109,9 +112,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         location_101km_away = LocationBuilder(self.organization).with_point(south_by_101_km).create()
         location_94km_away = LocationBuilder(self.organization).with_point(west_by_94_km).create()
 
-        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
-        ServiceAtLocation.objects.create(service=self.service, location=location_101km_away)
-        ServiceAtLocation.objects.create(service=self.service, location=location_94km_away)
+        set_location_for_service(self.service.id, origin_location.id)
+        set_location_for_service(self.service.id, location_101km_away.id)
+        set_location_for_service(self.service.id, location_94km_away.id)
 
         url_with_proximity_to_origin = ('/v1/services_at_location/?proximity={0},{1}'
                                         .format(origin.x, origin.y))
@@ -127,9 +130,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         near_location = LocationBuilder(self.organization).with_long_lat(0.1, 0).create()
         far_location = LocationBuilder(self.organization).with_long_lat(1.0, 0).create()
 
-        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
-        ServiceAtLocation.objects.create(service=self.service, location=near_location)
-        ServiceAtLocation.objects.create(service=self.service, location=far_location)
+        set_location_for_service(self.service.id, origin_location.id)
+        set_location_for_service(self.service.id, near_location.id)
+        set_location_for_service(self.service.id, far_location.id)
 
         url_with_user_location = ('/v1/services_at_location/?user_location={0},{1}'
                                   .format(origin_location.point.x, origin_location.point.y))
@@ -150,9 +153,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         near_location = LocationBuilder(self.organization).with_point(point_24km_away).create()
         far_location = LocationBuilder(self.organization).with_point(point_26km_away).create()
 
-        ServiceAtLocation.objects.create(service=self.service, location=origin_location)
-        ServiceAtLocation.objects.create(service=self.service, location=near_location)
-        ServiceAtLocation.objects.create(service=self.service, location=far_location)
+        set_location_for_service(self.service.id, origin_location.id)
+        set_location_for_service(self.service.id, near_location.id)
+        set_location_for_service(self.service.id, far_location.id)
 
         url_with_user_location = ('/v1/services_at_location/?user_location={0},{1}'
                                   .format(origin_location.point.x, origin_location.point.y))
@@ -490,8 +493,8 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         taxonomy_terms = TaxonomyTermBuilder().create_many()
         service = ServiceBuilder(self.organization).with_taxonomy_terms(taxonomy_terms).create()
         location = LocationBuilder(self.organization).create()
-        expected_service_at_location = ServiceAtLocation.objects.create(service=service,
-                                                                        location=location)
+        expected_service_at_location = set_location_for_service(service.id, location.id)
+
         response = (self.client.get('/v1/services_at_location/?taxonomy_terms={0}.{1}'
                                     .format(taxonomy_terms[0].taxonomy_id, taxonomy_terms[0].name)))
         json = response.json()
