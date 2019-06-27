@@ -3,26 +3,16 @@ import json
 from rest_framework import test as rest_test
 from rest_framework import status
 from human_services.locations.tests.helpers import LocationBuilder
-from human_services.services_at_location.tests.helpers import ServiceAtLocationBuilder
+from human_services.services_at_location.tests.helpers import (ServiceAtLocationBuilder,
+                                                               set_location_for_service,
+                                                               set_service_similarity_score)
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
-from human_services.locations.models import ServiceAtLocation
-from search.models import TaskServiceSimilarityScore
 from newcomers_guide.tests.helpers import create_topics
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from common.testhelpers.random_test_values import a_float, a_string
 from django.contrib.gis.geos import Point
 from django.test.testcases import LiveServerTestCase
-
-def set_service_similarity_score(topic_id, service_id, similarity_score):
-    TaskServiceSimilarityScore.objects.create(
-        task_id=topic_id,
-        service_id=service_id,
-        similarity_score=similarity_score
-    )
-
-def set_location_for_service(service_id, location_id):
-    return ServiceAtLocation.objects.create(service_id=service_id, location_id=location_id)
 
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_foo(self):
