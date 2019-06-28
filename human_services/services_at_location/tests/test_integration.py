@@ -41,5 +41,9 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
         start_index = response.find('START_OF_RESPONSE') + len('START_OF_RESPONSE')
         end_index = response.find('END_OF_RESPONSE')
         response = response[start_index:end_index].strip()
-        response = json.loads(response)
-        self.assertEqual(response['results'][0]['service']['id'], service.id)
+        try:
+            parsed_response = json.loads(response)
+            self.assertEqual(parsed_response['results'][0]['service']['id'], service.id)
+        except json.decoder.JSONDecodeError:
+            print('Error parsing JSON')
+            print(response)
