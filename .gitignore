@@ -12,3 +12,5 @@ staticfiles/
 .DS_STORE
 # don't commit generated fixture files
 *.ts
+run_integration_tests
+
