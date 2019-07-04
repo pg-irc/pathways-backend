@@ -27,7 +27,7 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
         set_service_similarity_score(topic_id, service.id, 0.9)
         host = self.live_server_url
         working_directory = '../pathways-frontend/'
-        output = subprocess.run(args=[("yarn run ts-node src/api/integratinon_test.ts" +
+        output = subprocess.run(args=[("yarn run ts-node src/api/integration_test.ts" +
                                        " --host " + host +
                                        " --topic " + topic_id +
                                        " --latitude " + str(latitude) +
