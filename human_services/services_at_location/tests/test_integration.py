@@ -13,7 +13,7 @@ from django.test.testcases import LiveServerTestCase
 class ServicesAtLocationIntegrationTests(LiveServerTestCase):
     def test_get_service_from_server(self):
         if not os.path.isfile('./run_integration_tests'):
-            print('Integration test not run, create file run ./utility/enable_integration_tests.sh to enable')
+            print('Integration test not run, run ./utility/enable_integration_tests.sh to enable')
             return
 
         organization = OrganizationBuilder().create()
