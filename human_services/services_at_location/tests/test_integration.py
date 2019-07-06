@@ -36,7 +36,7 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 shell=True,
-                                check=True)
+                               )
         response = output.stdout.decode('utf-8')
         start_index = response.find('START_OF_RESPONSE') + len('START_OF_RESPONSE')
         end_index = response.find('END_OF_RESPONSE')
