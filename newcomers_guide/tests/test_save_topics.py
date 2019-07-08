@@ -37,8 +37,8 @@ class TestSavingTasks(TestCase):
         }
 
     def test_deletes_existing_records(self):
-        two_preexisting_topics = [a_string(), a_string()]
-        helpers.create_topics(two_preexisting_topics)
+        helpers.create_topic(a_string())
+        helpers.create_topic(a_string())
 
         save_topics(self.one_topic, self.counts)
         self.assertEqual(Task.objects.count(), 1)

@@ -5,7 +5,7 @@ from newcomers_guide.parse_data import (parse_taxonomy_terms, parse_taxonomy_fil
                                         parse_topic_files, parse_file_path, TaxonomyTermReference)
 from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_content
 from search.models import TaskSimilarityScore
-from newcomers_guide.tests.helpers import create_topics
+from newcomers_guide.tests.helpers import create_topic
 
 
 class FilePathParseTests(TestCase):
@@ -106,7 +106,8 @@ class ProcessTaskFilesTests(TestCase):
     def test_includes_related_topics_from_database_in_order_of_declining_similarity_score(self):
         topic_id = a_string()
         similar_topic_id = a_string()
-        create_topics([topic_id, similar_topic_id])
+        create_topic(topic_id)
+        create_topic(similar_topic_id)
 
         a_high_score = 0.9
         TaskSimilarityScore(first_task_id=topic_id,
@@ -114,7 +115,7 @@ class ProcessTaskFilesTests(TestCase):
                             similarity_score=a_high_score).save()
 
         dissimilar_topic_id = a_string()
-        create_topics([dissimilar_topic_id])
+        create_topic(dissimilar_topic_id)
         a_low_score = 0.1
         TaskSimilarityScore(first_task_id=topic_id,
                             second_task_id=dissimilar_topic_id,

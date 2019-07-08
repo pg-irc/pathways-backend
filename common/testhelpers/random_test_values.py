@@ -20,12 +20,18 @@ def an_integer(**kwargs):
 
     return random.randint(min_inclusive, max_inclusive)
 
+def a_latitude():
+    return -90 + 180*random.random()
+
+def a_longitude():
+    return -180 + 360*random.random()
+
 def a_float():
     return float(an_integer())
 
 def a_point():
     srid = 4326
-    return Point(a_float(), a_float(), srid=srid)
+    return Point(a_longitude(), a_latitude(), srid=srid)
 
 def a_list_of_strings(length=3):
     return [a_string() for x in range(length)]

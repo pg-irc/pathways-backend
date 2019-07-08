@@ -8,10 +8,13 @@ from search.save_similarities import (save_topic_similarities,
 from search.remove_similarities_for_topics import remove_similarities_for_topics
 from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
 from common.testhelpers.random_test_values import a_string, a_float
-from newcomers_guide.tests.helpers import create_topics
+from newcomers_guide.tests.helpers import create_topic
 import scipy
 from search.tests.helpers import create_square_matrix_of_unique_floats
 
+def create_topics(ids):
+    for the_id in ids:
+        create_topic(the_id)
 
 class TestSavingTaskSimilarities(TestCase):
 
@@ -313,7 +316,7 @@ class TestSavingManualTaskServiceSimilarities(TestCase):
 
     def test_with_non_existent_service_id_emit_warning_and_do_not_save(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
 
         service_id = a_string()
 
@@ -336,7 +339,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
     def test_can_remove_one_similarity_score(self):
         service = ServiceBuilder(self.organization).create()
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
         record = TaskServiceSimilarityScore(task_id=topic_id,
                                             service=service,
                                             similarity_score=a_float())
@@ -374,7 +377,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
 
     def test_called_with_invalid_topic_id_does_nothing(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
         service = ServiceBuilder(self.organization).create()
         TaskServiceSimilarityScore(task_id=topic_id,
                                    service=service,
@@ -388,7 +391,7 @@ class TestRemovingTaskTopicSimilarities(TestCase):
 
     def test_called_with_invalid_topic_id_logs_warning(self):
         topic_id = a_string()
-        create_topics([topic_id])
+        create_topic(topic_id)
         service = ServiceBuilder(self.organization).create()
         TaskServiceSimilarityScore(task_id=topic_id,
                                    service=service,
