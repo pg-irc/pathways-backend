@@ -492,6 +492,90 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_number_list[0].phone_number, phone_number)
 
+    def test_parses_just_phone_numbers(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>1-888-425-2666</PhoneNumber>
+                    <Type>24-hour</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
+
+    def test_parses_phone_with_full_mnemonics(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>1-888-4AL-ANON (1-888-425-2666)</PhoneNumber>
+                    <Type>Phone1</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
+    
+    def test_not_parse_phone_with_partial_mnemonics(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>1-800-222-TIPS (8477)</PhoneNumber>
+                    <Type>24-hour</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-222-8477')
+
+    def test_parse_phone_with_extension_1(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>250-542-3555 Local 221</PhoneNumber>
+                    <Type>Phone1</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-542-3555')
+
+    def test_parse_phone_with_extension_2(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>250-787-9262 Ext 221</PhoneNumber>
+                    <Type>Intake (IHA)</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-787-9262')
+
+    def test_parse_phone_with_area_code(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>(250)-541-2200</PhoneNumber>
+                    <Type>Intake (IHA)</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
+
     def build_phone_xml(self, phone_number, phone_number_type):
         return '''
             <Site>

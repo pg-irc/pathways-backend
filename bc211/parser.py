@@ -283,12 +283,21 @@ def parse_site_phone(phone, site_id):
     location_id = site_id
     phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
     phone_number = phone.find('PhoneNumber').text
+    if re.search(r'[a-zA-Z]', phone_number):
+        phone_number = clean_phone_number(phone_number)
     return dtos.PhoneAtLocation(
         location_id=location_id,
         phone_number_type_id=phone_number_type_id,
         phone_number=phone_number
     )
 
+def clean_phone_number(phone_number):
+    phone_num_format = r'(\d-)?\d\d\d-\d\d\d-\d\d\d\d'
+    match = re.search(phone_num_format, phone_number)
+    if match:
+        return match[0]
+    else:
+        return re.sub(r'[A-Za-z\(\) ]', '', phone_number)
 
 def phone_has_number_and_type(phone):
     return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type')
