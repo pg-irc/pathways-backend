@@ -8,8 +8,8 @@ fi
 
 BC211Path=$1
 NewcomersGuidePath=$2
-TopicsToRemove=$3
-ManualRecommendations=$4
+ManualRecommendations=$3
+TopicsToRemove=$4
 CurrentDate=`date '+%Y'-'%m'-'%d'`
 OutputFile=$5/$CurrentDate.json
 
@@ -23,13 +23,13 @@ if [ ! -d $NewcomersGuidePath ]; then
     exit
 fi
 
-if [ ! -f $TopicsToRemove ]; then
-    echo "$TopicsToRemove: topics to remove not found"
+if [ ! -f $ManualRecommendations ]; then
+    echo "$ManualRecommendations: Manual recommendations not found"
     exit
 fi
 
-if [ ! -f $ManualRecommendations ]; then
-    echo "$ManualRecommendations: Manual recommendations not found"
+if [ ! -f $TopicsToRemove ]; then
+    echo "$TopicsToRemove: topics to remove not found"
     exit
 fi
 
@@ -46,8 +46,8 @@ fi
 echo "About to reinitialize database with data from:"
 echo "BC211 data at:           $BC211Path"
 echo "Newcomers data at:       $NewcomersGuidePath"
-echo "Topics to not recommend: $TopicsToRemove"
 echo "Manual recommendations:  $ManualRecommendations"
+echo "Topics to not recommend: $TopicsToRemove"
 echo "Path to place output file eg ../build/ : $OutputFile"
 read -p "Enter to continue, Ctrl-C to abort "
 
@@ -79,13 +79,13 @@ echo "computing similarity scores ..."
 ./manage.py compute_text_similarity_scores --related_topics 3 --related_services 100 $NewcomersGuidePath
 checkForSuccess "compute similarity scores"
 
-echo "removing invalid similarity scores ..."
-./manage.py remove_recommendations_for_topics $TopicsToRemove
-checkForSuccess "remove similarity scores"
-
 echo "adding manual similarity scores ..."
 ./manage.py set_manual_similarity_scores $ManualRecommendations
 checkForSuccess "add manual similarity scores"
+
+echo "removing invalid similarity scores ..."
+./manage.py remove_recommendations_for_topics $TopicsToRemove
+checkForSuccess "remove similarity scores"
 
 ./manage.py dumpdata --natural-foreign --exclude auth.permission --exclude contenttypes --indent 4 > $OutputFile
 
