@@ -492,7 +492,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_number_list[0].phone_number, phone_number)
 
-    def test_parses_just_phone_numbers(self):
+    def test_parses_only_phone_numbers(self):
         site_id = a_string()
         root = etree.fromstring(
             '''
@@ -534,7 +534,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-800-222-8477')
 
-    def test_parse_phone_with_extension_1(self):
+    def test_parse_phone_with_local_extension(self):
         site_id = a_string()
         root = etree.fromstring(
             '''
@@ -548,7 +548,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '250-542-3555')
 
-    def test_parse_phone_with_extension_2(self):
+    def test_parse_phone_with_ext_extension(self):
         site_id = a_string()
         root = etree.fromstring(
             '''

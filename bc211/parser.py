@@ -292,8 +292,8 @@ def parse_site_phone(phone, site_id):
     )
 
 def clean_phone_number(phone_number):
-    phone_num_format = r'(\d-)?[\d]{3}-[\d]{3}-[\d]{4}'
-    match = re.search(phone_num_format, phone_number)
+    phone_number_format = r'(\d-)?[\d]{3}-[\d]{3}-[\d]{4}'
+    match = re.search(phone_number_format, phone_number)
     if match:
         return match[0]
     else:
