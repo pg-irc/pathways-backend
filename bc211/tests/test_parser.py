@@ -526,6 +526,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
+    
+    def test_parse_phone_with_area_code_and_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-541-2200 Ext 221', 'Intake (IHA)')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
 
     def build_phone_xml(self, phone_number, phone_number_type):
         return '''
