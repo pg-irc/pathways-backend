@@ -492,6 +492,48 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_number_list[0].phone_number, phone_number)
 
+    def test_parses_only_phone_numbers(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-888-425-2666', '24-hour')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
+
+    def test_parses_phone_with_full_mnemonics(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-888-4AL-ANON (1-888-425-2666)', 'Phone1')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
+    
+    def test_not_parse_phone_with_partial_mnemonics(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-800-222-TIPS (8477)', '24-hour')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-222-8477')
+
+    def test_parse_phone_with_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-542-3555 Local 221', 'Phone1')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-542-3555')
+
+    def test_parse_phone_with_area_code(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-541-2200', 'Intake (IHA)')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
+    
+    def test_parse_phone_with_area_code_and_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-541-2200 Ext 221', 'Intake (IHA)')
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
+
     def build_phone_xml(self, phone_number, phone_number_type):
         return '''
             <Site>
