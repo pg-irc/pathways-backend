@@ -18,6 +18,8 @@ def save_records_to_database(organizations, counters):
 
 
 def save_organization(organization, counters):
+    if is_inactive(organization):
+        return
     translation.activate('en')
     active_record = build_organization_active_record(organization)
     active_record.save()
@@ -52,6 +54,8 @@ def build_organization_active_record(record):
 
 def save_locations(locations, counters):
     for location in locations:
+        if is_inactive(location):
+            continue
         active_record = build_location_active_record(location)
         active_record.save()
         counters.count_location()
@@ -64,6 +68,11 @@ def save_locations(locations, counters):
             create_address_for_location(active_record, location.postal_address, counters)
         if location.phone_numbers:
             create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
+
+
+def is_inactive(record):
+    # This is BC211's convention for marking records as inactive
+    return record.description and record.description.startswith('DEL')
 
 
 def build_location_active_record(record):
@@ -96,13 +105,14 @@ def build_service_at_location_active_record(record):
 
 def save_services(services, counters):
     for service in services:
-        if not service_already_exists(service):
-            active_record = build_service_active_record(service)
-            active_record.save()
-            counters.count_service()
-            LOGGER.debug('Service "%s" "%s"', service.id, service.name)
-            save_service_at_location(service)
-            save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
+        if is_inactive(service) or service_already_exists(service):
+            continue
+        active_record = build_service_active_record(service)
+        active_record.save()
+        counters.count_service()
+        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
+        save_service_at_location(service)
+        save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
 
 def service_already_exists(service):
