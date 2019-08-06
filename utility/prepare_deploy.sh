@@ -161,6 +161,6 @@ echo "adding manual similarity scores ..."
 ./manage.py set_manual_similarity_scores $ManualRecommendations
 checkForSuccess "add manual similarity scores"
 
+echo "saving database content to $OutputFile ..."
 ./manage.py dumpdata --natural-foreign --exclude auth.permission --exclude contenttypes --indent 4 > $OutputFile
-
-checkForSuccess "dump data"
+checkForSuccess "saving database content"
