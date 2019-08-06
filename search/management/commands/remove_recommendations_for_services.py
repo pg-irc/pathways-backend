@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from search.read_similarities import read_topics_list
+from search.read_similarities import read_ids_one_per_line
 from search.remove_similarities_for_services import remove_similarities_for_services
 
 
@@ -16,6 +16,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         topics_list_path = options['service_list']
 
-        service_ids = read_topics_list(topics_list_path)
+        service_ids = read_ids_one_per_line(topics_list_path)
         print('Removing similarities for {} services...'.format(len(service_ids)))
         remove_similarities_for_services(service_ids)
