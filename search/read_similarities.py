@@ -29,7 +29,7 @@ def build_manual_similarity_map(csv_data):
     return result
 
 
-def read_topics_list(topics_path):
-    with open(topics_path) as file:
+def read_ids_one_per_line(file_path):
+    with open(file_path) as file:
         content = file.readlines()
         return [x.strip() for x in content if x.strip() != '']

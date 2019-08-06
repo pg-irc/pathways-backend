@@ -1,54 +1,124 @@
 #!/bin/bash
 
-if [ "$#" != "5" ]
-then
-    echo "Expected five arguments: BC211 file path, Newcomers Guide folder path, Topics to remove, Manual recommendations, output file path"
-    exit
-fi
+while (( "$#" )); do
+    if [ "$1" == "--bc211Path" ]
+    then
+        BC211Path=$2
+        shift 2
+    elif [ "$1" == "--newComersGuidePath" ]
+    then
+        NewcomersGuidePath=$2
+        shift 2
+    elif [ "$1" == "--recommendationsToAddPath" ]
+    then
+        ManualRecommendations=$2
+        shift 2
+    elif [ "$1" == "--topicsToRemovePath" ]
+    then
+        TopicsToRemove=$2
+        shift 2
+    elif [ "$1" == "--servicesToRemovePath" ]
+    then
+        ServicesToRemove=$2
+        shift 2
+    elif [ "$1" == "--outputDir" ]
+    then
+        CurrentDate=`date '+%Y'-'%m'-'%d'`
+        OutputFile=$2/data-$CurrentDate.json
+        shift 2
+    else
+        echo "$1: Invalid command argument"
+        usage
+        exit
+    fi
+done
 
-BC211Path=$1
-NewcomersGuidePath=$2
-ManualRecommendations=$3
-TopicsToRemove=$4
-CurrentDate=`date '+%Y'-'%m'-'%d'`
-OutputFile=$5/$CurrentDate.json
+usage() {
+    echo
+    echo "Usage:"
+    echo
+    echo "    $0 [arguments]"
+    echo
+    echo "Mandatory arguments:"
+    echo
+    echo "    --bc211Path"
+    echo "                The path to the BC211 data set in XML iCarol format."
+    echo
+    echo "    --newComersGuidePath"
+    echo "                The path to the Newcomers' guide content."
+    echo
+    echo "    --recommendationsToAddPath"
+    echo "                The path to the file containing manual recommendations."
+    echo
+    echo "    --topicsToRemovePath"
+    echo "                The path to a file containing zero or more ids of topics for which"
+    echo "                there should be no services recommended."
+    echo
+    echo "    --servicesToRemovePath"
+    echo "                The path to a file containing zero or more ids of services that should"
+    echo "                not be recommended for any topic."
+    echo
+    echo "    --outputDir"
+    echo "                The directory where the output json file will be placed."
+    echo
+}
 
-if [ ! -f $BC211Path ]; then
-    echo "$BC211Path: BC211 data file not found"
-    exit
-fi
+validateFilePath () {
+    if [ "$1" == "" ]; then
+        echo "Missing a required argument: $2"
+        usage
+        exit
+    fi
+    if [ ! -f "$1" ]; then
+        echo "$1: file does not exist"
+        usage
+        exit
+    fi
+}
 
-if [ ! -d $NewcomersGuidePath ]; then
-    echo "$NewcomersGuidePath: Newcomers Guide content not found"
-    exit
-fi
+validateNewcomersGuidePath () {
+    if [ "$NewcomersGuidePath" == "" ]; then
+        echo "Missing required argument: Newcomers Guide path"
+        usage
+        exit
+    fi
+    if [ ! -d $NewcomersGuidePath ]; then
+        echo "$NewcomersGuidePath: directory does not exist"
+        usage
+        exit
+    fi
+}
 
-if [ ! -f $ManualRecommendations ]; then
-    echo "$ManualRecommendations: Manual recommendations not found"
-    exit
-fi
+validateOutputFile () {
+    if [ "$OutputFile" == "" ]; then
+        echo "Missing a required argument for output"
+        usage
+        exit
+    fi
+    if [ -f $OutputFile ]; then
+        echo "$OutputFile: Output file already exists"
+        exit
+    fi
+}
 
-if [ ! -f $TopicsToRemove ]; then
-    echo "$TopicsToRemove: topics to remove not found"
-    exit
-fi
 
-if [ -f $OutputFile ]; then
-    echo "$OutputFile: Output file already exists"
-    exit
-fi
+validateFilePath "$BC211Path" "BC 211 data"
 
-if [ "${OutputFile:(-5)}" != ".json" ]; then
-    echo "$OutputFile: Output file must end in .json"
-    exit
-fi
+validateNewcomersGuidePath
+
+validateFilePath "$ManualRecommendations" "Recommendations to add"
+validateFilePath "$TopicsToRemove" "Topics to remove"
+validateFilePath "$ServicesToRemove" "Services to remove"
+
+validateOutputFile
 
 echo "About to reinitialize database with data from:"
-echo "BC211 data at:           $BC211Path"
-echo "Newcomers data at:       $NewcomersGuidePath"
-echo "Manual recommendations:  $ManualRecommendations"
-echo "Topics to not recommend: $TopicsToRemove"
-echo "Path to place output file eg ../build/ : $OutputFile"
+echo "BC211 data at:             $BC211Path"
+echo "Newcomers data at:         $NewcomersGuidePath"
+echo "Manual recommendations:    $ManualRecommendations"
+echo "Topics to not recommend:   $TopicsToRemove"
+echo "Services to not recommend: $ServicesToRemove"
+echo "Output file:               $OutputFile"
 read -p "Enter to continue, Ctrl-C to abort "
 
 checkForSuccess () {
@@ -79,14 +149,18 @@ echo "computing similarity scores ..."
 ./manage.py compute_text_similarity_scores --related_topics 3 --related_services 100 $NewcomersGuidePath
 checkForSuccess "compute similarity scores"
 
+echo "removing similarity scores for certain topics ..."
+./manage.py remove_recommendations_for_topics $TopicsToRemove
+checkForSuccess "remove similarity scores for topics"
+
+echo "removing similarity scores for certain services ..."
+./manage.py remove_recommendations_for_services $ServicesToRemove
+checkForSuccess "remove similarity scores for services"
+
 echo "adding manual similarity scores ..."
 ./manage.py set_manual_similarity_scores $ManualRecommendations
 checkForSuccess "add manual similarity scores"
 
-echo "removing invalid similarity scores ..."
-./manage.py remove_recommendations_for_topics $TopicsToRemove
-checkForSuccess "remove similarity scores"
-
+echo "saving database content to $OutputFile ..."
 ./manage.py dumpdata --natural-foreign --exclude auth.permission --exclude contenttypes --indent 4 > $OutputFile
-
-checkForSuccess "dump data"
+checkForSuccess "saving database content"
