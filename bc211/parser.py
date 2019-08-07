@@ -304,8 +304,12 @@ def parse_site_phone(phone, site_id):
         phone_number=phone_number
     )
 
-def clean_one_phone_number(phone_number):
-    phone_number = re.sub(r'([Ll]ocal|[Ee]xt)[ \d].*', '', phone_number)
+def remove_phone_extensions(phone_number):
+    extension_format = r'([Ll]ocal|[Ee]xt)[ \d].*'
+    phone_number = re.sub(extension_format, '', phone_number)
+    return phone_number
+
+def convert_phone_mnemonic(phone_number):
     if re.search(r'[a-zA-Z]', phone_number):
         phone_number = re.sub(r'[a-cA-C]', '2', phone_number)
         phone_number = re.sub(r'[d-fD-F]', '3', phone_number)
@@ -315,29 +319,41 @@ def clean_one_phone_number(phone_number):
         phone_number = re.sub(r'[p-sP-S]', '7', phone_number)
         phone_number = re.sub(r'[t-vT-V]', '8', phone_number)
         phone_number = re.sub(r'[w-zW-Z]', '9', phone_number)
-        phone_number = re.sub(r'(\(?.*\)?.*)(\(.*\))', r'\1', phone_number)
-    phone_number = re.sub(r'[- \(\)]', '', phone_number)
-    if re.search(r'\d{11}', phone_number):
-        phone_number = re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
-        return phone_number
-    if re.search(r'\d{10}', phone_number):
-        phone_number = re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
-        return phone_number
+        split_mnenomic_format = r'(\(?.*\)?.*)(\(.*\))'
+        phone_number = re.sub(split_mnenomic_format, r'\1', phone_number)
     return phone_number
 
-def clean_multiple_phone_numbers(phone_number):
+def standardize_phone_number(phone_number):
+    phone_digit_separator = r'[- \(\)]'
+    phone_number = re.sub(phone_digit_separator, '', phone_number)
+    return phone_number
+
+def format_eleven_digit_phone_number(phone_number):
+    if re.search(r'\d{11}', phone_number):
+        phone_number = re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
+    return phone_number
+
+def format_ten_digit_phone_number(phone_number):
+    if re.search(r'\d{10}', phone_number):
+        phone_number = re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
+    return phone_number
+
+def clean_one_phone_number(phone_number):
+    phone_number = remove_phone_extensions(phone_number)
+    phone_number = convert_phone_mnemonic(phone_number)
+    phone_number = standardize_phone_number(phone_number)
+    phone_number = format_eleven_digit_phone_number(phone_number)
+    phone_number = format_ten_digit_phone_number(phone_number)
+    return phone_number
+
+def clean_phone_number(phone_number_string):
     toll_free_format = r'1-8[\d]{2}-[\d]{3}-[\d]{4}'
-    phone_numbers = re.split("/|or|;", phone_number)
-    cleaned_phone_numbers = [clean_one_phone_number(n) for n in phone_numbers]
-    for index, cleaned_phone_number in enumerate(cleaned_phone_numbers):
+    phone_numbers = re.split("/|or|;", phone_number_string)
+    cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
+    for _, cleaned_phone_number in enumerate(cleaned_phone_numbers):
         if re.search(toll_free_format, cleaned_phone_number):
             return cleaned_phone_number
     return cleaned_phone_numbers[0]
-
-def clean_phone_number(phone_number):
-    if re.search(r'/|or|;', phone_number):
-        return clean_multiple_phone_numbers(phone_number)
-    return clean_one_phone_number(phone_number)
 
 def is_valid_phonenumber(phone):
     return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
