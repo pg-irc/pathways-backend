@@ -346,13 +346,18 @@ def clean_one_phone_number(phone_number):
     phone_number = format_ten_digit_phone_number(phone_number)
     return phone_number
 
-def clean_phone_number(phone_number_string):
+def find_toll_free_number(phone_numbers):
     toll_free_format = r'1-8[\d]{2}-[\d]{3}-[\d]{4}'
+    for _, phone_number in enumerate(phone_numbers):
+        if re.search(toll_free_format, phone_number):
+            return phone_number
+
+def clean_phone_number(phone_number_string):
     phone_numbers = re.split("/|or|;", phone_number_string)
     cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
-    for _, cleaned_phone_number in enumerate(cleaned_phone_numbers):
-        if re.search(toll_free_format, cleaned_phone_number):
-            return cleaned_phone_number
+    toll_free_number = find_toll_free_number(cleaned_phone_numbers)
+    if toll_free_number:
+        return toll_free_number
     return cleaned_phone_numbers[0]
 
 def is_valid_phonenumber(phone):
