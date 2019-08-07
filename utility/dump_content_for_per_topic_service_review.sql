@@ -1,4 +1,4 @@
--- psql -d pathways_local -F $'\t' -A -f utility/dump_content_for_recommendations_review.sql > content.csv
+-- psql -d pathways_local -F $'\t' -A -f utility/dump_content_for_per_topic_service_review.sql -v v2="'abuse-and-violence'"  > content.csv
 
 -- For one or more given topic ids, list all recommended services, as CSV, with the fields
 --  topic_id, service_id, exclude, organization_name, service_name, service_description, city
@@ -7,6 +7,7 @@ select distinct
 	taskSimilarity.task_id as topic_id,
 	service.id as service_id,
 	'' as "exclude?",
+	:v2 as "v2",
 	'"' || organizationStrings.name || '"' as organization_name,
 	'"' || serviceStrings.name || '"' as service_name,
 	regexp_replace(serviceStrings.description, E'[\\n\\r\\t;,]+', ' ', 'g' ) as service_description,
@@ -28,6 +29,7 @@ from
 	locations_locationaddress as locationAddress,
 	addresses_address as address
 where
+	taskSimilarity.task_id=:v2 and
 	taskSimilarity.service_id=service.id and
 	service.id=serviceStrings.master_id and
 	organization.id=organizationStrings.master_id and
