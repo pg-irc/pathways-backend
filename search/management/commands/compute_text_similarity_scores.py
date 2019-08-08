@@ -45,7 +45,7 @@ class Command(BaseCommand):
         descriptions = topic_descriptions + service_descriptions
 
         print('{} services read, computing similarities...'.format(len(service_ids)))
-        cosine_doc_similarities = compute_similarities(descriptions)
+        cosine_doc_similarities = compute_similarities(descriptions, topic_ids, service_ids)
 
         print('Saving {} topic similarities...'.format(len(topic_ids)*(len(topic_ids)-1)))
         save_topic_similarities(topic_ids, cosine_doc_similarities, related_topic_count)

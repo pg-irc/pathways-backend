@@ -56,9 +56,12 @@ class TestTopicSimilarityScore(TestCase):
         self.assertEqual(descriptions[0], name + ' ' + description)
 
     def test_computing_similarity_matrix(self):
+        topic_ids = [a_string()]
+        service_ids = [a_string(), a_string()]
         similarity_matrix = compute_similarities(['this is a bit of text',
                                                   'this is a similar bit of text',
-                                                  'now for something different'])
+                                                  'now for something different'],
+                                                 topic_ids, service_ids)
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.85)
         self.assertLess(similarity_matrix[0, 2], 0.10)
@@ -69,7 +72,7 @@ class TestTopicSimilarityScore(TestCase):
         ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertIn(description_without_phone_numbers, descriptions[0])
-    
+
     def test_removes_international_phone_numbers_from_description(self):
         description_with_phone_numbers = 'Call 1-800-123-4567 for more information.'
         description_without_phone_numbers = ('Call  for more information.')
@@ -97,7 +100,7 @@ class TestTopicSimilarityScore(TestCase):
         ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertIn(description_without_phone_numbers, descriptions[0])
-    
+
     def test_does_not_remove_numbers_that_are_not_phone_numbers(self):
         description_with_numbers = 'In 2017 the Canadian population was approximately 36,710,0000.'
         expected_description = ('In 2017 the Canadian population was approximately 36,710,0000.')
