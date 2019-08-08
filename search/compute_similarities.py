@@ -81,6 +81,7 @@ def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
     score_matrix = term_matrix.toarray()
     with open('../nlp_word_scores.csv', 'w') as file_handle:
         for document_id in topic_ids + service_ids:
+            print('saving intermediary results for doc {}'.format(document_id))
             save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
             document_index += 1
             if document_index > 25:
@@ -109,12 +110,16 @@ def get_document_terms(vectorizer, score_matrix, document_index):
 
 
 def comma_separated_terms_with_scores(document_terms):
-    result = ''
+    result = []
     for term_with_score in document_terms:
         term = term_with_score[0]
         score = term_with_score[1]
-        result += ',"%s(%.2f)"' % (term, score)
-    return result
+        result.append(',"')
+        result.append(term)
+        result.append('(')
+        result.append('%.2f' % score)
+        result.append(')"')
+    return ''.join(result)
 
 
 def compute_cosine_doc_similarities(matrix):
