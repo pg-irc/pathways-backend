@@ -44,18 +44,28 @@ def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
     score_matrix = term_matrix.toarray()
     document_index = 0
     for document_id in topic_ids + service_ids:
-        document_terms = []
-        for term_index in range(len(vectorizer.terms_list)):
-            term = vectorizer.terms_list[term_index]
-            score = score_matrix[document_index][term_index]
-            if score > 0:
-                document_terms.append((term, score))
+        document_terms = get_document_terms(vectorizer, score_matrix, document_index)
         document_terms = sorted(document_terms, key=lambda term: term[1], reverse=True)
-        line = ''
-        for term in document_terms:
-            line += ',"%s (%s)"' % (term[0].replace('\n', '\\n'), term[1])
-        print(document_id + line)
+        line = make_line(document_terms)
+        print('"' + document_id + '"' + line)
         document_index = document_index + 1
+
+
+def get_document_terms(vectorizer, score_matrix, document_index):
+    document_terms = []
+    for term_index in range(len(vectorizer.terms_list)):
+        term = vectorizer.terms_list[term_index]
+        score = score_matrix[document_index][term_index]
+        if score > 0:
+            document_terms.append((term, score))
+    return document_terms
+
+
+def make_line(document_terms):
+    line = ''
+    for term in document_terms:
+        line += ',"%s (%s)"' % (term[0].replace('\n', '\\n'), term[1])
+    return line
 
 
 def compute_cosine_doc_similarities(matrix):
