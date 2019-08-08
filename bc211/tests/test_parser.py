@@ -398,7 +398,7 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
-    def test_not_parse_confidential_mailing_address(self):
+    def test_does_not_parse_mailing_address_labeled_confidential(self):
         xml_address = '''
             <Site>
                 <MailingAddress Confidential="true">
@@ -412,7 +412,7 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
-    def test_not_parse_confidential_physical_address(self):
+    def test_does_not_parse_physical_address_labeled_confidential(self):
         xml_address = '''
             <Site>
                 <PhysicalAddress Confidential="true">
@@ -516,7 +516,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 0)
 
-    def test_does_not_parse_phone_with_confidential_set_to_true(self):
+    def test_does_not_parse_phone_labeled_confidential(self):
         site_id = a_string()
         root = etree.fromstring(
             '''
@@ -525,10 +525,14 @@ class PhoneNumberParserTests(unittest.TestCase):
                     <PhoneNumber>911</PhoneNumber>
                     <Type>Phone1</Type>
                 </Phone>
+                <Phone TollFree="false" Confidential="false">
+                    <PhoneNumber>911</PhoneNumber>
+                    <Type>Phone1</Type>
+                </Phone>
             </Site>'''
         )
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(len(phone_numbers), 0)
+        self.assertEqual(len(phone_numbers), 1)
 
     def test_parses_phone_into_expected_dto_object(self):
         site_id = a_string()

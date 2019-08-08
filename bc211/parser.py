@@ -56,13 +56,6 @@ def parse_optional_field(parent, field):
     return remove_double_escaped_html_markup(value.text)
 
 
-def parse_attribute(parent, attribute):
-    value = parent.get(attribute)
-    if value is None:
-        return None
-    return remove_double_escaped_html_markup(value)
-
-
 def parse_agency_name(agency):
     return parse_required_field(agency, 'Name')
 
@@ -228,7 +221,13 @@ def parse_postal_address(site_xml, site_id):
         return parse_address(postal_address, site_id, 'postal_address')
     return None
 
+def parse_attribute(parent, attribute):
+    value = parent.get(attribute)
+    if value is None:
+        return None
+    return value
 
+    
 def parse_address(address, site_id, address_type_id):
     city = parse_city(address)
     if not city:
@@ -285,7 +284,7 @@ def parse_postal_code(address):
 
 
 def parse_site_phone_number_list(site, site_id):
-    valid_phones = filter(phone_has_number_and_type_and_not_confidential, site.findall('Phone'))
+    valid_phones = filter(is_valid_phonenumber, site.findall('Phone'))
     return [parse_site_phone(phone, site_id) for phone in valid_phones]
 
 
@@ -310,8 +309,8 @@ def clean_phone_number(phone_number):
     else:
         return phone_number
 
-def phone_has_number_and_type_and_not_confidential(phone):
-    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and parse_attribute(phone, 'Confidential') == 'false'
+def is_valid_phonenumber(phone):
+    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and parse_attribute(phone, 'Confidential').lower() == 'false'
 
 
 def convert_phone_type_to_type_id(phone_type):
