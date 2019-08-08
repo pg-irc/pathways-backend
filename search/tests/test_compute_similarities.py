@@ -66,6 +66,17 @@ class TestTopicSimilarityScore(TestCase):
         self.assertGreater(similarity_matrix[0, 1], 0.70)
         self.assertLess(similarity_matrix[0, 2], 0.10)
 
+    def test_similarities_ignore_case(self):
+        topic_ids = [a_string()]
+        service_ids = [a_string(), a_string()]
+        similarity_matrix = compute_similarities_by_tf_idf(['this is a bit of text',
+                                                            'THIS IS A SIMILAR BIT OF TEXT',
+                                                            'now for something different'],
+                                                           topic_ids, service_ids)
+        self.assertGreater(similarity_matrix[0, 0], 0.99)
+        self.assertGreater(similarity_matrix[0, 1], 0.70)
+        self.assertLess(similarity_matrix[0, 2], 0.10)
+
     def test_ignores_stop_words_when_computing_similarity(self):
         topic_ids = [a_string()]
         service_ids = [a_string(), a_string()]
