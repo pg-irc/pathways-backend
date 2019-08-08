@@ -488,6 +488,20 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 0)
 
+    def test_does_not_parse_phone_with_confidential_set_to_true(self):
+        site_id = a_string()
+        root = etree.fromstring(
+            '''
+            <Site>
+                <Phone TollFree="false" Confidential="true">
+                    <PhoneNumber>911</PhoneNumber>
+                    <Type>Phone1</Type>
+                </Phone>
+            </Site>'''
+        )
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 0)
+
     def test_parses_phone_into_expected_dto_object(self):
         site_id = a_string()
         phone_type = a_string()
