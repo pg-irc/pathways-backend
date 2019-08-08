@@ -3,6 +3,7 @@ import spacy
 import sklearn.preprocessing
 from textacy.vsm import Vectorizer
 from django.utils.text import slugify
+from spacy.lang.en.stop_words import STOP_WORDS as SPACY_STOP_WORDS
 
 
 def to_topic_ids_and_descriptions(topics):
@@ -32,12 +33,34 @@ def to_service_ids_and_descriptions(services):
 def compute_similarities(docs, topic_ids, service_ids):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
-    tokenized_docs = ([tok.lemma_ for tok in doc] for doc in spacy_docs)
+    tokenized_docs = ([token.lemma_ for token in doc if not is_stop_word(token)] for doc in spacy_docs)
     # tf-idf
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
     save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids)
     return compute_cosine_doc_similarities(term_matrix)
+
+
+def is_stop_word(token):
+    return (token.is_space or
+            token.is_punct or
+            token.is_bracket or
+            token.like_num or
+            # token.like_url or
+            # token.like_email or
+            token.lemma_ in STOPLIST)
+
+
+def stop_list():
+    stop_words = '''
+    -PRON- and/or $
+    Monday Tuesday Wednesday Thursday Friday Saturday Sunday Mon Tue Wed Thu Fri Sat Sun
+    '''
+    stop_words_set = set(stop_words.split())
+    return stop_words_set.union(SPACY_STOP_WORDS)
+
+
+STOPLIST = stop_list()
 
 
 def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids):

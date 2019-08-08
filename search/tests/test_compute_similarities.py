@@ -63,7 +63,7 @@ class TestTopicSimilarityScore(TestCase):
                                                   'now for something different'],
                                                  topic_ids, service_ids)
         self.assertGreater(similarity_matrix[0, 0], 0.99)
-        self.assertGreater(similarity_matrix[0, 1], 0.85)
+        self.assertGreater(similarity_matrix[0, 1], 0.70)
         self.assertLess(similarity_matrix[0, 2], 0.10)
 
     def test_removes_local_phone_numbers_from_description(self):
