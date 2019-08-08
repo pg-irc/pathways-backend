@@ -398,6 +398,34 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
 
+    def test_not_parse_confidential_mailing_address(self):
+        xml_address = '''
+            <Site>
+                <MailingAddress Confidential="true">
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>Canada</Country>
+                </MailingAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'postal_address'
+        site_id = a_string()
+        self.assertIsNone(parser.parse_address(root.find('MailingAddress'), site_id, address_type_id))
+
+    def test_not_parse_confidential_physical_address(self):
+        xml_address = '''
+            <Site>
+                <PhysicalAddress Confidential="true">
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>Canada</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'physical_address'
+        site_id = a_string()
+        self.assertIsNone(parser.parse_address(root.find('PhysicalAddress'), site_id, address_type_id))
+
 
 class AddressLineParserTests(unittest.TestCase):
 

@@ -236,6 +236,9 @@ def parse_address(address, site_id, address_type_id):
     country = parse_country(address)
     if not country:
         return None
+    confidential = parse_attribute(address, 'Confidential')
+    if confidential == 'true':
+        return None
     return dtos.Address(location_id=site_id, address_type_id=address_type_id, city=city,
                         country=country, address_lines=parse_address_lines(address),
                         state_province=parse_state_province(address),
