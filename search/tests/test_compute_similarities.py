@@ -66,6 +66,18 @@ class TestTopicSimilarityScore(TestCase):
         self.assertGreater(similarity_matrix[0, 1], 0.70)
         self.assertLess(similarity_matrix[0, 2], 0.10)
 
+    def test_ignores_stop_words_when_computing_similarity(self):
+        topic_ids = [a_string()]
+        service_ids = [a_string(), a_string()]
+        stop_words_from_spacy = 'already also although always among amongst amount an and another'
+        similarity_matrix = compute_similarities_by_tf_idf(['this is a bit of text',
+                                                            'this is a similar bit of text ' + stop_words_from_spacy,
+                                                            'now for something different ' + stop_words_from_spacy],
+                                                           topic_ids, service_ids)
+        self.assertGreater(similarity_matrix[0, 0], 0.99)
+        self.assertGreater(similarity_matrix[0, 1], 0.70)
+        self.assertLess(similarity_matrix[0, 2], 0.10)
+
     def test_removes_local_phone_numbers_from_description(self):
         description_with_phone_numbers = 'Call 778-123-4567 or 604-123-4567 for more information.'
         description_without_phone_numbers = ('Call  or  for more information.')
