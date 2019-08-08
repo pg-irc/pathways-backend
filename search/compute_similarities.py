@@ -65,10 +65,10 @@ STOPLIST = stop_list_all_lower_case()
 def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids):
     document_index = 0
     score_matrix = term_matrix.toarray()
-    with open('output.csv', 'w') as file_handle:
+    with open('../nlp_word_scores.csv', 'w') as file_handle:
         for document_id in topic_ids + service_ids:
             save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
-            document_index = document_index + 1
+            document_index += 1
 
 
 def save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id):
@@ -77,9 +77,9 @@ def save_results_for_document(file_handle, vectorizer, score_matrix, document_in
 
 
 def assemble_results_for_document(vectorizer, score_matrix, document_index):
-    document_terms = get_document_terms(vectorizer, score_matrix, document_index)
-    sorted_document_terms = sorted(document_terms, key=lambda term: term[1], reverse=True)
-    return concatenate_terms_with_scores(sorted_document_terms)
+    terms_with_scores = get_document_terms(vectorizer, score_matrix, document_index)
+    terms_sorted_by_score = sorted(terms_with_scores, key=lambda term: term[1], reverse=True)
+    return comma_separated_terms_with_scores(terms_sorted_by_score)
 
 
 def get_document_terms(vectorizer, score_matrix, document_index):
@@ -92,10 +92,12 @@ def get_document_terms(vectorizer, score_matrix, document_index):
     return document_terms
 
 
-def concatenate_terms_with_scores(document_terms):
+def comma_separated_terms_with_scores(document_terms):
     result = ''
-    for term in document_terms:
-        result += ',"%s(%.2f)"' % (term[0].replace('\n', '\\n').replace('\t', '\\t'), term[1])
+    for term_with_score in document_terms:
+        term = term_with_score[0]
+        score = term_with_score[1]
+        result += ',"%s(%.2f)"' % (term, score)
     return result
 
 
