@@ -33,10 +33,18 @@ def to_service_ids_and_descriptions(services):
 def compute_similarities_by_tf_idf(docs, topic_ids, service_ids):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
+
+    print('... generating tokens')
     tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
+
+    print('... computing term matrix')
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
+
+    print('... saving terms and scores to file')
     save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids)
+
+    print('... computing cosine similarities')
     return compute_cosine_doc_similarities(term_matrix)
 
 
