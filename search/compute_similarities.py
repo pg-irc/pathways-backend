@@ -3,7 +3,10 @@ import spacy
 import sklearn.preprocessing
 from textacy.vsm import Vectorizer
 from django.utils.text import slugify
+import logging
 from spacy.lang.en.stop_words import STOP_WORDS as SPACY_STOP_WORDS
+
+LOGGER = logging.getLogger(__file__)
 
 
 def to_topic_ids_and_descriptions(topics):
@@ -34,17 +37,17 @@ def compute_similarities_by_tf_idf(docs, topic_ids, service_ids):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
 
-    print('... generating tokens')
+    LOGGER.info('... generating tokens')
     tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
 
-    print('... computing term matrix')
+    LOGGER.info('... computing term matrix')
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
 
-    print('... saving terms and scores to file')
+    LOGGER.info('... saving terms and scores to file')
     save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids)
 
-    print('... computing cosine similarities')
+    LOGGER.info('... computing cosine similarities')
     return compute_cosine_doc_similarities(term_matrix)
 
 
