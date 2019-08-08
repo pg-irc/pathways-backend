@@ -629,13 +629,6 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-855-556-3729')
-    
-    def test_parse_phone_with_more_than_one_number(self):
-        site_id = a_string()
-        xml = self.build_phone_xml('1-866-235-0350; 613-731-4092', a_string())
-        root = etree.fromstring(xml)
-        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '1-866-235-0350')
 
     def test_parse_phone_with_only_mnemonics(self):
         site_id = a_string()
@@ -652,6 +645,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         self.assertEqual(phone_numbers[0].phone_number, '21167')
 
     def test_parse_phone_with_missing_hyphen(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250 832-3885', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-832-3885')
+
+    def test_parse_phone_with_missing_hyphen_and_extension(self):
         site_id = a_string()
         xml = self.build_phone_xml('250 832-3885 Local 1310', a_string())
         root = etree.fromstring(xml)
@@ -678,6 +678,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-866-286-9766')
+
+    def test_parse_two_numbers_separated_by_semi_colons(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-866-235-0350; 613-731-4092', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-866-235-0350')
     
     def test_parse_two_numbers_separated_by_slash(self):
         site_id = a_string()
@@ -685,6 +692,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '250-949-6625')
+
+    def test_parse_multiple_numbers_separated_by_different_separators(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-949-6625 / 250-286-8064 or 1-866-235-0350; 613-731-4092', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-866-235-0350')
 
     def test_parse_mnemonics_and_extension(self):
         site_id = a_string()
