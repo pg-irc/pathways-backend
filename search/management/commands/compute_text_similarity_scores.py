@@ -53,7 +53,6 @@ class Command(BaseCommand):
         topic_ids, topic_descriptions = to_topic_ids_and_descriptions(topics)
         print('{} topics read, reading services...'.format(len(topic_ids)))
         services = Service.objects.all()
-        services = services[0:10]
         service_ids, service_descriptions = to_service_ids_and_descriptions(services)
 
         descriptions = topic_descriptions + service_descriptions

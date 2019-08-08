@@ -12,14 +12,10 @@ LOGGER = logging.getLogger(__file__)
 def to_topic_ids_and_descriptions(topics):
     ids = []
     descriptions = []
-    i = 0
     for _, topic in topics['taskMap'].items():
         ids.append(slugify(topic['id']))
         english_description = topic['title']['en'] + ' ' + topic['description']['en']
         descriptions.append(english_description)
-        i = i + 1
-        if i == 10:
-            return (ids, descriptions)
     return (ids, descriptions)
 
 
