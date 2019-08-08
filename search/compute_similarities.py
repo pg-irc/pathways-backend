@@ -84,7 +84,7 @@ def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
             print('saving intermediary results for doc {}'.format(document_id))
             save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
             document_index += 1
-            if document_index > 25:
+            if document_index > 5:
                 return
 
 
