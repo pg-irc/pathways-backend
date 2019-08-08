@@ -43,14 +43,15 @@ def compute_similarities(docs, topic_ids, service_ids):
 def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids):
     document_index = 0
     score_matrix = term_matrix.toarray()
-    for document_id in topic_ids + service_ids:
-        save_results_for_document(vectorizer, score_matrix, document_index, document_id)
-        document_index = document_index + 1
+    with open('output.csv', 'w') as file_handle:
+        for document_id in topic_ids + service_ids:
+            save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
+            document_index = document_index + 1
 
 
-def save_results_for_document(vectorizer, score_matrix, document_index, document_id):
+def save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id):
     results = assemble_results_for_document(vectorizer, score_matrix, document_index)
-    print('"' + document_id + '"' + results)
+    file_handle.write('"' + document_id + '"' + results + '\n')
 
 
 def assemble_results_for_document(vectorizer, score_matrix, document_index):
