@@ -52,7 +52,7 @@ def is_stop_word(token):
 
 def stop_list_all_lower_case():
     stop_words = '''
-    -PRON- and/or $
+    and/or $
     Monday Tuesday Wednesday Thursday Friday Saturday Sunday Mon Tue Wed Thu Fri Sat Sun
     '''
     stop_words = set(stop_words.split()).union(SPACY_STOP_WORDS)
