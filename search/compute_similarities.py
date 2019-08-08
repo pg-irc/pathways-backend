@@ -41,14 +41,22 @@ def compute_similarities(docs, topic_ids, service_ids):
 
 
 def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids):
-    score_matrix = term_matrix.toarray()
     document_index = 0
+    score_matrix = term_matrix.toarray()
     for document_id in topic_ids + service_ids:
-        document_terms = get_document_terms(vectorizer, score_matrix, document_index)
-        document_terms = sorted(document_terms, key=lambda term: term[1], reverse=True)
-        line = make_line(document_terms)
-        print('"' + document_id + '"' + line)
+        save_results_for_document(vectorizer, score_matrix, document_index, document_id)
         document_index = document_index + 1
+
+
+def save_results_for_document(vectorizer, score_matrix, document_index, document_id):
+    results = assemble_results_for_document(vectorizer, score_matrix, document_index)
+    print('"' + document_id + '"' + results)
+
+
+def assemble_results_for_document(vectorizer, score_matrix, document_index):
+    document_terms = get_document_terms(vectorizer, score_matrix, document_index)
+    sorted_document_terms = sorted(document_terms, key=lambda term: term[1], reverse=True)
+    return concatenate_terms_with_scores(sorted_document_terms)
 
 
 def get_document_terms(vectorizer, score_matrix, document_index):
@@ -61,11 +69,11 @@ def get_document_terms(vectorizer, score_matrix, document_index):
     return document_terms
 
 
-def make_line(document_terms):
-    line = ''
+def concatenate_terms_with_scores(document_terms):
+    result = ''
     for term in document_terms:
-        line += ',"%s (%s)"' % (term[0].replace('\n', '\\n'), term[1])
-    return line
+        result += ',"%s (%s)"' % (term[0].replace('\n', '\\n'), term[1])
+    return result
 
 
 def compute_cosine_doc_similarities(matrix):
