@@ -516,7 +516,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 0)
 
-    def test_does_not_parse_phone_labeled_confidential(self):
+    def test_does_not_parse_phone_number_labeled_confidential(self):
         site_id = a_string()
         root = etree.fromstring(
             '''
@@ -552,7 +552,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_number_list[0].phone_number_type_id, 'a_phone_type')
 
-    def test_parses_phone_phone_number(self):
+    def test_parses_phone_number(self):
         site_id = a_string()
         phone_type = a_string()
         phone_number = a_phone_number()
