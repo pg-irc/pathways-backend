@@ -33,7 +33,7 @@ def to_service_ids_and_descriptions(services):
 def compute_similarities(docs, topic_ids, service_ids):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
-    tokenized_docs = ([token.lemma_ for token in doc if not is_stop_word(token)] for doc in spacy_docs)
+    tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
     # tf-idf
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
@@ -57,7 +57,11 @@ def stop_list():
     Monday Tuesday Wednesday Thursday Friday Saturday Sunday Mon Tue Wed Thu Fri Sat Sun
     '''
     stop_words_set = set(stop_words.split())
-    return stop_words_set.union(SPACY_STOP_WORDS)
+    stop_words_set = stop_words_set.union(SPACY_STOP_WORDS)
+    result = set([])
+    for stop_word in stop_words_set:
+        result.add(stop_word.lower())
+    return result
 
 
 STOPLIST = stop_list()
