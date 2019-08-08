@@ -47,7 +47,7 @@ def is_stop_word(token):
             token.like_num or
             # token.like_url or
             # token.like_email or
-            token.lemma_ in STOPLIST)
+            token.lemma_.lower() in STOPLIST)
 
 
 def stop_list_all_lower_case():
