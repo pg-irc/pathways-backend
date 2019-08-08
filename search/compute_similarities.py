@@ -34,20 +34,23 @@ def to_service_ids_and_descriptions(services):
 
 
 def compute_similarities_by_tf_idf(docs, topic_ids, service_ids):
+    print('... initlializing nlp')
     nlp = spacy.load('en')
+
+    print('... reading documents')
     spacy_docs = [nlp(doc) for doc in docs]
 
-    LOGGER.info('... generating tokens')
+    print('... generating tokens')
     tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
 
-    LOGGER.info('... computing term matrix')
+    print('... computing term matrix')
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
 
-    LOGGER.info('... saving terms and scores to file')
+    print('... saving some terms and scores to file')
     save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids)
 
-    LOGGER.info('... computing cosine similarities')
+    print('... computing cosine similarities')
     return compute_cosine_doc_similarities(term_matrix)
 
 
@@ -80,6 +83,8 @@ def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
         for document_id in topic_ids + service_ids:
             save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
             document_index += 1
+            if document_index > 25:
+                return
 
 
 def save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id):
