@@ -4,7 +4,7 @@ from newcomers_guide.parse_data import parse_topic_files
 from human_services.services.models import Service
 from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
-                                         compute_similarities)
+                                         compute_similarities_by_tf_idf)
 from search.save_similarities import (save_topic_similarities,
                                       save_topic_service_similarity_scores)
 
@@ -45,7 +45,7 @@ class Command(BaseCommand):
         descriptions = topic_descriptions + service_descriptions
 
         print('{} services read, computing similarities...'.format(len(service_ids)))
-        cosine_doc_similarities = compute_similarities(descriptions, topic_ids, service_ids)
+        cosine_doc_similarities = compute_similarities_by_tf_idf(descriptions, topic_ids, service_ids)
 
         print('Saving {} topic similarities...'.format(len(topic_ids)*(len(topic_ids)-1)))
         save_topic_similarities(topic_ids, cosine_doc_similarities, related_topic_count)

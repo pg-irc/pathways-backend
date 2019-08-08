@@ -1,7 +1,7 @@
 from django.test import TestCase
 from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
-                                         compute_similarities)
+                                         compute_similarities_by_tf_idf)
 from human_services.services.models import Service
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
@@ -58,10 +58,10 @@ class TestTopicSimilarityScore(TestCase):
     def test_computing_similarity_matrix(self):
         topic_ids = [a_string()]
         service_ids = [a_string(), a_string()]
-        similarity_matrix = compute_similarities(['this is a bit of text',
-                                                  'this is a similar bit of text',
-                                                  'now for something different'],
-                                                 topic_ids, service_ids)
+        similarity_matrix = compute_similarities_by_tf_idf(['this is a bit of text',
+                                                            'this is a similar bit of text',
+                                                            'now for something different'],
+                                                           topic_ids, service_ids)
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.70)
         self.assertLess(similarity_matrix[0, 2], 0.10)
