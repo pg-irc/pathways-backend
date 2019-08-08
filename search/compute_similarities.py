@@ -72,7 +72,7 @@ def get_document_terms(vectorizer, score_matrix, document_index):
 def concatenate_terms_with_scores(document_terms):
     result = ''
     for term in document_terms:
-        result += ',"%s (%s)"' % (term[0].replace('\n', '\\n'), term[1])
+        result += ',"%s(%.2f)"' % (term[0].replace('\n', '\\n').replace('\t', '\\t'), term[1])
     return result
 
 
