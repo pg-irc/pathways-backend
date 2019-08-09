@@ -35,7 +35,8 @@ def to_service_ids_and_descriptions(services):
 
 def compute_similarities_by_tf_idf(docs, topic_ids, service_ids, results_to_save, results_file):
     if is_saving_intermediates_to_file(results_to_save, results_file):
-        return compute_similarities_and_save_intermediates(docs, topic_ids, service_ids, results_to_save, results_file)
+        return compute_similarities_and_save_intermediates(docs, topic_ids, service_ids,
+                                                           results_to_save, results_file)
 
     return compute_similarities(docs)
 
@@ -57,23 +58,24 @@ def is_saving_intermediates_to_file(results_to_save, results_file):
 
 
 def compute_similarities(docs):
-    nlp = spacy.load('en')
-    spacy_docs = [nlp(doc) for doc in docs]
-    tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
-    term_matrix = vectorizer.fit_transform(tokenized_docs)
+    term_matrix = compute_term_matrix(vectorizer, docs)
     return compute_cosine_doc_similarities(term_matrix)
 
 
 def compute_similarities_and_save_intermediates(docs, topic_ids, service_ids, results_to_save, results_file):
-    nlp = spacy.load('en')
-    spacy_docs = [nlp(doc) for doc in docs]
-    tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
-    term_matrix = vectorizer.fit_transform(tokenized_docs)
+    term_matrix = compute_term_matrix(vectorizer, docs)
     save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
                                              service_ids, results_to_save, results_file)
     return compute_cosine_doc_similarities(term_matrix)
+
+
+def compute_term_matrix(vectorizer, docs):
+    nlp = spacy.load('en')
+    spacy_docs = [nlp(doc) for doc in docs]
+    tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
+    return vectorizer.fit_transform(tokenized_docs)
 
 
 def is_stop_word(token):
