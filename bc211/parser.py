@@ -358,9 +358,10 @@ def format_ten_digit_phone_number(phone_number):
 
 def find_toll_free_number(phone_numbers):
     toll_free_format = r'1-8[\d]{2}-[\d]{3}-[\d]{4}'
-    for _, phone_number in enumerate(phone_numbers):
+    for  phone_number in phone_numbers:
         if re.search(toll_free_format, phone_number):
             return phone_number
+    return None
 
 def clean_phone_number(phone_number_string):
     phone_numbers = re.split("/|or|;", phone_number_string)
