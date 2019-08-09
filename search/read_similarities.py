@@ -13,6 +13,9 @@ def read_manual_similarities(csv_path):
 def build_manual_similarity_map(csv_data):
     result = {}
 
+    if not csv_data:
+        return result
+
     topics = csv_data[0]
     for topic_id in topics:
         result[topic_id] = []
