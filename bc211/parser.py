@@ -304,6 +304,22 @@ def parse_site_phone(phone, site_id):
         phone_number=phone_number
     )
 
+def clean_phone_number(phone_number_string):
+    phone_numbers = re.split("/|or|;", phone_number_string)
+    cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
+    toll_free_number = find_toll_free_number(cleaned_phone_numbers)
+    if toll_free_number:
+        return toll_free_number
+    return cleaned_phone_numbers[0]
+
+def clean_one_phone_number(phone_number):
+    phone_number = remove_phone_extensions(phone_number)
+    phone_number = convert_phone_mnemonic(phone_number)
+    phone_number = standardize_phone_number(phone_number)
+    phone_number = format_eleven_digit_phone_number(phone_number)
+    phone_number = format_ten_digit_phone_number(phone_number)
+    return phone_number
+
 def remove_phone_extensions(phone_number):
     extension_format = r'([Ll]ocal|[Ee]xt)[ \d].*'
     phone_number = re.sub(extension_format, '', phone_number)
@@ -336,14 +352,6 @@ def format_eleven_digit_phone_number(phone_number):
 def format_ten_digit_phone_number(phone_number):
     if re.search(r'\d{10}', phone_number):
         phone_number = re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
-    return phone_number
-
-def clean_one_phone_number(phone_number):
-    phone_number = remove_phone_extensions(phone_number)
-    phone_number = convert_phone_mnemonic(phone_number)
-    phone_number = standardize_phone_number(phone_number)
-    phone_number = format_eleven_digit_phone_number(phone_number)
-    phone_number = format_ten_digit_phone_number(phone_number)
     return phone_number
 
 def find_toll_free_number(phone_numbers):
