@@ -89,14 +89,17 @@ def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
 
 
 def save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id):
-    results = assemble_results_for_document(vectorizer, score_matrix, document_index)
-    file_handle.write('"' + document_id + '"' + results + '\n')
+    file_handle.write('"')
+    file_handle.write(document_id)
+    file_handle.write('"')
+    assemble_results_for_document(file_handle, vectorizer, score_matrix, document_index)
+    file_handle.write('\n')
 
 
-def assemble_results_for_document(vectorizer, score_matrix, document_index):
+def assemble_results_for_document(file_handle, vectorizer, score_matrix, document_index):
     terms_with_scores = get_document_terms(vectorizer, score_matrix, document_index)
     terms_sorted_by_score = sorted(terms_with_scores, key=lambda term: term[1], reverse=True)
-    return comma_separated_terms_with_scores(terms_sorted_by_score)
+    comma_separated_terms_with_scores(file_handle, terms_sorted_by_score)
 
 
 def get_document_terms(vectorizer, score_matrix, document_index):
@@ -109,17 +112,16 @@ def get_document_terms(vectorizer, score_matrix, document_index):
     return document_terms
 
 
-def comma_separated_terms_with_scores(document_terms):
-    result = []
+def comma_separated_terms_with_scores(file_handle, document_terms):
     for term_with_score in document_terms:
         term = term_with_score[0]
         score = term_with_score[1]
-        result.append(',"')
-        result.append(term)
-        result.append('(')
-        result.append('%.2f' % score)
-        result.append(')"')
-    return ''.join(result)
+
+        file_handle.write(',"')
+        file_handle.write(term)
+        file_handle.write('(')
+        file_handle.write('%.2f' % score)
+        file_handle.write(')"')
 
 
 def compute_cosine_doc_similarities(matrix):
