@@ -316,9 +316,9 @@ def clean_one_phone_number(phone_number):
     phone_number, extension = separate_phone_number_from_extensions(phone_number)
     phone_number = convert_phone_mnemonic(phone_number)
     phone_number = remove_separator_characters(phone_number)
-    if phone_number_has_digits(phone_number, 11):
+    if len(phone_number) == 11:
         phone_number = format_eleven_digit_phone_number(phone_number)
-    if phone_number_has_digits(phone_number, 10):
+    if len(phone_number) == 10:
         phone_number = format_ten_digit_phone_number(phone_number)
     phone_number = add_extension_to_phone_number(phone_number, extension)
     return phone_number
@@ -329,7 +329,7 @@ def separate_phone_number_from_extensions(phone_number):
     if found_extension:
         extension = found_extension[0]
     else:
-        extension = ''
+        extension = None
     phone_number = re.sub(extension_format, '', phone_number)
     return phone_number, extension
 
@@ -352,10 +352,6 @@ def remove_separator_characters(phone_number):
     phone_number = re.sub(phone_digit_separator, '', phone_number)
     return phone_number
 
-def phone_number_has_digits(phone_number, digit):
-    match_digit_format = r'\d{' + str(digit) + '}'
-    return re.search(match_digit_format, phone_number)
-
 def format_eleven_digit_phone_number(phone_number):
     return re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
 
@@ -377,11 +373,11 @@ def clean_phone_number(phone_number_string):
         return toll_free_number
     return cleaned_phone_numbers[0]
 
+def add_extension_to_phone_number(phone_number, extension):
+    return phone_number + ' ' + extension if extension is not None else phone_number
+
 def is_valid_phonenumber(phone):
     return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
-
-def add_extension_to_phone_number(phone_number, extension):
-    return phone_number + ' ' + extension if extension != '' else phone_number
 
 def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
