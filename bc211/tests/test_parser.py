@@ -426,6 +426,19 @@ class AddressParserTests(unittest.TestCase):
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('PhysicalAddress'), site_id, address_type_id))
 
+    def test_does_not_parse_address_with_ambiguous_confidential_flag(self):
+        xml_address = '''
+            <Site>
+                <PhysicalAddress Confidential="tru">
+                    <Line1>Line1</Line1>
+                    <City>City</City>
+                    <Country>Canada</Country>
+                </PhysicalAddress>
+            </Site>'''
+        root = etree.fromstring(xml_address)
+        address_type_id = 'physical_address'
+        site_id = a_string()
+        self.assertIsNone(parser.parse_address(root.find('PhysicalAddress'), site_id, address_type_id))
 
 class AddressLineParserTests(unittest.TestCase):
 
