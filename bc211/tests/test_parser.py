@@ -593,7 +593,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml('250-542-3555 Local 221', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '250-542-3555')
+        self.assertEqual(phone_numbers[0].phone_number, '250-542-3555 Local 221')
     
     def test_parses_phone_number_with_full_mnemonics(self):
         site_id = a_string()
@@ -635,7 +635,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml('250-949-HELP (4357) local 101', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '250-949-4357')
+        self.assertEqual(phone_numbers[0].phone_number, '250-949-4357 local 101')
 
     def test_parses_phone_number_with_area_code(self):
         site_id = a_string()
@@ -649,14 +649,14 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml('(250)-541-2200 Ext 221', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '250-541-2200')
+        self.assertEqual(phone_numbers[0].phone_number, '250-541-2200 Ext 221')
 
     def test_parses_phone_number_with_area_code_extension_and_mnemonic(self):
         site_id = a_string()
         xml = self.build_phone_xml('(250)-949-HELP (4357) local 101', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '250-949-4357')
+        self.assertEqual(phone_numbers[0].phone_number, '250-949-4357 local 101')
 
     def test_parses_phone_number_with_missing_hyphen(self):
         site_id = a_string()
@@ -670,7 +670,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml('250 832-3885 Local 1310', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '250-832-3885')
+        self.assertEqual(phone_numbers[0].phone_number, '250-832-3885 Local 1310')
 
     def test_parses_phone_number_with_no_hyphen(self):
         site_id = a_string()
@@ -684,7 +684,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml('1(250)8323885 local 101', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '1-250-832-3885')
+        self.assertEqual(phone_numbers[0].phone_number, '1-250-832-3885 local 101')
 
     def test_chooses_toll_free_number_when_it_comes_first(self):
         site_id = a_string()
@@ -733,7 +733,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml('(250)-949-HELP (4357) local 101 or 1-844-START11 (782-7811) ext 102', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '1-844-782-7811')
+        self.assertEqual(phone_numbers[0].phone_number, '1-844-782-7811 ext 102')
 
     def build_phone_xml(self, phone_number, phone_number_type):
         return '''

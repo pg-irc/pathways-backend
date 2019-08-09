@@ -320,6 +320,7 @@ def clean_one_phone_number(phone_number):
         phone_number = format_eleven_digit_phone_number(phone_number)
     if phone_number_has_digits(phone_number, 10):
         phone_number = format_ten_digit_phone_number(phone_number)
+    phone_number = add_extension_to_phone_number(phone_number, extension)
     return phone_number
 
 def separate_phone_number_from_extensions(phone_number):
@@ -379,6 +380,8 @@ def clean_phone_number(phone_number_string):
 def is_valid_phonenumber(phone):
     return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
 
+def add_extension_to_phone_number(phone_number, extension):
+    return phone_number + ' ' + extension if extension != '' else phone_number
 
 def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
