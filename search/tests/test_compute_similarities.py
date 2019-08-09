@@ -62,7 +62,7 @@ class TestTopicSimilarityScore(TestCase):
                    'likewise aligator interloper and fumigator',
                    'different lollipop candybar and icecream']
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0)
+        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
@@ -75,7 +75,7 @@ class TestTopicSimilarityScore(TestCase):
                    'LIKEWISE Aligator INTERLOPER and FUmiGAtoR',
                    'different lollipop candybar and icecream']
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0)
+        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
@@ -89,7 +89,7 @@ class TestTopicSimilarityScore(TestCase):
                    'likewise aligator interloper and fumigator ' + stop_words_from_spacy,
                    'different lollipop candybar and icecream ' + stop_words_from_spacy]
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0)
+        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
@@ -103,7 +103,7 @@ class TestTopicSimilarityScore(TestCase):
                    'likewise aligator interloper and fumigator ' + stop_words_from_spacy,
                    'different lollipop candybar and icecream ' + stop_words_from_spacy]
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0)
+        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
