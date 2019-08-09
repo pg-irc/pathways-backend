@@ -297,14 +297,14 @@ def parse_site_phone_number_list(site, site_id):
 def parse_site_phone(phone, site_id):
     location_id = site_id
     phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
-    phone_number = clean_phone_number(phone.find('PhoneNumber').text)
+    phone_number = clean_phone_numbers(phone.find('PhoneNumber').text)
     return dtos.PhoneAtLocation(
         location_id=location_id,
         phone_number_type_id=phone_number_type_id,
         phone_number=phone_number
     )
 
-def clean_phone_number(phone_number_string):
+def clean_phone_numbers(phone_number_string):
     phone_numbers = re.split("/|or|;", phone_number_string)
     cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
     toll_free_number = find_toll_free_number(cleaned_phone_numbers)
@@ -315,7 +315,7 @@ def clean_phone_number(phone_number_string):
 def clean_one_phone_number(phone_number):
     phone_number = remove_phone_extensions(phone_number)
     phone_number = convert_phone_mnemonic(phone_number)
-    phone_number = standardize_phone_number(phone_number)
+    phone_number = remove_separator_characters(phone_number)
     phone_number = format_eleven_digit_phone_number(phone_number)
     phone_number = format_ten_digit_phone_number(phone_number)
     return phone_number
@@ -335,11 +335,11 @@ def convert_phone_mnemonic(phone_number):
         phone_number = re.sub(r'[p-sP-S]', '7', phone_number)
         phone_number = re.sub(r'[t-vT-V]', '8', phone_number)
         phone_number = re.sub(r'[w-zW-Z]', '9', phone_number)
-        split_mnenomic_format = r'(\(?.*\)?.*)(\(.*\))'
-        phone_number = re.sub(split_mnenomic_format, r'\1', phone_number)
+        separate_number_from_mnenomic_format = r'(\(?.*\)?.*)(\(.*\))'
+        phone_number = re.sub(separate_number_from_mnenomic_format, r'\1', phone_number)
     return phone_number
 
-def standardize_phone_number(phone_number):
+def remove_separator_characters(phone_number):
     phone_digit_separator = r'[- \(\)]'
     phone_number = re.sub(phone_digit_separator, '', phone_number)
     return phone_number
