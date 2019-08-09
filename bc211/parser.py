@@ -313,7 +313,7 @@ def clean_phone_numbers(phone_number_string):
     return cleaned_phone_numbers[0]
 
 def clean_one_phone_number(phone_number):
-    phone_number = remove_phone_extensions(phone_number)
+    phone_number, extension = separate_phone_number_from_extensions(phone_number)
     phone_number = convert_phone_mnemonic(phone_number)
     phone_number = remove_separator_characters(phone_number)
     if phone_number_has_digits(phone_number, 11):
@@ -322,10 +322,15 @@ def clean_one_phone_number(phone_number):
         phone_number = format_ten_digit_phone_number(phone_number)
     return phone_number
 
-def remove_phone_extensions(phone_number):
+def separate_phone_number_from_extensions(phone_number):
     extension_format = r'([Ll]ocal|[Ee]xt)[ \d].*'
+    found_extension = re.search(extension_format, phone_number)
+    if found_extension:
+        extension = found_extension[0]
+    else:
+        extension = ''
     phone_number = re.sub(extension_format, '', phone_number)
-    return phone_number
+    return phone_number, extension
 
 def convert_phone_mnemonic(phone_number):
     if re.search(r'[a-zA-Z]', phone_number):
