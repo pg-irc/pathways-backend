@@ -55,7 +55,7 @@ def is_saving_intermediates_to_file(results_to_save, results_file):
         message = 'Output file (--results_file) was not specified for intermediary results'
         raise RuntimeError(message)
 
-    if results_file:
+    if results_to_save <= 0 and results_file:
         message = ('Output file was specified (--results_file) ' +
                    'but zero results are being saved (--save_intermediate_results)')
         raise RuntimeError(message)
