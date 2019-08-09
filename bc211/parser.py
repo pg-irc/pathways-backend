@@ -221,7 +221,13 @@ def parse_postal_address(site_xml, site_id):
         return parse_address(postal_address, site_id, 'postal_address')
     return None
 
+def parse_attribute(parent, attribute):
+    value = parent.get(attribute)
+    if value is None:
+        return None
+    return value
 
+    
 def parse_address(address, site_id, address_type_id):
     city = parse_city(address)
     if not city:
@@ -229,11 +235,20 @@ def parse_address(address, site_id, address_type_id):
     country = parse_country(address)
     if not country:
         return None
+    if record_is_confidential(address):
+        return None
     return dtos.Address(location_id=site_id, address_type_id=address_type_id, city=city,
                         country=country, address_lines=parse_address_lines(address),
                         state_province=parse_state_province(address),
                         postal_code=parse_postal_code(address))
 
+def record_is_confidential(record):
+    confidential = parse_attribute(record, 'Confidential')
+    if confidential is None:
+        return False
+    if confidential.lower() == 'false':
+        return False
+    return True
 
 def parse_address_lines(address):
     sorted_address_children = sorted(address.getchildren(), key=lambda child: child.tag)
@@ -275,7 +290,7 @@ def parse_postal_code(address):
 
 
 def parse_site_phone_number_list(site, site_id):
-    valid_phones = filter(phone_has_number_and_type, site.findall('Phone'))
+    valid_phones = filter(is_valid_phonenumber, site.findall('Phone'))
     return [parse_site_phone(phone, site_id) for phone in valid_phones]
 
 
@@ -300,8 +315,8 @@ def clean_phone_number(phone_number):
     else:
         return phone_number
 
-def phone_has_number_and_type(phone):
-    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type')
+def is_valid_phonenumber(phone):
+    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
 
 
 def convert_phone_type_to_type_id(phone_type):
