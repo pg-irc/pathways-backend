@@ -48,12 +48,12 @@ def compute_similarities_by_tf_idf(docs, topic_ids, service_ids, results_to_save
 
 
 def is_saving_intermediates_to_file(results_to_save, results_file):
-    if results_to_save > 0:
-        if not results_file:
-            message = 'Output file (--results_file) was not specified for intermediary results'
-            raise RuntimeError(message)
-
+    if results_to_save > 0 and results_file:
         return True
+
+    if results_to_save > 0 and not results_file:
+        message = 'Output file (--results_file) was not specified for intermediary results'
+        raise RuntimeError(message)
 
     if results_file:
         message = ('Output file was specified (--results_file) ' +
