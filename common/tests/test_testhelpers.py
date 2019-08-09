@@ -25,6 +25,3 @@ class TestTestHelpers(TestCase):
 
     def test_a_phone_number_by_default_has_length_12(self):
         return self.assertEqual(len(a_phone_number()), 12)
-
-    def test_a_phone_number_is_numeric(self):
-        return self.assertFalse(a_phone_number().isnumeric())
