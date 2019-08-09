@@ -235,14 +235,20 @@ def parse_address(address, site_id, address_type_id):
     country = parse_country(address)
     if not country:
         return None
-    confidential = parse_attribute(address, 'Confidential')
-    if confidential == 'true':
+    if record_is_confidential(address):
         return None
     return dtos.Address(location_id=site_id, address_type_id=address_type_id, city=city,
                         country=country, address_lines=parse_address_lines(address),
                         state_province=parse_state_province(address),
                         postal_code=parse_postal_code(address))
 
+def record_is_confidential(record):
+    confidential = parse_attribute(record, 'Confidential')
+    if confidential is None:
+        return False
+    if confidential.lower() == 'false':
+        return False
+    return True
 
 def parse_address_lines(address):
     sorted_address_children = sorted(address.getchildren(), key=lambda child: child.tag)
@@ -310,7 +316,7 @@ def clean_phone_number(phone_number):
         return phone_number
 
 def is_valid_phonenumber(phone):
-    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and parse_attribute(phone, 'Confidential').lower() == 'false'
+    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
 
 
 def convert_phone_type_to_type_id(phone_type):
