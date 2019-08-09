@@ -37,7 +37,6 @@ class Command(BaseCommand):
                             dest='results_file',
                             nargs='?',
                             type=argparse.FileType('w'),
-                            default='',
                             help=('oath to file for saving word-scores, required if --save_intermediate_results is given'))
 
     def handle(self, *args, **options):

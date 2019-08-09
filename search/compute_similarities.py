@@ -39,10 +39,28 @@ def compute_similarities_by_tf_idf(docs, topic_ids, service_ids, results_to_save
     tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
-    if results_file != '':
+
+    if is_saving_intermediates_to_file(results_to_save, results_file):
         save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
                                                  service_ids, results_to_save, results_file)
+
     return compute_cosine_doc_similarities(term_matrix)
+
+
+def is_saving_intermediates_to_file(results_to_save, results_file):
+    if results_to_save > 0:
+        if not results_file:
+            message = 'Output file (--results_file) was not specified for intermediary results'
+            raise RuntimeError(message)
+
+        return True
+
+    if results_file:
+        message = ('Output file was specified (--results_file) ' +
+                   'but zero results are being saved (--save_intermediate_results)')
+        raise RuntimeError(message)
+
+    return False
 
 
 def is_stop_word(token):
