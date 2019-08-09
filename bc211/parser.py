@@ -316,8 +316,10 @@ def clean_one_phone_number(phone_number):
     phone_number = remove_phone_extensions(phone_number)
     phone_number = convert_phone_mnemonic(phone_number)
     phone_number = remove_separator_characters(phone_number)
-    phone_number = format_eleven_digit_phone_number(phone_number)
-    phone_number = format_ten_digit_phone_number(phone_number)
+    if phone_number_has_digits(phone_number, 11):
+        phone_number = format_eleven_digit_phone_number(phone_number)
+    if phone_number_has_digits(phone_number, 10):
+        phone_number = format_ten_digit_phone_number(phone_number)
     return phone_number
 
 def remove_phone_extensions(phone_number):
@@ -344,15 +346,15 @@ def remove_separator_characters(phone_number):
     phone_number = re.sub(phone_digit_separator, '', phone_number)
     return phone_number
 
+def phone_number_has_digits(phone_number, digit):
+    match_digit_format = r'\d{' + str(digit) + '}'
+    return re.search(match_digit_format, phone_number)
+
 def format_eleven_digit_phone_number(phone_number):
-    if re.search(r'\d{11}', phone_number):
-        phone_number = re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
-    return phone_number
+    return re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
 
 def format_ten_digit_phone_number(phone_number):
-    if re.search(r'\d{10}', phone_number):
-        phone_number = re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
-    return phone_number
+    return re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
 
 def find_toll_free_number(phone_numbers):
     toll_free_format = r'1-8[\d]{2}-[\d]{3}-[\d]{4}'
