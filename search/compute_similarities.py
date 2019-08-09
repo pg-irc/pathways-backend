@@ -105,9 +105,9 @@ def assemble_results_for_document(file_handle, vectorizer, score_matrix, documen
 def get_document_terms(vectorizer, score_matrix, document_index):
     document_terms = []
     for term_index in range(len(vectorizer.terms_list)):
-        term = vectorizer.terms_list[term_index]
         score = score_matrix[document_index][term_index]
         if score > 0:
+            term = vectorizer.terms_list[term_index]
             document_terms.append((term, score))
     return document_terms
 
