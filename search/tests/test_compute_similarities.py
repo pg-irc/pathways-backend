@@ -1,7 +1,7 @@
 from django.test import TestCase
 from search.compute_similarities import (to_topic_ids_and_descriptions,
                                          to_service_ids_and_descriptions,
-                                         compute_similarities_by_tf_idf)
+                                         compute_similarities)
 from human_services.services.models import Service
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
@@ -56,54 +56,46 @@ class TestTopicSimilarityScore(TestCase):
         self.assertEqual(descriptions[0], name + ' ' + description)
 
     def test_computing_similarity_matrix(self):
-        topic_ids = [a_string()]
-        service_ids = [a_string(), a_string()]
         strings = ['aligator interloper and fumigator',
                    'likewise aligator interloper and fumigator',
                    'different lollipop candybar and icecream']
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
+        similarity_matrix = compute_similarities(strings)
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
         self.assertLess(similarity_matrix[0, 2], 0.01)
 
     def test_similarities_ignore_case(self):
-        topic_ids = [a_string()]
-        service_ids = [a_string(), a_string()]
         strings = ['aligator interloper and fumigator',
                    'LIKEWISE Aligator INTERLOPER and FUmiGAtoR',
                    'different lollipop candybar and icecream']
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
+        similarity_matrix = compute_similarities(strings)
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
         self.assertLess(similarity_matrix[0, 2], 0.01)
 
     def test_ignores_stop_words_when_computing_similarity(self):
-        topic_ids = [a_string()]
-        service_ids = [a_string(), a_string()]
         stop_words_from_spacy = 'already also although always among amongst amount an and another'
         strings = ['aligator interloper and fumigator',
                    'likewise aligator interloper and fumigator ' + stop_words_from_spacy,
                    'different lollipop candybar and icecream ' + stop_words_from_spacy]
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
+        similarity_matrix = compute_similarities(strings)
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
         self.assertLess(similarity_matrix[0, 2], 0.01)
 
     def test_stop_words_are_case_insensitive(self):
-        topic_ids = [a_string()]
-        service_ids = [a_string(), a_string()]
         stop_words_from_spacy = 'ALREADY Also Although ALWAYS Among AMONGST Amount An AND Another'
         strings = ['aligator interloper and fumigator',
                    'likewise aligator interloper and fumigator ' + stop_words_from_spacy,
                    'different lollipop candybar and icecream ' + stop_words_from_spacy]
 
-        similarity_matrix = compute_similarities_by_tf_idf(strings, topic_ids, service_ids, 0, '')
+        similarity_matrix = compute_similarities(strings)
 
         self.assertGreater(similarity_matrix[0, 0], 0.99)
         self.assertGreater(similarity_matrix[0, 1], 0.79)
