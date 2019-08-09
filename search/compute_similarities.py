@@ -66,8 +66,8 @@ def compute_similarities(docs):
 def compute_similarities_and_save_intermediates(docs, topic_ids, service_ids, results_to_save, results_file):
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = compute_term_matrix(vectorizer, docs)
-    save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids,
-                                             service_ids, results_to_save, results_file)
+    write_intermediary_results_as_csv(vectorizer, term_matrix, topic_ids,
+                                      service_ids, results_to_save, results_file)
     return compute_cosine_doc_similarities(term_matrix)
 
 
@@ -100,28 +100,28 @@ def stop_list_all_lower_case():
 STOPLIST = stop_list_all_lower_case()
 
 
-def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids, results_to_save, file_handle):
+def write_intermediary_results_as_csv(vectorizer, term_matrix, topic_ids, service_ids, results_to_save, file_handle):
     document_index = 0
     score_matrix = term_matrix.toarray()
     document_ids = topic_ids + service_ids
     for document_id in document_ids[0:results_to_save]:
-        save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
+        write_intermediary_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
         document_index += 1
     file_handle.close()
 
 
-def save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id):
+def write_intermediary_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id):
     file_handle.write('"')
     file_handle.write(document_id)
     file_handle.write('"')
-    assemble_results_for_document(file_handle, vectorizer, score_matrix, document_index)
+    write_terms_sorted_by_scores(file_handle, vectorizer, score_matrix, document_index)
     file_handle.write('\n')
 
 
-def assemble_results_for_document(file_handle, vectorizer, score_matrix, document_index):
+def write_terms_sorted_by_scores(file_handle, vectorizer, score_matrix, document_index):
     terms_with_scores = get_document_terms(vectorizer, score_matrix, document_index)
     terms_sorted_by_score = sorted(terms_with_scores, key=lambda term: term[1], reverse=True)
-    comma_separated_terms_with_scores(file_handle, terms_sorted_by_score)
+    write_comma_separated_terms_with_scores(file_handle, terms_sorted_by_score)
 
 
 def get_document_terms(vectorizer, score_matrix, document_index):
@@ -134,7 +134,7 @@ def get_document_terms(vectorizer, score_matrix, document_index):
     return document_terms
 
 
-def comma_separated_terms_with_scores(file_handle, document_terms):
+def write_comma_separated_terms_with_scores(file_handle, document_terms):
     for term_with_score in document_terms:
         term = term_with_score[0]
         score = term_with_score[1]
