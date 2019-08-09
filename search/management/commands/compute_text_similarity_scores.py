@@ -31,13 +31,14 @@ class Command(BaseCommand):
                             dest='results_to_save',
                             type=int,
                             default=0,
-                            help=('save word-scored to a CSV file for all the words ' +
-                                  'in this many documents (i.e. topics and services), default is none'))
+                            help=('Save NLP word-scores to a CSV file for all the words ' +
+                                  'in this many documents (i.e. topics and services), default is none. ' +
+                                  'This data is useful to know what words to add to the stop words.'))
         parser.add_argument('--results_file',
                             dest='results_file',
                             nargs='?',
                             type=argparse.FileType('w'),
-                            help=('oath to file for saving word-scores, required if --save_intermediate_results is given'))
+                            help='path to file for saving word-scores, required if --save_intermediate_results is given')
 
     def handle(self, *args, **options):
         root_folder = options['newcomers_guide_path']
