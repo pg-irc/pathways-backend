@@ -33,13 +33,13 @@ def to_service_ids_and_descriptions(services):
     return (ids, descriptions)
 
 
-def compute_similarities_by_tf_idf(docs, topic_ids, service_ids):
+def compute_similarities_by_tf_idf(docs, topic_ids, service_ids, results_to_save):
     nlp = spacy.load('en')
     spacy_docs = [nlp(doc) for doc in docs]
     tokenized_docs = ([token.lemma_.lower() for token in doc if not is_stop_word(token)] for doc in spacy_docs)
     vectorizer = Vectorizer(tf_type='linear', apply_idf=True, idf_type='smooth', apply_dl=False)
     term_matrix = vectorizer.fit_transform(tokenized_docs)
-    save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids)
+    save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids, results_to_save)
     return compute_cosine_doc_similarities(term_matrix)
 
 
@@ -65,11 +65,12 @@ def stop_list_all_lower_case():
 STOPLIST = stop_list_all_lower_case()
 
 
-def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids):
+def save_intermediary_results_to_spreadsheet(vectorizer, term_matrix, topic_ids, service_ids, results_to_save):
     document_index = 0
     score_matrix = term_matrix.toarray()
     with open('../nlp_word_scores.csv', 'w') as file_handle:
-        for document_id in topic_ids + service_ids:
+        document_ids = topic_ids + service_ids
+        for document_id in document_ids[0:results_to_save]:
             save_results_for_document(file_handle, vectorizer, score_matrix, document_index, document_id)
             document_index += 1
 

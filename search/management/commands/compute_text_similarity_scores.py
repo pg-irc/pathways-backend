@@ -26,11 +26,18 @@ class Command(BaseCommand):
                             type=int,
                             default=50,
                             help='for each topic, store this many related services')
+        parser.add_argument('--save_intermediate_results',
+                            dest='results_to_save',
+                            type=int,
+                            default=0,
+                            help=('save word-scored to a CSV file for all the words ' +
+                                  'in this many documents (i.e. topics and services), default is none'))
 
     def handle(self, *args, **options):
         root_folder = options['newcomers_guide_path']
         related_topic_count = options['related_topics']
         related_service_count = options['related_services']
+        results_to_save = options['results_to_save']
 
         print('All topic data and topic/service similarity data will be deleted and reimported')
 
@@ -45,7 +52,10 @@ class Command(BaseCommand):
         descriptions = topic_descriptions + service_descriptions
 
         print('{} services read, computing similarities...'.format(len(service_ids)))
-        cosine_doc_similarities = compute_similarities_by_tf_idf(descriptions, topic_ids, service_ids)
+        cosine_doc_similarities = compute_similarities_by_tf_idf(descriptions,
+                                                                 topic_ids,
+                                                                 service_ids,
+                                                                 results_to_save)
 
         print('Saving {} topic similarities...'.format(len(topic_ids)*(len(topic_ids)-1)))
         save_topic_similarities(topic_ids, cosine_doc_similarities, related_topic_count)
