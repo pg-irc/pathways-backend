@@ -56,12 +56,50 @@ class TestTopicSimilarityScore(TestCase):
         self.assertEqual(descriptions[0], name + ' ' + description)
 
     def test_computing_similarity_matrix(self):
-        similarity_matrix = compute_similarities(['this is a bit of text',
-                                                  'this is a similar bit of text',
-                                                  'now for something different'])
+        strings = ['aligator interloper and fumigator',
+                   'likewise aligator interloper and fumigator',
+                   'different lollipop candybar and icecream']
+
+        similarity_matrix = compute_similarities(strings)
+
         self.assertGreater(similarity_matrix[0, 0], 0.99)
-        self.assertGreater(similarity_matrix[0, 1], 0.85)
-        self.assertLess(similarity_matrix[0, 2], 0.10)
+        self.assertGreater(similarity_matrix[0, 1], 0.79)
+        self.assertLess(similarity_matrix[0, 2], 0.01)
+
+    def test_similarities_ignore_case(self):
+        strings = ['aligator interloper and fumigator',
+                   'LIKEWISE Aligator INTERLOPER and FUmiGAtoR',
+                   'different lollipop candybar and icecream']
+
+        similarity_matrix = compute_similarities(strings)
+
+        self.assertGreater(similarity_matrix[0, 0], 0.99)
+        self.assertGreater(similarity_matrix[0, 1], 0.79)
+        self.assertLess(similarity_matrix[0, 2], 0.01)
+
+    def test_ignores_stop_words_when_computing_similarity(self):
+        stop_words_from_spacy = 'already also although always among amongst amount an and another'
+        strings = ['aligator interloper and fumigator',
+                   'likewise aligator interloper and fumigator ' + stop_words_from_spacy,
+                   'different lollipop candybar and icecream ' + stop_words_from_spacy]
+
+        similarity_matrix = compute_similarities(strings)
+
+        self.assertGreater(similarity_matrix[0, 0], 0.99)
+        self.assertGreater(similarity_matrix[0, 1], 0.79)
+        self.assertLess(similarity_matrix[0, 2], 0.01)
+
+    def test_stop_words_are_case_insensitive(self):
+        stop_words_from_spacy = 'ALREADY Also Although ALWAYS Among AMONGST Amount An AND Another'
+        strings = ['aligator interloper and fumigator',
+                   'likewise aligator interloper and fumigator ' + stop_words_from_spacy,
+                   'different lollipop candybar and icecream ' + stop_words_from_spacy]
+
+        similarity_matrix = compute_similarities(strings)
+
+        self.assertGreater(similarity_matrix[0, 0], 0.99)
+        self.assertGreater(similarity_matrix[0, 1], 0.79)
+        self.assertLess(similarity_matrix[0, 2], 0.01)
 
     def test_removes_local_phone_numbers_from_description(self):
         description_with_phone_numbers = 'Call 778-123-4567 or 604-123-4567 for more information.'
@@ -69,7 +107,7 @@ class TestTopicSimilarityScore(TestCase):
         ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertIn(description_without_phone_numbers, descriptions[0])
-    
+
     def test_removes_international_phone_numbers_from_description(self):
         description_with_phone_numbers = 'Call 1-800-123-4567 for more information.'
         description_without_phone_numbers = ('Call  for more information.')
@@ -97,7 +135,7 @@ class TestTopicSimilarityScore(TestCase):
         ServiceBuilder(self.organization).with_description(description_with_phone_numbers).create()
         _, descriptions = to_service_ids_and_descriptions(Service.objects.all())
         self.assertIn(description_without_phone_numbers, descriptions[0])
-    
+
     def test_does_not_remove_numbers_that_are_not_phone_numbers(self):
         description_with_numbers = 'In 2017 the Canadian population was approximately 36,710,0000.'
         expected_description = ('In 2017 the Canadian population was approximately 36,710,0000.')
