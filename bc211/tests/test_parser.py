@@ -547,6 +547,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 1)
 
+    def test_does_not_parse_none(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(none)', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 0)
+    
     def test_parses_phone_into_expected_dto_object(self):
         site_id = a_string()
         phone_type = a_string()

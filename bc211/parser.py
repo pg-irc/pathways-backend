@@ -378,12 +378,14 @@ def clean_phone_number(phone_number_string):
 def add_extension_to_phone_number(phone_number, extension):
     return phone_number + ' ' + extension if extension is not None else phone_number
 
-def is_valid_phonenumber(phone):
-    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
-
 def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
 
+def is_valid_phonenumber(phone):
+    return (parse_optional_field(phone, 'PhoneNumber') and
+            parse_optional_field(phone, 'PhoneNumber') != '(none)' and
+            parse_optional_field(phone, 'Type') and
+            not record_is_confidential(phone))
 
 def remove_double_escaped_html_markup(data):
     if data is None:
