@@ -547,7 +547,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 1)
 
-    def test_does_not_parse_none(self):
+    def test_does_not_parse_none_phone_number(self):
         site_id = a_string()
         xml = self.build_phone_xml('(none)', a_string())
         root = etree.fromstring(xml)
@@ -601,6 +601,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '250-542-3555 Local 221')
+
+    def test_parses_phone_number_with_two_extensions(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-800-434-2268 Locals 245 and 265', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-434-2268 Locals 245 and 265')
     
     def test_parses_phone_number_with_full_mnemonics(self):
         site_id = a_string()

@@ -326,7 +326,7 @@ def clean_one_phone_number(phone_number):
     return full_phone_number
 
 def separate_phone_number_from_extensions(phone_number):
-    extension_format = r'([Ll]ocal|[Ee]xt)[ \d].*'
+    extension_format = r'([Ll]ocals?|[Ee]xt)[ \d].*'
     found_extension = re.search(extension_format, phone_number)
     if found_extension:
         extension = found_extension[0]
