@@ -296,7 +296,7 @@ def parse_site_phone_number_list(site, site_id):
 
 def parse_site_phone(phone, site_id):
     location_id = site_id
-    phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
+    phone_number_type_id = phone.find('Type').text
     phone_number = clean_phone_numbers(phone.find('PhoneNumber').text)
     return dtos.PhoneAtLocation(
         location_id=location_id,

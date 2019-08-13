@@ -563,7 +563,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_number_list[0].phone_number_type_id, 'a_phone_type')
+        self.assertEqual(phone_number_list[0].phone_number_type_id, 'A phone TYPE')
 
     def test_parses_phone_number(self):
         site_id = a_string()
