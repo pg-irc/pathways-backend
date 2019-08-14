@@ -588,6 +588,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
 
+    def test_parses_phone_number_separated_by_dots(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1.604.608.9468', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-604-608-9468')
+
     def test_parses_phone_number_with_short_numbers(self):
         site_id = a_string()
         xml = self.build_phone_xml('211NS (21167)', a_string())

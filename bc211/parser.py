@@ -351,7 +351,7 @@ def convert_phone_mnemonic(phone_number):
     return phone_number
 
 def remove_separator_characters(phone_number):
-    phone_digit_separator = r'[- \(\)]'
+    phone_digit_separator = r'[- \(\)\.]'
     phone_number = re.sub(phone_digit_separator, '', phone_number)
     return phone_number
 
