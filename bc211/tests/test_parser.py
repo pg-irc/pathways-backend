@@ -651,6 +651,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-800-622-6232')
 
+    def test_parses_phone_number_with_extra_letter_mnemonic(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-800-LIFELINE (1-800-543-3546)', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-543-3546')
+
     def test_parses_phone_number_with_mnemonics_and_number_mixed_in(self):
         site_id = a_string()
         xml = self.build_phone_xml('1-844-START11 (782-7811)', a_string())

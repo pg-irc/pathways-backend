@@ -316,12 +316,13 @@ def clean_one_phone_number(phone_number):
     no_extension_phone_number, extension = separate_phone_number_from_extensions(phone_number)
     no_alphabet_phone_number = convert_phone_mnemonic(no_extension_phone_number)
     just_digit_phone_number = remove_separator_characters(no_alphabet_phone_number)
-    if len(just_digit_phone_number) == 11:
-        formatted_phone_number = format_eleven_digit_phone_number(just_digit_phone_number)
-    elif len(just_digit_phone_number) == 10:
-        formatted_phone_number = format_ten_digit_phone_number(just_digit_phone_number)
+    truncated_phone_number = truncate_phone_numbers(just_digit_phone_number)
+    if len(truncated_phone_number) == 11:
+        formatted_phone_number = format_eleven_digit_phone_number(truncated_phone_number)
+    elif len(truncated_phone_number) == 10:
+        formatted_phone_number = format_ten_digit_phone_number(truncated_phone_number)
     else:
-        formatted_phone_number = just_digit_phone_number
+        formatted_phone_number = truncated_phone_number
     full_phone_number = add_extension_to_phone_number(formatted_phone_number, extension)
     return full_phone_number
 
@@ -353,6 +354,12 @@ def remove_separator_characters(phone_number):
     phone_digit_separator = r'[- \(\)]'
     phone_number = re.sub(phone_digit_separator, '', phone_number)
     return phone_number
+
+def truncate_phone_numbers(phone_number):
+    if len(phone_number) > 11:
+        return phone_number[0:11]
+    else:
+        return phone_number
 
 def format_eleven_digit_phone_number(phone_number):
     return re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
