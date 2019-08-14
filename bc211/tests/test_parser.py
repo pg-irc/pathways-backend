@@ -602,6 +602,27 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '250-542-3555 Local 221')
 
+    def test_parses_phone_number_with_ext_dot_abbreviation_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-785-6021 ext. 232', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-785-6021 ext. 232')
+
+    def test_parses_phone_number_with_option_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('604-432-8800 Option 2', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '604-432-8800 Option 2')
+
+    def test_parses_phone_number_with_extension_no_number(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('778-355-1191 NIS', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '778-355-1191 NIS')
+
     def test_parses_phone_number_with_two_extensions(self):
         site_id = a_string()
         xml = self.build_phone_xml('1-800-434-2268 Locals 245 and 265', a_string())
@@ -615,7 +636,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
-    
+
     def test_parses_phone_number_with_partial_mnemonics(self):
         site_id = a_string()
         xml = self.build_phone_xml('1-800-222-TIPS (8477)', a_string())
