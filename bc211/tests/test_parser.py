@@ -630,6 +630,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '778-355-1191 NIS')
 
+    def test_parses_phone_number_with_stray_comma_before_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-888-300-3088, Local 6550', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-300-3088 Local 6550')
+
     def test_parses_phone_number_with_two_extensions(self):
         site_id = a_string()
         xml = self.build_phone_xml('1-800-434-2268 Locals 245 and 265', a_string())
@@ -751,10 +758,10 @@ class PhoneNumberParserTests(unittest.TestCase):
     
     def test_chooses_toll_free_number_when_it_comes_last(self):
         site_id = a_string()
-        xml = self.build_phone_xml('250-286-9766 or 1-866-286-9766', a_string())
+        xml = self.build_phone_xml('604-733-2493; 1-800-377-8129', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '1-866-286-9766')
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-377-8129')
 
     def test_parses_two_phone_numbers_separated_by_or(self):
         site_id = a_string()
