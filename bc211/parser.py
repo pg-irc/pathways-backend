@@ -345,7 +345,7 @@ def convert_phone_mnemonic(phone_number):
         phone_number = re.sub(r'[p-sP-S]', '7', phone_number)
         phone_number = re.sub(r'[t-vT-V]', '8', phone_number)
         phone_number = re.sub(r'[w-zW-Z]', '9', phone_number)
-        separate_number_from_mnenomic_format = r'(\(?.*\)?.*)(\(.*\))'
+        separate_number_from_mnenomic_format = r'(\(?.*\)?.*)(\(.*\)?)'
         phone_number = re.sub(separate_number_from_mnenomic_format, r'\1', phone_number)
     return phone_number
 
