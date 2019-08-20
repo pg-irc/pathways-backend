@@ -57,7 +57,7 @@ class InactiveDataImportTests(TestCase):
         self.assertEqual(all_records_from_database[0].id, active_organization.id)
 
     def test_do_not_import_inactive_organization_prefixed_with_tab_DEL(self):
-        inactive_description = '    DEL ' + a_string()
+        inactive_description = '\tDEL ' + a_string()
         inactive_organization = OrganizationBuilder().with_description(inactive_description).build_dto()
         active_organization = OrganizationBuilder().build_dto()
     
