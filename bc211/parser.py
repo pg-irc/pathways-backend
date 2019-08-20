@@ -374,19 +374,8 @@ def find_toll_free_number(phone_numbers):
             return phone_number
     return None
 
-def clean_phone_number(phone_number_string):
-    phone_numbers = re.split("/|or|;", phone_number_string)
-    cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
-    toll_free_number = find_toll_free_number(cleaned_phone_numbers)
-    if toll_free_number:
-        return toll_free_number
-    return cleaned_phone_numbers[0]
-
 def add_extension_to_phone_number(phone_number, extension):
     return phone_number + ' ' + extension if extension else phone_number
-
-def convert_phone_type_to_type_id(phone_type):
-    return phone_type.lower().replace(' ', '_')
 
 def is_valid_phonenumber(phone):
     return (parse_optional_field(phone, 'PhoneNumber') and
