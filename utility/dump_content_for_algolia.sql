@@ -1,7 +1,13 @@
--- use csvtojson, not csv2json
+-- use csvtojson (https://github.com/Keyang/node-csvtojson/), not csv2json
 
 -- sudo npm install --global csvtojson
--- psql -d pathways_local -F $',' -A -f utility/dump_content_for_algolia.sql | head -n -1 | csvtojson > content.json
+
+-- psql -d pathways_local -F $',' -A -f utility/dump_content_for_algolia.sql | head -n -1 | csvtojson --colParser='{"_geoloc.lng":"number","_geoloc.lat":"number"}' > content.json
+
+-- Column names _geoloc.lng and _geoloc.lat are special. csvtojson understands to convert this to 
+-- "_geoloc":{"lng":-122.724,"lat":49.110044}. The --colParser option define the lat and long to be 
+-- numbers, rather than strings. With the special names _geoloc, lng and lat, Algolia understands 
+-- this to mean a geolocation point.
 
 select distinct
 	'"' || organizationStrings.name || '"' as organization_name,
