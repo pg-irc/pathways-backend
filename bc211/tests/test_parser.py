@@ -547,6 +547,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(len(phone_numbers), 1)
 
+    def test_does_not_parse_none_phone_number(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(none)', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 0)
+    
     def test_parses_phone_into_expected_dto_object(self):
         site_id = a_string()
         phone_type = a_string()
@@ -563,7 +570,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         xml = self.build_phone_xml(phone_number, phone_type)
         root = etree.fromstring(xml)
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_number_list[0].phone_number_type_id, 'a_phone_type')
+        self.assertEqual(phone_number_list[0].phone_number_type_id, 'A phone TYPE')
 
     def test_parses_phone_number(self):
         site_id = a_string()
@@ -574,47 +581,229 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_number_list[0].phone_number, phone_number)
 
-    def test_parses_only_phone_numbers(self):
+    def test_parses_phone_number_separated_by_dashes(self):
         site_id = a_string()
-        xml = self.build_phone_xml('1-888-425-2666', '24-hour')
+        xml = self.build_phone_xml('1-888-425-2666', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
 
-    def test_parses_phone_with_full_mnemonics(self):
+    def test_parses_phone_number_separated_by_dots(self):
         site_id = a_string()
-        xml = self.build_phone_xml('1-888-4AL-ANON (1-888-425-2666)', 'Phone1')
+        xml = self.build_phone_xml('1.604.608.9468', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-604-608-9468')
+
+    def test_parses_phone_number_separated_by_spaces(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1 604 608 9468', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-604-608-9468')
+
+    def test_parses_phone_number_with_short_numbers(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('211NS (21167)', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '21167')
+
+    def test_parses_phone_number_with_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-542-3555 Local 221', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-542-3555 Local 221')
+
+    def test_parses_phone_number_with_ext_dot_abbreviation_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-785-6021 ext. 232', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-785-6021 ext. 232')
+
+    def test_parses_phone_number_with_option_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('604-432-8800 Option 2', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '604-432-8800 Option 2')
+
+    def test_parses_phone_number_with_extension_no_number(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('778-355-1191 NIS', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '778-355-1191 NIS')
+
+    def test_parses_phone_number_with_stray_comma_before_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-888-300-3088, Local 6550', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-300-3088 Local 6550')
+
+    def test_parses_phone_number_with_two_extensions(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-800-434-2268 Locals 245 and 265', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-434-2268 Locals 245 and 265')
+    
+    def test_parses_phone_number_with_full_mnemonics(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-888-4AL-ANON (1-888-425-2666)', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-888-425-2666')
-    
-    def test_not_parse_phone_with_partial_mnemonics(self):
+
+    def test_parses_phone_number_with_partial_mnemonics(self):
         site_id = a_string()
-        xml = self.build_phone_xml('1-800-222-TIPS (8477)', '24-hour')
+        xml = self.build_phone_xml('1-800-222-TIPS (8477)', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-800-222-8477')
 
-    def test_parse_phone_with_extension(self):
+    def test_parses_phone_number_with_half_closed_bracket(self):
         site_id = a_string()
-        xml = self.build_phone_xml('250-542-3555 Local 221', 'Phone1')
+        xml = self.build_phone_xml('1-800-O-CANADA (1-800-622-6232', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '250-542-3555')
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-622-6232')
 
-    def test_parse_phone_with_area_code(self):
+    def test_parses_phone_number_with_extra_letter_mnemonic(self):
         site_id = a_string()
-        xml = self.build_phone_xml('(250)-541-2200', 'Intake (IHA)')
+        xml = self.build_phone_xml('1-800-LIFELINE (1-800-543-3546)', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-543-3546')
+
+    def test_parses_phone_number_with_mnemonics_and_number_mixed_in(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-844-START11 (782-7811)', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-844-782-7811')
+
+    def test_parses_phone_number_with_only_mnemonics_letters(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-888-tai-chi-1', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-888-824-2441')
+
+    def test_parses_phone_number_with_mnemonics_and_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-949-HELP (4357) local 101', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-949-4357 local 101')
+
+    def test_parses_phone_number_with_area_code(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-541-2200', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-541-2200')
+
+    def test_parses_phone_number_with_area_code_and_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-541-2200 Ext 221', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-541-2200 Ext 221')
+
+    def test_parses_phone_number_with_area_code_extension_and_mnemonic(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-949-HELP (4357) local 101', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-949-4357 local 101')
+
+    def test_parses_phone_number_with_missing_hyphen(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250 832-3885', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-832-3885')
+
+    def test_parses_phone_number_with_missing_hyphen_and_extension(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250 832-3885 Local 1310', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-832-3885 Local 1310')
+
+    def test_parses_phone_number_with_no_hyphen(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('12508323885', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-250-832-3885')
+
+    def test_parses_phone_number_with_area_code_extension_no_hyphen(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1(250)8323885 local 101', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-250-832-3885 local 101')
+
+    def test_return_one_phone_number_when_multiple_valid_numbers_exists(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('111-222-3333, 444-555-6666', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 1)
+
+    def test_chooses_toll_free_number_when_it_comes_first(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-866-286-9766 or 250-286-9766', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-866-286-9766')
     
-    def test_parse_phone_with_area_code_and_extension(self):
+    def test_chooses_toll_free_number_when_it_comes_last(self):
         site_id = a_string()
-        xml = self.build_phone_xml('(250)-541-2200 Ext 221', 'Intake (IHA)')
+        xml = self.build_phone_xml('604-733-2493; 1-800-377-8129', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '(250)-541-2200')
+        self.assertEqual(phone_numbers[0].phone_number, '1-800-377-8129')
+
+    def test_parses_two_phone_numbers_separated_by_or(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-286-9766 or 1-866-286-9766', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-866-286-9766')
+
+    def test_parses_two_phone_numbers_separated_by_semi_colons(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1-866-235-0350; 613-731-4092', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-866-235-0350')
+    
+    def test_parses_two_phone_numbers_separated_by_slash(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-949-6625 / 250-286-8064', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '250-949-6625')
+
+    def test_parses_multiple_phone_numbers_separated_by_different_separators(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('250-949-6625 / 250-286-8064 or 1-866-235-0350; 613-731-4092', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-866-235-0350')
+    
+    def test_parse_two_mnemonic_phone_numbers(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('(250)-949-HELP (4357) local 101 or 1-844-START11 (782-7811) ext 102', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-844-782-7811 ext 102')
 
     def build_phone_xml(self, phone_number, phone_number_type):
         return '''

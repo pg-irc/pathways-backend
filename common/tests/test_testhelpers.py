@@ -23,8 +23,5 @@ class TestTestHelpers(TestCase):
     def test_a_list_of_ints_by_default_has_length_3(self):
         return self.assertEqual(len(a_list_of_integers()), 3)
 
-    def test_a_phone_number_by_default_has_length_10(self):
-        return self.assertEqual(len(a_phone_number()), 10)
-
-    def test_a_phone_number_is_numeric(self):
-        return self.assertTrue(a_phone_number().isnumeric())
+    def test_a_phone_number_by_default_has_length_12(self):
+        return self.assertEqual(len(a_phone_number()), 12)

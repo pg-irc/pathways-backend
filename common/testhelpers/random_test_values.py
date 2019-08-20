@@ -2,6 +2,7 @@ import string
 import random
 from . import private
 from django.contrib.gis.geos import Point
+import re
 
 private.set_random_seed_at_load_time()
 
@@ -39,5 +40,5 @@ def a_list_of_strings(length=3):
 def a_list_of_integers(length=3):
     return [an_integer() for x in range(length)]
 
-def a_phone_number(length=10):
-    return ''.join(str(an_integer(min=0, max=9)) for x in range(length))
+def a_phone_number(dummy_number='xxx-xxx-xxxx'):
+    return ''.join([random.choice(string.digits) if char == 'x' else char for char in dummy_number])

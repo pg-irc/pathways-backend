@@ -296,32 +296,92 @@ def parse_site_phone_number_list(site, site_id):
 
 def parse_site_phone(phone, site_id):
     location_id = site_id
-    phone_number_type_id = convert_phone_type_to_type_id(phone.find('Type').text)
-    phone_number = clean_phone_number(phone.find('PhoneNumber').text)
+    phone_number_type_id = phone.find('Type').text
+    phone_number = clean_phone_numbers(phone.find('PhoneNumber').text)
     return dtos.PhoneAtLocation(
         location_id=location_id,
         phone_number_type_id=phone_number_type_id,
         phone_number=phone_number
     )
 
-def clean_phone_number(phone_number):
+def clean_phone_numbers(phone_number_string):
+    phone_numbers = re.split("/|or|;", phone_number_string)
+    cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
+    toll_free_number = find_toll_free_number(cleaned_phone_numbers)
+    if toll_free_number:
+        return toll_free_number
+    return cleaned_phone_numbers[0]
+
+def clean_one_phone_number(phone_number):
+    no_extension_phone_number, extension = separate_phone_number_from_extensions(phone_number)
+    no_alphabet_phone_number = convert_phone_mnemonic(no_extension_phone_number)
+    just_digit_phone_number = remove_separator_characters(no_alphabet_phone_number)
+    truncated_phone_number = truncate_phone_numbers(just_digit_phone_number)
+    if len(truncated_phone_number) == 11:
+        formatted_phone_number = format_eleven_digit_phone_number(truncated_phone_number)
+    elif len(truncated_phone_number) == 10:
+        formatted_phone_number = format_ten_digit_phone_number(truncated_phone_number)
+    else:
+        formatted_phone_number = truncated_phone_number
+    full_phone_number = add_extension_to_phone_number(formatted_phone_number, extension)
+    return full_phone_number
+
+def separate_phone_number_from_extensions(phone_number):
+    extension_format = r'([Ll]ocals?|[Ee]xt\.?|Option|NIS).*'
+    found_extension = re.search(extension_format, phone_number)
+    if found_extension:
+        extension = found_extension[0]
+    else:
+        extension = None
+    phone_number = re.sub(extension_format, '', phone_number)
+    return phone_number, extension
+
+def convert_phone_mnemonic(phone_number):
     if re.search(r'[a-zA-Z]', phone_number):
-        phone_number_format = r'(\d-)?\(?[\d]{3}\)?-[\d]{3}-[\d]{4}'
-        match = re.search(phone_number_format, phone_number)
-        if match:
-            return match[0]
-        else:
-            return re.sub(r'[A-Za-z\(\) ]', '', phone_number)
+        phone_number = re.sub(r'[a-cA-C]', '2', phone_number)
+        phone_number = re.sub(r'[d-fD-F]', '3', phone_number)
+        phone_number = re.sub(r'[g-iG-I]', '4', phone_number)
+        phone_number = re.sub(r'[j-lJ-L]', '5', phone_number)
+        phone_number = re.sub(r'[m-oM-O]', '6', phone_number)
+        phone_number = re.sub(r'[p-sP-S]', '7', phone_number)
+        phone_number = re.sub(r'[t-vT-V]', '8', phone_number)
+        phone_number = re.sub(r'[w-zW-Z]', '9', phone_number)
+        separate_number_from_mnenomic_format = r'(\(?.*\)?.*)(\(.*\)?)'
+        phone_number = re.sub(separate_number_from_mnenomic_format, r'\1', phone_number)
+    return phone_number
+
+def remove_separator_characters(phone_number):
+    phone_digit_separator = r'[- \(\)\.,]'
+    phone_number = re.sub(phone_digit_separator, '', phone_number)
+    return phone_number
+
+def truncate_phone_numbers(phone_number):
+    if len(phone_number) > 11:
+        return phone_number[0:11]
     else:
         return phone_number
 
+def format_eleven_digit_phone_number(phone_number):
+    return re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
+
+def format_ten_digit_phone_number(phone_number):
+    return re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
+
+def find_toll_free_number(phone_numbers):
+    toll_free_format = r'1-8[\d]{2}-[\d]{3}-[\d]{4}'
+    for  phone_number in phone_numbers:
+        if re.search(toll_free_format, phone_number):
+            return phone_number
+    return None
+
+def add_extension_to_phone_number(phone_number, extension):
+    return phone_number + ' ' + extension if extension else phone_number
+
 def is_valid_phonenumber(phone):
-    return parse_optional_field(phone, 'PhoneNumber') and parse_optional_field(phone, 'Type') and not record_is_confidential(phone)
-
-
-def convert_phone_type_to_type_id(phone_type):
-    return phone_type.lower().replace(' ', '_')
-
+    return (parse_optional_field(phone, 'PhoneNumber') and
+            parse_optional_field(phone, 'PhoneNumber') != '(none)' and
+            parse_optional_field(phone, 'Type') and
+            not record_is_confidential(phone))
 
 def remove_double_escaped_html_markup(data):
     if data is None:
