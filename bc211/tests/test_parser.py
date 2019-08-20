@@ -581,7 +581,7 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_number_list = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_number_list[0].phone_number, phone_number)
 
-    def test_parses_only_phone_numbers(self):
+    def test_parses_phone_number_separated_by_dashes(self):
         site_id = a_string()
         xml = self.build_phone_xml('1-888-425-2666', a_string())
         root = etree.fromstring(xml)
@@ -591,6 +591,13 @@ class PhoneNumberParserTests(unittest.TestCase):
     def test_parses_phone_number_separated_by_dots(self):
         site_id = a_string()
         xml = self.build_phone_xml('1.604.608.9468', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(phone_numbers[0].phone_number, '1-604-608-9468')
+
+    def test_parses_phone_number_separated_by_spaces(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('1 604 608 9468', a_string())
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-604-608-9468')
@@ -679,13 +686,6 @@ class PhoneNumberParserTests(unittest.TestCase):
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-844-782-7811')
 
-    def test_parses_phone_number_with_longer_mnemonics(self):
-        site_id = a_string()
-        xml = self.build_phone_xml('1-855-55-MERCY (63729)', a_string())
-        root = etree.fromstring(xml)
-        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
-        self.assertEqual(phone_numbers[0].phone_number, '1-855-556-3729')
-
     def test_parses_phone_number_with_only_mnemonics_letters(self):
         site_id = a_string()
         xml = self.build_phone_xml('1-888-tai-chi-1', a_string())
@@ -748,6 +748,13 @@ class PhoneNumberParserTests(unittest.TestCase):
         root = etree.fromstring(xml)
         phone_numbers = parser.parse_site_phone_number_list(root, site_id)
         self.assertEqual(phone_numbers[0].phone_number, '1-250-832-3885 local 101')
+
+    def test_return_one_phone_number_when_multiple_valid_numbers_exists(self):
+        site_id = a_string()
+        xml = self.build_phone_xml('111-222-3333, 444-555-6666', a_string())
+        root = etree.fromstring(xml)
+        phone_numbers = parser.parse_site_phone_number_list(root, site_id)
+        self.assertEqual(len(phone_numbers), 1)
 
     def test_chooses_toll_free_number_when_it_comes_first(self):
         site_id = a_string()

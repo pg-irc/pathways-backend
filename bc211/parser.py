@@ -383,7 +383,7 @@ def clean_phone_number(phone_number_string):
     return cleaned_phone_numbers[0]
 
 def add_extension_to_phone_number(phone_number, extension):
-    return phone_number + ' ' + extension if extension is not None else phone_number
+    return phone_number + ' ' + extension if extension else phone_number
 
 def convert_phone_type_to_type_id(phone_type):
     return phone_type.lower().replace(' ', '_')
