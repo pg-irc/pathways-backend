@@ -27,11 +27,11 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
         set_service_similarity_score(topic_id, service.id, 0.9)
         host = self.live_server_url
         working_directory = '../pathways-frontend/'
-        output = subprocess.run(args=[("yarn run ts-node src/api/integration_test.ts" +
-                                       " --host " + host +
-                                       " --topic " + topic_id +
-                                       " --latitude " + str(latitude) +
-                                       " --longitude " + str(longitude))],
+        output = subprocess.run(args=[('yarn run ts-node src/api/integration_test.ts' +
+                                       ' --host ' + host +
+                                       ' --topic ' + topic_id +
+                                       ' --latitude ' + str(latitude) +
+                                       ' --longitude ' + str(longitude))],
                                 cwd=working_directory,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
@@ -70,11 +70,11 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
 
         host = self.live_server_url
         working_directory = '../pathways-frontend/'
-        output = subprocess.run(args=[("yarn run ts-node src/api/integration_test.ts" +
-                                       " --host " + host +
-                                       " --topic " + topic_id +
-                                       " --latitude " + str(latitude) +
-                                       " --longitude " + str(longitude))],
+        output = subprocess.run(args=[('yarn run ts-node src/api/integration_test.ts' +
+                                       ' --host ' + host +
+                                       ' --topic ' + topic_id +
+                                       ' --latitude ' + str(latitude) +
+                                       ' --longitude ' + str(longitude))],
                                 cwd=working_directory,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
@@ -124,11 +124,11 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
 
         host = self.live_server_url
         working_directory = '../pathways-frontend/'
-        output = subprocess.run(args=[("yarn run ts-node src/api/integration_test.ts" +
-                                       " --host " + host +
-                                       " --topic " + topic_id +
-                                       " --longitude " + str(a_point[0]) +
-                                       " --latitude " + str(a_point[1]))],
+        output = subprocess.run(args=[('yarn run ts-node src/api/integration_test.ts' +
+                                       ' --host ' + host +
+                                       ' --topic ' + topic_id +
+                                       ' --longitude ' + str(a_point[0]) +
+                                       ' --latitude ' + str(a_point[1]))],
                                 cwd=working_directory,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
@@ -174,11 +174,11 @@ class ServicesAtLocationIntegrationTests(LiveServerTestCase):
 
         host = self.live_server_url
         working_directory = '../pathways-frontend/'
-        output = subprocess.run(args=[("yarn run ts-node src/api/integration_test.ts" +
-                                       " --host " + host +
-                                       " --topic " + topic_id +
-                                       " --longitude " + str(a_point[0]) +
-                                       " --latitude " + str(a_point[1]))],
+        output = subprocess.run(args=[('yarn run ts-node src/api/integration_test.ts' +
+                                       ' --host ' + host +
+                                       ' --topic ' + topic_id +
+                                       ' --longitude ' + str(a_point[0]) +
+                                       ' --latitude ' + str(a_point[1]))],
                                 cwd=working_directory,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
