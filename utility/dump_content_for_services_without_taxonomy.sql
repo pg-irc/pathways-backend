@@ -1,6 +1,5 @@
+-- run this script with the follow command
 -- psql -d pathways_local -F $',' -A -f utility/dump_content_for_services_without_taxonomy.sql > content.csv
-
--- For use in situations when we need to find :
 
 select distinct
 	service.id as service_id,
