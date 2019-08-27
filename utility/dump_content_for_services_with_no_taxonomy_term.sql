@@ -18,8 +18,8 @@ from
     locations_locationaddress as locationAddress,
     addresses_address as address
 where
-    service.id = serviceStrings.master_id and
     services_service_taxonomy_terms.service_id is null and 
+	service.id = serviceStrings.master_id and
     organization.id=organizationStrings.master_id and
     organization.id=service.organization_id and
     service.id=servicesAtLocation.service_id and
