@@ -8,7 +8,7 @@ select distinct
     address.address
 from
     services_service as service
-    left outer join services_service_taxonomy_terms
+    left join services_service_taxonomy_terms
         on(service.id = services_service_taxonomy_terms.service_id),
     services_service_translation as serviceStrings,
     organizations_organization as organization,
