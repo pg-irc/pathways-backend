@@ -16,13 +16,16 @@ class Command(BaseCommand):
         csv_filenames = get_all_csv_filenames_from_folder(path)
 
         for filename in csv_filenames:
-            topic_id = get_topic_id_from_filename(filename)
-            csv_data = read_manual_similarities(filename)
-            header = csv_data[0]
-            service_id_index = get_index_for_header(header, 'service_id')
-            exclude_index = get_index_for_header(header, 'Include/Exclude')
-            change_records = build_change_records(topic_id, service_id_index, exclude_index, csv_data)
-            save_changes_to_database(change_records)
+            handle_file(filename)
+
+def handle_file(filename):
+    topic_id = get_topic_id_from_filename(filename)
+    csv_data = read_manual_similarities(filename)
+    header = csv_data[0]
+    service_id_index = get_index_for_header(header, 'service_id')
+    exclude_index = get_index_for_header(header, 'Include/Exclude')
+    change_records = build_change_records(topic_id, service_id_index, exclude_index, csv_data)
+    save_changes_to_database(change_records)
 
 def get_all_csv_filenames_from_folder(path):
     result = []
