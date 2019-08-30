@@ -32,7 +32,8 @@ def get_all_csv_filenames_from_folder(path):
     return result
 
 def get_topic_id_from_filename(path):
-    return os.path.basename(path)
+    filename = os.path.basename(path)
+    return filename.split('.')[0]
 
 def get_index_for_header(row, expected_header):
     for index in range(len(row)):

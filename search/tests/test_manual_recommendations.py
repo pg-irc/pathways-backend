@@ -6,7 +6,7 @@ from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_string
 from newcomers_guide.tests.helpers import create_topic
 from search.models import TaskServiceSimilarityScore
-from search.management.commands.manage_manual_recommendations import get_index_for_header, build_change_records
+from search.management.commands.manage_manual_recommendations import get_index_for_header, build_change_records, get_topic_id_from_filename
 
 # example https://docs.google.com/spreadsheets/d/1CSNCvpNwqX8VnxGESbcKOo_nlhcINZHXhrmCPyyvBXQ/edit?ts=5d696373#gid=471688895
 
@@ -19,6 +19,14 @@ class TestReadManualRecommendationsFile(TestCase):
     def test_throw_on_missing_header(self):
         with self.assertRaises(Exception):
             get_index_for_header(['invalid_topic_id', 'score', 'service_id', 'exclude?'], 'topic_id')
+
+    def test_get_topic_id_from_filename(self):
+        result = get_topic_id_from_filename('path/to/topic_id.csv')
+        self.assertEqual(result, 'topic_id')
+
+    def test_get_topic_id_from_filename_with_no_extension(self):
+        result = get_topic_id_from_filename('path/to/topic_id')
+        self.assertEqual(result, 'topic_id')
 
 class TestBuildChangeRecords(TestCase):
     def setUp(self):
