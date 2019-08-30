@@ -21,6 +21,9 @@ class Command(BaseCommand):
 def handle_file(filename):
     topic_id = get_topic_id_from_filename(filename)
     csv_data = read_manual_similarities(filename)
+    handle_data(topic_id, csv_data)
+
+def handle_data(topic_id, csv_data):
     header = csv_data[0]
     service_id_index = get_index_for_header(header, 'service_id')
     exclude_index = get_index_for_header(header, 'Include/Exclude')
