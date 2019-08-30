@@ -53,9 +53,9 @@ def handle_recommendation_file(filename):
 def parse_csv_data(topic_id, csv_data):
     header = csv_data[0]
     rows = csv_data[1:]
+    valid_rows = filter_valid_rows(rows)
     service_id_index = get_index_for_header(header, 'service_id')
     exclude_index = get_index_for_header(header, 'Include/Exclude')
-    valid_rows = filter_valid_rows(rows)
     return build_change_records(topic_id, service_id_index, exclude_index, valid_rows)
 
 def get_topic_id_from_filename(path):
@@ -63,10 +63,7 @@ def get_topic_id_from_filename(path):
     return filename.split('.')[0]
 
 def get_index_for_header(header_row, expected_header):
-    for index in range(len(header_row)):
-        if header_row[index] == expected_header:
-            return index
-    raise Exception(f'header "{expected_header}" not found')
+    return header_row.index(expected_header)
 
 def build_change_records(topic_id, service_id_index, exclude_index, rows):
     make_record = lambda line: {
