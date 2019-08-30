@@ -17,13 +17,22 @@ class Command(BaseCommand):
         parser.add_argument('path',
                             metavar='path',
                             help='path to folder containing per-topic files with recommendations')
+        parser.add_argument('--reset_recommendations', action='store_true',
+                            help='Remove all existing recommendations from database before importing')
 
     def handle(self, *args, **options):
         path = options['path']
-        csv_filenames = get_all_csv_filenames_from_folder(path)
+        reset_recommendations = options['reset_recommendations']
 
+        if reset_recommendations:
+            reset_all_existing_recommendations()
+
+        csv_filenames = get_all_csv_filenames_from_folder(path)
         for filename in csv_filenames:
             handle_recommendation_file(filename)
+
+def reset_all_existing_recommendations():
+    TaskServiceSimilarityScore.objects.all().delete()
 
 def get_all_csv_filenames_from_folder(path):
     result = []

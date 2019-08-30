@@ -4,9 +4,11 @@ from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_string
 from newcomers_guide.tests.helpers import create_topic
 from search.models import TaskServiceSimilarityScore
-from search.management.commands.manage_manual_recommendations import get_index_for_header, build_change_records, get_topic_id_from_filename, save_changes_to_database, parse_csv_data
-
-# example https://docs.google.com/spreadsheets/d/1CSNCvpNwqX8VnxGESbcKOo_nlhcINZHXhrmCPyyvBXQ/edit?ts=5d696373#gid=471688895
+from search.management.commands.manage_manual_recommendations import (get_index_for_header,
+                                                                      build_change_records,
+                                                                      get_topic_id_from_filename,
+                                                                      save_changes_to_database,
+                                                                      parse_csv_data)
 
 class TestReadManualRecommendationsFile(TestCase):
 
