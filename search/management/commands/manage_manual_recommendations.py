@@ -1,7 +1,7 @@
 import os
 import re
 from django.core.management.base import BaseCommand
-from search.manual_recommendations import read_manual_similarities
+from search.read_manual_similarities import read_manual_similarities
 from search.models import TaskServiceSimilarityScore
 
 class Command(BaseCommand):
@@ -53,7 +53,7 @@ def handle_recommendation_file(filename):
 def parse_csv_data(topic_id, csv_data):
     header = csv_data[0]
     rows = csv_data[1:]
-    valid_rows = filter_valid_rows(rows)
+    valid_rows = remove_row_count_line(rows)
     service_id_index = get_index_for_header(header, 'service_id')
     exclude_index = get_index_for_header(header, 'Include/Exclude')
     return build_change_records(topic_id, service_id_index, exclude_index, valid_rows)
@@ -73,16 +73,16 @@ def build_change_records(topic_id, service_id_index, exclude_index, rows):
     }
     return list(map(make_record, rows))
 
-def filter_valid_rows(rows):
+def remove_row_count_line(rows):
     invalid_line_pattern = "\\(\\d+ rows\\)"
     is_valid = lambda row: not re.match(invalid_line_pattern, str(row[0]))
     return filter(is_valid, rows)
 
-def included_records(change_records):
+def filter_included_records(change_records):
     return list(filter(lambda record: record['exclude'] != 'Exclude', change_records))
 
 def save_changes_to_database(change_records):
-    for record in included_records(change_records):
+    for record in filter_included_records(change_records):
         save_record(record)
 
 

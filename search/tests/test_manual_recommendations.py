@@ -9,7 +9,7 @@ from search.management.commands.manage_manual_recommendations import (get_index_
                                                                       get_topic_id_from_filename,
                                                                       save_changes_to_database,
                                                                       parse_csv_data,
-                                                                      filter_valid_rows)
+                                                                      remove_row_count_line)
 
 class TestReadManualRecommendationsFile(TestCase):
 
@@ -86,7 +86,7 @@ class TestBuildChangeRecords(TestCase):
             ['(59 rows)']
         ]
 
-        result = list(filter_valid_rows(csv_data))
+        result = list(remove_row_count_line(csv_data))
 
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0][0], first_service)
