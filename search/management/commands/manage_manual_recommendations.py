@@ -26,9 +26,10 @@ def handle_file(filename):
 
 def handle_data(topic_id, csv_data):
     header = csv_data[0]
+    rows = csv_data[1:]
     service_id_index = get_index_for_header(header, 'service_id')
     exclude_index = get_index_for_header(header, 'Include/Exclude')
-    return build_change_records(topic_id, service_id_index, exclude_index, csv_data)
+    return build_change_records(topic_id, service_id_index, exclude_index, rows)
 
 def get_all_csv_filenames_from_folder(path):
     result = []
@@ -49,13 +50,13 @@ def get_index_for_header(row, expected_header):
             return index
     raise Exception(f'header "{expected_header}" not found')
 
-def build_change_records(topic_id, service_id_index, exclude_index, csv_data):
+def build_change_records(topic_id, service_id_index, exclude_index, rows):
     make_record = lambda line: {
         'topic_id' : topic_id,
         'service_id' : line[service_id_index],
         'exclude' : line[exclude_index],
     }
-    return list(map(make_record, csv_data))
+    return list(map(make_record, rows))
 
 def included_records(change_records):
     return list(filter(lambda record: record['exclude'] != 'Exclude', change_records))
