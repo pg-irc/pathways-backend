@@ -1,6 +1,7 @@
 import os
 from django.core.management.base import BaseCommand
 from search.manual_recommendations import read_manual_similarities
+from search.models import TaskServiceSimilarityScore
 
 class Command(BaseCommand):
     help = ('')
@@ -21,6 +22,7 @@ class Command(BaseCommand):
             service_id_index = get_index_for_header(header, 'service_id')
             exclude_index = get_index_for_header(header, 'Include/Exclude')
             change_records = build_change_records(topic_id, service_id_index, exclude_index, csv_data)
+            save_changes_to_database(change_records)
 
 def get_all_csv_filenames_from_folder(path):
     result = []
@@ -50,3 +52,19 @@ def build_change_records(topic_id, service_id_index, exclude_index, csv_data):
             'exclude' : line[exclude_index],
         })
     return result
+
+def save_changes_to_database(change_records):
+    for record in change_records:
+        if record['exclude'] != 'Exclude':
+            save_record(record)
+
+
+def save_record(record):
+    manual_similarity_score = 1.0
+    TaskServiceSimilarityScore.objects.update_or_create(
+        task_id=record['topic_id'],
+        service_id=record['service_id'],
+        defaults={
+            'similarity_score': manual_similarity_score
+        }
+    )

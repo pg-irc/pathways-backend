@@ -1,12 +1,10 @@
-import csv
-from io import StringIO
 from django.test import TestCase
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_string
 from newcomers_guide.tests.helpers import create_topic
 from search.models import TaskServiceSimilarityScore
-from search.management.commands.manage_manual_recommendations import get_index_for_header, build_change_records, get_topic_id_from_filename
+from search.management.commands.manage_manual_recommendations import get_index_for_header, build_change_records, get_topic_id_from_filename, save_changes_to_database
 
 # example https://docs.google.com/spreadsheets/d/1CSNCvpNwqX8VnxGESbcKOo_nlhcINZHXhrmCPyyvBXQ/edit?ts=5d696373#gid=471688895
 
@@ -74,3 +72,63 @@ class TestBuildChangeRecords(TestCase):
 
         self.assertEqual(result[0]['service_id'], first_service)
         self.assertEqual(result[1]['service_id'], second_service)
+
+class TestSaveChangesToDatabase(TestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().create()
+        self.service = ServiceBuilder(self.organization).create()
+
+    def test_saves_a_record(self):
+        topic_id = a_string()
+        create_topic(topic_id)
+
+        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':''}])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0].task_id, topic_id)
+        self.assertEqual(records[0].service_id, self.service.id)
+        self.assertAlmostEqual(records[0].similarity_score, 1.0)
+
+    def test_saves_multiple_records(self):
+        topic_id = a_string()
+        create_topic(topic_id)
+
+        second_topic_id = a_string()
+        create_topic(second_topic_id)
+
+        save_changes_to_database([
+            {'topic_id':topic_id, 'service_id':self.service.id, 'exclude':''},
+            {'topic_id':second_topic_id, 'service_id':self.service.id, 'exclude':''},
+        ])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 2)
+
+    def test_does_not_save_records_marked_with_exclude(self):
+        topic_id = a_string()
+        create_topic(topic_id)
+
+        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':'Exclude'}])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 0)
+
+    def test_saves_records_marked_include(self):
+        topic_id = a_string()
+        create_topic(topic_id)
+
+        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':'Include'}])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 1)
+
+    def test_saves_records_marked_with_arbitrary_string(self):
+        topic_id = a_string()
+        create_topic(topic_id)
+
+        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':a_string()}])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 1)
+
