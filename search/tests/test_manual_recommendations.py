@@ -8,7 +8,8 @@ from search.management.commands.manage_manual_recommendations import (get_index_
                                                                       build_change_records,
                                                                       get_topic_id_from_filename,
                                                                       save_changes_to_database,
-                                                                      parse_csv_data)
+                                                                      parse_csv_data,
+                                                                      filter_valid_rows)
 
 class TestReadManualRecommendationsFile(TestCase):
 
@@ -75,7 +76,23 @@ class TestBuildChangeRecords(TestCase):
         self.assertEqual(result[0]['service_id'], first_service)
         self.assertEqual(result[1]['service_id'], second_service)
 
-    def test_handle_data_reads_lines_with_header(self): # TODO rename function
+
+    def test_ignores_last_line_from_database(self):
+        first_service = a_string()
+        second_service = a_string()
+        csv_data = [
+            [first_service, a_string()],
+            [second_service, a_string()],
+            ['(59 rows)']
+        ]
+
+        result = list(filter_valid_rows(csv_data))
+
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0][0], first_service)
+        self.assertEqual(result[1][0], second_service)
+
+    def test_handle_data_reads_lines_with_header(self):
         first_service = a_string()
         topic_id = a_string()
         csv_data = [

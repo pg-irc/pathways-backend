@@ -1,4 +1,5 @@
 import os
+import re
 from django.core.management.base import BaseCommand
 from search.manual_recommendations import read_manual_similarities
 from search.models import TaskServiceSimilarityScore
@@ -40,7 +41,7 @@ def get_all_csv_filenames_from_folder(path):
     for file in os.listdir(directory):
         filename = os.fsdecode(file)
         if filename.endswith(".csv"):
-            result.append(filename)
+            result.append(path + filename)
     return result
 
 def handle_recommendation_file(filename):
@@ -54,7 +55,8 @@ def parse_csv_data(topic_id, csv_data):
     rows = csv_data[1:]
     service_id_index = get_index_for_header(header, 'service_id')
     exclude_index = get_index_for_header(header, 'Include/Exclude')
-    return build_change_records(topic_id, service_id_index, exclude_index, rows)
+    valid_rows = filter_valid_rows(rows)
+    return build_change_records(topic_id, service_id_index, exclude_index, valid_rows)
 
 def get_topic_id_from_filename(path):
     filename = os.path.basename(path)
@@ -73,6 +75,11 @@ def build_change_records(topic_id, service_id_index, exclude_index, rows):
         'exclude' : line[exclude_index],
     }
     return list(map(make_record, rows))
+
+def filter_valid_rows(rows):
+    invalid_line_pattern = "\\(\\d+ rows\\)"
+    is_valid = lambda row: not re.match(invalid_line_pattern, str(row[0]))
+    return filter(is_valid, rows)
 
 def included_records(change_records):
     return list(filter(lambda record: record['exclude'] != 'Exclude', change_records))
