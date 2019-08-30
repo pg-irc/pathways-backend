@@ -15,7 +15,7 @@ class TestReadManualRecommendationsFile(TestCase):
         self.assertEqual(result, 2)
 
     def test_throw_on_missing_header(self):
-        with self.assertRaises(Exception):
+        with self.assertRaisesRegex(Exception, r'header "topic_id" not found'):
             get_index_for_header(['invalid_topic_id', 'score', 'service_id', 'exclude?'], 'topic_id')
 
     def test_get_topic_id_from_filename(self):

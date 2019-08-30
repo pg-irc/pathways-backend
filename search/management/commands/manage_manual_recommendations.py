@@ -41,7 +41,7 @@ def get_index_for_header(row, expected_header):
     for index in range(len(row)):
         if row[index] == expected_header:
             return index
-    raise Exception("header ${expected_header} not found")
+    raise Exception(f'header "{expected_header}" not found')
 
 def build_change_records(topic_id, service_id_index, exclude_index, csv_data):
     make_record = lambda line: {
