@@ -4,7 +4,14 @@ from search.manual_recommendations import read_manual_similarities
 from search.models import TaskServiceSimilarityScore
 
 class Command(BaseCommand):
-    help = ('')
+    help = ('Given a path to a directory, this script reads all CSV files from that '
+            'directory as manual recommendations of services for topics. Format: The '
+            'filenames must match corresponding topic ids, the content of the files are '
+            'CSV files with a column headed "service_id" and another column headed '
+            '"Include/Exclude". Values from these columns are used to create recommended '
+            'service records for the given topic. All other columns are ignored. All rows '
+            'where the "Include/Exclude" column contains "Exclude" are also ignored. All '
+            'files not named *.csv are ignored.')
 
     def add_arguments(self, parser):
         parser.add_argument('path',
