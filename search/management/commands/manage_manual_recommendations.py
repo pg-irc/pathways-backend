@@ -16,20 +16,7 @@ class Command(BaseCommand):
         csv_filenames = get_all_csv_filenames_from_folder(path)
 
         for filename in csv_filenames:
-            handle_file(filename)
-
-def handle_file(filename):
-    topic_id = get_topic_id_from_filename(filename)
-    csv_data = read_manual_similarities(filename)
-    change_records = handle_data(topic_id, csv_data)
-    save_changes_to_database(change_records)
-
-def handle_data(topic_id, csv_data):
-    header = csv_data[0]
-    rows = csv_data[1:]
-    service_id_index = get_index_for_header(header, 'service_id')
-    exclude_index = get_index_for_header(header, 'Include/Exclude')
-    return build_change_records(topic_id, service_id_index, exclude_index, rows)
+            handle_recommendation_file(filename)
 
 def get_all_csv_filenames_from_folder(path):
     result = []
@@ -40,13 +27,26 @@ def get_all_csv_filenames_from_folder(path):
             result.append(filename)
     return result
 
+def handle_recommendation_file(filename):
+    topic_id = get_topic_id_from_filename(filename)
+    csv_data = read_manual_similarities(filename)
+    change_records = parse_csv_data(topic_id, csv_data)
+    save_changes_to_database(change_records)
+
+def parse_csv_data(topic_id, csv_data):
+    header = csv_data[0]
+    rows = csv_data[1:]
+    service_id_index = get_index_for_header(header, 'service_id')
+    exclude_index = get_index_for_header(header, 'Include/Exclude')
+    return build_change_records(topic_id, service_id_index, exclude_index, rows)
+
 def get_topic_id_from_filename(path):
     filename = os.path.basename(path)
     return filename.split('.')[0]
 
-def get_index_for_header(row, expected_header):
-    for index in range(len(row)):
-        if row[index] == expected_header:
+def get_index_for_header(header_row, expected_header):
+    for index in range(len(header_row)):
+        if header_row[index] == expected_header:
             return index
     raise Exception(f'header "{expected_header}" not found')
 
