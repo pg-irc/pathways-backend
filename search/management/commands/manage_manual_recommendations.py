@@ -44,19 +44,19 @@ def get_index_for_header(row, expected_header):
     raise Exception("header ${expected_header} not found")
 
 def build_change_records(topic_id, service_id_index, exclude_index, csv_data):
-    result = []
-    for line in csv_data:
-        result.append({
-            'topic_id' : topic_id,
-            'service_id' : line[service_id_index],
-            'exclude' : line[exclude_index],
-        })
-    return result
+    make_record = lambda line: {
+        'topic_id' : topic_id,
+        'service_id' : line[service_id_index],
+        'exclude' : line[exclude_index],
+    }
+    return list(map(make_record, csv_data))
+
+def included_records(change_records):
+    return list(filter(lambda record: record['exclude'] != 'Exclude', change_records))
 
 def save_changes_to_database(change_records):
-    for record in change_records:
-        if record['exclude'] != 'Exclude':
-            save_record(record)
+    for record in included_records(change_records):
+        save_record(record)
 
 
 def save_record(record):
