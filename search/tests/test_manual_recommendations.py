@@ -1,45 +1,53 @@
 import csv
 from io import StringIO
 from django.test import TestCase
+from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.services.tests.helpers import ServiceBuilder
+from common.testhelpers.random_test_values import a_string
+from newcomers_guide.tests.helpers import create_topic
+from search.models import TaskServiceSimilarityScore
+from search.management.commands.manage_manual_recommendations import get_index_for_header, build_change_records
 
-def validate_column_headers(headers):
-    if headers[0] != 'topic_id':
-        raise Exception("'topic_id' expected in the first column")
-
-    if headers[1] != 'score':
-        raise Exception("'score' expected in the second column")
-
-    if headers[2] != 'service_id':
-        raise Exception("'service_id' expected in the third column")
-
-    if headers[3] != 'exclude?':
-        raise Exception("'exclude?' expected in the fourth column")
+# example https://docs.google.com/spreadsheets/d/1CSNCvpNwqX8VnxGESbcKOo_nlhcINZHXhrmCPyyvBXQ/edit?ts=5d696373#gid=471688895
 
 class TestReadManualRecommendationsFile(TestCase):
 
-    def foo(self):
-        # data = 'topic_id,score,service_id,exclude?'
-        # reader = csv.reader(StringIO(data), delimiter=',')
-        # row = next(reader, None)
-        # self.assertEqual(row, ['topic_id', 'score', 'service_id', 'exclude?'])
+    def test_get_index_of_column(self):
+        result = get_index_for_header(['topic_id', 'score', 'service_id', 'exclude?'], 'service_id')
+        self.assertEqual(result, 2)
 
-    def test_validates_column_headers(self):
-        validate_column_headers(['topic_id', 'score', 'service_id', 'exclude?'])
-
+    def test_throw_on_missing_header(self):
         with self.assertRaises(Exception):
-            validate_column_headers(['invalid_topic_id', 'score', 'service_id', 'exclude?'])
+            get_index_for_header(['invalid_topic_id', 'score', 'service_id', 'exclude?'], 'topic_id')
 
-        with self.assertRaises(Exception):
-            validate_column_headers(['topic_id', 'invalid_score', 'service_id', 'exclude?'])
+class TestBuildChangeRecords(TestCase):
+    def setUp(self):
+        self.topic_id = a_string()
+        self.service_id = a_string()
 
-        with self.assertRaises(Exception):
-            validate_column_headers(['topic_id', 'score', 'invalid_service_id', 'exclude?'])
+    def test_reads_topic_id_from_argument(self):
+        service_id_index = 0
+        exclude_index = 1
+        csv_data = [self.service_id, 'Include']
 
-        with self.assertRaises(Exception):
-            validate_column_headers(['topic_id', 'score', 'service_id', 'invalid_exclude?'])
+        result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
 
-    def test_bla(self):
-        data = 'foo,bar,baz\n1,2,3'
-        reader = csv.reader(StringIO(data), delimiter=',')
-        row = next(reader, None)
-        self.assertEqual(row, ['foo', 'bar', 'baz'])
+        self.assertEqual(result['topic_id'], self.topic_id)
+
+    def test_reads_service_id_from_column_with_given_index(self):
+        service_id_index = 3
+        exclude_index = 4
+        csv_data = [0, 0, 0, self.service_id, 'Include']
+
+        result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
+
+        self.assertEqual(result['service_id'], self.service_id)
+
+    def test_reads_exclude_flag_from_column_with_given_index(self):
+        service_id_index = 3
+        exclude_index = 4
+        csv_data = [0, 0, 0, self.service_id, 'Include']
+
+        result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
+
+        self.assertEqual(result['exclude'], 'Include')
