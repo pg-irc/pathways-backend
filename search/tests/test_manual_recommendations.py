@@ -36,26 +36,41 @@ class TestBuildChangeRecords(TestCase):
     def test_reads_topic_id_from_argument(self):
         service_id_index = 0
         exclude_index = 1
-        csv_data = [self.service_id, 'Include']
+        csv_data = [[self.service_id, 'Include']]
 
         result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
 
-        self.assertEqual(result['topic_id'], self.topic_id)
+        self.assertEqual(result[0]['topic_id'], self.topic_id)
 
     def test_reads_service_id_from_column_with_given_index(self):
         service_id_index = 3
         exclude_index = 4
-        csv_data = [0, 0, 0, self.service_id, 'Include']
+        csv_data = [[0, 0, 0, self.service_id, 'Include']]
 
         result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
 
-        self.assertEqual(result['service_id'], self.service_id)
+        self.assertEqual(result[0]['service_id'], self.service_id)
 
     def test_reads_exclude_flag_from_column_with_given_index(self):
         service_id_index = 3
         exclude_index = 4
-        csv_data = [0, 0, 0, self.service_id, 'Include']
+        csv_data = [[0, 0, 0, self.service_id, 'Include']]
 
         result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
 
-        self.assertEqual(result['exclude'], 'Include')
+        self.assertEqual(result[0]['exclude'], 'Include')
+
+    def test_reads_multiple_lines(self):
+        service_id_index = 0
+        exclude_index = 1
+        first_service = a_string()
+        second_service = a_string()
+        csv_data = [
+            [first_service, a_string()],
+            [second_service, a_string()],
+        ]
+
+        result = build_change_records(self.topic_id, service_id_index, exclude_index, csv_data)
+
+        self.assertEqual(result[0]['service_id'], first_service)
+        self.assertEqual(result[1]['service_id'], second_service)

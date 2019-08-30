@@ -16,11 +16,11 @@ class Command(BaseCommand):
 
         for filename in csv_filenames:
             topic_id = get_topic_id_from_filename(filename)
-            data = read_manual_similarities(filename)
-            header = data[0]
+            csv_data = read_manual_similarities(filename)
+            header = csv_data[0]
             service_id_index = get_index_for_header(header, 'service_id')
             exclude_index = get_index_for_header(header, 'Include/Exclude')
-            change_records = build_change_records(topic_id, service_id_index, exclude_index, data)
+            change_records = build_change_records(topic_id, service_id_index, exclude_index, csv_data)
 
 def get_all_csv_filenames_from_folder(path):
     result = []
@@ -42,18 +42,11 @@ def get_index_for_header(row, expected_header):
     raise Exception("header ${expected_header} not found")
 
 def build_change_records(topic_id, service_id_index, exclude_index, csv_data):
-    return {
-        'topic_id' : topic_id,
-        'service_id' : csv_data[service_id_index],
-        'exclude' : csv_data[exclude_index],
-    }
-
-
-# def parse(csv_data_as_string):
-#     reader = csv.reader(StringIO(csv_data_as_string), delimiter='\t')
-#     row = next(reader, None)
-#     return {
-#         'topic_id' : row[0],
-#         'service_id' : row[2],
-#         'exclude' : row[3],
-#     }
+    result = []
+    for line in csv_data:
+        result.append({
+            'topic_id' : topic_id,
+            'service_id' : line[service_id_index],
+            'exclude' : line[exclude_index],
+        })
+    return result
