@@ -81,10 +81,20 @@ def remove_row_count_line(rows):
 def filter_included_records(change_records):
     return list(filter(lambda record: record['exclude'] != 'Exclude', change_records))
 
+def filter_excluded_records(change_records):
+    return list(filter(lambda record: record['exclude'] == 'Exclude', change_records))
+
 def save_changes_to_database(change_records):
+    for record in filter_excluded_records(change_records):
+        remove_record(record)
     for record in filter_included_records(change_records):
         save_record(record)
 
+def remove_record(record):
+    (TaskServiceSimilarityScore.objects.
+        filter(task_id__exact=record['topic_id']).
+        filter(service_id__exact=record['service_id']).
+        delete())
 
 def save_record(record):
     manual_similarity_score = 1.0
