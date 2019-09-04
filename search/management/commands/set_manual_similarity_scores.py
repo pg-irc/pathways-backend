@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
-from search.read_similarities import read_manual_similarities, build_manual_similarity_map
+from search.read_similarities import build_manual_similarity_map
 from search.save_similarities import save_manual_similarities
+from search.read_csv_data_from_file import read_csv_data_from_file
 
 
 class Command(BaseCommand):
@@ -15,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         manual_similarities_path = options['manual_similarities']
 
-        manual_similarities_csv = read_manual_similarities(manual_similarities_path)
+        manual_similarities_csv = read_csv_data_from_file(manual_similarities_path)
         manual_similarities_map = build_manual_similarity_map(manual_similarities_csv)
         print('Saving manual topic-service similarities...')
         save_manual_similarities(manual_similarities_map)
