@@ -5,6 +5,7 @@
 -- psql -d pathways_local -F $',' -A -f utility/dump_organizations_for_algolia.sql | head -n -1 | csvtojson > organizations.json
 
 select distinct
+	organization.id as organization_id,
 	'"' || organizationStrings.name || '"' as organization_name,
 	regexp_replace(organizationStrings.description, E'[\\n\\r\\t;,]+', ' ', 'g' ) as organization_description,
 	organization.website as organization_website,
