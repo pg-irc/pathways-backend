@@ -10,9 +10,11 @@ class Command(BaseCommand):
             'filenames must match corresponding topic ids, the content of the files are '
             'CSV files with a column headed "service_id" and another column headed '
             '"Include/Exclude". Values from these columns are used to create recommended '
-            'service records for the given topic. All other columns are ignored. All rows '
-            'where the "Include/Exclude" column contains "Exclude" are also ignored. All '
-            'files not named *.csv are ignored.')
+            'service records for the given topic. All such records will have similarity '
+            'scores of 1.0. All other columns are ignored. If the "Include/Exclude" column '
+            'contains "Exclude", then records are not created, instead any existing '
+            'recommendation record for the given topic and service is removed, so that '
+            'the given service will not be recommended for the given topic.')
 
     def add_arguments(self, parser):
         parser.add_argument('path',
