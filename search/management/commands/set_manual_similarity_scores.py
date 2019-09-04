@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
-from search.read_similarities import read_manual_similarities, build_manual_similarity_map
+from search.read_similarities import build_manual_similarity_map
 from search.save_similarities import save_manual_similarities
+from search.read_manual_similarities import read_manual_similarities
 
 
 class Command(BaseCommand):
