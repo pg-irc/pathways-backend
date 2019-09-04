@@ -1,6 +1,6 @@
 import csv
 
-def read_manual_similarities(csv_path):
+def read_csv_data_from_file(csv_path):
     result = []
     with open(csv_path) as csv_file:
         reader = csv.reader(csv_file)

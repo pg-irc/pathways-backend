@@ -1,7 +1,7 @@
 import os
 import re
 from django.core.management.base import BaseCommand
-from search.read_manual_similarities import read_manual_similarities
+from search.read_csv_data_from_file import read_csv_data_from_file
 from search.models import TaskServiceSimilarityScore
 
 class Command(BaseCommand):
@@ -46,7 +46,7 @@ def get_all_csv_filenames_from_folder(path):
 
 def handle_recommendation_file(filename):
     topic_id = get_topic_id_from_filename(filename)
-    csv_data = read_manual_similarities(filename)
+    csv_data = read_csv_data_from_file(filename)
     change_records = parse_csv_data(topic_id, csv_data)
     save_changes_to_database(change_records)
 
