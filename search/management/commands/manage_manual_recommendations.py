@@ -34,7 +34,17 @@ class Command(BaseCommand):
 
         csv_filenames = get_all_csv_filenames_from_folder(path)
         for filename in csv_filenames:
-            handle_recommendation_file(filename)
+            try:
+                handle_recommendation_file(filename)
+            except exceptions.ValidationError as error:
+                self.print_error(filename, error)
+            except ValueError as error:
+                self.print_error(filename, error)
+
+    def print_error(self, filename, error):
+        error = '{filename}: {error_message}'.format(
+            filename=filename, error_message=error.__str__())
+        self.stdout.write(self.style.ERROR(error))
 
 
 def reset_all_existing_recommendations():
