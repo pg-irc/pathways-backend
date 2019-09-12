@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_string
@@ -10,6 +11,7 @@ from search.management.commands.manage_manual_recommendations import (get_index_
                                                                       save_changes_to_database,
                                                                       parse_csv_data,
                                                                       remove_row_count_line)
+
 
 class TestReadManualRecommendationsFile(TestCase):
 
@@ -28,6 +30,7 @@ class TestReadManualRecommendationsFile(TestCase):
     def test_get_topic_id_from_filename_with_no_extension(self):
         result = get_topic_id_from_filename('path/to/topic_id')
         self.assertEqual(result, 'topic_id')
+
 
 class TestBuildChangeRecords(TestCase):
     def setUp(self):
@@ -76,7 +79,6 @@ class TestBuildChangeRecords(TestCase):
         self.assertEqual(result[0]['service_id'], first_service)
         self.assertEqual(result[1]['service_id'], second_service)
 
-
     def test_ignores_last_line_from_database(self):
         first_service = a_string()
         second_service = a_string()
@@ -104,6 +106,7 @@ class TestBuildChangeRecords(TestCase):
 
         self.assertEqual(result[0]['service_id'], first_service)
 
+
 class TestSaveChangesToDatabase(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
@@ -113,7 +116,7 @@ class TestSaveChangesToDatabase(TestCase):
         topic_id = a_string()
         create_topic(topic_id)
 
-        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':''}])
+        save_changes_to_database([{'topic_id': topic_id, 'service_id': self.service.id, 'exclude': 'Include'}])
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 1)
@@ -129,8 +132,8 @@ class TestSaveChangesToDatabase(TestCase):
         create_topic(second_topic_id)
 
         save_changes_to_database([
-            {'topic_id':topic_id, 'service_id':self.service.id, 'exclude':''},
-            {'topic_id':second_topic_id, 'service_id':self.service.id, 'exclude':''},
+            {'topic_id': topic_id, 'service_id': self.service.id, 'exclude': 'Include'},
+            {'topic_id': second_topic_id, 'service_id': self.service.id, 'exclude': 'Include'},
         ])
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
@@ -140,7 +143,7 @@ class TestSaveChangesToDatabase(TestCase):
         topic_id = a_string()
         create_topic(topic_id)
 
-        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':'Exclude'}])
+        save_changes_to_database([{'topic_id': topic_id, 'service_id': self.service.id, 'exclude': 'Exclude'}])
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 0)
@@ -150,10 +153,12 @@ class TestSaveChangesToDatabase(TestCase):
         second_topic_id = a_string()
         create_topic(topic_id)
         create_topic(second_topic_id)
-        TaskServiceSimilarityScore.objects.update_or_create(task_id=topic_id, service_id=self.service.id, defaults={'similarity_score': 1})
-        TaskServiceSimilarityScore.objects.update_or_create(task_id=second_topic_id, service_id=self.service.id, defaults={'similarity_score': 1})
+        TaskServiceSimilarityScore.objects.update_or_create(
+            task_id=topic_id, service_id=self.service.id, defaults={'similarity_score': 1})
+        TaskServiceSimilarityScore.objects.update_or_create(
+            task_id=second_topic_id, service_id=self.service.id, defaults={'similarity_score': 1})
 
-        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':'Exclude'}])
+        save_changes_to_database([{'topic_id': topic_id, 'service_id': self.service.id, 'exclude': 'Exclude'}])
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 1)
@@ -163,17 +168,14 @@ class TestSaveChangesToDatabase(TestCase):
         topic_id = a_string()
         create_topic(topic_id)
 
-        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':'Include'}])
+        save_changes_to_database([{'topic_id': topic_id, 'service_id': self.service.id, 'exclude': 'Include'}])
 
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 1)
 
-    def test_saves_records_marked_with_arbitrary_string(self):
+    def test_throws_error_on_records_marked_with_arbitrary_string(self):
         topic_id = a_string()
         create_topic(topic_id)
 
-        save_changes_to_database([{'topic_id':topic_id, 'service_id':self.service.id, 'exclude':a_string()}])
-
-        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
-        self.assertEqual(len(records), 1)
-
+        with (self.assertRaises(ValidationError)):
+            save_changes_to_database([{'topic_id': topic_id, 'service_id': self.service.id, 'exclude': a_string()}])

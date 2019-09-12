@@ -1,8 +1,10 @@
 import os
 import re
 from django.core.management.base import BaseCommand
+from django.core import exceptions
 from search.read_csv_data_from_file import read_csv_data_from_file
 from search.models import TaskServiceSimilarityScore
+
 
 class Command(BaseCommand):
     help = ('Given a path to a directory, this script reads all CSV files from that '
@@ -34,8 +36,10 @@ class Command(BaseCommand):
         for filename in csv_filenames:
             handle_recommendation_file(filename)
 
+
 def reset_all_existing_recommendations():
     TaskServiceSimilarityScore.objects.all().delete()
+
 
 def get_all_csv_filenames_from_folder(path):
     result = []
@@ -46,11 +50,13 @@ def get_all_csv_filenames_from_folder(path):
             result.append(path + filename)
     return result
 
+
 def handle_recommendation_file(filename):
     topic_id = get_topic_id_from_filename(filename)
     csv_data = read_csv_data_from_file(filename)
     change_records = parse_csv_data(topic_id, csv_data)
     save_changes_to_database(change_records)
+
 
 def parse_csv_data(topic_id, csv_data):
     header = csv_data[0]
@@ -60,43 +66,61 @@ def parse_csv_data(topic_id, csv_data):
     exclude_index = get_index_for_header(header, 'Include/Exclude')
     return build_change_records(topic_id, service_id_index, exclude_index, valid_rows)
 
+
 def get_topic_id_from_filename(path):
     filename = os.path.basename(path)
     return filename.split('.')[0]
 
+
 def get_index_for_header(header_row, expected_header):
     return header_row.index(expected_header)
 
+
 def build_change_records(topic_id, service_id_index, exclude_index, rows):
-    make_record = lambda line: {
-        'topic_id' : topic_id,
-        'service_id' : line[service_id_index],
-        'exclude' : line[exclude_index],
+    def make_record(line): return {
+        'topic_id': topic_id,
+        'service_id': line[service_id_index],
+        'exclude': line[exclude_index],
     }
     return list(map(make_record, rows))
 
+
 def remove_row_count_line(rows):
     invalid_line_pattern = "\\(\\d+ rows\\)"
-    is_valid = lambda row: not re.match(invalid_line_pattern, str(row[0]))
+    def is_valid(row): return not re.match(invalid_line_pattern, str(row[0]))
     return filter(is_valid, rows)
 
+
 def save_changes_to_database(change_records):
-    for record in filter_excluded_records(change_records):
+    valid_records = validate(change_records)
+    for record in filter_excluded_records(valid_records):
         remove_record(record)
-    for record in filter_included_records(change_records):
+    for record in filter_included_records(valid_records):
         save_record(record)
+
+
+def validate(change_records):
+    for record in change_records:
+        exclude = record['exclude']
+        if exclude != 'Exclude' and exclude != 'Include':
+            raise exceptions.ValidationError(exclude + ': Invalid value in the Include/Exclude column')
+    return change_records
+
 
 def filter_included_records(change_records):
     return filter(lambda record: record['exclude'] != 'Exclude', change_records)
 
+
 def filter_excluded_records(change_records):
     return filter(lambda record: record['exclude'] == 'Exclude', change_records)
+
 
 def remove_record(record):
     (TaskServiceSimilarityScore.objects.
      filter(task_id__exact=record['topic_id']).
      filter(service_id__exact=record['service_id']).
      delete())
+
 
 def save_record(record):
     manual_similarity_score = 1.0
