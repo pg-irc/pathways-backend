@@ -13,14 +13,6 @@ while (( "$#" )); do
     then
         ManualRecommendations=$2
         shift 2
-    elif [ "$1" == "--topicsToRemovePath" ]
-    then
-        TopicsToRemove=$2
-        shift 2
-    elif [ "$1" == "--servicesToRemovePath" ]
-    then
-        ServicesToRemove=$2
-        shift 2
     elif [ "$1" == "--outputDir" ]
     then
         CurrentDate=`date '+%Y'-'%m'-'%d'`
@@ -48,15 +40,7 @@ usage() {
     echo "                The path to the Newcomers' guide content."
     echo
     echo "    --recommendationsToAddPath"
-    echo "                The path to the file containing manual recommendations."
-    echo
-    echo "    --topicsToRemovePath"
-    echo "                The path to a file containing zero or more ids of topics for which"
-    echo "                there should be no services recommended."
-    echo
-    echo "    --servicesToRemovePath"
-    echo "                The path to a file containing zero or more ids of services that should"
-    echo "                not be recommended for any topic."
+    echo "                The path to the folder containing files with manual recommendations."
     echo
     echo "    --outputDir"
     echo "                The directory where the output json file will be placed."
@@ -70,7 +54,20 @@ validateFilePath () {
         exit
     fi
     if [ ! -f "$1" ]; then
-        echo "$1: file does not exist"
+        echo "$1: not a file"
+        usage
+        exit
+    fi
+}
+
+validateDirectoryPath () {
+    if [ "$1" == "" ]; then
+        echo "Missing a required argument: $2"
+        usage
+        exit
+    fi
+    if [ ! -d "$1" ]; then
+        echo "$1: not a directory"
         usage
         exit
     fi
@@ -106,9 +103,7 @@ validateFilePath "$BC211Path" "BC 211 data"
 
 validateNewcomersGuidePath
 
-validateFilePath "$ManualRecommendations" "Recommendations to add"
-validateFilePath "$TopicsToRemove" "Topics to remove"
-validateFilePath "$ServicesToRemove" "Services to remove"
+validateDirectoryPath "$ManualRecommendations" "Recommendations to add"
 
 validateOutputFile
 
@@ -116,8 +111,6 @@ echo "About to reinitialize database with data from:"
 echo "BC211 data at:             $BC211Path"
 echo "Newcomers data at:         $NewcomersGuidePath"
 echo "Manual recommendations:    $ManualRecommendations"
-echo "Topics to not recommend:   $TopicsToRemove"
-echo "Services to not recommend: $ServicesToRemove"
 echo "Output file:               $OutputFile"
 read -p "Enter to continue, Ctrl-C to abort "
 
@@ -145,20 +138,8 @@ checkForSuccess "import BC211 data"
 ./manage.py import_newcomers_guide --save_topics_to_db $NewcomersGuidePath
 checkForSuccess "create newcomers guide fixtures"
 
-echo "computing similarity scores ..."
-./manage.py compute_text_similarity_scores --related_topics 3 --related_services 100 $NewcomersGuidePath
-checkForSuccess "compute similarity scores"
-
-echo "removing similarity scores for certain topics ..."
-./manage.py remove_recommendations_for_topics $TopicsToRemove
-checkForSuccess "remove similarity scores for topics"
-
-echo "removing similarity scores for certain services ..."
-./manage.py remove_recommendations_for_services $ServicesToRemove
-checkForSuccess "remove similarity scores for services"
-
 echo "adding manual similarity scores ..."
-./manage.py set_manual_similarity_scores $ManualRecommendations
+./manage.py manage_manual_recommendations $ManualRecommendations
 checkForSuccess "add manual similarity scores"
 
 echo "saving database content to $OutputFile ..."
