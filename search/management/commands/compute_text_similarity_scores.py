@@ -53,8 +53,13 @@ class Command(BaseCommand):
         topics = read_topic_descriptions(root_folder)
         topic_ids, topic_descriptions = to_topic_ids_and_descriptions(topics)
         print('{} topics read, reading services...'.format(len(topic_ids)))
-        services = Service.objects.all()
-        service_ids, service_descriptions = to_service_ids_and_descriptions(services)
+
+        if related_service_count > 0:
+            services = Service.objects.all()
+            service_ids, service_descriptions = to_service_ids_and_descriptions(services)
+        else:
+            service_ids = []
+            service_descriptions = []
 
         descriptions = topic_descriptions + service_descriptions
 

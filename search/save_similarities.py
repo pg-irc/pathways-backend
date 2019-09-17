@@ -7,6 +7,10 @@ LOGGER = logging.getLogger(__name__)
 
 def save_topic_similarities(ids, similarities, count):
     TaskSimilarityScore.objects.all().delete()
+
+    if count == 0:
+        return
+
     for i in range(len(ids)):
         similarities_for_topic = [similarities[i, j] for j in range(len(ids)) if i != j]
         cutoff = compute_cutoff(similarities_for_topic, count)
@@ -26,6 +30,10 @@ def compute_cutoff(scores, count):
 
 def save_topic_service_similarity_scores(topic_ids, service_ids, similarities, count):
     TaskServiceSimilarityScore.objects.all().delete()
+
+    if count == 0:
+        return
+
     topic_count = len(topic_ids)
     service_count = len(service_ids)
 
@@ -36,7 +44,7 @@ def save_topic_service_similarity_scores(topic_ids, service_ids, similarities, c
 
     for i in range(topic_count):
         similarities_for_topic = [similarities[i, to_service_similarity_offset(j)]
-                                 for j in range(service_count)]
+                                  for j in range(service_count)]
         cutoff = compute_cutoff(similarities_for_topic, count)
         for j in range(service_count):
             score = similarities[i, to_service_similarity_offset(j)]
