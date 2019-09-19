@@ -21,7 +21,7 @@ select distinct
 	'"' || address.postal_code || '"' as postal_code,
 	ST_X(location.point) as "_geoloc.lng",
 	ST_Y(location.point) as "_geoloc.lat",
-	counts.service_count
+	counts.service_count as "service_count_for_parent_organization"
 from
 	services_service as service,
 	services_service_translation as serviceStrings,
