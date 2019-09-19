@@ -20,7 +20,8 @@ select distinct
 	'"' || address.city || '"' as city,
 	'"' || address.postal_code || '"' as postal_code,
 	ST_X(location.point) as "_geoloc.lng",
-	ST_Y(location.point) as "_geoloc.lat"
+	ST_Y(location.point) as "_geoloc.lat",
+	counts.service_count
 from
 	services_service as service,
 	services_service_translation as serviceStrings,
@@ -29,7 +30,18 @@ from
 	locations_locationaddress as locationAddress,
 	addresses_address as address,
 	organizations_organization as organization,
-	organizations_organization_translation as organizationStrings
+	organizations_organization_translation as organizationStrings,
+	(select
+		count(s.id) as service_count,
+		o.id as organization_id
+	from
+		services_service as s,
+		organizations_organization as o
+	where
+		s.organization_id=o.id
+	group by
+		o.id
+	) as counts
 where
 	service.id=serviceStrings.master_id and
 	service.id=servicesAtLocation.service_id and
@@ -38,6 +50,7 @@ where
 	locationAddress.address_id=address.id and
 	locationAddress.address_type_id='physical_address' and
 	organization.id=service.organization_id and
-	organization.id=organizationStrings.master_id
+	organization.id=organizationStrings.master_id and
+	organization.id=counts.organization_id
 order by
 	service_name;
