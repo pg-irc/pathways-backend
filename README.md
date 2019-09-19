@@ -6,7 +6,7 @@ We can import and serve up read-only services data from the BC-211 dataset, usin
 
 ## Entities
 
-These are the entities of the client side data model:
+These are the entities of the data model:
 
 ![Entities](ENTITIES.png)
 
