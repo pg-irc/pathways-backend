@@ -4,6 +4,12 @@ This repository contains the server for providing access to data about services 
 
 We can import and serve up read-only services data from the BC-211 dataset, using the [HSDS](http://openreferral.readthedocs.io/en/latest/hsds/reference/) data format and [HSDA API](http://docs.openreferral.org/en/latest/) format.
 
+## Entities
+
+These are the entities of the client side data model:
+
+![Entities](ENTITIES.png)
+
 ## Getting started
 
 Clone the repository
