@@ -11,8 +11,11 @@
 
 select distinct
 	service.id as service_id,
+	organization.id as organization_id,
 	'"' || serviceStrings.name || '"' as service_name,
+	'"' || organizationStrings.name || '"' as organization_name,
 	regexp_replace(serviceStrings.description, E'[\\n\\r\\t;,]+', ' ', 'g' ) as service_description,
+	regexp_replace(organizationStrings.description, E'[\\n\\r\\t;,]+', ' ', 'g' ) as organization_description,
 	regexp_replace(address.address, E'[\\n\\r;,]+', ' ', 'g' ) as street_address,
 	'"' || address.city || '"' as city,
 	'"' || address.postal_code || '"' as postal_code,
@@ -24,13 +27,17 @@ from
 	locations_location as location,
 	locations_serviceatlocation as servicesAtLocation,
 	locations_locationaddress as locationAddress,
-	addresses_address as address
+	addresses_address as address,
+	organizations_organization as organization,
+	organizations_organization_translation as organizationStrings
 where
 	service.id=serviceStrings.master_id and
 	service.id=servicesAtLocation.service_id and
 	location.id=servicesAtLocation.location_id and
 	servicesAtLocation.location_id=locationAddress.location_id and
 	locationAddress.address_id=address.id and
-	locationAddress.address_type_id='physical_address'
+	locationAddress.address_type_id='physical_address' and
+	organization.id=service.organization_id and
+	organization.id=organizationStrings.master_id
 order by
 	service_name;
