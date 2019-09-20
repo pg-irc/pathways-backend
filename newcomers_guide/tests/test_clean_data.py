@@ -283,11 +283,13 @@ class CleanUpUrlLinksTest(TestCase):
 
     def test_http_link_does_not_truncate_query_with_ampersand(self):
         text = 'abc http://foo.com/find?a=a&b=b def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
 
     def test_http_link_does_not_truncate_path_ending_with_word_character(self):
         text = 'abc http://example.com/search def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search](http://example.com/search) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://example.com/search](http://example.com/search) def')
 
     def test_excludes_trailing_dot_at_end_of_query(self):
         text = 'abc http://foo.com/find?a=a. def'
@@ -299,19 +301,24 @@ class CleanUpUrlLinksTest(TestCase):
 
     def test_link_at_the_start_of_a_file(self):
         text = 'http://foo.com/find?a=a&b=b def'
-        self.assertEqual(clean_up_http_links(text), 'Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
 
     def test_link_at_the_end_of_a_file(self):
         text = 'abc http://foo.com/find?a=a&b=b'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b)')
-    
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b)')
+
     def test_http_link_over_28_characters_are_truncated(self):
         text = 'abc http://google.com/search?source=a&page=b def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://google.com/search?sou...](http://google.com/search?source=a&page=b) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://google.com/search?sou...](http://google.com/search?source=a&page=b) def')
 
     def test_http_link_does_not_truncate_long_host_name(self):
         text = 'abc http://excessivelylonghostname.com/search def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://excessivelylonghostname.com...](http://excessivelylonghostname.com/search) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://excessivelylonghostname.com...](http://excessivelylonghostname.com/search) def')
+
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
