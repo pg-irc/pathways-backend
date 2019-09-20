@@ -4,6 +4,5 @@
 # ./utility/extract_all_urls.sh ../content/NewcomersGuide/Chapter*/*/*/*.md
 
 grep --extended-regexp --word-regexp --only-matching --ignore-case --no-filename 'https?://[^ ]+' "$@" \
-| sed 's/http:/https:/' \
 | sort \
 | uniq -ui

@@ -30,7 +30,7 @@ def read_csv_data_from_file(csv_path):
     return result
 
 
-fixed_links = read_csv_data_from_file('../fixed_links.csv')
+fixed_links = read_csv_data_from_file('../content/Fix broken links in AA - urls.csv')
 
 
 def fix_links_in_file(path):
@@ -38,9 +38,15 @@ def fix_links_in_file(path):
     content = read_file_content(path)
     for line in fixed_links:
         bad_link = line[0].strip()
+
+        bad_link_with_http = bad_link.replace('https', 'http')
+        bad_link_with_https = bad_link.replace('http', 'https')
+        contains_bad_link = content.find(bad_link_with_http) or content.find(bad_link_with_https)
+
         good_link = line[2].strip()
-        if content.find(bad_link) and good_link != 'OK':
-            content = content.replace(bad_link, good_link)
+        if contains_bad_link and good_link != 'OK':
+            content = content.replace(bad_link_with_http, good_link)
+            content = content.replace(bad_link_with_https, good_link)
             dirty = True
     if dirty:
         print(path)
