@@ -319,6 +319,16 @@ class CleanUpUrlLinksTest(TestCase):
         self.assertEqual(clean_up_http_links(
             text), 'abc Web: [http://excessivelylonghostname.com...](http://excessivelylonghostname.com/search) def')
 
+    def test_http_link_surrounded_by_chinese_characters(self):
+        text = '他們可協https://www.cic.gc.ca/他們可協'
+        expected = '他們可協Web: [https://www.cic.gc.ca/](https://www.cic.gc.ca/)他們可協'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_surrounded_by_punjabi_characters(self):
+        text = 'https://www.carproof.comਤੋਂ'
+        expected = 'Web: [https://www.carproof.com](https://www.carproof.com)ਤੋਂ'
+        self.assertEqual(clean_up_http_links(text), expected)
+
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
