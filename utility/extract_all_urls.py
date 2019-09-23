@@ -1,27 +1,14 @@
-#!/home/rasmus/git/pathways-backend/.venv/bin/python
+# PYTHONPATH=. python ./utility/extract_all_urls.py | sort | uniq > urls.txt
 
-# ./utility/extract_all_urls.py | sort | uniq > urls.txt
-
-import os
 import re
-
-
-def is_topic_file(path):
-    sep = os.sep
-    is_under_topics_folder = path.find(sep + 'topics' + sep) > 0
-    is_mark_down = path.endswith('.md')
-    return is_under_topics_folder and is_mark_down
-
-
-def read_file_content(path):
-    with open(path, 'r') as file:
-        return file.read()
+import os
+from newcomers_guide.read_data import is_topic_file, read_file_content
+from newcomers_guide.link_regular_expression import url_regular_expression
 
 
 def extract_urls(path):
     content = read_file_content(path)
-    # TODO ensure the same pattern is used in /pathways-backend/newcomers_guide/clean_data.py
-    pattern = re.compile(r'(https?://[a-zA-Z][a-zA-Z0-9\.\-\_\?\&\$\#\/]+[a-zA-Z0-9\-\_\?\&\$\#\/])')
+    pattern = re.compile(url_regular_expression)
     for match in re.finditer(pattern, content):
         print(match.group(1))
 
