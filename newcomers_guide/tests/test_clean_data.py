@@ -349,6 +349,11 @@ class CleanUpUrlLinksTest(TestCase):
         expected = 'abc Web: [https://www.cba.ca/?cat=Bank...](https://www.cba.ca/?cat=Banking-Basics) def'
         self.assertEqual(clean_up_http_links(text), expected)
 
+    def test_http_link_with_trailing_slash(self):
+        text = 'abc https://www.bchrt.bc.ca/ def'
+        expected = 'abc Web: [https://www.bchrt.bc.ca/](https://www.bchrt.bc.ca/) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
     def test_http_link_surrounded_by_chinese_characters(self):
         text = '他們可協https://www.cic.gc.ca/他們可協'
         expected = '他們可協Web: [https://www.cic.gc.ca/](https://www.cic.gc.ca/)他們可協'
@@ -357,6 +362,11 @@ class CleanUpUrlLinksTest(TestCase):
     def test_http_link_surrounded_by_punjabi_characters(self):
         text = 'https://www.carproof.comਤੋਂ'
         expected = 'Web: [https://www.carproof.com](https://www.carproof.com)ਤੋਂ'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_chinese_1(self):
+        text = '会有公http://www.civicinfo.bc.ca/municipalities地方区域或会有公园及康乐资料。http://www.civicinfo.bc.ca/regionaldistricts会有公'
+        expected = '会有公Web: [http://www.civicinfo.bc.ca/m...](http://www.civicinfo.bc.ca/municipalities)地方区域或会有公园及康乐资料。Web: [http://www.civicinfo.bc.ca/r...](http://www.civicinfo.bc.ca/regionaldistricts)会有公'
         self.assertEqual(clean_up_http_links(text), expected)
 
 
