@@ -319,6 +319,36 @@ class CleanUpUrlLinksTest(TestCase):
         self.assertEqual(clean_up_http_links(
             text), 'abc Web: [http://excessivelylonghostname.com...](http://excessivelylonghostname.com/search) def')
 
+    def test_http_link_with_pound(self):
+        text = 'abc http://practicetest.icbc.com/#/ def'
+        expected = 'abc Web: [http://practicetest.icbc.com...](http://practicetest.icbc.com/#/) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_ampersand(self):
+        text = 'abc https://www2.gov.bc.ca/gov/search?id=3105AF6441&tab=1&q=special+needs def'
+        expected = 'abc Web: [https://www2.gov.bc.ca/gov/s...](https://www2.gov.bc.ca/gov/search?id=3105AF6441&tab=1&q=special+needs) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_parentheses(self):
+        text = 'abc https://www.welcomebc.ca//Resources-For/For-regulators/Foreign-Qualifications-Recognition-(FQR) def'
+        expected = 'abc Web: [https://www.welcomebc.ca//Re...](https://www.welcomebc.ca//Resources-For/For-regulators/Foreign-Qualifications-Recognition-(FQR)) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_dash(self):
+        text = 'abc http://www.leg.bc.ca/mla/3-1-1.htm def'
+        expected = 'abc Web: [http://www.leg.bc.ca/mla/3-1...](http://www.leg.bc.ca/mla/3-1-1.htm) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_underscore(self):
+        text = 'abc https://www.bced.gov.bc.ca/home_school def'
+        expected = 'abc Web: [https://www.bced.gov.bc.ca/h...](https://www.bced.gov.bc.ca/home_school) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_question_mark(self):
+        text = 'abc https://www.cba.ca/?cat=Banking-Basics def'
+        expected = 'abc Web: [https://www.cba.ca/?cat=Bank...](https://www.cba.ca/?cat=Banking-Basics) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
     def test_http_link_surrounded_by_chinese_characters(self):
         text = '他們可協https://www.cic.gc.ca/他們可協'
         expected = '他們可協Web: [https://www.cic.gc.ca/](https://www.cic.gc.ca/)他們可協'
