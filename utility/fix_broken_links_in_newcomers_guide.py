@@ -1,6 +1,7 @@
 #!/home/rasmus/git/pathways-backend/.venv/bin/python
 
 import os
+import sys
 import csv
 
 
@@ -31,7 +32,7 @@ def read_csv_data_from_file(csv_path):
 
 
 fixed_links = sorted(
-    read_csv_data_from_file('../content/Fix broken links in AA - urls.csv'),
+    read_csv_data_from_file(sys.argv[1]),
     key=lambda x: len(x[0]),
     reverse=True
 )
