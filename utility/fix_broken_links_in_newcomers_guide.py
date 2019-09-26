@@ -1,5 +1,3 @@
-#!/home/rasmus/git/pathways-backend/.venv/bin/python
-
 import os
 import sys
 import csv
