@@ -283,11 +283,13 @@ class CleanUpUrlLinksTest(TestCase):
 
     def test_http_link_does_not_truncate_query_with_ampersand(self):
         text = 'abc http://foo.com/find?a=a&b=b def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
 
     def test_http_link_does_not_truncate_path_ending_with_word_character(self):
         text = 'abc http://example.com/search def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://example.com/search](http://example.com/search) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://example.com/search](http://example.com/search) def')
 
     def test_excludes_trailing_dot_at_end_of_query(self):
         text = 'abc http://foo.com/find?a=a. def'
@@ -299,19 +301,74 @@ class CleanUpUrlLinksTest(TestCase):
 
     def test_link_at_the_start_of_a_file(self):
         text = 'http://foo.com/find?a=a&b=b def'
-        self.assertEqual(clean_up_http_links(text), 'Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b) def')
 
     def test_link_at_the_end_of_a_file(self):
         text = 'abc http://foo.com/find?a=a&b=b'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b)')
-    
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://foo.com/find?a=a&b=b](http://foo.com/find?a=a&b=b)')
+
     def test_http_link_over_28_characters_are_truncated(self):
         text = 'abc http://google.com/search?source=a&page=b def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://google.com/search?sou...](http://google.com/search?source=a&page=b) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://google.com/search?sou...](http://google.com/search?source=a&page=b) def')
 
     def test_http_link_does_not_truncate_long_host_name(self):
         text = 'abc http://excessivelylonghostname.com/search def'
-        self.assertEqual(clean_up_http_links(text), 'abc Web: [http://excessivelylonghostname.com...](http://excessivelylonghostname.com/search) def')
+        self.assertEqual(clean_up_http_links(
+            text), 'abc Web: [http://excessivelylonghostname.com...](http://excessivelylonghostname.com/search) def')
+
+    def test_http_link_with_pound(self):
+        text = 'abc http://practicetest.icbc.com/#/ def'
+        expected = 'abc Web: [http://practicetest.icbc.com...](http://practicetest.icbc.com/#/) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_ampersand(self):
+        text = 'abc https://www2.gov.bc.ca/gov/search?id=3105AF6441&tab=1&q=special+needs def'
+        expected = 'abc Web: [https://www2.gov.bc.ca/gov/s...](https://www2.gov.bc.ca/gov/search?id=3105AF6441&tab=1&q=special+needs) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_parentheses(self):
+        text = 'abc https://www.welcomebc.ca//Resources-For/For-regulators/Foreign-Qualifications-Recognition-(FQR) def'
+        expected = 'abc Web: [https://www.welcomebc.ca//Re...](https://www.welcomebc.ca//Resources-For/For-regulators/Foreign-Qualifications-Recognition-(FQR)) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_dash(self):
+        text = 'abc http://www.leg.bc.ca/mla/3-1-1.htm def'
+        expected = 'abc Web: [http://www.leg.bc.ca/mla/3-1...](http://www.leg.bc.ca/mla/3-1-1.htm) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_underscore(self):
+        text = 'abc https://www.bced.gov.bc.ca/home_school def'
+        expected = 'abc Web: [https://www.bced.gov.bc.ca/h...](https://www.bced.gov.bc.ca/home_school) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_question_mark(self):
+        text = 'abc https://www.cba.ca/?cat=Banking-Basics def'
+        expected = 'abc Web: [https://www.cba.ca/?cat=Bank...](https://www.cba.ca/?cat=Banking-Basics) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_with_trailing_slash(self):
+        text = 'abc https://www.bchrt.bc.ca/ def'
+        expected = 'abc Web: [https://www.bchrt.bc.ca/](https://www.bchrt.bc.ca/) def'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_surrounded_by_chinese_characters(self):
+        text = '他們可協https://www.cic.gc.ca/他們可協'
+        expected = '他們可協Web: [https://www.cic.gc.ca/](https://www.cic.gc.ca/)他們可協'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_http_link_surrounded_by_punjabi_characters(self):
+        text = 'https://www.carproof.comਤੋਂ'
+        expected = 'Web: [https://www.carproof.com](https://www.carproof.com)ਤੋਂ'
+        self.assertEqual(clean_up_http_links(text), expected)
+
+    def test_chinese_1(self):
+        text = '会有公http://www.civicinfo.bc.ca/municipalities地方区域或会有公园及康乐资料。http://www.civicinfo.bc.ca/regionaldistricts会有公'
+        expected = '会有公Web: [http://www.civicinfo.bc.ca/m...](http://www.civicinfo.bc.ca/municipalities)地方区域或会有公园及康乐资料。Web: [http://www.civicinfo.bc.ca/r...](http://www.civicinfo.bc.ca/regionaldistricts)会有公'
+        self.assertEqual(clean_up_http_links(text), expected)
+
 
 class CleanUpMailtoLinksTest(TestCase):
     def test_replaces_email_link_with_markdown(self):
