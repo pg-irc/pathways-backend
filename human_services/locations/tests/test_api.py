@@ -114,8 +114,8 @@ class LocationsApiTests(rest_test.APITestCase):
         location = LocationBuilder(self.organization).with_long_lat(a_float(), a_float()).create()
         url = '/v1/locations/'
         response = self.client.get(url)
-        self.assertEqual(response.json()[0]['latitude'], location.point.x)
-        self.assertEqual(response.json()[0]['longitude'], location.point.y)
+        self.assertEqual(response.json()[0]['longitude'], location.point.x)
+        self.assertEqual(response.json()[0]['latitude'], location.point.y)
 
     def test_has_phone_numbers(self):
         location = LocationBuilder(self.organization).create()

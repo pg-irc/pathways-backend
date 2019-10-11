@@ -6,14 +6,15 @@ from human_services.phone_at_location.serializers import PhoneAtLocationSerializ
 
 class LocationAddressSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
+
     class Meta:
         model = models.LocationAddress
         fields = ('address_type', 'address')
 
 
 class LocationSerializer(serializers.ModelSerializer):
-    latitude = serializers.ReadOnlyField(source='point.x')
-    longitude = serializers.ReadOnlyField(source='point.y')
+    latitude = serializers.ReadOnlyField(source='point.y')
+    longitude = serializers.ReadOnlyField(source='point.x')
     addresses = LocationAddressSerializer(source='location_addresses', many=True)
     phone_numbers = PhoneAtLocationSerializer(many=True)
 
