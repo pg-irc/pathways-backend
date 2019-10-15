@@ -107,7 +107,7 @@ def clean_up_http_links(text):
 
 
 def clean_up_email_links(text):
-    return re.sub(email_regular_expression, r'Email: [\1](mailto:\1)', text)
+    return re.sub(email_regular_expression, r'[\1](mailto:\1)', text)
 
 
 def check_length_of_http_links(matchobj):
