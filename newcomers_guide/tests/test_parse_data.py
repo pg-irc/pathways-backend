@@ -85,12 +85,12 @@ class ProcessTaskFilesTests(TestCase):
     def test_clean_up_content_links(self):
         result = parse_topic_files([[self.english_path, 'abc http://example.com def']])
         description = result['taskMap']['to_learn_english']['description']['en']
-        self.assertEqual(description, 'abc Web: [http://example.com](http://example.com) def')
+        self.assertEqual(description, 'abc [http://example.com](http://example.com) def')
 
     def test_handle_localized_titles_when_processing_the_same_content_in_different_locales(self):
         french_path = 'some/path/chapter/topics/To_learn_english/fr.Apprendre_l_anglais.txt'
         result = parse_topic_files([[self.english_path, a_string()],
-                                   [french_path, a_string()]])
+                                    [french_path, a_string()]])
         self.assertEqual(result['taskMap']['to_learn_english']['title']['en'], 'Learn_english')
         self.assertEqual(result['taskMap']['to_learn_english']['title']['fr'], 'Apprendre_l_anglais')
 
@@ -99,7 +99,7 @@ class ProcessTaskFilesTests(TestCase):
         english_description = a_string()
         french_description = a_string()
         result = parse_topic_files([[self.english_path, english_description],
-                                   [french_path, french_description]])
+                                    [french_path, french_description]])
         self.assertEqual(result['taskMap']['to_learn_english']['description']['en'], english_description)
         self.assertEqual(result['taskMap']['to_learn_english']['description']['fr'], french_description)
 
@@ -128,7 +128,7 @@ class ProcessTaskFilesTests(TestCase):
     def test_combine_files_for_different_content(self):
         secondary_path = 'some/path/chapter/topics/Registering_child_in_school/en.Registering_in_public_school.txt'
         result = parse_topic_files([[self.english_path, a_string()],
-                                   [secondary_path, a_string()]])
+                                    [secondary_path, a_string()]])
         self.assertEqual(result['taskMap']['to_learn_english']['title']['en'], 'Learn_english')
         self.assertEqual(result['taskMap']['registering_child_in_school']
                          ['title']['en'], 'Registering_in_public_school')
