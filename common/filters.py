@@ -1,4 +1,4 @@
-from rest_framework import filters
+from rest_framework import filters, serializers
 from config.settings.base import SRID
 from django.contrib.gis.geos import Point
 from django.db.models import F
@@ -102,7 +102,7 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         user_location = request.query_params.get('user_location', None)
         if user_location and queryset.model is ServiceAtLocation:
-            radius_km = self.get_radius_km(request)
+            radius_km = self.get_valid_radius_km(request)
             location = ProximityParser(user_location)
             location_point = Point(location.latitude, location.longitude, srid=SRID)
             queryset = (queryset
@@ -110,10 +110,22 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
                         .filter(distance__lte=DistanceMeasure(km=radius_km)))
         return queryset
 
-    def get_radius_km(self, request):
+    def get_valid_radius_km(self, request):
         default_radius_km = 25
-        user_radius_km = request.query_params.get('radius_km', None)
-        return user_radius_km or default_radius_km
+        return self.validate_radius(request.query_params.get('radius_km', default_radius_km))
+
+    def validate_radius(self, radius):
+        radius_as_number = self.to_number_or_none(radius)
+        if not radius_as_number or radius_as_number < 0:
+            message = 'Invalid value for radius_km, must be a positive number'
+            raise serializers.ValidationError(message)
+        return radius_as_number
+
+    def to_number_or_none(self, radius):
+        try:
+            return float(radius)
+        except ValueError:
+            return None
 
 
 class TaxonomyFilter(filters.BaseFilterBackend):

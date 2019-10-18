@@ -147,6 +147,21 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertIn(origin_location.name, names_in_response)
         self.assertIn(near_location.name, names_in_response)
 
+    def test_proximity_filter_throws_if_radius_is_negative(self):
+        url_with_negative_radius = ('/v1/services_at_location/?user_location={0},{1}&radius_km=-50'
+                                    .format(a_float(), a_float()))
+
+        response = self.client.get(url_with_negative_radius)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()[0], 'Invalid value for radius_km, must be a positive number')
+
+    def test_proximity_filter_throws_if_radius_is_not_a_valid(self):
+        url_with_negative_radius = ('/v1/services_at_location/?user_location={0},{1}&radius_km=xyz'
+                                    .format(a_float(), a_float()))
+
+        response = self.client.get(url_with_negative_radius)
+        self.assertEqual(response.json()[0], 'Invalid value for radius_km, must be a positive number')
+
     def test_can_order_by_similarity_to_topic(self):
         topic_id = a_string()
         create_topic(topic_id)
