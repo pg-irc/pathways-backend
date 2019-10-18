@@ -97,7 +97,7 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
 class ProximityCutoffFilter(filters.BaseFilterBackend):
     filter_description = ('Exclude results more than a given distance in KM from a given point. '
                           'Accepts two comma separated values representing a longitude and a latitude. '
-                          'Example: "-123.1207,+49.2827".')
+                          'Example: "-123.1207,+49.2827". Use radius_km to specify the distance to use')
 
     def filter_queryset(self, request, queryset, view):
         user_location = request.query_params.get('user_location', None)
@@ -111,14 +111,13 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
         return queryset
 
     def get_valid_radius_km(self, request):
-        default_radius_km = 25
+        default_radius_km = '25'
         return self.validate_radius(request.query_params.get('radius_km', default_radius_km))
 
     def validate_radius(self, radius):
         radius_as_number = self.to_number_or_none(radius)
         if not radius_as_number or radius_as_number < 0:
-            message = 'Invalid value for radius_km, must be a positive number'
-            raise serializers.ValidationError(message)
+            self.throw_error()
         return radius_as_number
 
     def to_number_or_none(self, radius):
@@ -126,6 +125,10 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
             return float(radius)
         except ValueError:
             return None
+
+    def throw_error(self):
+        message = 'Invalid value for radius_km, must be a positive number'
+        raise serializers.ValidationError(message)
 
 
 class TaxonomyFilter(filters.BaseFilterBackend):
