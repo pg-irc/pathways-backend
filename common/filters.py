@@ -101,14 +101,19 @@ class ProximityCutoffFilter(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         user_location = request.query_params.get('user_location', None)
-        radius_km = request.query_params.get('radius_km', None) or 25
         if user_location and queryset.model is ServiceAtLocation:
+            radius_km = self.get_radius_km(request)
             location = ProximityParser(user_location)
             location_point = Point(location.latitude, location.longitude, srid=SRID)
             queryset = (queryset
                         .annotate(distance=Distance('location__point', location_point))
                         .filter(distance__lte=DistanceMeasure(km=radius_km)))
         return queryset
+
+    def get_radius_km(self, request):
+        default_radius_km = 25
+        user_radius_km = request.query_params.get('radius_km', None)
+        return user_radius_km or default_radius_km
 
 
 class TaxonomyFilter(filters.BaseFilterBackend):
