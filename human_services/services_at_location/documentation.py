@@ -9,6 +9,7 @@ def get_service_at_location_list_schema():
     operation_description = 'Get a list of services at locations'
     manual_parameters = ([documentation.get_proximity_sort_manual_parameter(),
                           documentation.get_proximity_filter_manual_parameter(),
+                          documentation.get_proximity_filter_radius_manual_parameter(),
                           documentation.get_taxonomy_terms_manual_parameter(),
                           documentation.get_page_manual_parameter(),
                           documentation.get_related_to_topic_manual_parameter()])
