@@ -97,9 +97,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         response = self.client.get(url_with_user_location)
         names_in_response = [row['location']['name'] for row in response.json()]
 
-        self.assertEqual(len(names_in_response), 2)
         self.assertIn(origin_location.name, names_in_response)
         self.assertIn(near_location.name, names_in_response)
+        self.assertNotIn(far_location.name, names_in_response)
 
     def test_proximity_filter_excludes_points_more_than_25km_away(self):
         origin = Point(-123.060015, 49.270545)
@@ -120,9 +120,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         response = self.client.get(url_with_user_location)
         names_in_response = [row['location']['name'] for row in response.json()]
 
-        self.assertEqual(len(names_in_response), 2)
         self.assertIn(origin_location.name, names_in_response)
         self.assertIn(near_location.name, names_in_response)
+        self.assertNotIn(far_location.name, names_in_response)
 
     def test_proximity_filter_excludes_points_more_than_a_gven_distance(self):
         origin = Point(-123.060015, 49.270545)
@@ -143,9 +143,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         response = self.client.get(url_with_user_location)
         names_in_response = [row['location']['name'] for row in response.json()]
 
-        self.assertEqual(len(names_in_response), 2)
         self.assertIn(origin_location.name, names_in_response)
         self.assertIn(near_location.name, names_in_response)
+        self.assertNotIn(far_location.name, names_in_response)
 
     def test_proximity_filter_throws_if_radius_is_negative(self):
         url_with_negative_radius = ('/v1/services_at_location/?user_location={0},{1}&radius_km=-50'
