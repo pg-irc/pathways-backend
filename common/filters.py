@@ -67,7 +67,6 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
 
         return queryset
 
-
     def sort_by_proximity_and_topic(self, queryset, proximity_parameter, topic_id):
         reference_point = self.to_point(proximity_parameter)
         return (queryset.
@@ -96,18 +95,19 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
 
 
 class ProximityCutoffFilter(filters.BaseFilterBackend):
-    filter_description = ('Exclude results more than 25KM (hard-coded value) from a given point. '
+    filter_description = ('Exclude results more than a given distance in KM from a given point. '
                           'Accepts two comma separated values representing a longitude and a latitude. '
                           'Example: "-123.1207,+49.2827".')
 
     def filter_queryset(self, request, queryset, view):
         user_location = request.query_params.get('user_location', None)
+        radius_km = request.query_params.get('radius_km', None) or 25
         if user_location and queryset.model is ServiceAtLocation:
             location = ProximityParser(user_location)
             location_point = Point(location.latitude, location.longitude, srid=SRID)
             queryset = (queryset
                         .annotate(distance=Distance('location__point', location_point))
-                        .filter(distance__lte=DistanceMeasure(km=25)))
+                        .filter(distance__lte=DistanceMeasure(km=radius_km)))
         return queryset
 
 

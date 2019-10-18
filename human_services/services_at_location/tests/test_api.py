@@ -124,6 +124,29 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertIn(origin_location.name, names_in_response)
         self.assertIn(near_location.name, names_in_response)
 
+    def test_proximity_filter_excludes_points_more_than_a_gven_distance(self):
+        origin = Point(-123.060015, 49.270545)
+        point_49km_away = Point(-122.399147, 49.260617)
+        point_51km_away = Point(-122.343979, 49.260414)
+
+        origin_location = LocationBuilder(self.organization).with_point(origin).create()
+        near_location = LocationBuilder(self.organization).with_point(point_49km_away).create()
+        far_location = LocationBuilder(self.organization).with_point(point_51km_away).create()
+
+        set_location_for_service(self.service.id, origin_location.id)
+        set_location_for_service(self.service.id, near_location.id)
+        set_location_for_service(self.service.id, far_location.id)
+
+        url_with_user_location = ('/v1/services_at_location/?user_location={0},{1}&radius_km=50'
+                                  .format(origin_location.point.x, origin_location.point.y))
+
+        response = self.client.get(url_with_user_location)
+        names_in_response = [row['location']['name'] for row in response.json()]
+
+        self.assertEqual(len(names_in_response), 2)
+        self.assertIn(origin_location.name, names_in_response)
+        self.assertIn(near_location.name, names_in_response)
+
     def test_can_order_by_similarity_to_topic(self):
         topic_id = a_string()
         create_topic(topic_id)
@@ -285,7 +308,6 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 2)
         self.assertEqual(json[0]['service']['name'], similar_service.name)
         self.assertEqual(json[1]['service']['name'], disimilar_service.name)
-
 
     def test_returns_more_similar_service_first_if_location_slightly_further_away(self):
         topic_id = a_string()
