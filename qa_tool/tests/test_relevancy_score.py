@@ -3,7 +3,7 @@ from qa_tool.tests.helpers import RelevancyScoreBuilder
 from rest_framework import status
 
 
-class RelevancyScoreTests(TestCase):
+class ReadRelevancyScoreTests(TestCase):
     def setUp(self):
         self.user = self.make_user()
         self.data = {
