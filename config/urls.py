@@ -43,6 +43,7 @@ def build_router():
     router.register(r'algorithms', AlgorithmViewSet, base_name='algorithms')
     router.register(r'algorithms/(?P<algorithm_id>[\w-]+)/relevancyscores',
                     RelevancyScoreViewSet, base_name='relevancyscores')
+    router.register(r'relevancyscores', RelevancyScoreViewSet, base_name='relevancyscores')
 
     return router
 
