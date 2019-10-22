@@ -13,3 +13,9 @@ class AlgorithmSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Algorithm
         fields = ('id', 'url', 'name', 'notes')
+
+
+class SearchLocationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.SearchLocation
+        fields = ('id', 'name', 'point')

@@ -10,3 +10,8 @@ class RelevancyScoreViewSet(viewsets.ReadOnlyModelViewSet):
 class AlgorithmViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Algorithm.objects.all()
     serializer_class = serializers.AlgorithmSerializer
+
+
+class SearchLocationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.SearchLocation.objects.all()
+    serializer_class = serializers.SearchLocationSerializer
