@@ -2,7 +2,7 @@
 
 -- sudo npm install --global csvtojson
 
--- psql -d pathways_local -F $',' -A -f utility/dump_services_for_algolia.sql | head -n -1 | csvtojson --colParser='{"_geoloc.lng":"number","_geoloc.lat":"number"}' > services.json
+-- psql -d pathways_local -F $',' -A -f utility/dump_services_for_algolia.sql | head -n -1 | csvtojson --colParser='{"_geoloc.lng":"number","_geoloc.lat":"number","organization.service_count":"number"}' > services.json
 
 -- Column names _geoloc.lng and _geoloc.lat are special. csvtojson understands to convert this to 
 -- "_geoloc":{"lng":-122.724,"lat":49.110044}. The --colParser option define the lat and long to be 
