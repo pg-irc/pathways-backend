@@ -3,6 +3,7 @@ from common.testhelpers.random_test_values import a_string, a_point, a_website_a
 from django.contrib.gis.geos import Point
 from django.utils import timezone
 from human_services.services_at_location.tests.helpers import ServiceAtLocationBuilder
+from newcomers_guide.tests.helpers import TopicBuilder
 
 
 class AlgorithmBuilder:
@@ -71,6 +72,7 @@ class RelevancyScoreBuilder():
         self.algorithm = AlgorithmBuilder().create()
         self.search_location = SearchLocationBuilder().create()
         self.service_at_location = ServiceAtLocationBuilder().create()
+        self.topic = TopicBuilder().create()
 
     def with_value(self, value):
         self.value = value
@@ -84,6 +86,7 @@ class RelevancyScoreBuilder():
         result.algorithm = self.algorithm
         result.search_location = self.search_location
         result.service_at_location = self.service_at_location
+        result.topic = self.topic
         return result
 
     def create(self):
