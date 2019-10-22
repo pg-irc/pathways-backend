@@ -9,18 +9,25 @@
 -- numbers, rather than strings. With the special names _geoloc, lng and lat, Algolia understands 
 -- this to mean a geolocation point.
 
+-- TODO, add:
+-- phone numbers with type
+
 select distinct
 	service.id as service_id,
 	organization.id as organization_id,
 	'"' || serviceStrings.name || '"' as service_name,
 	'"' || organizationStrings.name || '"' as organization_name,
+	organization.website,
+	organization.email,
+	counts.service_count as "service_count_for_parent_organization",
 	left(regexp_replace(serviceStrings.description, E'[\\n\\r\\t;,]+', ' ', 'g' ), 5000) as service_description,
-	regexp_replace(address.address, E'[\\n\\r;,]+', ' ', 'g' ) as street_address,
+	regexp_replace(address.address, E'[\\n\\r;,]+', ' ', 'g' ) as address,
 	'"' || address.city || '"' as city,
+	'"' || address.state_province || '"' as state_province,
 	'"' || address.postal_code || '"' as postal_code,
+	address.country,
 	ST_X(location.point) as "_geoloc.lng",
-	ST_Y(location.point) as "_geoloc.lat",
-	counts.service_count as "service_count_for_parent_organization"
+	ST_Y(location.point) as "_geoloc.lat"
 from
 	services_service as service,
 	services_service_translation as serviceStrings,
