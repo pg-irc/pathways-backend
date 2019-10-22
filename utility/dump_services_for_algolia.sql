@@ -14,18 +14,18 @@
 
 select distinct
 	service.id as service_id,
-	organization.id as organization_id,
 	'"' || serviceStrings.name || '"' as service_name,
-	'"' || organizationStrings.name || '"' as organization_name,
-	organization.website,
-	organization.email,
-	counts.service_count as "service_count_for_parent_organization",
 	left(regexp_replace(serviceStrings.description, E'[\\n\\r\\t;,]+', ' ', 'g' ), 5000) as service_description,
-	regexp_replace(address.address, E'[\\n\\r;,]+', ' ', 'g' ) as address,
-	'"' || address.city || '"' as city,
-	'"' || address.state_province || '"' as state_province,
-	'"' || address.postal_code || '"' as postal_code,
-	address.country,
+	organization.id as "organization.id",
+	'"' || organizationStrings.name || '"' as "organization.name",
+	organization.website as "organization.website",
+	organization.email as "organization.email",
+	counts.service_count as "organization.service_count",
+	regexp_replace(address.address, E'[\\n\\r;,]+', ' ', 'g' ) as "address.address",
+	'"' || address.city || '"' as "address.city",
+	'"' || address.state_province || '"' as "address.state_province",
+	'"' || address.postal_code || '"' as "address.postal_code",
+	address.country as "address.country",
 	ST_X(location.point) as "_geoloc.lng",
 	ST_Y(location.point) as "_geoloc.lat"
 from
