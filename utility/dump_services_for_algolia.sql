@@ -9,9 +9,6 @@
 -- numbers, rather than strings. With the special names _geoloc, lng and lat, Algolia understands 
 -- this to mean a geolocation point.
 
--- TODO, add:
--- phone numbers with type
-
 select distinct
 	service.id as service_id,
 	'"' || serviceStrings.name || '"' as service_name,
