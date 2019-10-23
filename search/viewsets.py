@@ -3,6 +3,11 @@ from django.utils.decorators import method_decorator
 from search import models, serializers, documentation
 
 
+class TaskViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Task.objects.all()
+    serializer_class = serializers.TaskSerializer
+
+
 @method_decorator(name='list', decorator=documentation.get_related_topics_schema())
 class RelatedTopicsViewSet(viewsets.ReadOnlyModelViewSet):
 

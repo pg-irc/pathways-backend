@@ -9,7 +9,7 @@ from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import (LocationViewSet, LocationViewSetUnderOrganizations)
 from human_services.services_at_location.viewsets import ServiceAtLocationViewSet
 from human_services.services.viewsets import ServiceViewSet, ServiceTopicsViewSet
-from search.viewsets import RelatedTopicsViewSet, RelatedServicesViewSet
+from search.viewsets import TaskViewSet, RelatedTopicsViewSet, RelatedServicesViewSet
 from qa_tool.viewsets import AlgorithmViewSet, RelevancyScoreViewSet, SearchLocationViewSet
 from rest_framework import routers
 from config import documentation
@@ -38,6 +38,7 @@ def build_router():
     router.register(r'locations/(?P<location_id>[\w-]+)/services/(?P<service_id>[\w-]+)/services_at_location',
                     ServiceAtLocationViewSet)
     router.register(r'services_at_location', ServiceAtLocationViewSet, base_name='services_at_location')
+    router.register(r'topics', TaskViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_topics', RelatedTopicsViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_services', RelatedServicesViewSet, base_name='topics')
     router.register(r'algorithms', AlgorithmViewSet, base_name='algorithms')

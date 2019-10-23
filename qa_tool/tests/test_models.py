@@ -2,11 +2,11 @@ from django.utils import timezone
 from django.core import exceptions
 from test_plus.test import TestCase
 from common.testhelpers.database import validate_save_and_reload
-from common.testhelpers.random_test_values import a_float, an_integer
+from common.testhelpers.random_test_values import a_float, an_integer, a_string
 from qa_tool.tests.helpers import AlgorithmBuilder, SearchLocationBuilder
 from qa_tool.models import RelevancyScore
 from human_services.services_at_location.tests.helpers import ServiceAtLocationBuilder
-from newcomers_guide.tests.helpers import TopicBuilder
+from newcomers_guide.tests.helpers import create_topic
 
 
 class TestAlgorithmModel(TestCase):
@@ -71,7 +71,7 @@ class TestScore(TestCase):
         algorithm = AlgorithmBuilder().create()
         search_location = SearchLocationBuilder().create()
         service_at_location = ServiceAtLocationBuilder().create()
-        topic = TopicBuilder().create()
+        topic = create_topic(a_string())
         score = RelevancyScore(value=value,
                                time_stamp=time_stamp,
                                algorithm=algorithm,
