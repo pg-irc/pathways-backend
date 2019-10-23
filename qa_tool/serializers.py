@@ -16,6 +16,9 @@ class AlgorithmSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SearchLocationSerializer(serializers.HyperlinkedModelSerializer):
+    latitude = serializers.ReadOnlyField(source='point.y')
+    longitude = serializers.ReadOnlyField(source='point.x')
+
     class Meta:
         model = models.SearchLocation
-        fields = ('id', 'name', 'point')
+        fields = ('id', 'name', 'latitude', 'longitude')
