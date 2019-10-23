@@ -1,4 +1,4 @@
-from rest_framework import filters
+from rest_framework import filters, serializers
 from config.settings.base import SRID
 from django.contrib.gis.geos import Point
 from django.db.models import F
@@ -67,7 +67,6 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
 
         return queryset
 
-
     def sort_by_proximity_and_topic(self, queryset, proximity_parameter, topic_id):
         reference_point = self.to_point(proximity_parameter)
         return (queryset.
@@ -96,19 +95,40 @@ class TopicSimilarityAndProximitySortFilter(filters.BaseFilterBackend):
 
 
 class ProximityCutoffFilter(filters.BaseFilterBackend):
-    filter_description = ('Exclude results more than 25KM (hard-coded value) from a given point. '
+    filter_description = ('Exclude results more than a given distance in KM from a given point. '
                           'Accepts two comma separated values representing a longitude and a latitude. '
-                          'Example: "-123.1207,+49.2827".')
+                          'Example: "-123.1207,+49.2827". Use radius_km to specify the distance to use')
 
     def filter_queryset(self, request, queryset, view):
         user_location = request.query_params.get('user_location', None)
         if user_location and queryset.model is ServiceAtLocation:
+            radius_km = self.get_valid_radius_km(request)
             location = ProximityParser(user_location)
             location_point = Point(location.latitude, location.longitude, srid=SRID)
             queryset = (queryset
                         .annotate(distance=Distance('location__point', location_point))
-                        .filter(distance__lte=DistanceMeasure(km=25)))
+                        .filter(distance__lte=DistanceMeasure(km=radius_km)))
         return queryset
+
+    def get_valid_radius_km(self, request):
+        default_radius_km = '25'
+        return self.validate_radius(request.query_params.get('radius_km', default_radius_km))
+
+    def validate_radius(self, radius):
+        radius_as_number = self.to_number_or_none(radius)
+        if not radius_as_number or radius_as_number < 0:
+            self.throw_error()
+        return radius_as_number
+
+    def to_number_or_none(self, radius):
+        try:
+            return float(radius)
+        except ValueError:
+            return None
+
+    def throw_error(self):
+        message = 'Invalid value for radius_km, must be a positive number'
+        raise serializers.ValidationError(message)
 
 
 class TaxonomyFilter(filters.BaseFilterBackend):

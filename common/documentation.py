@@ -25,6 +25,14 @@ def get_proximity_filter_manual_parameter():
                               pattern=r'^[-+]?[0-9]+\.?[0-9]*,\s?[-+]?[0-9]+\.?[0-9]*$'))
 
 
+def get_proximity_filter_radius_manual_parameter():
+    return (openapi.Parameter('radius_km',
+                              openapi.IN_QUERY,
+                              description=('Set the radius in KM used for filtering by proximity '
+                                           'to a point. Accepts a positive number.'),
+                              type=openapi.TYPE_NUMBER))
+
+
 def get_related_to_topic_manual_parameter():
     return (openapi.Parameter('related_to_topic',
                               openapi.IN_QUERY,
