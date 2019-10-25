@@ -11,10 +11,16 @@ class Algorithm(models.Model):
     name = RequiredCharField(max_length=200)
     notes = OptionalTextField()
 
+    class Meta:
+        ordering = ['id']
+
 
 class SearchLocation(models.Model):
     name = OptionalTextField()
     point = models.PointField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['id']
 
 
 class RelevancyScore(models.Model):
@@ -26,3 +32,6 @@ class RelevancyScore(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     service_at_location = models.ForeignKey(
         ServiceAtLocation, on_delete=models.PROTECT)
+
+    class Meta:
+        ordering = ["id"]

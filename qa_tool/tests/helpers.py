@@ -8,14 +8,12 @@ from newcomers_guide.tests.helpers import create_topic
 
 class AlgorithmBuilder:
     def __init__(self):
-        self.id = an_integer()
         self.name = a_string()
         self.url = a_website_address()
         self.notes = a_string()
 
     def build(self):
         result = models.Algorithm()
-        result.id = self.id
         result.name = self.name
         result.url = self.url
         result.notes = self.notes
