@@ -36,24 +36,33 @@ class ReadRelevancyScoreTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['value'], 3)
 
-    def test_cannot_post(self):
+    def test_can_post(self):
         url = '/v1/relevancyscores/'
         response = self.client.post(url, self.data)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_cannot_put(self):
         score = RelevancyScoreBuilder(self.user).build()
         score.save()
         url = '/v1/relevancyscores/{0}/'.format(score.pk)
+        self.data['value'] = 3
         response = self.client.put(url, self.data)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    def test_cannot_delete(self):
+    def test_can_delete(self):
         score = RelevancyScoreBuilder(self.user).build()
         score.save()
         url = '/v1/relevancyscores/{0}/'.format(score.pk)
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_can_delete_just_by_pk(self):
+        score = RelevancyScoreBuilder(self.user).build()
+        score.save()
+        RelevancyScoreBuilder(self.user).create()
+        url = '/v1/relevancyscores/{0}/'.format(score.pk)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class WriteRelevancyScoreTests(TestCase):
