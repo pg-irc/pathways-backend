@@ -1,10 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from qa_tool import models, serializers
 
 
 class RelevancyScoreViewSet(viewsets.ModelViewSet):
     queryset = models.RelevancyScore.objects.all()
     serializer_class = serializers.RelevancyScoreSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class AlgorithmViewSet(viewsets.ReadOnlyModelViewSet):

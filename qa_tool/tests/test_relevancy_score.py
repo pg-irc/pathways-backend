@@ -9,6 +9,7 @@ from newcomers_guide.tests.helpers import create_topic
 class ReadRelevancyScoreTests(TestCase):
     def setUp(self):
         self.user = self.make_user()
+        self.client.force_login(user=self.user)
         self.data = {
             'id': 1,
             'value': 2,
@@ -68,6 +69,7 @@ class ReadRelevancyScoreTests(TestCase):
 class WriteRelevancyScoreTests(TestCase):
     def setUp(self):
         self.user = self.make_user()
+        self.client.force_login(user=self.user)
         self.data = {
             'id': 1,
             'value': 2,
