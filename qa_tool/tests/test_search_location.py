@@ -1,6 +1,7 @@
 from rest_framework import test as rest_test
 from rest_framework import status
 from qa_tool.tests.helpers import SearchLocationBuilder
+from common.testhelpers.random_test_values import a_string
 
 
 class SearchLocationsTests(rest_test.APITestCase):
@@ -12,20 +13,21 @@ class SearchLocationsTests(rest_test.APITestCase):
         }
 
     def test_can_get_entities(self):
-        SearchLocationBuilder().with_name("wonderland").create()
-        SearchLocationBuilder().with_name("playland").create()
+        SearchLocationBuilder().with_name(a_string()).create()
+        SearchLocationBuilder().with_name(a_string()).create()
         url = '/v1/searchlocations/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 2)
 
     def test_can_get_one_entity(self):
-        searchlocation = SearchLocationBuilder().with_name('HiVE').build()
+        searchlocation_name = a_string()
+        searchlocation = SearchLocationBuilder().with_name(searchlocation_name).build()
         searchlocation.save()
         url = '/v1/searchlocations/{0}/'.format(searchlocation.pk)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['name'], 'HiVE')
+        self.assertEqual(response.json()['name'], searchlocation_name)
 
     def test_cannot_post(self):
         url = '/v1/searchlocations/'

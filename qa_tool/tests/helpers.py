@@ -63,8 +63,8 @@ class SearchLocationBuilder:
 
 
 class RelevancyScoreBuilder():
-    def __init__(self, User):
-        self.user = User
+    def __init__(self, user):
+        self.user = user
         self.value = an_integer()
         self.time_stamp = timezone.now()
         self.algorithm = AlgorithmBuilder().create()
