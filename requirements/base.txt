@@ -40,7 +40,7 @@ redis==3.2.1
 
 # front end tech, TODO remove
 django-crispy-forms==1.7.2
-Pillow==6.0.0
+Pillow==6.2.0
 
 # Time zones support, TODO remove
 pytz==2019.1
