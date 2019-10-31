@@ -63,7 +63,7 @@ REST_FRAMEWORK = {
     'ORDERING_PARAM': 'sort_by',
     'DEFAULT_FILTER_BACKENDS': ['common.filters.SearchFilter', 'common.filters.MultiFieldOrderingFilter', ],
     'DEFAULT_AUTHENTIFICATION_CLASSES': (
-        'rest_framework.authentification.TokenAuthentication'
+        'rest_framework.authentication.TokenAuthentication'
     ),
 }
 

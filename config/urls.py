@@ -10,7 +10,7 @@ from human_services.locations.viewsets import (LocationViewSet, LocationViewSetU
 from human_services.services_at_location.viewsets import ServiceAtLocationViewSet
 from human_services.services.viewsets import ServiceViewSet, ServiceTopicsViewSet
 from search.viewsets import TaskViewSet, RelatedTopicsViewSet, RelatedServicesViewSet
-from qa_tool.viewsets import AlgorithmViewSet, RelevancyScoreViewSet, SearchLocationViewSet
+from qa_tool.viewsets import AlgorithmViewSet, RelevancyScoreViewSet, SearchLocationViewSet, CustomObtainAuthToken
 from rest_framework import routers
 from rest_framework.authtoken import views
 from config import documentation
@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'^version/$', VersionView.as_view(), name='version'),
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
     url('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
+    url(r'^authenticate/', CustomObtainAuthToken.as_view()),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
