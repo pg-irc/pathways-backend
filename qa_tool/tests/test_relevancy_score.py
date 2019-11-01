@@ -1,7 +1,6 @@
 from test_plus.test import TestCase
 from qa_tool.tests.helpers import RelevancyScoreBuilder, AlgorithmBuilder, SearchLocationBuilder
 from rest_framework import status
-from django.utils import timezone
 from human_services.services_at_location.tests.helpers import ServiceAtLocationBuilder
 from newcomers_guide.tests.helpers import create_topic
 from common.testhelpers.random_test_values import an_integer
@@ -12,14 +11,11 @@ class ReadRelevancyScoreTests(TestCase):
         self.user = self.make_user()
         self.client.force_login(user=self.user)
         self.data = {
-            'id': 1,
             'value': 2,
-            'time_stamp': timezone.now(),
             'algorithm': AlgorithmBuilder().create().id,
             'search_location': SearchLocationBuilder().create().id,
             'service_at_location': ServiceAtLocationBuilder().create().id,
             'topic': create_topic('test').id,
-            'user': self.user.id
         }
 
     def test_can_get_entities(self):
@@ -69,14 +65,10 @@ class WriteRelevancyScoreTests(TestCase):
         self.user = self.make_user()
         self.client.force_login(user=self.user)
         self.data = {
-            'id': 1,
             'value': 2,
-            'time_stamp': timezone.now(),
-            'algorithm': AlgorithmBuilder().create().id,
             'search_location': SearchLocationBuilder().create().id,
             'service_at_location': ServiceAtLocationBuilder().create().id,
             'topic': create_topic('test').id,
-            'user': self.user.id
         }
 
     def test_can_post(self):
