@@ -1,6 +1,4 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from qa_tool import models, serializers
 from django.utils import timezone
@@ -13,8 +11,12 @@ class RelevancyScoreViewSet(viewsets.ModelViewSet):
 
     def create(self, request, algorithm_id=None, *args, **kwargs):
         rawdata = request.data.copy()
-        if 'algorithm' not in rawdata:
+        if 'algorithm' not in rawdata and algorithm_id is not None:
             rawdata['algorithm'] = algorithm_id
+        elif 'algorithm' not in rawdata and algorithm_id is None:
+            return Response('Algorithm id missing in payload', status=status.HTTP_400_BAD_REQUEST)
+        elif 'algorithm' in rawdata and algorithm_id is not None:
+            return Response('Duplicate sources of algorithm id when there should only be 1', status=status.HTTP_400_BAD_REQUEST)
         rawdata['time_stamp'] = timezone.now()
         rawdata['user'] = request.user.id
         serializer = serializers.RelevancyScoreSerializer(data=rawdata)
@@ -32,10 +34,3 @@ class AlgorithmViewSet(viewsets.ReadOnlyModelViewSet):
 class SearchLocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.SearchLocation.objects.all()
     serializer_class = serializers.SearchLocationSerializer
-
-
-class CustomObtainAuthToken(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'user_id': token.user_id})
