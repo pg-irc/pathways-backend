@@ -3,9 +3,9 @@ from django.utils.decorators import method_decorator
 from search import models, serializers, documentation
 
 
-class TaskViewSet(viewsets.ReadOnlyModelViewSet):
+class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Task.objects.all()
-    serializer_class = serializers.TaskSerializer
+    serializer_class = serializers.TopicSerializer
 
 
 @method_decorator(name='list', decorator=documentation.get_related_topics_schema())
