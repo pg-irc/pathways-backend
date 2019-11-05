@@ -1,13 +1,15 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.response import Response
 from qa_tool import models, serializers
 from django.utils import timezone
+from django.http import Http404
 
 
 class RelevancyScoreViewSet(viewsets.ModelViewSet):
     queryset = models.RelevancyScore.objects.all()
     serializer_class = serializers.RelevancyScoreSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [authentication.TokenAuthentication]
 
     def create(self, request, algorithm_id=None, *args, **kwargs):
         rawdata = request.data.copy()
@@ -23,6 +25,17 @@ class RelevancyScoreViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk, *args, **kwargs):
+        score = models.RelevancyScore.objects.get(pk=pk)
+        rawdata = request.data.copy()
+        rawdata['time_stamp'] = timezone.now()
+        rawdata['user'] = request.user.id
+        serializer = serializers.RelevancyScoreSerializer(score, data=rawdata)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

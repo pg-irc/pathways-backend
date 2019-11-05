@@ -62,9 +62,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 30,
     'ORDERING_PARAM': 'sort_by',
     'DEFAULT_FILTER_BACKENDS': ['common.filters.SearchFilter', 'common.filters.MultiFieldOrderingFilter', ],
-    'DEFAULT_AUTHENTIFICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication'
-    ),
 }
 
 MIDDLEWARE = [
