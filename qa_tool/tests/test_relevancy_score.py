@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 from human_services.services_at_location.tests.helpers import ServiceAtLocationBuilder
 from newcomers_guide.tests.helpers import create_topic
 from common.testhelpers.random_test_values import an_integer
-from datetime import datetime
+import datetime
 
 
 class ReadRelevancyScoreTests(TestCase):
@@ -87,8 +87,9 @@ class ReadRelevancyScoreTests(TestCase):
         self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.APIClient.post(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        recreated_date = datetime.strptime(response.json()['time_stamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
-        self.assertLessEqual(recreated_date, datetime.now())
+        recreated_time = datetime.datetime.strptime(response.json()['time_stamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        self.assertLessEqual(recreated_time, datetime.datetime.now())
+        self.assertGreaterEqual(recreated_time + datetime.timedelta(seconds=1), datetime.datetime.now())
 
     def test_cannot_post_when_not_authenticated(self):
         url = '/qa/v1/relevancyscores/'
