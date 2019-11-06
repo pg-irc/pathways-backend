@@ -12,31 +12,45 @@ class RelevancyScoreViewSet(viewsets.ModelViewSet):
     authentication_classes = [authentication.TokenAuthentication]
 
     def create(self, request, algorithm_id=None, *args, **kwargs):
-        rawdata = request.data.copy()
-        if 'algorithm' not in rawdata and algorithm_id is not None:
-            rawdata['algorithm'] = algorithm_id
-        elif 'algorithm' not in rawdata and algorithm_id is None:
-            return Response('Algorithm id missing in payload', status=status.HTTP_400_BAD_REQUEST)
-        elif 'algorithm' in rawdata and algorithm_id is not None:
-            return Response('Duplicate sources of algorithm id when there should only be 1', status=status.HTTP_400_BAD_REQUEST)
-        rawdata['time_stamp'] = timezone.now()
-        rawdata['user'] = request.user.id
-        serializer = serializers.RelevancyScoreSerializer(data=rawdata)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        request_data = request.data.copy()
+        algorithm_to_append = self.return_algorithm_to_append_to_data(request_data, algorithm_id)
+        if algorithm_to_append is None:
+            return Response('Algorithm both missing or both present', status=status.HTTP_400_BAD_REQUEST)
+        request_data['algorithm'] = algorithm_to_append
+        request_data = self.attach_missing_info(request_data, request.user.id)
+        serializer = serializers.RelevancyScoreSerializer(data=request_data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk, *args, **kwargs):
         score = models.RelevancyScore.objects.get(pk=pk)
-        rawdata = request.data.copy()
-        rawdata['time_stamp'] = timezone.now()
-        rawdata['user'] = request.user.id
-        serializer = serializers.RelevancyScoreSerializer(score, data=rawdata)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        request_data = request.data.copy()
+        request_data = self.attach_missing_info(request_data, request.user.id)
+        serializer = serializers.RelevancyScoreSerializer(score, data=request_data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data)
+
+    def return_algorithm_to_append_to_data(self, data, algorithm_id):
+        # TODO give variable names, do not return response here, test all 4 cases with both possible endpoints
+        algorithm_id_in_data_body = 'algorithm' in data
+        algorithm_id_in_url = algorithm_id is not None
+        if not algorithm_id_in_data_body and not algorithm_id_in_url:
+            return None
+        if algorithm_id_in_data_body and algorithm_id_in_url:
+            return None
+        if not algorithm_id_in_data_body and algorithm_id_in_url:
+            return algorithm_id
+        if algorithm_id_in_data_body and not algorithm_id_in_url:
+            return data['algorithm']
+
+    def attach_missing_info(self, data, user_id):
+        data['time_stamp'] = timezone.now()
+        data['user'] = user_id
+        return data
 
 
 class AlgorithmViewSet(viewsets.ReadOnlyModelViewSet):

@@ -93,7 +93,7 @@ class ReadRelevancyScoreTests(TestCase):
 
     def test_cannot_post_when_not_authenticated(self):
         url = '/qa/v1/relevancyscores/'
-        response = self.client.post(url, self.data)
+        response = self.APIClient.post(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_cannot_post_when_missing_fields(self):
@@ -112,7 +112,7 @@ class ReadRelevancyScoreTests(TestCase):
     def test_can_put(self):
         score = RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
-        self.data['value'] = 3
+        self.data['value'] = an_integer()
         self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.APIClient.put(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -120,8 +120,8 @@ class ReadRelevancyScoreTests(TestCase):
     def test_cannot_put_when_not_authenticated(self):
         score = RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
-        self.data['value'] = 3
-        response = self.client.put(url, self.data)
+        self.data['value'] = an_integer()
+        response = self.APIClient.put(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_can_delete(self):
@@ -134,7 +134,7 @@ class ReadRelevancyScoreTests(TestCase):
     def test_cannot_delete_when_not_authenticated(self):
         score = RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
-        response = self.client.delete(url)
+        response = self.APIClient.delete(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
