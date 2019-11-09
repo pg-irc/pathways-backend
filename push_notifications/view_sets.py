@@ -10,11 +10,6 @@ class TokenViewSet(viewsets.ReadOnlyModelViewSet):
     def create(self, request):
         serializer = serializers.TokenSerializer(data=request.data)
 
-        new_id = request.data.copy()['id']
-        already_exists = models.PushNotificationToken.objects.filter(id=new_id).exists()
-        if already_exists:
-            return Response([], status=status.HTTP_409_CONFLICT)
-
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

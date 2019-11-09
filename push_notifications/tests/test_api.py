@@ -40,4 +40,4 @@ class ServicesApiTests(rest_test.APITestCase):
     def test_post_returns_409_on_record_already_exists(self):
         record = create_push_notification_token()
         response = self.client.post(self.url, {'id': record.id})
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
