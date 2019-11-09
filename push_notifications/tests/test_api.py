@@ -1,5 +1,6 @@
 from rest_framework import test as rest_test
 from rest_framework import status
+from rest_framework.exceptions import ErrorDetail
 from common.testhelpers.random_test_values import a_string
 from push_notifications.models import PushNotificationToken
 from push_notifications.tests.helpers import create_push_notification_token
@@ -36,8 +37,10 @@ class ServicesApiTests(rest_test.APITestCase):
     def test_post_returns_400_on_invalid_token(self):
         response = self.client.post(self.url, {'id': 'an invalid token'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['id'][0].code, 'invalid')
 
-    def test_post_returns_409_on_record_already_exists(self):
+    def test_post_returns_400_on_record_already_exists(self):
         record = create_push_notification_token()
         response = self.client.post(self.url, {'id': record.id})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['id'][0].code, 'unique')
