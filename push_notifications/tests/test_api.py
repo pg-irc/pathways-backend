@@ -10,6 +10,12 @@ class ServicesApiTests(rest_test.APITestCase):
     def setUp(self):
         self.url = '/v1/push_notifications/tokens/'
 
+    def test_can_get_token(self):
+        token = create_push_notification_token()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()[0]['id'], token.id)
+
     def test_can_get_tokens(self):
         create_push_notification_token()
         create_push_notification_token()
