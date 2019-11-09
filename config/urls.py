@@ -15,6 +15,7 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 from config import documentation
 from bc211.views import Bc211VersionView
+from push_notifications.view_sets import TokenViewSet
 
 
 def build_router():
@@ -42,6 +43,8 @@ def build_router():
     router.register(r'topics', TopicViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_topics', RelatedTopicsViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_services', RelatedServicesViewSet, base_name='topics')
+
+    router.register(r'push_notifications/tokens', TokenViewSet, base_name='push_notification_token')
 
     return router
 
@@ -80,6 +83,7 @@ urlpatterns = [
 
     url(r'^v1/', include(build_router().urls)),
     url(r'^qa/v1/', include(build_qa_tool_routes().urls)),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
