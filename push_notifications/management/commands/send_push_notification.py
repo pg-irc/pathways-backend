@@ -1,7 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
-from push_notifications.models import PushNotificationToken
-
 import csv
+from django.core.management.base import BaseCommand, CommandError
+from exponent_server_sdk import (DeviceNotRegisteredError, PushClient, PushMessage, 
+                                 PushResponseError, PushServerError)
+
 
 
 class Command(BaseCommand):
@@ -10,7 +11,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('filename',
                             metavar='filename',
-                            help='path to file containing text for notification, one locale per line')
+                            help=('path to file containing text for notification, '
+                                'comma separated, locale in first column, message in second column'))
 
     def handle(self, *args, **options):
         filename = options['filename']
@@ -49,5 +51,24 @@ def validate_locale(locale):
 
 
 def send_push_notifications(notifications):
-    for token in PushNotificationToken.objects.all():
-        pass
+    # for token in PushNotificationToken.objects.all():
+    send_push_message('ExponentPushToken[...]', notifications['en'])
+
+def send_push_message(token, message, extra=None):
+    try:
+        print('PushClient().publish')
+        response = PushClient().publish(PushMessage(to=token, body=message, data=extra))
+    except PushServerError as exc:
+        print('PushServerError')
+        raise
+    except (ConnectionError, HTTPError) as exc:
+        print('ConnectionError')
+        raise
+
+    try:
+        print('response.validate_response')
+        response.validate_response()
+    except DeviceNotRegisteredError:
+        print('DeviceNotRegisteredError')
+    except PushResponseError:
+        print('PushResponseError')
