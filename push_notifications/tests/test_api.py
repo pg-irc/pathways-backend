@@ -25,23 +25,23 @@ class ServicesApiTests(rest_test.APITestCase):
 
     def test_post_creates_new_database_row(self):
         the_token = a_string()
-        self.client.post(self.url, {'id': the_token})
+        self.client.post(self.url, {'id': the_token, 'locale': 'en'})
         data = PushNotificationToken.objects.all()
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0].id, the_token)
 
     def test_post_returns_201_on_success(self):
-        response = self.client.post(self.url, {'id': a_string()})
+        response = self.client.post(self.url, {'id': a_string(), 'locale': 'en'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_post_returns_data_on_success(self):
         the_token = a_string()
-        response = self.client.post(self.url, {'id': the_token})
-        self.assertEqual(len(response.json()), 1)
+        response = self.client.post(self.url, {'id': the_token, 'locale': 'en'})
         self.assertEqual(response.json()['id'], the_token)
+        self.assertEqual(response.json()['locale'], 'en')
 
     def test_post_returns_400_on_record_already_exists(self):
         record = create_push_notification_token()
-        response = self.client.post(self.url, {'id': record.id})
+        response = self.client.post(self.url, {'id': record.id, 'locale': 'en'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['id'][0].code, 'unique')
