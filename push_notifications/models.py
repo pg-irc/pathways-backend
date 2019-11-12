@@ -4,7 +4,7 @@ from common.models import RequiredCharField
 
 
 class PushNotificationToken(models.Model):
-    id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
+    id = RequiredCharField(primary_key=True, max_length=200)
 
     class Meta:
         ordering = ['id']
