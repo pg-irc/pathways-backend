@@ -25,7 +25,10 @@ class RelevancyScoreViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk, *args, **kwargs):
-        score = models.RelevancyScore.objects.get(pk=pk)
+        try:
+            score = models.RelevancyScore.objects.get(pk=pk)
+        except models.RelevancyScore.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         request_data = request.data.copy()
         request_data = self.attach_missing_info(request_data, request.user.id)
         serializer = serializers.RelevancyScoreSerializer(score, data=request_data)

@@ -46,6 +46,11 @@ class GETRelevancyScoreTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['value'], score_value)
 
+    def test_cannot_get_non_existent_entity(self):
+        url = '/qa/v1/relevancyscores/0/'
+        response = self.APIClient.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class DELETERelevancyScoreTests(TestCase):
     def setUp(self):
@@ -73,6 +78,12 @@ class DELETERelevancyScoreTests(TestCase):
         response = self.APIClient.delete(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_cannot_delete_non_existent_entity(self):
+        url = '/qa/v1/relevancyscores/0/'
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class PUTRelevancyScoreTests(TestCase):
     def setUp(self):
@@ -90,10 +101,12 @@ class PUTRelevancyScoreTests(TestCase):
     def test_can_put(self):
         score = RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
-        self.data['value'] = an_integer()
+        new_value = an_integer()
+        self.data['value'] = new_value
         self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.APIClient.put(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['value'], new_value)
 
     def test_cannot_put_when_not_authenticated(self):
         score = RelevancyScoreBuilder(self.user).create()
@@ -101,6 +114,12 @@ class PUTRelevancyScoreTests(TestCase):
         self.data['value'] = an_integer()
         response = self.APIClient.put(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_cannot_put_non_existent_entity(self):
+        url = '/qa/v1/relevancyscores/0/'
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.put(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class POSTRelevancyScoreTests(TestCase):
