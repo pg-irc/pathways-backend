@@ -149,10 +149,13 @@ class PUTRelevancyScoreTests(TestCase):
     def test_can_put_with_different_credential(self):
         new_token = Token.objects.create(user=self.new_user)
         self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + new_token.key)
+        new_value = an_integer()
+        self.data['value'] = new_value
         url = '/qa/v1/relevancyscores/{0}/'.format(self.sample_score.pk)
-        self.data['value'] = an_integer()
         response = self.APIClient.put(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['user'], self.new_user.id)
+        self.assertEqual(response.json()['value'], new_value)
 
     def test_cannot_put_id(self):
         self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)

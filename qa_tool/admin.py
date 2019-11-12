@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Algorithm, SearchLocation, RelevancyScore
+from qa_tool.models import Algorithm, SearchLocation, RelevancyScore
 
 admin.site.register(Algorithm)
 admin.site.register(SearchLocation)
