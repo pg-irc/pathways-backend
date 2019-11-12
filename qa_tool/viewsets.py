@@ -30,6 +30,10 @@ class RelevancyScoreViewSet(viewsets.ModelViewSet):
         except models.RelevancyScore.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         request_data = request.data.copy()
+        if 'id' in request_data:
+            return Response('id of relevancyscore is immutable', status=status.HTTP_400_BAD_REQUEST)
+        if 'user' in request_data:
+            return Response('user_id of relevancyscore is immutable', status=status.HTTP_400_BAD_REQUEST)
         request_data = self.attach_missing_info(request_data, request.user.id)
         serializer = serializers.RelevancyScoreSerializer(score, data=request_data)
         if not serializer.is_valid():
