@@ -51,24 +51,24 @@ def validate_locale(locale):
 
 
 def send_push_notifications(notifications):
-    # for token in PushNotificationToken.objects.all():
-    send_push_message('ExponentPushToken[...]', notifications['en'])
+    for row in PushNotificationToken.objects.all():
+        token = row.id
+        message = notifications[row.locale]
+        send_push_message(token, message)
 
 def send_push_message(token, message, extra=None):
     try:
-        print('PushClient().publish')
         response = PushClient().publish(PushMessage(to=token, body=message, data=extra))
-    except PushServerError as exc:
-        print('PushServerError')
+    except PushServerError:
+        print('Error pushing notification: PushServerError')
         raise
-    except (ConnectionError, HTTPError) as exc:
-        print('ConnectionError')
+    except (ConnectionError, HTTPError):
+        print('Error pushing notification: ConnectionError')
         raise
 
     try:
-        print('response.validate_response')
         response.validate_response()
     except DeviceNotRegisteredError:
-        print('DeviceNotRegisteredError')
+        print('Error pushing notification: DeviceNotRegisteredError')
     except PushResponseError:
-        print('PushResponseError')
+        print('Error pushing notification: PushResponseError')
