@@ -22,7 +22,7 @@ class GETRelevancyScoreTests(TestCase):
             'topic': create_topic(a_string()).id,
         }
 
-    def test_can_get_one_entity(self):
+    def test_can_get_one_entity_unauthenticated(self):
         score_value = an_integer()
         score = RelevancyScoreBuilder(self.user).with_value(score_value).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
@@ -30,7 +30,7 @@ class GETRelevancyScoreTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['value'], score_value)
 
-    def test_can_get_entities(self):
+    def test_can_get_entities_unauthenticated(self):
         RelevancyScoreBuilder(self.user).create()
         RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/'
@@ -38,15 +38,7 @@ class GETRelevancyScoreTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 2)
 
-    def test_can_get_when_not_authenticated(self):
-        score_value = an_integer()
-        score = RelevancyScoreBuilder(self.user).with_value(score_value).create()
-        url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
-        response = self.APIClient.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['value'], score_value)
-
-    def test_cannot_get_non_existent_entity(self):
+    def test_cannot_get_non_existent_entity_unauthenticated(self):
         url = '/qa/v1/relevancyscores/0/'
         response = self.APIClient.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -72,7 +64,7 @@ class DELETERelevancyScoreTests(TestCase):
         response = self.APIClient.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_cannot_delete_when_not_authenticated(self):
+    def test_cannot_delete_unauthenticated(self):
         score = RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
         response = self.APIClient.delete(url)
@@ -108,7 +100,7 @@ class PUTRelevancyScoreTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['value'], new_value)
 
-    def test_cannot_put_when_not_authenticated(self):
+    def test_cannot_put_unauthenticated(self):
         score = RelevancyScoreBuilder(self.user).create()
         url = '/qa/v1/relevancyscores/{0}/'.format(score.pk)
         self.data['value'] = an_integer()
@@ -142,63 +134,12 @@ class POSTRelevancyScoreTests(TestCase):
             'topic': create_topic(a_string()).id,
         }
 
-    def test_cannot_post_unauthenticated(self):
-        url = '/qa/v1/relevancyscores/'
-        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_can_post_with_algorithm_in_body_not_in_url_short_url(self):
         url = '/qa/v1/relevancyscores/'
         self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()['value'], self.score_value)
-
-    def test_cannot_post_with_algorithm_in_body_not_in_url_long_url(self):
-        url = '/qa/v1/algorithms/not_algorithm_id/relevancyscores/'
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_cannot_post_without_algorithm_in_body_or_url_short_url(self):
-        url = '/qa/v1/relevancyscores/'
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_cannot_post_without_algorithm_in_body_or_url_long_url(self):
-        url = '/qa/v1/algorithms/not_algorithm_id/relevancyscores/'
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_cannot_post_with_same_algorithm_in_body_and_url_short_url(self):
-        algorithm_id = self.data_with_algorithm_in_body['algorithm']
-        url = '/qa/v1/relevancyscores/{0}/'.format(algorithm_id)
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_cannot_post_with_same_algorithm_in_body_and_url_long_url(self):
-        algorithm_id = self.data_with_algorithm_in_body['algorithm']
-        url = '/qa/v1/algorithms/{0}/relevancyscores/'.format(algorithm_id)
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_cannot_post_with_different_algorithm_in_body_and_url_short_url(self):
-        algorithm_id = an_integer()
-        url = '/qa/v1/relevancyscores/{0}/'.format(algorithm_id)
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_cannot_post_with_different_algorithm_in_body_and_url_long_url(self):
-        algorithm_id = an_integer()
-        url = '/qa/v1/algorithms/{0}/relevancyscores/'.format(algorithm_id)
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_can_post_with_algorithm_in_url_not_in_body_long_url(self):
         algorithm = AlgorithmBuilder().create()
@@ -207,13 +148,6 @@ class POSTRelevancyScoreTests(TestCase):
         response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json()['value'], self.score_value)
-
-    def test_cannot_post_with_algorithm_in_url_not_in_body_short_url(self):
-        algorithm_id = AlgorithmBuilder().create().id
-        url = '/qa/v1/relevancyscores/{0}/'.format(algorithm_id)
-        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_response_has_correct_algorithm(self):
         url = '/qa/v1/relevancyscores/'
@@ -259,6 +193,50 @@ class POSTRelevancyScoreTests(TestCase):
         recreated_time = datetime.datetime.strptime(response.json()['time_stamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
         self.assertLessEqual(recreated_time, datetime.datetime.now())
         self.assertGreaterEqual(recreated_time + datetime.timedelta(seconds=1), datetime.datetime.now())
+
+    def test_cannot_post_unauthenticated(self):
+        url = '/qa/v1/relevancyscores/'
+        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_cannot_post_with_invalid_algorithm_in_url_valid_algorithm_in_body_long_url(self):
+        url = '/qa/v1/algorithms/0/relevancyscores/'
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_post_without_algorithm_in_body_or_url_short_url(self):
+        url = '/qa/v1/relevancyscores/'
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_post_with_invalid_algorithm_in_url_missing_algorithm_in_body_long_url(self):
+        url = '/qa/v1/algorithms/0/relevancyscores/'
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_post_with_algorithm_in_body_and_url_short_url(self):
+        algorithm_id = self.data_with_algorithm_in_body['algorithm']
+        url = '/qa/v1/relevancyscores/{0}/'.format(algorithm_id)
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cannot_post_with_algorithm_in_body_and_url_long_url(self):
+        algorithm_id = self.data_with_algorithm_in_body['algorithm']
+        url = '/qa/v1/algorithms/{0}/relevancyscores/'.format(algorithm_id)
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.post(url, data=self.data_with_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_post_with_algorithm_in_url_not_in_body_short_url(self):
+        algorithm_id = AlgorithmBuilder().create().id
+        url = '/qa/v1/relevancyscores/{0}/'.format(algorithm_id)
+        self.APIClient.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.APIClient.post(url, data=self.data_without_algorithm_in_body)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_cannot_post_when_missing_fields(self):
         url = '/qa/v1/relevancyscores/'
