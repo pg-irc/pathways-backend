@@ -15,7 +15,7 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 from config import documentation
 from bc211.views import Bc211VersionView
-from push_notifications.view_sets import TokenViewSet, hello_world
+from push_notifications.view_sets import create_or_update_push_notification_token
 
 
 def build_router():
@@ -44,8 +44,6 @@ def build_router():
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_topics', RelatedTopicsViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_services', RelatedServicesViewSet, base_name='topics')
 
-    router.register(r'push_notifications/tokens', TokenViewSet, base_name='push_notification_token')
-
     return router
 
 
@@ -69,7 +67,7 @@ urlpatterns = [
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
     url(r'^authenticate/', views.obtain_auth_token, name='authenticate'),
 
-    url(r'^hello/(?P<theid>[\w-]+)', hello_world),
+    url(r'^hello/(?P<theid>[\w-]+)', create_or_update_push_notification_token),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),

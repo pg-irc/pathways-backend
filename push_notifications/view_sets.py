@@ -8,7 +8,7 @@ from django.db.utils import DataError
 
 
 @api_view(['PUT'])
-def hello_world(request, *args, **kwargs):
+def create_or_update_push_notification_token(request, *args, **kwargs):
     the_id = kwargs['theid']
 
     the_data = request.data.copy()
@@ -29,22 +29,3 @@ def get_serializer(the_id, the_data):
 
     instance = PushNotificationToken.objects.get(pk=the_id)
     return serializers.TokenSerializer(instance, data=the_data)
-
-
-class TokenViewSet(viewsets.ModelViewSet):
-    queryset = models.PushNotificationToken.objects.all()
-    serializer_class = serializers.TokenSerializer
-
-    @action(methods=['post'], detail=True, permission_classes=[IsAuthenticatedOrReadOnly])
-    def create_or_update_token(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return self.bad_request(serializer.errors)
-        serializer.save()
-        return self.success(serializer.data)
-
-    def bad_request(self, errors):
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def success(self, data):
-        return Response(data, status=status.HTTP_201_CREATED)
