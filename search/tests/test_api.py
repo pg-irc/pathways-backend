@@ -19,7 +19,6 @@ class TopicApiTests(rest_test.APITestCase):
         create_topic('2')
         url = '/v1/topics/'
         response = self.client.get(url)
-        print(response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 2)
 
