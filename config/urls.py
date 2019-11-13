@@ -9,8 +9,10 @@ from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import (LocationViewSet, LocationViewSetUnderOrganizations)
 from human_services.services_at_location.viewsets import ServiceAtLocationViewSet
 from human_services.services.viewsets import ServiceViewSet, ServiceTopicsViewSet
-from search.viewsets import RelatedTopicsViewSet, RelatedServicesViewSet
+from search.viewsets import TopicViewSet, RelatedTopicsViewSet, RelatedServicesViewSet
+from qa_tool.viewsets import AlgorithmViewSet, RelevancyScoreViewSet, SearchLocationViewSet
 from rest_framework import routers
+from rest_framework.authtoken import views
 from config import documentation
 from bc211.views import Bc211VersionView
 
@@ -37,8 +39,20 @@ def build_router():
     router.register(r'locations/(?P<location_id>[\w-]+)/services/(?P<service_id>[\w-]+)/services_at_location',
                     ServiceAtLocationViewSet)
     router.register(r'services_at_location', ServiceAtLocationViewSet, base_name='services_at_location')
+    router.register(r'topics', TopicViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_topics', RelatedTopicsViewSet, base_name='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_services', RelatedServicesViewSet, base_name='topics')
+
+    return router
+
+
+def build_qa_tool_routes():
+    router = routers.DefaultRouter()
+    router.register(r'algorithms', AlgorithmViewSet, base_name='algorithms')
+    router.register(r'algorithms/(?P<algorithm_id>[\w-]+)/relevancyscores',
+                    RelevancyScoreViewSet, base_name='relevancyscores')
+    router.register(r'searchlocations', SearchLocationViewSet, base_name='searchlocations')
+    router.register(r'relevancyscores', RelevancyScoreViewSet, base_name='relevancyscores')
 
     return router
 
@@ -50,6 +64,7 @@ urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^version/$', VersionView.as_view(), name='version'),
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
+    url(r'^authenticate/', views.obtain_auth_token, name='authenticate'),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
@@ -64,6 +79,7 @@ urlpatterns = [
     url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
 
     url(r'^v1/', include(build_router().urls)),
+    url(r'^qa/v1/', include(build_qa_tool_routes().urls)),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

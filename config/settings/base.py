@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_yasg',
     'parler',
+    'rest_framework.authtoken',
 ]
 
 LOCAL_APPS = [

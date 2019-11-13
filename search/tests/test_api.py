@@ -5,6 +5,46 @@ from common.testhelpers.random_test_values import a_string, a_float
 from search.models import Task, TaskSimilarityScore, TaskServiceSimilarityScore
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
+from newcomers_guide.tests.helpers import create_topic
+
+
+class TopicApiTests(rest_test.APITestCase):
+    def setUp(self):
+        self.data = {
+            'id': 'homelessness',
+        }
+
+    def test_can_get_entities(self):
+        create_topic('1')
+        create_topic('2')
+        url = '/v1/topics/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 2)
+
+    def test_can_get_one_entity(self):
+        topic = create_topic('seniors')
+        url = '/v1/topics/{0}/'.format(topic.pk)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['id'], 'seniors')
+
+    def test_cannot_post(self):
+        url = '/v1/topics/'
+        response = self.client.post(url, self.data)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cannot_put(self):
+        topic = create_topic('3')
+        url = '/v1/topics/{0}/'.format(topic.pk)
+        response = self.client.put(url, self.data)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cannot_delete(self):
+        topic = create_topic('4')
+        url = '/v1/topics/{0}/'.format(topic.pk)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class RelatedTasksApiTests(rest_test.APITestCase):
