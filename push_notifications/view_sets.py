@@ -1,7 +1,8 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from push_notifications import models, serializers
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 
 
 @api_view(['PUT'])
@@ -13,11 +14,12 @@ def hello_world(request, *args, **kwargs):
     })
 
 
-class TokenViewSet(viewsets.ReadOnlyModelViewSet):
+class TokenViewSet(viewsets.ModelViewSet):
     queryset = models.PushNotificationToken.objects.all()
     serializer_class = serializers.TokenSerializer
 
-    def create(self, request):
+    @action(methods=['post'], detail=True, permission_classes=[IsAuthenticatedOrReadOnly])
+    def create_or_update_token(self, request):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             return self.bad_request(serializer.errors)
