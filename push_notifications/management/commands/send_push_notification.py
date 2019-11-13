@@ -1,4 +1,5 @@
 import csv
+import re
 from django.core.management.base import BaseCommand, CommandError
 from exponent_server_sdk import (DeviceNotRegisteredError, PushClient, PushMessage, 
                                  PushResponseError, PushServerError)
@@ -9,16 +10,24 @@ class Command(BaseCommand):
     help = ('')
 
     def add_arguments(self, parser):
-        parser.add_argument('filename',
-                            metavar='filename',
+        parser.add_argument('message',
+                            metavar='message',
                             help=('path to file containing text for notification, '
                                 'comma separated, locale in first column, message in second column'))
+        parser.add_argument('users',
+                            metavar='users',
+                            help=(''))
 
     def handle(self, *args, **options):
-        filename = options['filename']
-        notifications = read_csv_data_from_file(filename)
+        users = options['users']
+        users_csv = read_csv_data_from_file(users)
+        valid_users = validate_users(users_csv)
+
+        message = options['message']
+        notifications = read_csv_data_from_file(message)
         valid_notifications = validate_localized_notifications(notifications)
-        send_push_notifications(valid_notifications)
+
+        send_push_notifications(valid_users, valid_notifications)
 
 
 # TODO move this to a common spot
@@ -30,6 +39,27 @@ def read_csv_data_from_file(csv_path):
             result.append(row)
     return result
 
+def validate_users(users):
+    result = []
+    for line in users:
+        result.append(validate_user(line))
+    return result
+
+def validate_user(user):
+    locale = validate_locale(user[1])
+    token = validate_token(user[0])
+    return {'token': token, 'locale': locale}
+
+def validate_locale(locale):
+    if not locale in ['ar', 'en', 'fr', 'ko', 'pa', 'tl', 'zh_CN', 'zh_TW']:
+        raise CommandError('{}: Invalid locale'.format(locale))
+    return locale
+
+def validate_token(token):
+    match = re.search(r'^ExponentPushToken\[.*\]$', token)
+    if not match:
+        raise CommandError('{}: Invalid token'.format(token))
+    return token
 
 def validate_localized_notifications(notifications):
     result = {}
@@ -38,22 +68,11 @@ def validate_localized_notifications(notifications):
         result[locale] = line[1]
     return result
 
-
-class InvalidPushNotification(Exception):
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, *args, **kwargs)
-
-
-def validate_locale(locale):
-    if not locale in ['ar', 'en', 'fr', 'ko', 'pa', 'tl', 'zh_CN', 'zh_TW']:
-        raise CommandError('{}: Invalid locale in push notification data'.format(locale))
-    return locale
-
-
-def send_push_notifications(notifications):
-    for row in PushNotificationToken.objects.all():
-        token = row.id
-        message = notifications[row.locale]
+def send_push_notifications(users, localized_notifications):
+    for user in users:
+        token = user['token']
+        locale = user['locale']
+        message = localized_notifications[locale]
         send_push_message(token, message)
 
 def send_push_message(token, message, extra=None):

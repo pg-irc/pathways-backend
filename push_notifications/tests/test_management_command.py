@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.management.base import CommandError
-from push_notifications.management.commands.send_push_notification import validate_localized_notifications
+from push_notifications.management.commands.send_push_notification import validate_localized_notifications, validate_user
 
 
 class ValidateNotificationsTests(TestCase):
@@ -18,4 +18,21 @@ class ValidateNotificationsTests(TestCase):
     def test_throws_error_on_invalid_locale_code(self):
         data = [['xy', 'message']]
         with self.assertRaisesMessage(CommandError, 'xy: Invalid locale'):
-            valid_data = validate_localized_notifications(data)
+            validate_localized_notifications(data)
+
+class ValidateUsersTests(TestCase):
+    def test_returns_user_with_token(self):
+        user = validate_user(['ExponentPushToken[foo]', 'en'])
+        self.assertEqual(user['token'], 'ExponentPushToken[foo]')
+
+    def test_returns_user_with_locale(self):
+        user = validate_user(['ExponentPushToken[foo]', 'en'])
+        self.assertEqual(user['locale'], 'en')
+
+    def test_throws_on_invalid_token_format(self):
+        with self.assertRaisesMessage(CommandError, 'BadToken[foo]: Invalid token'):
+            validate_user(['BadToken[foo]', 'en'])
+
+    def test_throws_on_invalid_locale(self):
+        with self.assertRaisesMessage(CommandError, 'xy: Invalid locale'):
+            validate_user(['ExponentPushToken[foo]', 'xy'])
