@@ -3,10 +3,19 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from push_notifications import models, serializers
 from rest_framework.decorators import api_view, action
+from push_notifications.models import PushNotificationToken
 
 
 @api_view(['PUT'])
 def hello_world(request, *args, **kwargs):
+    the_id = kwargs['theid']
+    locale = request.data['locale']
+
+    result = PushNotificationToken()
+    result.id = the_id
+    result.locale = locale
+    result.save()
+
     return Response({
         'message': 'Got some data!',
         'data': request.data,
