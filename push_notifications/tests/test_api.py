@@ -41,3 +41,21 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
         response = self.client.put(self.url, {'locale': 'fr'})
         content = str(response.content, encoding='utf8')
         self.assertJSONEqual(content, {'id': self.token, 'locale': 'fr'})
+
+    def test_cannot_get_all(self):
+        PushNotificationToken(id=self.token, locale='en').save()
+        response = self.client.get('/hello/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_cannot_get_one(self):
+        PushNotificationToken(id=self.token, locale='en').save()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cannot_post(self):
+        response = self.client.post(self.url, {'locale': 'en'})
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cannot_delete(self):
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
