@@ -15,7 +15,7 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 from config import documentation
 from bc211.views import Bc211VersionView
-from push_notifications.view_sets import TokenViewSet
+from push_notifications.view_sets import TokenViewSet, hello_world
 
 
 def build_router():
@@ -68,6 +68,8 @@ urlpatterns = [
     url(r'^version/$', VersionView.as_view(), name='version'),
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
     url(r'^authenticate/', views.obtain_auth_token, name='authenticate'),
+
+    url(r'^hello/', hello_world),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),

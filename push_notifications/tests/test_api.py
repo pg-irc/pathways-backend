@@ -1,9 +1,14 @@
 from rest_framework import test as rest_test
 from rest_framework import status
-from rest_framework.exceptions import ErrorDetail
 from common.testhelpers.random_test_values import a_string
 from push_notifications.models import PushNotificationToken
 from push_notifications.tests.helpers import create_push_notification_token
+
+
+class HelloTests(rest_test.APITestCase):
+    def test_foo(self):
+        response = self.client.get('/hello/')
+        self.assertEqual(response.json()['message'], 'Hello, world!')
 
 
 class ServicesApiTests(rest_test.APITestCase):

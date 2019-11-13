@@ -1,6 +1,12 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from push_notifications import models, serializers
+from rest_framework.decorators import api_view
+
+
+@api_view()
+def hello_world(request):
+    return Response({'message': 'Hello, world!'})
 
 
 class TokenViewSet(viewsets.ReadOnlyModelViewSet):
