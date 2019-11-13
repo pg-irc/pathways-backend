@@ -4,9 +4,9 @@ from push_notifications import models, serializers
 from rest_framework.decorators import api_view
 
 
-@api_view()
+@api_view(['PUT'])
 def hello_world(request):
-    return Response({'message': 'Hello, world!'})
+    return Response({"message": "Got some data!", "data": request.data})
 
 
 class TokenViewSet(viewsets.ReadOnlyModelViewSet):
