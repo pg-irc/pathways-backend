@@ -77,7 +77,7 @@ urlpatterns = [
     url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
 
     url(r'^v1/', include(build_router().urls)),
-    url(r'^v1/push_notifications/tokens/(?P<token>[\w-]+)/', create_or_update_push_notification_token),
+    url(r'^v1/push_notifications/tokens/(?P<token>[A-Za-z0-9\[\]]+)/', create_or_update_push_notification_token),
     url(r'^qa/v1/', include(build_qa_tool_routes().urls)),
 
 

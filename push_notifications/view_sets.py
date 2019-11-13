@@ -10,8 +10,11 @@ from drf_yasg.utils import swagger_auto_schema
 @swagger_auto_schema(
     methods=['PUT'],
     request_body=PushNotificationTokenSerializer,
-    responses={200: PushNotificationTokenSerializer(many=False)},
-    operation_description='Save a push notification token')
+    responses={
+        200: PushNotificationTokenSerializer(many=False),
+        400: 'Bad request',
+    },
+    operation_description='Save a push notification token of form "ExponentPushToken[xyz]"')
 @api_view(['PUT'])
 def create_or_update_push_notification_token(request, *args, **kwargs):
     data = request.data.copy()

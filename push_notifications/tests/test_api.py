@@ -1,3 +1,4 @@
+import urllib.parse
 from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string
@@ -6,8 +7,8 @@ from push_notifications.models import PushNotificationToken
 
 class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def setUp(self):
-        self.token = a_string()
-        self.url = '/v1/push_notifications/tokens/{}/'.format(self.token)
+        self.token = 'ExponentPushToken[{}]'.format(a_string())
+        self.url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(self.token))
 
     def test_put_creates_database_row(self):
         self.client.put(self.url, {'locale': 'en'})
@@ -19,6 +20,12 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def test_put_returns_200(self):
         response = self.client.put(self.url, {'locale': 'en'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_put_returns_400_on_invalid_token(self):
+        token = 'InvalidPushToken[{}]'.format(a_string())
+        url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(token))
+        response = self.client.put(url, {'locale': 'en'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_put_returns_400_on_invalid_locale(self):
         response = self.client.put(self.url, {'locale': 'this is way too long to be a valid locale'})
@@ -43,7 +50,7 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
 
     def test_cannot_get_all(self):
         PushNotificationToken(id=self.token, locale='en').save()
-        response = self.client.get('/hello/')
+        response = self.client.get('/v1/push_notifications/tokens/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_cannot_get_one(self):
