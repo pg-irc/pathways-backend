@@ -20,7 +20,7 @@ def create_or_update_push_notification_token(request, *args, **kwargs):
     data = request.data.copy()
     data['id'] = kwargs['token']
 
-    serializer = get_serializer(data)
+    serializer = get_serializer_for_create_or_update(data)
     if not serializer.is_valid():
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
@@ -28,7 +28,7 @@ def create_or_update_push_notification_token(request, *args, **kwargs):
     return Response(serializer.data)
 
 
-def get_serializer(data):
+def get_serializer_for_create_or_update(data):
     the_id = data['id']
     create = not PushNotificationToken.objects.filter(pk=the_id).exists()
 
