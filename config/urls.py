@@ -69,7 +69,7 @@ urlpatterns = [
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
     url(r'^authenticate/', views.obtain_auth_token, name='authenticate'),
 
-    url(r'^hello/', hello_world),
+    url(r'^hello/(?P<theid>[\w-]+)', hello_world),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),

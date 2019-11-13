@@ -5,8 +5,12 @@ from rest_framework.decorators import api_view
 
 
 @api_view(['PUT'])
-def hello_world(request):
-    return Response({"message": "Got some data!", "data": request.data})
+def hello_world(request, *args, **kwargs):
+    return Response({
+        'message': 'Got some data!',
+        'data': request.data,
+        'theid': kwargs['theid']
+    })
 
 
 class TokenViewSet(viewsets.ReadOnlyModelViewSet):

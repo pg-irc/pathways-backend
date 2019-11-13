@@ -7,10 +7,10 @@ from push_notifications.tests.helpers import create_push_notification_token
 
 class HelloTests(rest_test.APITestCase):
     def test_foo(self):
-        response = self.client.put('/hello/', {'key': 'value'})
+        response = self.client.put('/hello/123/', {'key': 'value'})
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'data': {'key': 'value'}, 'message': 'Got some data!'}
+            {'data': {'key': 'value'}, 'message': 'Got some data!', 'theid': '123'}
         )
 
 
