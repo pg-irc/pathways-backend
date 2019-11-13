@@ -12,12 +12,24 @@ def hello_world(request, *args, **kwargs):
     the_id = kwargs['theid']
     locale = request.data['locale']
 
-    try:
-        result = PushNotificationToken(id=the_id, locale=locale)
-        result.save()
-        return Response(serializers.TokenSerializer(result).data)
-    except DataError as ex:
-        return Response([], status=status.HTTP_400_BAD_REQUEST)
+    the_data = request.data.copy()
+    the_data['id'] = the_id
+
+    exists = PushNotificationToken.objects.filter(pk=the_id).exists()
+
+    if exists:
+        instance = PushNotificationToken.objects.get(pk=the_id)
+        serializer = serializers.TokenSerializer(instance, data=the_data)
+        if not serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        serializer = serializers.TokenSerializer(data=the_data)
+        if not serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class TokenViewSet(viewsets.ModelViewSet):
