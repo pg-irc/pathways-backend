@@ -2,13 +2,12 @@ from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string
 from push_notifications.models import PushNotificationToken
-from push_notifications.tests.helpers import create_push_notification_token
 
 
 class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def setUp(self):
         self.token = a_string()
-        self.url = '/hello/{}/'.format(self.token)
+        self.url = '/v1/push_notifications/tokens/{}/'.format(self.token)
 
     def test_put_creates_database_row(self):
         self.client.put(self.url, {'locale': 'en'})

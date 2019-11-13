@@ -67,21 +67,17 @@ urlpatterns = [
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
     url(r'^authenticate/', views.obtain_auth_token, name='authenticate'),
 
-    url(r'^hello/(?P<theid>[\w-]+)', create_or_update_push_notification_token),
-
-    # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
 
-    # User management
     url(r'^users/', include('users.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
-    # Your stuff: custom urls includes go here
     url(r'^swagger(?P<format>.json|.yaml)$', SCHEMA_VIEW.without_ui(cache_timeout=None), name='schema-json'),
     url(r'^swagger/$', SCHEMA_VIEW.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
     url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
 
     url(r'^v1/', include(build_router().urls)),
+    url(r'^v1/push_notifications/tokens/(?P<theid>[\w-]+)', create_or_update_push_notification_token),
     url(r'^qa/v1/', include(build_qa_tool_routes().urls)),
 
 
