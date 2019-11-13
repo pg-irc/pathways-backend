@@ -11,12 +11,10 @@ def hello_world(request, *args, **kwargs):
     the_id = kwargs['theid']
     locale = request.data['locale']
 
-    result = PushNotificationToken()
-    result.id = the_id
-    result.locale = locale
+    result = PushNotificationToken(id=the_id, locale=locale)
     result.save()
 
-    return Response({'id': the_id, 'locale': locale})
+    return Response(serializers.TokenSerializer(result).data)
 
 
 class TokenViewSet(viewsets.ModelViewSet):
