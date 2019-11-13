@@ -16,11 +16,7 @@ def hello_world(request, *args, **kwargs):
     result.locale = locale
     result.save()
 
-    return Response({
-        'message': 'Got some data!',
-        'data': request.data,
-        'theid': kwargs['theid']
-    })
+    return Response({'id': the_id, 'locale': locale})
 
 
 class TokenViewSet(viewsets.ModelViewSet):

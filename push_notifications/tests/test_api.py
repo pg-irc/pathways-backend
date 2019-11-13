@@ -6,20 +6,22 @@ from push_notifications.tests.helpers import create_push_notification_token
 
 
 class HelloTests(rest_test.APITestCase):
-    def test_foo(self):
-        response = self.client.put('/hello/123/', {'locale': 'en'})
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'data': {'locale': 'en'}, 'message': 'Got some data!', 'theid': '123'}
-        )
-
-    def test_creates_database_row(self):
+    def test_put_creates_database_row(self):
         the_token = a_string()
         url = '/hello/{}/'.format(the_token)
         self.client.put(url, {'locale': 'en'})
         data = PushNotificationToken.objects.all()
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0].id, the_token)
+
+    def test_put_returns_resuting_data(self):
+        the_token = a_string()
+        url = '/hello/{}/'.format(the_token)
+        response = self.client.put(url, {'locale': 'en'})
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'id': the_token, 'locale': 'en'}
+        )
 
 
 class ServicesApiTests(rest_test.APITestCase):
