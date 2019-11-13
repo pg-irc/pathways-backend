@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from push_notifications import models, serializers
 from rest_framework.decorators import api_view, action
 from push_notifications.models import PushNotificationToken
+from django.db.utils import DataError
 
 
 @api_view(['PUT'])
@@ -11,10 +12,12 @@ def hello_world(request, *args, **kwargs):
     the_id = kwargs['theid']
     locale = request.data['locale']
 
-    result = PushNotificationToken(id=the_id, locale=locale)
-    result.save()
-
-    return Response(serializers.TokenSerializer(result).data)
+    try:
+        result = PushNotificationToken(id=the_id, locale=locale)
+        result.save()
+        return Response(serializers.TokenSerializer(result).data)
+    except DataError as ex:
+        return Response([], status=status.HTTP_400_BAD_REQUEST)
 
 
 class TokenViewSet(viewsets.ModelViewSet):

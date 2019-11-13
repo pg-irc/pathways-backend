@@ -21,6 +21,10 @@ class HelloTests(rest_test.APITestCase):
         response = self.client.put(self.url, {'locale': 'en'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_put_returns_400_on_invalid_locale(self):
+        response = self.client.put(self.url, {'locale': 'this is way too long to be a valid locale'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_put_returns_resulting_data(self):
         response = self.client.put(self.url, {'locale': 'en'})
         content = str(response.content, encoding='utf8')
