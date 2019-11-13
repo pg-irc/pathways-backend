@@ -6,22 +6,37 @@ from push_notifications.tests.helpers import create_push_notification_token
 
 
 class HelloTests(rest_test.APITestCase):
-    def test_put_creates_database_row(self):
-        the_token = a_string()
-        url = '/hello/{}/'.format(the_token)
-        self.client.put(url, {'locale': 'en'})
-        data = PushNotificationToken.objects.all()
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0].id, the_token)
+    def setUp(self):
+        self.token = a_string()
+        self.url = '/hello/{}/'.format(self.token)
 
-    def test_put_returns_resuting_data(self):
-        the_token = a_string()
-        url = '/hello/{}/'.format(the_token)
-        response = self.client.put(url, {'locale': 'en'})
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'id': the_token, 'locale': 'en'}
-        )
+    def test_put_creates_database_row(self):
+        self.client.put(self.url, {'locale': 'en'})
+        data = PushNotificationToken.objects.all()
+
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0].id, self.token)
+
+    def test_put_returns_200(self):
+        response = self.client.put(self.url, {'locale': 'en'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_put_returns_resulting_data(self):
+        response = self.client.put(self.url, {'locale': 'en'})
+        content = str(response.content, encoding='utf8')
+
+        self.assertJSONEqual(content, {'id': self.token, 'locale': 'en'})
+
+    def test_put_returns_200_also_if_record_already_exists(self):
+        PushNotificationToken(id=self.token, locale='en').save()
+        response = self.client.put(self.url, {'locale': 'en'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_put_returns_updates_locale_if_record_already_exists(self):
+        PushNotificationToken(id=self.token, locale='en').save()
+        response = self.client.put(self.url, {'locale': 'fr'})
+        content = str(response.content, encoding='utf8')
+        self.assertJSONEqual(content, {'id': self.token, 'locale': 'fr'})
 
 
 class ServicesApiTests(rest_test.APITestCase):
