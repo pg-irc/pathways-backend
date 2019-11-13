@@ -7,7 +7,7 @@ from push_notifications.models import PushNotificationToken
 
 class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def setUp(self):
-        self.token = 'ExponentPushToken[{}]'.format(a_string())
+        self.token = 'ExponentPushToken[_{}]'.format(a_string())
         self.url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(self.token))
 
     def test_put_creates_database_row(self):
