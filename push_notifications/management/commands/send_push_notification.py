@@ -1,9 +1,12 @@
 import csv
 import re
+import logging
 from django.core.management.base import BaseCommand, CommandError
 from exponent_server_sdk import (DeviceNotRegisteredError, PushClient, PushMessage,
                                  PushResponseError, PushServerError)
 from search.read_csv_data_from_file import read_csv_data_from_file
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -71,25 +74,26 @@ def send_push_notifications(users, localized_notifications):
         message = localized_notifications[locale]
         send_push_message(token, message)
 
-# TODO make the GET call authenticated
-# TODO remove people from the database if the return value from the expo call indicates it
 # TODO save timestamp for changes to tokens
-# TODO change POST to PUT, ensure the same result is returned whether or not the item existed
 
 
 def send_push_message(token, message, extra=None):
     try:
         response = PushClient().publish(PushMessage(to=token, body=message, data=extra))
+
     except PushServerError:
-        print('Error pushing notification: PushServerError')
-        raise
+        LOGGER.error('Error pushing notification: PushServerError for %s', token)
+
     except (ConnectionError, HTTPError):
-        print('Error pushing notification: ConnectionError')
-        raise
+        LOGGER.error('Error pushing notification: ConnectionError for %s', token)
 
     try:
         response.validate_response()
+
     except DeviceNotRegisteredError:
-        print('Error pushing notification: DeviceNotRegisteredError')
+        # According to https://github.com/expo/expo-server-sdk-python this error is
+        # thrown when users no longer want to receive push notifications.
+        LOGGER.warning('DeviceNotRegisteredError, remove this token from our database: %s', token)
+
     except PushResponseError:
-        print('Error pushing notification: PushResponseError')
+        LOGGER.error('Error pushing notification: PushResponseError for %s', token)
