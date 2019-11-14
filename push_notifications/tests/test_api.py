@@ -33,9 +33,9 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
 
     def test_put_returns_resulting_data(self):
         response = self.client.put(self.url, {'locale': 'en'})
-        content = str(response.content, encoding='utf8')
 
-        self.assertJSONEqual(content, {'id': self.token, 'locale': 'en'})
+        self.assertEqual(response.json()['id'], self.token)
+        self.assertEqual(response.json()['locale'], 'en')
 
     def test_put_returns_200_also_if_record_already_exists(self):
         PushNotificationToken(id=self.token, locale='en').save()
@@ -45,8 +45,7 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def test_put_returns_updates_locale_if_record_already_exists(self):
         PushNotificationToken(id=self.token, locale='en').save()
         response = self.client.put(self.url, {'locale': 'fr'})
-        content = str(response.content, encoding='utf8')
-        self.assertJSONEqual(content, {'id': self.token, 'locale': 'fr'})
+        self.assertEqual(response.json()['locale'], 'fr')
 
     def test_cannot_get_all(self):
         PushNotificationToken(id=self.token, locale='en').save()

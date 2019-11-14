@@ -74,8 +74,6 @@ def send_push_notifications(users, localized_notifications):
         message = localized_notifications[locale]
         send_push_message(token, message)
 
-# TODO save timestamp for changes to tokens
-
 
 def send_push_message(token, message, extra=None):
     try:
