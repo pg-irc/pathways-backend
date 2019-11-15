@@ -19,13 +19,10 @@ class Command(BaseCommand):
         parser.add_argument('path',
                             metavar='path',
                             help='path to root of Newcomers Guide folder structure')
-        parser.add_argument('--save_topics_to_db', action='store_true',
-                            help='Save topics to the database.')
 
     def handle(self, *args, **options):
         root_folder = options['path']
-        is_updating_db = options['save_topics_to_db']
-        
+
         self.stdout.write('Reading Newcomers Guide data from {}'.format(root_folder))
 
         taxonomy_data = read_taxonomy_data(root_folder)
@@ -44,6 +41,5 @@ class Command(BaseCommand):
         with open('taxonomies.ts', 'w') as file:
             file.write(generate_taxonomy_fixture(taxonomies))
 
-        if is_updating_db:
-            counts = ImportCounters()
-            save_topics(topics, counts)
+        counts = ImportCounters()
+        save_topics(topics, counts)
