@@ -133,10 +133,10 @@ checkForSuccess "migrate database"
 
 echo "importing BC-211 data ..."
 ./manage.py import_bc211_data $BC211Path
-checkForSuccess "import BC211 data"
+checkForSuccess "import BC211 data into the database"
 
-./manage.py import_newcomers_guide --save_topics_to_db $NewcomersGuidePath
-checkForSuccess "create newcomers guide fixtures"
+./manage.py import_newcomers_guide $NewcomersGuidePath
+checkForSuccess "import newcomers guide data into the database"
 
 echo "computing similarity scores ..."
 ./manage.py compute_text_similarity_scores --related_topics 3 --related_services 0 $NewcomersGuidePath
