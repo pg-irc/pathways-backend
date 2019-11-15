@@ -7,7 +7,7 @@ from push_notifications.models import PushNotificationToken
 
 class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def setUp(self):
-        self.token = 'ExponentPushToken[_{}]'.format(a_string())
+        self.token = 'ExponentPushToken[{}]'.format(a_string())
         self.url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(self.token))
 
     def test_put_creates_database_row(self):
@@ -17,15 +17,24 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0].id, self.token)
 
+    def test_can_create_token_with_special_characters(self):
+        token = 'ExponentPushToken[AZaz12~!@#$%^&*()_+`-=\{\}\[\];:\'",.<>/?]'
+        url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(token))
+
+        self.client.put(url, {'locale': 'en'})
+        data = PushNotificationToken.objects.all()
+
+        self.assertEqual(data[0].id, token)
+
     def test_put_returns_200(self):
         response = self.client.put(self.url, {'locale': 'en'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_put_returns_400_on_invalid_token(self):
+    def test_put_returns_404_on_invalid_token(self):
         token = 'InvalidPushToken[{}]'.format(a_string())
         url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(token))
         response = self.client.put(url, {'locale': 'en'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_put_returns_400_on_invalid_locale(self):
         response = self.client.put(self.url, {'locale': 'this is way too long to be a valid locale'})
