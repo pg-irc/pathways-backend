@@ -9,6 +9,11 @@ main/media/
 main/static/css/
 staticfiles/
 
+# Don't commit data files
+*.csv
+services.json
+services-with-phonenumbers.json
+
 .DS_STORE
 # don't commit generated fixture files
 *.ts
