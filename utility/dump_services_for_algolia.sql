@@ -2,7 +2,9 @@
 
 -- sudo npm install --global csvtojson
 
+-- psql -d pathways_local -F $',' -A -t -c 'select location_id, phone_number, phone_number_type_id from phone_at_location_phoneatlocation' > phones.csv
 -- psql -d pathways_local -F $',' -A -f utility/dump_services_for_algolia.sql | head -n -1 | csvtojson --colParser='{"_geoloc.lng":"number","_geoloc.lat":"number","organization.service_count":"number"}' > services.json
+-- python utility/combine_phones.py phones.csv services.json services-with-phonenumbers.json
 
 -- Column names _geoloc.lng and _geoloc.lat are special. csvtojson understands to convert this to 
 -- "_geoloc":{"lng":-122.724,"lat":49.110044}. The --colParser option define the lat and long to be 
@@ -24,7 +26,8 @@ select distinct
 	'"' || address.postal_code || '"' as "address.postal_code",
 	address.country as "address.country",
 	ST_X(location.point) as "_geoloc.lng",
-	ST_Y(location.point) as "_geoloc.lat"
+	ST_Y(location.point) as "_geoloc.lat",
+	location.id as "location_id"
 from
 	services_service as service,
 	services_service_translation as serviceStrings,
