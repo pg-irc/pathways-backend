@@ -29,6 +29,8 @@ def set_phone_numbers_on_services(algolia_data, phone_data):
         location_id = service['location_id']
         if location_id in phone_data:
             service['phone_numbers'] = phone_data[location_id]
+        else:
+            service['phone_numbers'] = []
     return algolia_data
 
 
