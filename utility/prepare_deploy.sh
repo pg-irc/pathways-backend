@@ -1,5 +1,9 @@
 #!/bin/bash
 
+fail() {
+    exit -1
+}
+
 while (( "$#" )); do
     if [ "$1" == "--bc211Path" ]
     then
@@ -21,7 +25,7 @@ while (( "$#" )); do
     else
         echo "$1: Invalid command argument"
         usage
-        exit
+        fail
     fi
 done
 
@@ -51,12 +55,12 @@ validateFilePath () {
     if [ "$1" == "" ]; then
         echo "Missing a required argument: $2"
         usage
-        exit
+        fail
     fi
     if [ ! -f "$1" ]; then
         echo "$1: not a file"
         usage
-        exit
+        fail
     fi
 }
 
@@ -64,12 +68,12 @@ validateDirectoryPath () {
     if [ "$1" == "" ]; then
         echo "Missing a required argument: $2"
         usage
-        exit
+        fail
     fi
     if [ ! -d "$1" ]; then
         echo "$1: not a directory"
         usage
-        exit
+        fail
     fi
 }
 
@@ -77,12 +81,12 @@ validateNewcomersGuidePath () {
     if [ "$NewcomersGuidePath" == "" ]; then
         echo "Missing required argument: Newcomers Guide path"
         usage
-        exit
+        fail
     fi
     if [ ! -d $NewcomersGuidePath ]; then
         echo "$NewcomersGuidePath: directory does not exist"
         usage
-        exit
+        fail
     fi
 }
 
@@ -90,11 +94,11 @@ validateOutputFile () {
     if [ "$OutputFile" == "" ]; then
         echo "Missing a required argument for output"
         usage
-        exit
+        fail
     fi
     if [ -f $OutputFile ]; then
         echo "$OutputFile: Output file already exists"
-        exit
+        fail
     fi
 }
 
@@ -118,7 +122,7 @@ checkForSuccess () {
     if [ "$?" != "0" ]
     then
         echo "failed to $1"
-        exit
+        fail
     fi
 }
 
