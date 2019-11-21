@@ -496,3 +496,9 @@ class ServicesAtLocationApiTests(rest_test.APITestCase):
         self.assertEqual(len(json), 1)
         self.assertEqual(json[0]['location']['name'], expected_service_at_location.location.name)
         self.assertEqual(json[0]['service']['name'], expected_service_at_location.service.name)
+
+    def test_can_return_id(self):
+        service_at_location = ServiceAtLocationBuilder().create()
+        response = self.client.get('/v1/services_at_location/')
+        json = response.json()
+        self.assertEqual(json[0]['id'], service_at_location.id)
