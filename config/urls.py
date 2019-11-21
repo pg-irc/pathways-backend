@@ -15,6 +15,7 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 from config import documentation
 from bc211.views import Bc211VersionView
+from push_notifications.view_sets import create_or_update_push_notification_token
 
 
 def build_router():
@@ -66,20 +67,20 @@ urlpatterns = [
     url(r'^bc211version/$', Bc211VersionView.as_view(), name='bc211_version'),
     url(r'^authenticate/', views.obtain_auth_token, name='authenticate'),
 
-    # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
 
-    # User management
     url(r'^users/', include('users.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
-    # Your stuff: custom urls includes go here
     url(r'^swagger(?P<format>.json|.yaml)$', SCHEMA_VIEW.without_ui(cache_timeout=None), name='schema-json'),
     url(r'^swagger/$', SCHEMA_VIEW.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
     url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
 
     url(r'^v1/', include(build_router().urls)),
+    url(r'^v1/push_notifications/tokens/(?P<token>ExponentPushToken\[.+\])/',
+        create_or_update_push_notification_token),
     url(r'^qa/v1/', include(build_qa_tool_routes().urls)),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
