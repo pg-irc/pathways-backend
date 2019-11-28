@@ -2,6 +2,12 @@ from rest_framework import serializers
 from search import models
 
 
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Task
+        fields = ['id']
+
+
 class RelatedTaskSerializer(serializers.ModelSerializer):
 
     class Meta:

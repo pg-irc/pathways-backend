@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_yasg',
     'parler',
+    'rest_framework.authtoken',
 ]
 
 LOCAL_APPS = [
@@ -52,6 +53,7 @@ LOCAL_APPS = [
     'taxonomies.apps.TaxonomiesConfig',
     'translation.apps.ContentTranslationToolsConfig',
     'qa_tool.apps.QaToolConfig',
+    'push_notifications.apps.PushNotificationsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

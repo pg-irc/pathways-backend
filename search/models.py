@@ -17,6 +17,9 @@ class Task(ValidateOnSaveMixin, TranslatableModel):
         description=models.TextField(blank=True, null=True)
     )
 
+    class Meta:
+        ordering = ['id']
+
 
 class TaskSimilarityScore(ValidateOnSaveMixin, models.Model):
     first_task = models.ForeignKey(Task, on_delete=models.PROTECT, related_name='first_task')

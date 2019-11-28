@@ -10,4 +10,4 @@ class ServiceAtLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ServiceAtLocation
-        fields = ('service', 'location')
+        fields = ('id', 'service', 'location')
