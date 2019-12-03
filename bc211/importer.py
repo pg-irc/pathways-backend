@@ -11,6 +11,13 @@ from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
+hardcodedLatLong = {
+    'New Westminster':  Point(49.205718, -122.910956),
+    'Coquitlam':        Point(49.283763, -122.793206),
+    'Vancouver':        Point(49.282729, -123.120738),
+    'Delta':            Point(49.095216, -123.026476),
+}
+
 
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
@@ -150,6 +157,10 @@ def create_taxonomy_term_active_record(record, counters):
 def create_address_for_location(location, address_dto, counters):
     address = create_address(address_dto, counters)
     address_type = AddressType.objects.get(pk=address_dto.address_type_id)
+    if location.point is None:
+        if hardcodedLatLong[address.city]:
+            location.point = hardcodedLatLong[address.city]
+            location.save()
     create_location_address(
         location,
         address,
