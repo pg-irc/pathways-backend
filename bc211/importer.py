@@ -12,10 +12,6 @@ from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
-with open('../content/city_latlong.csv', mode='r') as file:
-    csv_reader = csv.reader(file)
-    city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
-
 
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
@@ -155,6 +151,7 @@ def create_taxonomy_term_active_record(record, counters):
 def create_address_for_location(location, address_dto, counters):
     address = create_address(address_dto, counters)
     address_type = AddressType.objects.get(pk=address_dto.address_type_id)
+    city_to_latlong = read_csv_to_city_latlong_dictionary()
     if location.point is None:
         if address.city in city_to_latlong:
             location.point = city_to_latlong[address.city]
@@ -167,6 +164,13 @@ def create_address_for_location(location, address_dto, counters):
         address,
         address_type
     )
+
+
+def read_csv_to_city_latlong_dictionary(path='../content/city_latlong.csv'):
+    with open(path, mode='r') as file:
+        csv_reader = csv.reader(file)
+        city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
+        return city_to_latlong
 
 
 def create_address(address_dto, counters):
