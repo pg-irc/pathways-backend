@@ -1,4 +1,5 @@
 import logging
+import csv
 from django.utils import translation
 from django.contrib.gis.geos import Point
 from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
@@ -11,12 +12,9 @@ from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
-hardcodedLatLong = {
-    'New Westminster':  Point(49.205718, -122.910956),
-    'Coquitlam':        Point(49.283763, -122.793206),
-    'Vancouver':        Point(49.282729, -123.120738),
-    'Delta':            Point(49.095216, -123.026476),
-}
+with open('./city_latlong.csv', mode='r') as file:
+    csv_reader = csv.reader(file)
+    city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
 
 
 def save_records_to_database(organizations, counters):
@@ -158,9 +156,12 @@ def create_address_for_location(location, address_dto, counters):
     address = create_address(address_dto, counters)
     address_type = AddressType.objects.get(pk=address_dto.address_type_id)
     if location.point is None:
-        if hardcodedLatLong[address.city]:
-            location.point = hardcodedLatLong[address.city]
+        if address.city in city_to_latlong:
+            location.point = city_to_latlong[address.city]
             location.save()
+        else:
+            LOGGER.debug('Location with id "%s" does not have city to fall back on for LatLong info',
+                         location.id)
     create_location_address(
         location,
         address,

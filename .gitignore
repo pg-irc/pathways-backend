@@ -11,6 +11,7 @@ staticfiles/
 
 # Don't commit data files
 *.csv
+!city_latlong.csv
 services.json
 services-with-phonenumbers.json
 
