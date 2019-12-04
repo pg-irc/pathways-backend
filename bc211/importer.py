@@ -12,7 +12,7 @@ from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
-with open('./city_latlong.csv', mode='r') as file:
+with open('../content/city_latlong.csv', mode='r') as file:
     csv_reader = csv.reader(file)
     city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
 
