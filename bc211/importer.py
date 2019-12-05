@@ -9,6 +9,7 @@ from human_services.addresses.models import Address, AddressType
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from taxonomies.models import TaxonomyTerm
 from bc211.exceptions import XmlParseException
+from bc211.tests.helpers import DefaultDictionary
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,20 +54,21 @@ def build_organization_active_record(record):
     return active_record
 
 
-def save_locations(locations, counters):
+def save_locations(locations, counters, csv_path=None):
     for location in locations:
         if is_inactive(location):
             continue
         active_record = build_location_active_record(location)
+        dictionary = create_dictionary(csv_path)
         active_record.save()
         counters.count_location()
         LOGGER.debug('Location "%s" "%s"', location.id, location.name)
         if location.services:
             save_services(location.services, counters)
         if location.physical_address:
-            create_address_for_location(active_record, location.physical_address, counters)
+            create_address_for_location(active_record, location.physical_address, dictionary, counters)
         if location.postal_address:
-            create_address_for_location(active_record, location.postal_address, counters)
+            create_address_for_location(active_record, location.postal_address, dictionary, counters)
         if location.phone_numbers:
             create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
 
@@ -148,10 +150,10 @@ def create_taxonomy_term_active_record(record, counters):
     return taxonomy_term_active_record
 
 
-def create_address_for_location(location, address_dto, counters):
+def create_address_for_location(location, address_dto, dictionary, counters):
     address = create_address(address_dto, counters)
     address_type = AddressType.objects.get(pk=address_dto.address_type_id)
-    city_to_latlong = read_csv_to_city_latlong_dictionary()
+    city_to_latlong = dictionary
     if location.point is None:
         if address.city in city_to_latlong:
             location.point = city_to_latlong[address.city]
@@ -166,8 +168,14 @@ def create_address_for_location(location, address_dto, counters):
     )
 
 
-def read_csv_to_city_latlong_dictionary(path='../content/city_latlong.csv'):
-    with open(path, mode='r') as file:
+def create_dictionary(csv_path):
+    if csv_path is None:
+        return DefaultDictionary.test_dictionary
+    return read_csv_to_city_latlong_dictionary(csv_path)
+
+
+def read_csv_to_city_latlong_dictionary(csv_path):
+    with open(csv_path, mode='r') as file:
         csv_reader = csv.reader(file)
         city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
         return city_to_latlong
