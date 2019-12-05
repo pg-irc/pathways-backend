@@ -117,7 +117,7 @@ class InactiveDataImportTests(TestCase):
         inactive_location = LocationBuilder(organization).with_description(inactive_description).build_dto()
         active_location = LocationBuilder(organization).build_dto()
 
-        save_locations([inactive_location, active_location], ImportCounters())
+        save_locations([inactive_location, active_location], None, ImportCounters())
         all_records_from_database = Location.objects.all()
 
         self.assertEqual(len(all_records_from_database), 1)

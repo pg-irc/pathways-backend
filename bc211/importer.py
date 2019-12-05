@@ -16,10 +16,10 @@ LOGGER = logging.getLogger(__name__)
 
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
-        save_organization(organization, counters)
+        save_organization(organization, None, counters)
 
 
-def save_organization(organization, counters):
+def save_organization(organization, csv_path, counters):
     if is_inactive(organization):
         return
     translation.activate('en')
@@ -27,7 +27,7 @@ def save_organization(organization, counters):
     active_record.save()
     counters.count_organization()
     LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
-    save_locations(organization.locations, counters)
+    save_locations(organization.locations, csv_path, counters)
 
 
 def handle_parser_errors(generator):
@@ -54,7 +54,7 @@ def build_organization_active_record(record):
     return active_record
 
 
-def save_locations(locations, counters, csv_path=None):
+def save_locations(locations, csv_path, counters):
     for location in locations:
         if is_inactive(location):
             continue
