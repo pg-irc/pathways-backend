@@ -19,7 +19,7 @@ def save_records_to_database(organizations, counters):
         save_organization(organization, None, counters)
 
 
-def save_organization(organization, csv_path, counters):
+def save_organization(organization, city_latlong_map, counters):
     if is_inactive(organization):
         return
     translation.activate('en')
@@ -27,7 +27,7 @@ def save_organization(organization, csv_path, counters):
     active_record.save()
     counters.count_organization()
     LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
-    save_locations(organization.locations, csv_path, counters)
+    save_locations(organization.locations, city_latlong_map, counters)
 
 
 def handle_parser_errors(generator):
@@ -54,21 +54,21 @@ def build_organization_active_record(record):
     return active_record
 
 
-def save_locations(locations, csv_path, counters):
+def save_locations(locations, city_latlong_map, counters):
     for location in locations:
         if is_inactive(location):
             continue
         active_record = build_location_active_record(location)
-        dictionary = create_dictionary(csv_path)
+        validated_city_latlong_map = validate_city_latlong_map(city_latlong_map)
         active_record.save()
         counters.count_location()
         LOGGER.debug('Location "%s" "%s"', location.id, location.name)
         if location.services:
             save_services(location.services, counters)
         if location.physical_address:
-            create_address_for_location(active_record, location.physical_address, dictionary, counters)
+            create_address_for_location(active_record, location.physical_address, validated_city_latlong_map, counters)
         if location.postal_address:
-            create_address_for_location(active_record, location.postal_address, dictionary, counters)
+            create_address_for_location(active_record, location.postal_address, validated_city_latlong_map, counters)
         if location.phone_numbers:
             create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
 
@@ -150,13 +150,12 @@ def create_taxonomy_term_active_record(record, counters):
     return taxonomy_term_active_record
 
 
-def create_address_for_location(location, address_dto, dictionary, counters):
+def create_address_for_location(location, address_dto, city_latlong_map, counters):
     address = create_address(address_dto, counters)
     address_type = AddressType.objects.get(pk=address_dto.address_type_id)
-    city_to_latlong = dictionary
     if location.point is None:
-        if address.city in city_to_latlong:
-            location.point = city_to_latlong[address.city]
+        if address.city in city_latlong_map:
+            location.point = city_latlong_map[address.city]
             location.save()
         else:
             LOGGER.debug('Location with id "%s" does not have city to fall back on for LatLong info',
@@ -168,13 +167,18 @@ def create_address_for_location(location, address_dto, dictionary, counters):
     )
 
 
-def create_dictionary(csv_path):
-    if csv_path is None:
-        return DefaultDictionary.test_dictionary
-    return read_csv_to_city_latlong_dictionary(csv_path)
+def validate_city_latlong_map(city_latlong_map):
+    if not city_latlong_map:
+        return {
+            'New Westminster':  Point(-122.910956, 49.205718),
+            'Coquitlam':        Point(-122.793206, 49.283763),
+            'Vancouver':        Point(-123.120738, 49.282729),
+            'Delta':            Point(-123.026476, 49.095216),
+        }
+    return city_latlong_map
 
 
-def read_csv_to_city_latlong_dictionary(csv_path):
+def parse_csv(csv_path):
     with open(csv_path, mode='r') as file:
         csv_reader = csv.reader(file)
         city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}

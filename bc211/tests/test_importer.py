@@ -30,21 +30,24 @@ class LocationImportTests(TestCase):
         records = read_records_from_file(file)
         save_records_to_database(records, ImportCounters())
         all_records_from_database = Location.objects.all()
-        vancouver_address = {
+        self.city_address_with_latlong = {
             'city': 'Vancouver',
             'country': 'CA',
             'address_type_id': 'physical_address',
             'point': Point(-123.120738, 49.282729)
         }
-        fake_address = {
+        self.city_address_without_latlong = {
             'city': a_string(),
             'country': 'CA',
             'address_type_id': 'physical_address',
             'point': None
         }
-        self.vancouver_address = vancouver_address
-        self.fake_address = fake_address
-        self.dictionary = DefaultDictionary.test_dictionary
+        self.city_latlong_map = {
+            'New Westminster':  Point(-122.910956, 49.205718),
+            'Coquitlam':        Point(-122.793206, 49.283763),
+            'Vancouver':        Point(-123.120738, 49.282729),
+            'Delta':            Point(-123.026476, 49.095216),
+        }
         self.location = all_records_from_database[0]
 
     def test_can_import_name(self):
@@ -62,27 +65,26 @@ class LocationImportTests(TestCase):
     def test_can_replace_missing_lat_long_with_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).with_point(None).create()
-        self.assertAlmostEqual(location.point, None)
         address_dto = dtos.Address(location_id=location.id,
-                                   address_type_id=self.vancouver_address['address_type_id'],
-                                   city=self.vancouver_address['city'], country=self.vancouver_address['country'],
+                                   address_type_id=self.city_address_with_latlong['address_type_id'],
+                                   city=self.city_address_with_latlong['city'], country=self.city_address_with_latlong['country'],
                                    address_lines=a_string(),
                                    state_province=a_string(), postal_code=a_string())
-        create_address_for_location(location, address_dto, self.dictionary, ImportCounters())
-        self.assertAlmostEqual(location.point.y, self.vancouver_address['point'].y)
-        self.assertAlmostEqual(location.point.x, self.vancouver_address['point'].x)
+        create_address_for_location(location, address_dto, self.city_latlong_map, ImportCounters())
+        self.assertAlmostEqual(location.point.y, self.city_address_with_latlong['point'].y)
+        self.assertAlmostEqual(location.point.x, self.city_address_with_latlong['point'].x)
 
     def test_no_lat_long_or_city(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).with_point(None).create()
         self.assertAlmostEqual(location.point, None)
         address_dto = dtos.Address(location_id=location.id,
-                                   address_type_id=self.fake_address['address_type_id'],
-                                   city=self.fake_address['city'], country=self.fake_address['country'],
+                                   address_type_id=self.city_address_without_latlong['address_type_id'],
+                                   city=self.city_address_without_latlong['city'], country=self.city_address_without_latlong['country'],
                                    address_lines=a_string(),
                                    state_province=a_string(), postal_code=a_string())
-        create_address_for_location(location, address_dto, self.dictionary, ImportCounters())
-        self.assertAlmostEqual(location.point, self.fake_address['point'])
+        create_address_for_location(location, address_dto, self.city_latlong_map, ImportCounters())
+        self.assertAlmostEqual(location.point, self.city_address_without_latlong['point'])
 
 
 class InactiveDataImportTests(TestCase):
