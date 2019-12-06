@@ -3,7 +3,6 @@ from bc211 import dtos
 from bc211.importer import save_records_to_database, save_locations, save_services, create_address_for_location
 from bc211.parser import read_records_from_file
 from bc211.import_counters import ImportCounters
-from bc211.tests.helpers import DefaultDictionary
 from common.testhelpers.random_test_values import a_string
 from django.contrib.gis.geos import Point
 from django.test import TestCase

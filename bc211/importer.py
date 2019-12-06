@@ -9,7 +9,6 @@ from human_services.addresses.models import Address, AddressType
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from taxonomies.models import TaxonomyTerm
 from bc211.exceptions import XmlParseException
-from bc211.tests.helpers import DefaultDictionary
 
 LOGGER = logging.getLogger(__name__)
 
