@@ -1,6 +1,6 @@
 import logging
 from bc211 import dtos
-from bc211.importer import save_records_to_database, save_locations, save_services, create_address_for_location
+from bc211.importer import save_records_to_database, save_locations, save_services
 from bc211.parser import read_records_from_file
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
@@ -63,27 +63,30 @@ class LocationImportTests(TestCase):
 
     def test_can_replace_missing_lat_long_with_city_lat_long(self):
         organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).with_point(None).create()
-        address_dto = dtos.Address(location_id=location.id,
+        location_id = a_string()
+        address_dto = dtos.Address(location_id=location_id,
                                    address_type_id=self.city_address_with_latlong['address_type_id'],
                                    city=self.city_address_with_latlong['city'], country=self.city_address_with_latlong['country'],
                                    address_lines=a_string(),
                                    state_province=a_string(), postal_code=a_string())
-        create_address_for_location(location, address_dto, self.city_latlong_map, ImportCounters())
-        self.assertAlmostEqual(location.point.y, self.city_address_with_latlong['point'].y)
-        self.assertAlmostEqual(location.point.x, self.city_address_with_latlong['point'].x)
+        location_dto = LocationBuilder(organization).with_id(location_id).with_point(
+            None).with_physical_address(address_dto).build_dto()
+        save_locations([location_dto], self.city_latlong_map, ImportCounters())
+        self.assertAlmostEqual(location_dto.spatial_location.latitude, self.city_address_with_latlong['point'].y)
+        self.assertAlmostEqual(location_dto.spatial_location.longitude, self.city_address_with_latlong['point'].x)
 
     def test_no_lat_long_or_city(self):
         organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).with_point(None).create()
-        self.assertAlmostEqual(location.point, None)
-        address_dto = dtos.Address(location_id=location.id,
+        location_id = a_string()
+        address_dto = dtos.Address(location_id=location_id,
                                    address_type_id=self.city_address_without_latlong['address_type_id'],
                                    city=self.city_address_without_latlong['city'], country=self.city_address_without_latlong['country'],
                                    address_lines=a_string(),
                                    state_province=a_string(), postal_code=a_string())
-        create_address_for_location(location, address_dto, self.city_latlong_map, ImportCounters())
-        self.assertAlmostEqual(location.point, self.city_address_without_latlong['point'])
+        location_dto = LocationBuilder(organization).with_id(location_id).with_point(
+            None).with_physical_address(address_dto).build_dto()
+        save_locations([location_dto], self.city_latlong_map, ImportCounters())
+        self.assertEqual(location_dto.spatial_location, self.city_address_without_latlong['point'])
 
 
 class InactiveDataImportTests(TestCase):
@@ -118,7 +121,7 @@ class InactiveDataImportTests(TestCase):
         inactive_location = LocationBuilder(organization).with_description(inactive_description).build_dto()
         active_location = LocationBuilder(organization).build_dto()
 
-        save_locations([inactive_location, active_location], None, ImportCounters())
+        save_locations([inactive_location, active_location], {}, ImportCounters())
         all_records_from_database = Location.objects.all()
 
         self.assertEqual(len(all_records_from_database), 1)

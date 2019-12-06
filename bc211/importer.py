@@ -1,5 +1,6 @@
 import logging
 import csv
+from bc211 import dtos
 from django.utils import translation
 from django.contrib.gis.geos import Point
 from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
@@ -11,6 +12,13 @@ from taxonomies.models import TaxonomyTerm
 from bc211.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
+
+
+def parse_csv(csv_path):
+    with open(csv_path, mode='r') as file:
+        csv_reader = csv.reader(file)
+        city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
+        return city_to_latlong
 
 
 def save_records_to_database(organizations, counters):
@@ -57,19 +65,48 @@ def save_locations(locations, city_latlong_map, counters):
     for location in locations:
         if is_inactive(location):
             continue
-        active_record = build_location_active_record(location)
-        validated_city_latlong_map = validate_city_latlong_map(city_latlong_map)
+        valid_location = validate_latlong_on_location(location, city_latlong_map)
+        active_record = build_location_active_record(valid_location)
         active_record.save()
         counters.count_location()
         LOGGER.debug('Location "%s" "%s"', location.id, location.name)
         if location.services:
             save_services(location.services, counters)
         if location.physical_address:
-            create_address_for_location(active_record, location.physical_address, validated_city_latlong_map, counters)
+            create_address_for_location(active_record, location.physical_address, counters)
         if location.postal_address:
-            create_address_for_location(active_record, location.postal_address, validated_city_latlong_map, counters)
+            create_address_for_location(active_record, location.postal_address, counters)
         if location.phone_numbers:
             create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
+
+
+def validate_latlong_on_location(location_dto, city_latlong_map):
+    validated_city_latlong_map = validate_city_latlong_map(city_latlong_map)
+    location_dto_no_latlong = location_dto.spatial_location is None
+    location_has_physical_address = location_dto.physical_address is not None
+    if location_dto_no_latlong and location_has_physical_address:
+        if location_dto.physical_address.city in validated_city_latlong_map:
+            replacement_point = validated_city_latlong_map[location_dto.physical_address.city]
+            replacement_spatial_location = dtos.SpatialLocation(
+                latitude=replacement_point.y,
+                longitude=replacement_point.x
+            )
+            location_dto.spatial_location = replacement_spatial_location
+        else:
+            LOGGER.warning('Location with id "%s" does not have city to fall back on for LatLong info',
+                           location_dto.id)
+    return location_dto
+
+
+def validate_city_latlong_map(city_latlong_map):
+    if not city_latlong_map:
+        return {
+            'New Westminster':  Point(-122.910956, 49.205718),
+            'Coquitlam':        Point(-122.793206, 49.283763),
+            'Vancouver':        Point(-123.120738, 49.282729),
+            'Delta':            Point(-123.026476, 49.095216),
+        }
+    return city_latlong_map
 
 
 def is_inactive(record):
@@ -149,39 +186,14 @@ def create_taxonomy_term_active_record(record, counters):
     return taxonomy_term_active_record
 
 
-def create_address_for_location(location, address_dto, city_latlong_map, counters):
+def create_address_for_location(location, address_dto, counters):
     address = create_address(address_dto, counters)
     address_type = AddressType.objects.get(pk=address_dto.address_type_id)
-    if location.point is None:
-        if address.city in city_latlong_map:
-            location.point = city_latlong_map[address.city]
-            location.save()
-        else:
-            LOGGER.debug('Location with id "%s" does not have city to fall back on for LatLong info',
-                         location.id)
     create_location_address(
         location,
         address,
         address_type
     )
-
-
-def validate_city_latlong_map(city_latlong_map):
-    if not city_latlong_map:
-        return {
-            'New Westminster':  Point(-122.910956, 49.205718),
-            'Coquitlam':        Point(-122.793206, 49.283763),
-            'Vancouver':        Point(-123.120738, 49.282729),
-            'Delta':            Point(-123.026476, 49.095216),
-        }
-    return city_latlong_map
-
-
-def parse_csv(csv_path):
-    with open(csv_path, mode='r') as file:
-        csv_reader = csv.reader(file)
-        city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
-        return city_to_latlong
 
 
 def create_address(address_dto, counters):
