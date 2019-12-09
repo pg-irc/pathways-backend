@@ -23,7 +23,7 @@ def parse_csv(csv_path):
 
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
-        save_organization(organization, None, counters)
+        save_organization(organization, {}, counters)
 
 
 def save_organization(organization, city_latlong_map, counters):
@@ -81,32 +81,23 @@ def save_locations(locations, city_latlong_map, counters):
 
 
 def validate_latlong_on_location(location_dto, city_latlong_map):
-    validated_city_latlong_map = validate_city_latlong_map(city_latlong_map)
-    location_dto_no_latlong = location_dto.spatial_location is None
-    location_has_physical_address = location_dto.physical_address is not None
-    if location_dto_no_latlong and location_has_physical_address:
-        if location_dto.physical_address.city in validated_city_latlong_map:
-            replacement_point = validated_city_latlong_map[location_dto.physical_address.city]
-            replacement_spatial_location = dtos.SpatialLocation(
-                latitude=replacement_point.y,
-                longitude=replacement_point.x
-            )
-            location_dto.spatial_location = replacement_spatial_location
-        else:
-            LOGGER.warning('Location with id "%s" does not have city to fall back on for LatLong info',
-                           location_dto.id)
+    if location_dto.spatial_location is not None:
+        return location_dto
+    if location_dto.physical_address is None:
+        LOGGER.warning('Location with id "%s" does not have LatLong or physical address',
+                       location_dto.id)
+        return location_dto
+    if location_dto.physical_address.city in city_latlong_map:
+        replacement_point = city_latlong_map[location_dto.physical_address.city]
+        replacement_spatial_location = dtos.SpatialLocation(
+            latitude=replacement_point.y,
+            longitude=replacement_point.x
+        )
+        location_dto.spatial_location = replacement_spatial_location
+        return location_dto
+    LOGGER.warning('Location with id "%s" does not have city to fall back on for LatLong info',
+                   location_dto.id)
     return location_dto
-
-
-def validate_city_latlong_map(city_latlong_map):
-    if not city_latlong_map:
-        return {
-            'New Westminster':  Point(-122.910956, 49.205718),
-            'Coquitlam':        Point(-122.793206, 49.283763),
-            'Vancouver':        Point(-123.120738, 49.282729),
-            'Delta':            Point(-123.026476, 49.095216),
-        }
-    return city_latlong_map
 
 
 def is_inactive(record):

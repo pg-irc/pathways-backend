@@ -13,6 +13,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.models import Service
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.addresses.models import Address, AddressType
+from human_services.addresses.tests.helpers import AddressBuilder
 from taxonomies.models import TaxonomyTerm
 
 logging.disable(logging.ERROR)
@@ -62,30 +63,24 @@ class LocationImportTests(TestCase):
     def test_can_replace_missing_lat_long_with_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
-        address_dto = dtos.Address(location_id=location_id,
-                                   address_type_id=self.city_address_with_latlong['address_type_id'],
-                                   city=self.city_address_with_latlong['city'], country=self.city_address_with_latlong['country'],
-                                   address_lines=a_string(),
-                                   state_province=a_string(), postal_code=a_string())
-        location_dto = LocationBuilder(organization).with_id(location_id).with_point(
-            None).with_physical_address(address_dto).build_dto()
-        save_locations([location_dto], self.city_latlong_map, ImportCounters())
+        address_dto_with_city_fallback = AddressBuilder().with_city(self.city_address_with_latlong['city']).build_dto(
+            self.city_address_with_latlong['address_type_id'], location_id)
+        location_dto_with_fallback = LocationBuilder(organization).with_id(location_id).with_point(
+            None).with_physical_address(address_dto_with_city_fallback).build_dto()
+        save_locations([location_dto_with_fallback], self.city_latlong_map, ImportCounters())
         expected_point = self.city_latlong_map[self.city_address_with_latlong['city']]
-        self.assertAlmostEqual(location_dto.spatial_location.latitude, expected_point.y)
-        self.assertAlmostEqual(location_dto.spatial_location.longitude, expected_point.x)
+        self.assertAlmostEqual(location_dto_with_fallback.spatial_location.latitude, expected_point.y)
+        self.assertAlmostEqual(location_dto_with_fallback.spatial_location.longitude, expected_point.x)
 
     def test_no_lat_long_or_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
-        address_dto = dtos.Address(location_id=location_id,
-                                   address_type_id=self.city_address_without_latlong['address_type_id'],
-                                   city=self.city_address_without_latlong['city'], country=self.city_address_without_latlong['country'],
-                                   address_lines=a_string(),
-                                   state_province=a_string(), postal_code=a_string())
-        location_dto = LocationBuilder(organization).with_id(location_id).with_point(
-            None).with_physical_address(address_dto).build_dto()
-        save_locations([location_dto], self.city_latlong_map, ImportCounters())
-        self.assertEqual(location_dto.spatial_location, None)
+        address_dto_no_city_fallback = AddressBuilder().with_city(self.city_address_without_latlong['city']).build_dto(
+            self.city_address_without_latlong['address_type_id'], location_id)
+        location_dto_no_fallback = LocationBuilder(organization).with_id(location_id).with_point(
+            None).with_physical_address(address_dto_no_city_fallback).build_dto()
+        save_locations([location_dto_no_fallback], self.city_latlong_map, ImportCounters())
+        self.assertEqual(location_dto_no_fallback.spatial_location, None)
 
 
 class InactiveDataImportTests(TestCase):

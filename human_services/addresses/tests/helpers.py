@@ -1,6 +1,8 @@
 import string
+from bc211 import dtos
 from human_services.addresses import models
 from common.testhelpers.random_test_values import a_string
+
 
 class AddressBuilder:
     def __init__(self):
@@ -20,6 +22,15 @@ class AddressBuilder:
         result.state_province = self.state_province
         result.postal_code = self.postal_code
         return result
+
+    def build_dto(self, address_type, location_id):
+        return dtos.Address(location_id=location_id,
+                            address_type_id=address_type,
+                            city=self.city,
+                            country=self.country,
+                            address_lines=self.address,
+                            state_province=self.state_province,
+                            postal_code=self.postal_code)
 
     def with_address(self, address):
         self.address = address
