@@ -32,14 +32,12 @@ class LocationImportTests(TestCase):
         self.city_address_with_latlong = {
             'city': 'Vancouver',
             'country': 'CA',
-            'address_type_id': 'physical_address',
-            'point': Point(-123.120738, 49.282729)
+            'address_type_id': 'physical_address'
         }
         self.city_address_without_latlong = {
             'city': a_string(),
             'country': 'CA',
-            'address_type_id': 'physical_address',
-            'point': None
+            'address_type_id': 'physical_address'
         }
         self.city_latlong_map = {
             'New Westminster':  Point(-122.910956, 49.205718),
@@ -72,10 +70,11 @@ class LocationImportTests(TestCase):
         location_dto = LocationBuilder(organization).with_id(location_id).with_point(
             None).with_physical_address(address_dto).build_dto()
         save_locations([location_dto], self.city_latlong_map, ImportCounters())
-        self.assertAlmostEqual(location_dto.spatial_location.latitude, self.city_address_with_latlong['point'].y)
-        self.assertAlmostEqual(location_dto.spatial_location.longitude, self.city_address_with_latlong['point'].x)
+        expected_point = self.city_latlong_map[self.city_address_with_latlong['city']]
+        self.assertAlmostEqual(location_dto.spatial_location.latitude, expected_point.y)
+        self.assertAlmostEqual(location_dto.spatial_location.longitude, expected_point.x)
 
-    def test_no_lat_long_or_city(self):
+    def test_no_lat_long_or_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
         address_dto = dtos.Address(location_id=location_id,
@@ -86,7 +85,7 @@ class LocationImportTests(TestCase):
         location_dto = LocationBuilder(organization).with_id(location_id).with_point(
             None).with_physical_address(address_dto).build_dto()
         save_locations([location_dto], self.city_latlong_map, ImportCounters())
-        self.assertEqual(location_dto.spatial_location, self.city_address_without_latlong['point'])
+        self.assertEqual(location_dto.spatial_location, None)
 
 
 class InactiveDataImportTests(TestCase):
