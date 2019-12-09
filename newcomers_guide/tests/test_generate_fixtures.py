@@ -13,7 +13,7 @@ class GenerateFixtureTest(TestCase):
         data = {
             'taskMap': {
                 'To_learn_english': {
-                    'completed': False,
+                    'isNewlyRecommended': False,
                     'id': 'To_learn_english',
                     'title': {
                         'en': 'Learn_english'
@@ -34,11 +34,11 @@ class GenerateFixtureTest(TestCase):
                     '        savedTopicsList: [],\n'
                     '        topicMap: {\n'
                     '            "To_learn_english": {\n'
-                    '                "completed": false,\n'
                     '                "description": {\n'
                     '                    "en": "the content in English"\n'
                     '                },\n'
                     '                "id": "To_learn_english",\n'
+                    '                "isNewlyRecommended": false,\n'
                     '                "title": {\n'
                     '                    "en": "Learn_english"\n'
                     '                }\n'
