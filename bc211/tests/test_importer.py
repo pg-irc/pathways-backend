@@ -51,60 +51,44 @@ class LocationWithMissingLatLongImportTests(TestCase):
         records = read_records_from_file(file)
         save_records_to_database(records, ImportCounters())
         all_records_from_database = Location.objects.all()
-        self.city_address_with_latlong = {
-            'city': 'Vancouver',
-            'country': 'CA',
-            'address_type_id': 'physical_address'
-        }
-        self.city_address_without_latlong = {
-            'city': a_string(),
-            'country': 'CA',
-            'address_type_id': 'physical_address'
-        }
-        self.city_latlong_map = {
-            'New Westminster':  Point(-122.910956, 49.205718),
-            'Coquitlam':        Point(-122.793206, 49.283763),
-            'Vancouver':        Point(-123.120738, 49.282729),
-            'Delta':            Point(-123.026476, 49.095216),
-        }
         self.location = all_records_from_database[0]
 
     def test_can_replace_missing_lat_long_with_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
-        address_dto_with_city_fallback = (AddressBuilder().
-                                          with_city(self.city_address_with_latlong['city']).
-                                          with_address_type('physical_address').
-                                          with_location_id(location_id).
-                                          build_dto())
-        location_dto_with_fallback = (LocationBuilder(organization).
-                                      with_id(location_id).
-                                      with_point(None).
-                                      with_physical_address(address_dto_with_city_fallback).
-                                      build_dto())
+        address_in_vancouver = (AddressBuilder().
+                                with_city('Vancouver').
+                                with_address_type('physical_address').
+                                with_location_id(location_id).
+                                build_dto())
+        location_without_latlong = (LocationBuilder(organization).
+                                    with_id(location_id).
+                                    with_point(None).
+                                    with_physical_address(address_in_vancouver).
+                                    build_dto())
 
-        save_locations([location_dto_with_fallback], self.city_latlong_map, ImportCounters())
-        expected_point = self.city_latlong_map[self.city_address_with_latlong['city']]
+        save_locations([location_without_latlong], {'Vancouver': Point(-123.120738, 49.282729)}, ImportCounters())
 
-        self.assertAlmostEqual(location_dto_with_fallback.spatial_location.latitude, expected_point.y)
-        self.assertAlmostEqual(location_dto_with_fallback.spatial_location.longitude, expected_point.x)
+        self.assertAlmostEqual(location_without_latlong.spatial_location.latitude, 49.282729)
+        self.assertAlmostEqual(location_without_latlong.spatial_location.longitude, -123.120738)
 
     def test_no_lat_long_or_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
-        address_dto_no_city_fallback = (AddressBuilder().
-                                        with_city(self.city_address_without_latlong['city']).
-                                        with_address_type('physical_address').
-                                        with_location_id(location_id).
-                                        build_dto())
-        location_dto_no_fallback = (LocationBuilder(organization).
+        address_in_vancouver = (AddressBuilder().
+                                with_city('Vancouver').
+                                with_address_type('physical_address').
+                                with_location_id(location_id).
+                                build_dto())
+        location_without_latlong = (LocationBuilder(organization).
                                     with_id(location_id).
                                     with_point(None).
-                                    with_physical_address(address_dto_no_city_fallback).
+                                    with_physical_address(address_in_vancouver).
                                     build_dto())
-        save_locations([location_dto_no_fallback], self.city_latlong_map, ImportCounters())
 
-        self.assertEqual(location_dto_no_fallback.spatial_location, None)
+        save_locations([location_without_latlong], {}, ImportCounters())
+
+        self.assertEqual(location_without_latlong.spatial_location, None)
 
 
 class InactiveDataImportTests(TestCase):
