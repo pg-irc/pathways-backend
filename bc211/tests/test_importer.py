@@ -63,8 +63,11 @@ class LocationImportTests(TestCase):
     def test_can_replace_missing_lat_long_with_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
-        address_dto_with_city_fallback = AddressBuilder().with_city(self.city_address_with_latlong['city']).build_dto(
-            self.city_address_with_latlong['address_type_id'], location_id)
+        address_dto_with_city_fallback = (AddressBuilder().
+                                          with_city(self.city_address_with_latlong['city']).
+                                          with_address_type('physical_address').
+                                          with_location_id(location_id).
+                                          build_dto())
         location_dto_with_fallback = LocationBuilder(organization).with_id(location_id).with_point(
             None).with_physical_address(address_dto_with_city_fallback).build_dto()
         save_locations([location_dto_with_fallback], self.city_latlong_map, ImportCounters())
@@ -75,8 +78,11 @@ class LocationImportTests(TestCase):
     def test_no_lat_long_or_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
-        address_dto_no_city_fallback = AddressBuilder().with_city(self.city_address_without_latlong['city']).build_dto(
-            self.city_address_without_latlong['address_type_id'], location_id)
+        address_dto_no_city_fallback = (AddressBuilder().
+                                        with_city(self.city_address_without_latlong['city']).
+                                        with_address_type('physical_address').
+                                        with_location_id(location_id).
+                                        build_dto())
         location_dto_no_fallback = LocationBuilder(organization).with_id(location_id).with_point(
             None).with_physical_address(address_dto_no_city_fallback).build_dto()
         save_locations([location_dto_no_fallback], self.city_latlong_map, ImportCounters())

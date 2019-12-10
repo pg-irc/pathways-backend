@@ -12,6 +12,8 @@ class AddressBuilder:
         self.attention = a_string()
         self.state_province = a_string()
         self.postal_code = a_string()
+        self.address_type = ''
+        self.location_id = None
 
     def build(self):
         result = models.Address()
@@ -23,14 +25,22 @@ class AddressBuilder:
         result.postal_code = self.postal_code
         return result
 
-    def build_dto(self, address_type, location_id):
-        return dtos.Address(location_id=location_id,
-                            address_type_id=address_type,
+    def build_dto(self):
+        return dtos.Address(location_id=self.location_id,
+                            address_type_id=self.address_type,
                             city=self.city,
                             country=self.country,
                             address_lines=self.address,
                             state_province=self.state_province,
                             postal_code=self.postal_code)
+
+    def with_location_id(self, id):
+        self.location_id = id
+        return self
+
+    def with_address_type(self, type):
+        self.address_type = type
+        return self
 
     def with_address(self, address):
         self.address = address
