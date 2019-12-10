@@ -30,6 +30,27 @@ class LocationImportTests(TestCase):
         records = read_records_from_file(file)
         save_records_to_database(records, ImportCounters())
         all_records_from_database = Location.objects.all()
+        self.location = all_records_from_database[0]
+
+    def test_can_import_name(self):
+        self.assertEqual(self.location.name, 'Langley Child Development Centre')
+
+    def test_can_import_description(self):
+        self.assertEqual(self.location.description[:30], 'Provides inclusive, family-cen')
+
+    def test_can_import_latitude(self):
+        self.assertAlmostEqual(self.location.point.y, 49.087284)
+
+    def test_can_import_longitude(self):
+        self.assertAlmostEqual(self.location.point.x, -122.607918)
+
+
+class LocationWithMissingLatLongImportTests(TestCase):
+    def setUp(self):
+        file = open(ONE_AGENCY_FIXTURE, 'r')
+        records = read_records_from_file(file)
+        save_records_to_database(records, ImportCounters())
+        all_records_from_database = Location.objects.all()
         self.city_address_with_latlong = {
             'city': 'Vancouver',
             'country': 'CA',
@@ -48,18 +69,6 @@ class LocationImportTests(TestCase):
         }
         self.location = all_records_from_database[0]
 
-    def test_can_import_name(self):
-        self.assertEqual(self.location.name, 'Langley Child Development Centre')
-
-    def test_can_import_description(self):
-        self.assertEqual(self.location.description[:30], 'Provides inclusive, family-cen')
-
-    def test_can_import_latitude(self):
-        self.assertAlmostEqual(self.location.point.y, 49.087284)
-
-    def test_can_import_longitude(self):
-        self.assertAlmostEqual(self.location.point.x, -122.607918)
-
     def test_can_replace_missing_lat_long_with_city_lat_long(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
@@ -68,10 +77,15 @@ class LocationImportTests(TestCase):
                                           with_address_type('physical_address').
                                           with_location_id(location_id).
                                           build_dto())
-        location_dto_with_fallback = LocationBuilder(organization).with_id(location_id).with_point(
-            None).with_physical_address(address_dto_with_city_fallback).build_dto()
+        location_dto_with_fallback = (LocationBuilder(organization).
+                                      with_id(location_id).
+                                      with_point(None).
+                                      with_physical_address(address_dto_with_city_fallback).
+                                      build_dto())
+
         save_locations([location_dto_with_fallback], self.city_latlong_map, ImportCounters())
         expected_point = self.city_latlong_map[self.city_address_with_latlong['city']]
+
         self.assertAlmostEqual(location_dto_with_fallback.spatial_location.latitude, expected_point.y)
         self.assertAlmostEqual(location_dto_with_fallback.spatial_location.longitude, expected_point.x)
 
@@ -83,9 +97,13 @@ class LocationImportTests(TestCase):
                                         with_address_type('physical_address').
                                         with_location_id(location_id).
                                         build_dto())
-        location_dto_no_fallback = LocationBuilder(organization).with_id(location_id).with_point(
-            None).with_physical_address(address_dto_no_city_fallback).build_dto()
+        location_dto_no_fallback = (LocationBuilder(organization).
+                                    with_id(location_id).
+                                    with_point(None).
+                                    with_physical_address(address_dto_no_city_fallback).
+                                    build_dto())
         save_locations([location_dto_no_fallback], self.city_latlong_map, ImportCounters())
+
         self.assertEqual(location_dto_no_fallback.spatial_location, None)
 
 
