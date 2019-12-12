@@ -1,8 +1,10 @@
 import logging
+from bc211 import dtos
 from bc211.importer import save_records_to_database, save_locations, save_services
 from bc211.parser import read_records_from_file
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
+from django.contrib.gis.geos import Point
 from django.test import TestCase
 from human_services.locations.models import Location
 from human_services.locations.tests.helpers import LocationBuilder
@@ -11,6 +13,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.models import Service
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.addresses.models import Address, AddressType
+from human_services.addresses.tests.helpers import AddressBuilder
 from taxonomies.models import TaxonomyTerm
 
 logging.disable(logging.ERROR)
@@ -42,6 +45,52 @@ class LocationImportTests(TestCase):
         self.assertAlmostEqual(self.location.point.x, -122.607918)
 
 
+class LocationWithMissingLatLongImportTests(TestCase):
+    def setUp(self):
+        file = open(ONE_AGENCY_FIXTURE, 'r')
+        records = read_records_from_file(file)
+        save_records_to_database(records, ImportCounters())
+        all_records_from_database = Location.objects.all()
+        self.location = all_records_from_database[0]
+
+    def test_can_replace_missing_lat_long_with_city_lat_long(self):
+        organization = OrganizationBuilder().create()
+        location_id = a_string()
+        address_in_vancouver = (AddressBuilder().
+                                with_city('Vancouver').
+                                with_address_type('physical_address').
+                                with_location_id(location_id).
+                                build_dto())
+        location_without_latlong = (LocationBuilder(organization).
+                                    with_id(location_id).
+                                    with_point(None).
+                                    with_physical_address(address_in_vancouver).
+                                    build_dto())
+
+        save_locations([location_without_latlong], {'Vancouver': Point(-123.120738, 49.282729)}, ImportCounters())
+
+        self.assertAlmostEqual(location_without_latlong.spatial_location.latitude, 49.282729)
+        self.assertAlmostEqual(location_without_latlong.spatial_location.longitude, -123.120738)
+
+    def test_no_lat_long_or_city_lat_long(self):
+        organization = OrganizationBuilder().create()
+        location_id = a_string()
+        address_in_vancouver = (AddressBuilder().
+                                with_city('Vancouver').
+                                with_address_type('physical_address').
+                                with_location_id(location_id).
+                                build_dto())
+        location_without_latlong = (LocationBuilder(organization).
+                                    with_id(location_id).
+                                    with_point(None).
+                                    with_physical_address(address_in_vancouver).
+                                    build_dto())
+
+        save_locations([location_without_latlong], {}, ImportCounters())
+
+        self.assertEqual(location_without_latlong.spatial_location, None)
+
+
 class InactiveDataImportTests(TestCase):
 
     def test_do_not_import_inactive_organization_prefixed_with_DEL(self):
@@ -60,11 +109,11 @@ class InactiveDataImportTests(TestCase):
         inactive_description = '\tDEL ' + a_string()
         inactive_organization = OrganizationBuilder().with_description(inactive_description).build_dto()
         active_organization = OrganizationBuilder().build_dto()
-    
+
         organizations = iter([inactive_organization, active_organization])
         save_records_to_database(organizations, ImportCounters())
         all_records_from_database = Organization.objects.all()
-    
+
         self.assertEqual(len(all_records_from_database), 1)
         self.assertEqual(all_records_from_database[0].id, active_organization.id)
 
@@ -74,7 +123,7 @@ class InactiveDataImportTests(TestCase):
         inactive_location = LocationBuilder(organization).with_description(inactive_description).build_dto()
         active_location = LocationBuilder(organization).build_dto()
 
-        save_locations([inactive_location, active_location], ImportCounters())
+        save_locations([inactive_location, active_location], {}, ImportCounters())
         all_records_from_database = Location.objects.all()
 
         self.assertEqual(len(all_records_from_database), 1)
