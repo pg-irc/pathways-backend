@@ -300,7 +300,7 @@ import the same data into the database, hence it makese sense to build it on the
 Prepare the Newcomers Guide content as documented elsewhere. Convert the content from its plain Unicode text
 format to typescripts suitable for compiling into the client using the following server command:
 
-    ./manage.py import_newcomers_guide path/to/newcomers/guide/content
+    ./manage.py generate_client_fixtures path/to/newcomers/guide/content
 
 This produces a number of typescript files in the working directory. Move these files into the client
 folder structure
