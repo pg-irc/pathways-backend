@@ -72,7 +72,11 @@ def send_push_notifications(users, localized_notifications):
         token = user['token']
         locale = user['locale']
         message = localized_notifications[locale]
-        send_push_message(token, message)
+        extra = {
+            'navigateToRoute': '/questionnaire'
+            # 'navigateToRoute': '/questionnaire'  # buying-a-new-or-used-vehicle-car-or-truck
+        }
+        send_push_message(token, message, extra)
 
 
 def send_push_message(token, message, extra=None):
