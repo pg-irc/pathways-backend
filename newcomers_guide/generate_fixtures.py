@@ -10,7 +10,7 @@ def generate_topic_fixture(tasks):
               '\n'
               'export const buildTasksFixture = (): ValidTopicStore => {\n'
               '    return new ValidTopicStore({\n'
-              '        savedTopicsList: [],\n')
+              '        bookmarkedTopics: [],\n')
 
     footer = ('    });\n'
               '};')

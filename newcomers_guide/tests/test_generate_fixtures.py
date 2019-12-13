@@ -31,7 +31,7 @@ class GenerateFixtureTest(TestCase):
                     '\n'
                     'export const buildTasksFixture = (): ValidTopicStore => {\n'
                     '    return new ValidTopicStore({\n'
-                    '        savedTopicsList: [],\n'
+                    '        bookmarkedTopics: [],\n'
                     '        topicMap: {\n'
                     '            "To_learn_english": {\n'
                     '                "description": {\n'
