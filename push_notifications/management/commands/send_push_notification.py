@@ -24,7 +24,9 @@ class Command(BaseCommand):
         parser.add_argument('url',
                             metavar='url',
                             nargs='?',
-                            help=('optional url to route to in the app, can be "store", "welcome" or "/task/<task id>"'),
+                            help=('optional url to route to in the app, can be "store", "welcome" or '
+                                  '"/task/<task id>". "store" is disabled and doesn\'t do anything until '
+                                  'we decide what the UX should be around that.'),
                             default=None)
 
     def handle(self, *args, **options):
