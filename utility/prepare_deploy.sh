@@ -9,7 +9,7 @@ while (( "$#" )); do
     then
         BC211Path=$2
         shift 2
-    elif [ "$1" == "--city_latlongs" ]
+    elif [ "$1" == "--cityLatLongs" ]
     then
         LatlongReplacements=$2
         shift 2
@@ -44,7 +44,7 @@ usage() {
     echo "    --bc211Path"
     echo "                The path to the BC211 data set in XML iCarol format."
     echo
-    echo "    --city_latlongs"
+    echo "    --cityLatLongs"
     echo "                The path to the city and latlong dictionary in CSV format."
     echo
     echo "    --newComersGuidePath"
@@ -146,7 +146,7 @@ checkForSuccess "reset database"
 checkForSuccess "migrate database"
 
 echo "importing BC-211 data ..."
-./manage.py import_bc211_data $BC211Path --city_latlongs $LatlongReplacements
+./manage.py import_bc211_data $BC211Path --cityLatLongs $LatlongReplacements
 checkForSuccess "import BC211 data into the database"
 
 ./manage.py import_newcomers_guide $NewcomersGuidePath
