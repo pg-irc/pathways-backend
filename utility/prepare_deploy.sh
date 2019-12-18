@@ -11,7 +11,7 @@ while (( "$#" )); do
         shift 2
     elif [ "$1" == "--cityLatLongs" ]
     then
-        LatlongReplacements=$2
+        CityLatLongs=$2
         shift 2
     elif [ "$1" == "--newComersGuidePath" ]
     then
@@ -112,7 +112,7 @@ validateOutputFile () {
 
 validateFilePath "$BC211Path" "BC 211 data"
 
-validateFilePath "$LatlongReplacements" "Latlong Replacement file"
+validateFilePath "$CityLatLongs" "Latlong Replacement file"
 
 validateNewcomersGuidePath
 
@@ -122,7 +122,7 @@ validateOutputFile
 
 echo "About to reinitialize database with data from:"
 echo "BC211 data at:                $BC211Path"
-echo "Latlong replacement file at:  $LatlongReplacements"
+echo "Latlong replacement file at:  $CityLatLongs"
 echo "Newcomers data at:            $NewcomersGuidePath"
 echo "Manual recommendations:       $ManualRecommendations"
 echo "Output file:                  $OutputFile"
@@ -146,7 +146,7 @@ checkForSuccess "reset database"
 checkForSuccess "migrate database"
 
 echo "importing BC-211 data ..."
-./manage.py import_bc211_data $BC211Path --cityLatLongs $LatlongReplacements
+./manage.py import_bc211_data $BC211Path --cityLatLongs $CityLatLongs
 checkForSuccess "import BC211 data into the database"
 
 ./manage.py import_newcomers_guide $NewcomersGuidePath
