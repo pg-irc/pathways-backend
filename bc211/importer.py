@@ -110,8 +110,7 @@ def is_inactive(record):
 
 
 def build_location_active_record(record):
-    active_record = Location()
-    active_record.id = record.id
+    active_record = get_or_create_location_active_record(record.id)
     active_record.name = record.name
     active_record.organization_id = record.organization_id
     has_location = record.spatial_location is not None
@@ -119,6 +118,14 @@ def build_location_active_record(record):
         active_record.point = Point(record.spatial_location.longitude, record.spatial_location.latitude)
     active_record.description = record.description
     return active_record
+
+
+def get_or_create_location_active_record(pk):
+    if Location.objects.filter(id=pk).exists():
+        return Location.objects.get(id=pk)
+    record = Location()
+    record.id = pk
+    return record
 
 
 def build_service_active_record(record):
