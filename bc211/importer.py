@@ -66,18 +66,22 @@ def save_locations(locations, city_latlong_map, counters):
         if is_inactive(location):
             continue
         valid_location = validate_latlong_on_location(location, city_latlong_map)
-        active_record = build_location_active_record(valid_location)
-        active_record.save()
-        counters.count_location()
-        LOGGER.debug('Location "%s" "%s"', location.id, location.name)
-        if location.services:
-            save_services(location.services, counters)
-        if location.physical_address:
-            create_address_for_location(active_record, location.physical_address, counters)
-        if location.postal_address:
-            create_address_for_location(active_record, location.postal_address, counters)
-        if location.phone_numbers:
-            create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
+        save_location(valid_location, counters)
+
+
+def save_location(location, counters):
+    active_record = build_location_active_record(location)
+    active_record.save()
+    counters.count_location()
+    LOGGER.debug('Location "%s" "%s"', location.id, location.name)
+    if location.services:
+        save_services(location.services, counters)
+    if location.physical_address:
+        create_address_for_location(active_record, location.physical_address, counters)
+    if location.postal_address:
+        create_address_for_location(active_record, location.postal_address, counters)
+    if location.phone_numbers:
+        create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
 
 
 def validate_latlong_on_location(location_dto, city_latlong_map):
