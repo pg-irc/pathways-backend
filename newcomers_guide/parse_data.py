@@ -106,7 +106,7 @@ class TopicBuilder:
     def __init__(self):
         self.topic = {
             'relatedTopics': [],
-            'completed': False
+            'isNewlyRecommended': False
         }
 
     def get_id(self):

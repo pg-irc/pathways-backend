@@ -16,7 +16,7 @@ class TestTopicSimilarityScore(TestCase):
         self.data = {
             'taskMap': {
                 self.topic_id: {
-                    'completed': False,
+                    'isNewlyRecommended': False,
                     'id': self.topic_id,
                     'title': {
                         'en': self.english_topic_title,

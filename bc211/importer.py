@@ -1,4 +1,6 @@
 import logging
+import csv
+from bc211 import dtos
 from django.utils import translation
 from django.contrib.gis.geos import Point
 from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
@@ -12,12 +14,19 @@ from bc211.exceptions import XmlParseException
 LOGGER = logging.getLogger(__name__)
 
 
+def parse_csv(csv_path):
+    with open(csv_path, mode='r') as file:
+        csv_reader = csv.reader(file)
+        city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
+        return city_to_latlong
+
+
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
-        save_organization(organization, counters)
+        save_organization(organization, {}, counters)
 
 
-def save_organization(organization, counters):
+def save_organization(organization, city_latlong_map, counters):
     if is_inactive(organization):
         return
     translation.activate('en')
@@ -25,7 +34,7 @@ def save_organization(organization, counters):
     active_record.save()
     counters.count_organization()
     LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
-    save_locations(organization.locations, counters)
+    save_locations(organization.locations, city_latlong_map, counters)
 
 
 def handle_parser_errors(generator):
@@ -52,11 +61,12 @@ def build_organization_active_record(record):
     return active_record
 
 
-def save_locations(locations, counters):
+def save_locations(locations, city_latlong_map, counters):
     for location in locations:
         if is_inactive(location):
             continue
-        active_record = build_location_active_record(location)
+        valid_location = validate_latlong_on_location(location, city_latlong_map)
+        active_record = build_location_active_record(valid_location)
         active_record.save()
         counters.count_location()
         LOGGER.debug('Location "%s" "%s"', location.id, location.name)
@@ -68,6 +78,26 @@ def save_locations(locations, counters):
             create_address_for_location(active_record, location.postal_address, counters)
         if location.phone_numbers:
             create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
+
+
+def validate_latlong_on_location(location_dto, city_latlong_map):
+    if location_dto.spatial_location is not None:
+        return location_dto
+    if location_dto.physical_address is None:
+        LOGGER.warning('Location with id "%s" does not have LatLong or physical address',
+                       location_dto.id)
+        return location_dto
+    if location_dto.physical_address.city in city_latlong_map:
+        replacement_point = city_latlong_map[location_dto.physical_address.city]
+        replacement_spatial_location = dtos.SpatialLocation(
+            latitude=replacement_point.y,
+            longitude=replacement_point.x
+        )
+        location_dto.spatial_location = replacement_spatial_location
+        return location_dto
+    LOGGER.warning('Location with id "%s" does not have city to fall back on for LatLong info',
+                   location_dto.id)
+    return location_dto
 
 
 def is_inactive(record):

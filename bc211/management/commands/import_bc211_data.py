@@ -1,6 +1,6 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.importer import save_organization
+from bc211.importer import save_organization, parse_csv
 from bc211.parser import parse_agency
 from bc211.import_counters import ImportCounters
 from bc211.exceptions import XmlParseException
@@ -8,6 +8,7 @@ import xml.etree.ElementTree as etree
 
 # invoke as follows:
 # python manage.py import_bc211_data path/to/bc211.xml
+
 
 class Command(BaseCommand):
     help = 'Import BC-211 data from XML file'
@@ -17,10 +18,17 @@ class Command(BaseCommand):
                             type=argparse.FileType('r'),
                             metavar='file',
                             help='Path to XML file containing BC-211 data')
+        parser.add_argument('--city_latlongs',
+                            metavar='city_latlongs',
+                            help='Path to CSV file containing city to latlong dictionary')
 
     def handle(self, *args, **options):
         counts = ImportCounters()
         file = options['file']
+        if options['city_latlongs']:
+            city_latlong_map = parse_csv(options['city_latlongs'])
+        else:
+            city_latlong_map = {}
         nodes = etree.iterparse(file, events=('end',))
         organization_id = ''
         for _, elem in nodes:
@@ -28,12 +36,14 @@ class Command(BaseCommand):
                 try:
                     organization = parse_agency(elem)
                     organization_id = organization.id
-                    save_organization(organization, counts)
+                    save_organization(organization, city_latlong_map, counts)
                 except XmlParseException as error:
-                    error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(the_id=organization_id, error_message=error.__str__())
+                    error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
+                        the_id=organization_id, error_message=error.__str__())
                     self.stdout.write(self.style.ERROR(error))
                 except AttributeError as error:
-                    error = 'Missing field error caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(the_id=organization_id, error_message=error.__str__())
+                    error = 'Missing field error caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
+                        the_id=organization_id, error_message=error.__str__())
                     self.stdout.write(self.style.ERROR(error))
 
         message_template = ('Successfully imported {0} organization(s), '

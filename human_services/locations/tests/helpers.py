@@ -11,6 +11,7 @@ class LocationBuilder:
         self.name = a_string()
         self.point = a_point()
         self.description = a_string()
+        self.physical_address = None
 
     def with_id(self, location_id):
         self.location_id = location_id
@@ -32,6 +33,10 @@ class LocationBuilder:
         self.description = description
         return self
 
+    def with_physical_address(self, physical_address):
+        self.physical_address = physical_address
+        return self
+
     def build(self):
         result = Location()
         result.id = self.location_id
@@ -48,7 +53,7 @@ class LocationBuilder:
                              description=self.description,
                              spatial_location=None,
                              services=[],
-                             physical_address=None,
+                             physical_address=self.physical_address,
                              postal_address=None,
                              phone_numbers=[])
 
