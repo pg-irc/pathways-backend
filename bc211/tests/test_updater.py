@@ -5,17 +5,19 @@ from bc211.import_counters import ImportCounters
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import Location
 from human_services.locations.tests.helpers import LocationBuilder
-from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
+from human_services.phone_at_location.models import PhoneAtLocation
 from common.testhelpers.random_test_values import a_phone_number, a_string
 
 
 class LocationUpdateTests(TestCase):
+    def setUp(self):
+        self.organization = OrganizationBuilder().create()
+
     def test_update_existing_location(self):
-        organization = OrganizationBuilder().create()
         the_id = a_string()
-        LocationBuilder(organization).with_id(the_id).create()
+        LocationBuilder(self.organization).with_id(the_id).create()
         the_new_name = a_string()
-        new_location_dto = (LocationBuilder(organization).
+        new_location_dto = (LocationBuilder(self.organization).
                             with_id(the_id).
                             with_name(the_new_name).
                             build_dto())
@@ -28,8 +30,6 @@ class LocationUpdateTests(TestCase):
         self.assertEqual(all_locations[0].name, new_location_dto.name)
 
     def test_changing_phone_number_on_location_replaces_phone_number_record(self):
-        org = OrganizationBuilder().create()
-
         phone_number_type_id = a_string()
         new_phone_number = a_phone_number()
         location_id = a_string()
@@ -37,7 +37,7 @@ class LocationUpdateTests(TestCase):
         phone_at_location = dtos.PhoneAtLocation(phone_number_type_id=phone_number_type_id,
                                                  phone_number=a_phone_number(),
                                                  location_id=location_id)
-        location_builder = (LocationBuilder(org).
+        location_builder = (LocationBuilder(self.organization).
                             with_id(location_id).
                             with_phone_numbers([phone_at_location]))
 
