@@ -223,12 +223,7 @@ def create_location_address(location, address, address_type):
 
 def create_phone_numbers_for_location(location, phone_number_dtos, counters):
     for dto in phone_number_dtos:
-        phone_number_type, created = PhoneNumberType.objects.get_or_create(
-            id=dto.phone_number_type_id
-        )
-        if created:
-            counters.count_phone_number_types()
-            LOGGER.debug('PhoneNumberType: "%s"', phone_number_type.id)
+        phone_number_type = create_phone_number_type(dto, counters)
         number = PhoneAtLocation.objects.create(
             location=location,
             phone_number_type=phone_number_type,
@@ -236,3 +231,12 @@ def create_phone_numbers_for_location(location, phone_number_dtos, counters):
         )
         counters.count_phone_at_location()
         LOGGER.debug('PhoneNumber: "%s" "%s"', number.id, number.phone_number)
+
+
+def create_phone_number_type(dto, counters):
+    type_id = dto.phone_number_type_id
+    phone_number_type, created = PhoneNumberType.objects.get_or_create(id=type_id)
+    if created:
+        counters.count_phone_number_types()
+        LOGGER.debug('PhoneNumberType: "%s"', phone_number_type.id)
+    return phone_number_type
