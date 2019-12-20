@@ -39,7 +39,7 @@ def a_float():
 
 
 def a_boolean():
-    return a_float() < 0.5
+    return random.random() < 0.5
 
 
 def a_point():

@@ -58,23 +58,48 @@ class LocationUpdateTests(TestCase):
         self.assertEqual(len(phone_numbers), 1)
         self.assertEqual(phone_numbers[0].phone_number, new_phone_number)
 
-    def test_physical_address_on_location_replaces_address_record(self):
-        address_type = 'physical_address' if a_boolean() else 'postal_address'
-        address = (AddressBuilder().
-                   with_location_id(self.location_id).
-                   with_address_type(address_type))
+    def test_changing_physical_address_on_location_replaces_address_record(self):
+        old_address = (AddressBuilder().
+                       with_location_id(self.location_id).
+                       with_address_type('physical_address'))
         location_builder = (LocationBuilder(self.organization).
                             with_id(self.location_id).
-                            with_physical_address(address.build_dto()))
+                            with_physical_address(old_address.build_dto()))
 
         save_locations([location_builder.build_dto()], {}, ImportCounters())
 
         new_address = (AddressBuilder().
                        with_location_id(self.location_id).
-                       with_address_type(address_type).
+                       with_address_type('physical_address').
                        build_dto())
         save_locations([(location_builder.
                          with_physical_address(new_address).
+                         build_dto())], {}, ImportCounters())
+
+        location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
+        self.assertEqual(len(location_addresses), 1)
+        self.assertEqual(location_addresses[0].address.city, new_address.city)
+
+        addresses = Address.objects.all()
+        self.assertEqual(len(addresses), 1)
+        self.assertEqual(addresses[0].city, new_address.city)
+
+    def test_changing_postal_address_on_location_replaces_address_record(self):
+        old_address = (AddressBuilder().
+                       with_location_id(self.location_id).
+                       with_address_type('postal_address'))
+        location_builder = (LocationBuilder(self.organization).
+                            with_id(self.location_id).
+                            with_postal_address(old_address.build_dto()))
+
+        save_locations([location_builder.build_dto()], {}, ImportCounters())
+
+        new_address = (AddressBuilder().
+                       with_location_id(self.location_id).
+                       with_address_type('postal_address').
+                       build_dto())
+        save_locations([(location_builder.
+                         with_postal_address(new_address).
                          build_dto())], {}, ImportCounters())
 
         location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
