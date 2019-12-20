@@ -222,6 +222,7 @@ def create_location_address(location, address, address_type):
 
 
 def create_phone_numbers_for_location(location, phone_number_dtos, counters):
+    PhoneAtLocation.objects.filter(location_id=location.id).delete()
     for dto in phone_number_dtos:
         phone_number_type = create_phone_number_type(dto, counters)
         number = PhoneAtLocation.objects.create(
