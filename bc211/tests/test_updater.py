@@ -8,7 +8,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import Location, LocationAddress
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.phone_at_location.models import PhoneAtLocation
-from common.testhelpers.random_test_values import a_phone_number, a_string
+from common.testhelpers.random_test_values import a_phone_number, a_string, a_boolean
 
 
 class LocationUpdateTests(TestCase):
@@ -58,10 +58,11 @@ class LocationUpdateTests(TestCase):
         self.assertEqual(len(phone_numbers), 1)
         self.assertEqual(phone_numbers[0].phone_number, new_phone_number)
 
-    def test_changing_physical_address_on_location_replaces_address_record(self):
+    def test_physical_address_on_location_replaces_address_record(self):
+        address_type = 'physical_address' if a_boolean() else 'postal_address'
         address = (AddressBuilder().
                    with_location_id(self.location_id).
-                   with_address_type('physical_address'))
+                   with_address_type(address_type))
         location_builder = (LocationBuilder(self.organization).
                             with_id(self.location_id).
                             with_physical_address(address.build_dto()))
@@ -70,7 +71,7 @@ class LocationUpdateTests(TestCase):
 
         new_address = (AddressBuilder().
                        with_location_id(self.location_id).
-                       with_address_type('physical_address').
+                       with_address_type(address_type).
                        build_dto())
         save_locations([(location_builder.
                          with_physical_address(new_address).

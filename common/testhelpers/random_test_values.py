@@ -6,14 +6,18 @@ from datetime import datetime
 
 private.set_random_seed_at_load_time()
 
+
 def a_string(length=20, from_character_string=string.ascii_lowercase):
     return ''.join(random.choice(from_character_string) for x in range(length))
+
 
 def a_website_address():
     return 'http://www.{0}.com'.format(a_string())
 
+
 def an_email_address():
     return '{0}@{1}.com'.format(a_string(), a_string())
+
 
 def an_integer(**kwargs):
     min_inclusive = kwargs.get('min', 0)
@@ -21,24 +25,35 @@ def an_integer(**kwargs):
 
     return random.randint(min_inclusive, max_inclusive)
 
+
 def a_latitude():
     return -90 + 180*random.random()
+
 
 def a_longitude():
     return -180 + 360*random.random()
 
+
 def a_float():
     return float(an_integer())
+
+
+def a_boolean():
+    return a_float() < 0.5
+
 
 def a_point():
     srid = 4326
     return Point(a_longitude(), a_latitude(), srid=srid)
 
+
 def a_list_of_strings(length=3):
     return [a_string() for x in range(length)]
 
+
 def a_list_of_integers(length=3):
     return [an_integer() for x in range(length)]
+
 
 def a_phone_number(dummy_number='xxx-xxx-xxxx'):
     return ''.join([random.choice(string.digits) if char == 'x' else char for char in dummy_number])
