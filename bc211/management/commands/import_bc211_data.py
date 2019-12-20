@@ -18,15 +18,15 @@ class Command(BaseCommand):
                             type=argparse.FileType('r'),
                             metavar='file',
                             help='Path to XML file containing BC-211 data')
-        parser.add_argument('--city_latlongs',
-                            metavar='city_latlongs',
+        parser.add_argument('--cityLatLongs',
+                            metavar='cityLatLongs',
                             help='Path to CSV file containing city to latlong dictionary')
 
     def handle(self, *args, **options):
         counts = ImportCounters()
         file = options['file']
-        if options['city_latlongs']:
-            city_latlong_map = parse_csv(options['city_latlongs'])
+        if options['cityLatLongs']:
+            city_latlong_map = parse_csv(options['cityLatLongs'])
         else:
             city_latlong_map = {}
         nodes = etree.iterparse(file, events=('end',))
