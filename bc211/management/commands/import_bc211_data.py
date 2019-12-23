@@ -30,6 +30,10 @@ class Command(BaseCommand):
         else:
             city_latlong_map = {}
         nodes = etree.iterparse(file, events=('end',))
+        self.parse_agencies(nodes, city_latlong_map, counts)
+        self.print_status_message(counts)
+
+    def parse_agencies(self, nodes, city_latlong_map, counts):
         organization_id = ''
         for _, elem in nodes:
             if elem.tag == 'Agency':
@@ -45,7 +49,6 @@ class Command(BaseCommand):
                     error = 'Missing field error caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
                         the_id=organization_id, error_message=error.__str__())
                     self.stdout.write(self.style.ERROR(error))
-        self.print_status_message(counts)
 
     def print_status_message(self, counts):
         message_template = ('Successfully imported {0} organization(s), '

@@ -5,7 +5,6 @@ import html
 from html.parser import HTMLParser
 from urllib import parse as urlparse
 from datetime import datetime
-
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
 
