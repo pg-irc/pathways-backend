@@ -21,7 +21,7 @@ def parse_csv(csv_path):
         return city_to_latlong
 
 
-def save_organization(organization, city_latlong_map, counters):
+def save_organization(organization, counters):
     if is_inactive(organization):
         return
     translation.activate('en')
@@ -29,7 +29,6 @@ def save_organization(organization, city_latlong_map, counters):
     active_record.save()
     counters.count_organization()
     LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
-    save_locations(organization.locations, city_latlong_map, counters)
 
 
 def handle_parser_errors(generator):

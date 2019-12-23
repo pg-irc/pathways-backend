@@ -60,8 +60,8 @@ class LocationImportTests(TestCase):
 
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
-        save_organization(organization, {}, counters)
-
+        save_organization(organization, counters)
+        save_locations(organization.locations, {}, counters)
         services = [service for service in [location.services for location in organization.locations]]
         save_services(services, counters)
 
