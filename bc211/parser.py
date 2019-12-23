@@ -1,29 +1,18 @@
-from django.core.exceptions import ValidationError
 import itertools
 import logging
 import re
-import xml.etree.ElementTree as etree
+import html
+from html.parser import HTMLParser
 from urllib import parse as urlparse
 from datetime import datetime
 
 from bc211 import dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
 
-import html
-from html.parser import HTMLParser
 
 LOGGER = logging.getLogger(__name__)
 
-
-def read_records_from_file(file):
-    xml = file.read()
-    return parse(xml)
-
-
-def parse(xml_data_as_string):
-    root_xml = etree.fromstring(xml_data_as_string)
-    agencies = root_xml.findall('Agency')
-    return map(parse_agency, agencies)
+# This is used in production
 
 
 def parse_agency(agency):
@@ -80,6 +69,7 @@ def website_with_http_prefix(website):
     return whole_with_extra_slash.replace('///', '//')
 
 
+# This is used in production
 def parse_sites(agency, organization_id):
     sites = agency.findall('Site')
     return map(SiteParser(organization_id), sites)
@@ -93,6 +83,7 @@ class SiteParser:
         return parse_site(site, self.organization_id)
 
 
+# Used in prod
 def parse_site(site, organization_id):
     id = parse_site_id(site)
     name = parse_site_name(site)
@@ -129,6 +120,7 @@ def parse_spatial_location_if_defined(site):
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
 
 
+# Used in prod
 def parse_service_list(site, organization_id, site_id):
     services = site.findall('SiteService')
     return list(map(ServiceParser(organization_id, site_id), services))
@@ -143,6 +135,7 @@ class ServiceParser:
         return parse_service(service, self.organization_id, self.site_id)
 
 
+# Used in prod
 def parse_service(service, organization_id, site_id):
     id = parse_service_id(service)
     name = parse_service_name(service)
@@ -233,6 +226,7 @@ def parse_postal_address(site_xml, site_id):
         return parse_address(postal_address, site_id, 'postal_address')
     return None
 
+
 def parse_attribute(parent, attribute):
     value = parent.get(attribute)
     if value is None:
@@ -254,6 +248,7 @@ def parse_address(address, site_id, address_type_id):
                         state_province=parse_state_province(address),
                         postal_code=parse_postal_code(address))
 
+
 def record_is_confidential(record):
     confidential = parse_attribute(record, 'Confidential')
     if confidential is None:
@@ -261,6 +256,7 @@ def record_is_confidential(record):
     if confidential.lower() == 'false':
         return False
     return True
+
 
 def parse_address_lines(address):
     sorted_address_children = sorted(address.getchildren(), key=lambda child: child.tag)
@@ -316,6 +312,7 @@ def parse_site_phone(phone, site_id):
         phone_number=phone_number
     )
 
+
 def clean_phone_numbers(phone_number_string):
     phone_numbers = re.split("/|or|;", phone_number_string)
     cleaned_phone_numbers = [clean_one_phone_number(phone_number) for phone_number in phone_numbers]
@@ -323,6 +320,7 @@ def clean_phone_numbers(phone_number_string):
     if toll_free_number:
         return toll_free_number
     return cleaned_phone_numbers[0]
+
 
 def clean_one_phone_number(phone_number):
     no_extension_phone_number, extension = separate_phone_number_from_extensions(phone_number)
@@ -338,6 +336,7 @@ def clean_one_phone_number(phone_number):
     full_phone_number = add_extension_to_phone_number(formatted_phone_number, extension)
     return full_phone_number
 
+
 def separate_phone_number_from_extensions(phone_number):
     extension_format = r'([Ll]ocals?|[Ee]xt\.?|Option|NIS).*'
     found_extension = re.search(extension_format, phone_number)
@@ -347,6 +346,7 @@ def separate_phone_number_from_extensions(phone_number):
         extension = None
     phone_number = re.sub(extension_format, '', phone_number)
     return phone_number, extension
+
 
 def convert_phone_mnemonic(phone_number):
     if re.search(r'[a-zA-Z]', phone_number):
@@ -362,10 +362,12 @@ def convert_phone_mnemonic(phone_number):
         phone_number = re.sub(separate_number_from_mnenomic_format, r'\1', phone_number)
     return phone_number
 
+
 def remove_separator_characters(phone_number):
     phone_digit_separator = r'[- \(\)\.,]'
     phone_number = re.sub(phone_digit_separator, '', phone_number)
     return phone_number
+
 
 def truncate_phone_numbers(phone_number):
     if len(phone_number) > 11:
@@ -373,27 +375,33 @@ def truncate_phone_numbers(phone_number):
     else:
         return phone_number
 
+
 def format_eleven_digit_phone_number(phone_number):
     return re.sub(r'(\d)(\d{3})(\d{3})(\d{4})', r'\1-\2-\3-\4', phone_number)
+
 
 def format_ten_digit_phone_number(phone_number):
     return re.sub(r'(\d{3})(\d{3})(\d{4})', r'\1-\2-\3', phone_number)
 
+
 def find_toll_free_number(phone_numbers):
     toll_free_format = r'1-8[\d]{2}-[\d]{3}-[\d]{4}'
-    for  phone_number in phone_numbers:
+    for phone_number in phone_numbers:
         if re.search(toll_free_format, phone_number):
             return phone_number
     return None
 
+
 def add_extension_to_phone_number(phone_number, extension):
     return phone_number + ' ' + extension if extension else phone_number
+
 
 def is_valid_phonenumber(phone):
     return (parse_optional_field(phone, 'PhoneNumber') and
             parse_optional_field(phone, 'PhoneNumber') != '(none)' and
             parse_optional_field(phone, 'Type') and
             not record_is_confidential(phone))
+
 
 def remove_double_escaped_html_markup(data):
     if data is None:

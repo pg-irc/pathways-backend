@@ -1,7 +1,6 @@
 import logging
 from bc211 import dtos
 from bc211.importer import save_records_to_database, save_locations, save_services
-from bc211.parser import read_records_from_file
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
 from django.contrib.gis.geos import Point
@@ -15,6 +14,9 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
 from taxonomies.models import TaxonomyTerm
+import xml.etree.ElementTree as etree
+from bc211.parser import parse_agency
+
 
 logging.disable(logging.ERROR)
 
@@ -22,6 +24,17 @@ ONE_AGENCY_FIXTURE = 'bc211/data/BC211_data_one_agency.xml'
 MULTI_AGENCY_FIXTURE = 'bc211/data/BC211_data_excerpt.xml'
 SHARED_SERVICE_FIXTURE = 'bc211/data/BC211_data_service_53489235_at_two_sites.xml'
 INVALID_AGENCIES_FIXTURE = 'bc211/data/BC211_data_with_invalid_agencies.xml'
+
+
+def read_records_from_file(file):
+    xml = file.read()
+    return parse(xml)
+
+
+def parse(xml_data_as_string):
+    root_xml = etree.fromstring(xml_data_as_string)
+    agencies = root_xml.findall('Agency')
+    return map(parse_agency, agencies)
 
 
 class LocationImportTests(TestCase):
