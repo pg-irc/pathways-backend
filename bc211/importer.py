@@ -31,9 +31,6 @@ def save_organization(organization, city_latlong_map, counters):
     LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
     save_locations(organization.locations, city_latlong_map, counters)
 
-    services = [service for service in [location.services for location in organization.locations]]
-    save_services(services, counters)
-
 
 def handle_parser_errors(generator):
     organization_id = ''

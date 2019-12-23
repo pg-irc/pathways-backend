@@ -1,6 +1,6 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.importer import save_organization, parse_csv
+from bc211.importer import parse_csv, save_organization, save_services
 from bc211.parser import parse_agency
 from bc211.import_counters import ImportCounters
 from bc211.exceptions import XmlParseException
@@ -39,7 +39,12 @@ class Command(BaseCommand):
                 try:
                     organization = parse_agency(elem)
                     organization_id = organization.id
+
                     save_organization(organization, city_latlong_map, counts)
+
+                    services = [service for service in [location.services for location in organization.locations]]
+                    save_services(services, counts)
+
                 except XmlParseException as error:
                     error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
                         the_id=organization_id, error_message=error.__str__())
