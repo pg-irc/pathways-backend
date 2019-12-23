@@ -58,7 +58,6 @@ def build_organization_active_record(record):
 def save_locations(locations, city_latlong_map, counters):
     for location in locations:
         save_location(location, city_latlong_map, counters)
-        save_services(location.services, counters)
 
 
 def save_location(location, city_latlong_map, counters):

@@ -41,7 +41,10 @@ class Command(BaseCommand):
                     organization_id = organization.id
 
                     save_organization(organization, counts)
-                    save_locations(organization.locations, city_latlong_map, counts)
+                    locations = list(organization.locations)
+                    save_locations(locations, city_latlong_map, counts)
+                    for location in locations:
+                        save_services(location.services, counts)
 
                 except XmlParseException as error:
                     error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
