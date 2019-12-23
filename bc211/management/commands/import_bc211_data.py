@@ -45,7 +45,9 @@ class Command(BaseCommand):
                     error = 'Missing field error caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
                         the_id=organization_id, error_message=error.__str__())
                     self.stdout.write(self.style.ERROR(error))
+        self.print_status_message(counts)
 
+    def print_status_message(self, counts):
         message_template = ('Successfully imported {0} organization(s), '
                             '{1} location(s), {2} service(s), '
                             '{3} taxonomy term(s), {4} address(es), {5} phone number type(s), '
