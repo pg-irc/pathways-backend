@@ -63,25 +63,27 @@ def build_organization_active_record(record):
 
 def save_locations(locations, city_latlong_map, counters):
     for location in locations:
-        if is_inactive(location):
-            continue
-        valid_location = validate_latlong_on_location(location, city_latlong_map)
-        save_location(valid_location, counters)
+        save_location(location, city_latlong_map, counters)
 
 
-def save_location(location, counters):
-    active_record = build_location_active_record(location)
+def save_location(location, city_latlong_map, counters):
+    if is_inactive(location):
+        return
+    location_with_latlong = validate_latlong_on_location(location, city_latlong_map)
+
+    active_record = build_location_active_record(location_with_latlong)
     active_record.save()
     counters.count_location()
-    LOGGER.debug('Location "%s" "%s"', location.id, location.name)
-    if location.services:
-        save_services(location.services, counters)
-    if location.physical_address:
-        create_address_for_location(active_record, location.physical_address, counters)
-    if location.postal_address:
-        create_address_for_location(active_record, location.postal_address, counters)
-    if location.phone_numbers:
-        create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
+    LOGGER.debug('Location "%s" "%s"', location_with_latlong.id, location_with_latlong.name)
+
+    if location_with_latlong.services:
+        save_services(location_with_latlong.services, counters)
+    if location_with_latlong.physical_address:
+        create_address_for_location(active_record, location_with_latlong.physical_address, counters)
+    if location_with_latlong.postal_address:
+        create_address_for_location(active_record, location_with_latlong.postal_address, counters)
+    if location_with_latlong.phone_numbers:
+        create_phone_numbers_for_location(active_record, location_with_latlong.phone_numbers, counters)
 
 
 def validate_latlong_on_location(location_dto, city_latlong_map):
