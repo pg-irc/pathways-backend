@@ -1,6 +1,6 @@
 import logging
 from bc211 import dtos
-from bc211.importer import save_records_to_database, save_locations, save_services
+from bc211.importer import handle_parser_errors, save_locations, save_organization, save_services
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
 from django.contrib.gis.geos import Point
@@ -56,6 +56,11 @@ class LocationImportTests(TestCase):
 
     def test_can_import_longitude(self):
         self.assertAlmostEqual(self.location.point.x, -122.607918)
+
+
+def save_records_to_database(organizations, counters):
+    for organization in handle_parser_errors(organizations):
+        save_organization(organization, {}, counters)
 
 
 class LocationWithMissingLatLongImportTests(TestCase):
@@ -215,6 +220,7 @@ class ServiceImportTests(TestCase):
         self.assertCountEqual(last_post_fund_service_taxonomy_terms,
                               expected_last_post_fund_service_taxonony_terms)
 
+    # TODO rename to snake case
     def testTwoServicesCanBeRelatedToOneLocation(self):
         file = open(SHARED_SERVICE_FIXTURE, 'r')
         save_records_to_database(read_records_from_file(file), ImportCounters())

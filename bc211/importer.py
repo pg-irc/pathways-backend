@@ -21,11 +21,6 @@ def parse_csv(csv_path):
         return city_to_latlong
 
 
-def save_records_to_database(organizations, counters):
-    for organization in handle_parser_errors(organizations):
-        save_organization(organization, {}, counters)
-
-
 def save_organization(organization, city_latlong_map, counters):
     if is_inactive(organization):
         return
@@ -35,6 +30,9 @@ def save_organization(organization, city_latlong_map, counters):
     counters.count_organization()
     LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
     save_locations(organization.locations, city_latlong_map, counters)
+
+    services = [service for service in [location.services for location in organization.locations]]
+    save_services(services, counters)
 
 
 def handle_parser_errors(generator):
@@ -64,6 +62,7 @@ def build_organization_active_record(record):
 def save_locations(locations, city_latlong_map, counters):
     for location in locations:
         save_location(location, city_latlong_map, counters)
+        save_services(location.services, counters)
 
 
 def save_location(location, city_latlong_map, counters):
@@ -76,8 +75,6 @@ def save_location(location, city_latlong_map, counters):
     counters.count_location()
     LOGGER.debug('Location "%s" "%s"', location_with_latlong.id, location_with_latlong.name)
 
-    if location_with_latlong.services:
-        save_services(location_with_latlong.services, counters)
     if location_with_latlong.physical_address:
         create_address_for_location(active_record, location_with_latlong.physical_address, counters)
     if location_with_latlong.postal_address:
