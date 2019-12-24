@@ -21,6 +21,14 @@ def parse_csv(csv_path):
         return city_to_latlong
 
 
+def save_organization_with_locations_and_services(organization, city_latlong_map, counters):
+    save_organization(organization, counters)
+    locations = list(organization.locations)
+    save_locations(locations, city_latlong_map, counters)
+    for location in locations:
+        save_services(location.services, counters)
+
+
 def save_organization(organization, counters):
     if is_inactive(organization):
         return
