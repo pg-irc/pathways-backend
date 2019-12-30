@@ -131,6 +131,12 @@ class LocationUpdateTests(TestCase):
         locations = Location.objects.all()
         self.assertEqual(len(locations), 1)
 
+    def test_saving_locations_creates_new_address_entry(self):
+        pass
+
+    def test_saving_locations_creates_new_phone_number_entry(self):
+        pass
+
     def test_saving_locations_deletes_newly_absent_locations_from_same_organization(self):
         first_location = LocationBuilder(self.organization).create()
         LocationBuilder(self.organization).create()
@@ -148,6 +154,30 @@ class LocationUpdateTests(TestCase):
         locations = Location.objects.all()
         self.assertEqual(len(locations), 1)
         self.assertEqual(locations[0].id, first_location.id)
+
+    def test_saving_locations_with_newly_absent_location_removes_address_record_for_missing_location(self):
+        address = (AddressBuilder().
+                   with_location_id(self.location_id).
+                   create())
+        first_location = (LocationBuilder(self.organization).
+                          with_physical_address(address).
+                          create())
+        self.set_physical_address(first_location, address)
+
+        second_location = LocationBuilder(self.organization).create()
+
+        updated_second_location = (LocationBuilder(self.organization).
+                                   with_id(second_location.id).
+                                   build_dto())
+
+        self.assertEqual(len(LocationAddress.objects.all()), 1)
+
+        save_locations([updated_second_location], {}, ImportCounters())
+
+        self.assertEqual(len(LocationAddress.objects.all()), 0)
+
+    def test_saving_locations_with_newly_absent_location_removes_phone_nubmer_record(self):
+        pass
 
     def test_saving_locations_does_not_cause_deletion_of_locations_for_other_organization(self):
         first_organization = OrganizationBuilder().create()
