@@ -2,13 +2,13 @@ from django.test import TestCase
 from bc211 import dtos
 from bc211.importer import save_locations
 from bc211.import_counters import ImportCounters
-from human_services.addresses.models import Address
+from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import Location, LocationAddress
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.phone_at_location.models import PhoneAtLocation
-from common.testhelpers.random_test_values import a_phone_number, a_string, a_boolean
+from common.testhelpers.random_test_values import a_phone_number, a_string
 
 
 class LocationUpdateTests(TestCase):
@@ -32,7 +32,7 @@ class LocationUpdateTests(TestCase):
         self.assertEqual(all_locations[0].id, the_id)
         self.assertEqual(all_locations[0].name, new_location_dto.name)
 
-    def test_changing_phone_number_on_location_replaces_phone_number_record(self):
+    def test_update_phone_number_on_existing_location(self):
         phone_number_type_id = a_string()
         new_phone_number = a_phone_number()
 
@@ -61,20 +61,27 @@ class LocationUpdateTests(TestCase):
     def test_changing_physical_address_on_location_replaces_address_record(self):
         old_address = (AddressBuilder().
                        with_location_id(self.location_id).
-                       with_address_type('physical_address'))
-        location_builder = (LocationBuilder(self.organization).
-                            with_id(self.location_id).
-                            with_physical_address(old_address.build_dto()))
+                       with_address_type('physical_address').
+                       create())
+        location = (LocationBuilder(self.organization).with_id(
+            self.location_id).with_physical_address(old_address).create())
 
-        save_locations([location_builder.build_dto()], {}, ImportCounters())
+        address_type = AddressType.objects.get(pk='physical_address')
+        LocationAddress(address=old_address, location=location,
+                        address_type=address_type).save()
+        location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
+        self.assertEqual(len(location_addresses), 1)
+        self.assertEqual(location_addresses[0].address.city, old_address.city)
 
         new_address = (AddressBuilder().
                        with_location_id(self.location_id).
                        with_address_type('physical_address').
                        build_dto())
-        save_locations([(location_builder.
-                         with_physical_address(new_address).
-                         build_dto())], {}, ImportCounters())
+        new_location = (LocationBuilder(self.organization).
+                        with_id(self.location_id).
+                        with_physical_address(new_address).
+                        build_dto())
+        save_locations([new_location], {}, ImportCounters())
 
         location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
         self.assertEqual(len(location_addresses), 1)
