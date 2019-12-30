@@ -124,3 +124,43 @@ class LocationUpdateTests(TestCase):
         addresses = Address.objects.all()
         self.assertEqual(len(addresses), 1)
         self.assertEqual(addresses[0].city, new_address.city)
+
+    def test_saving_locations_creates_new_location_etry(self):
+        save_locations([(LocationBuilder(self.organization).build_dto())], {}, ImportCounters())
+
+        locations = Location.objects.all()
+        self.assertEqual(len(locations), 1)
+
+    def test_saving_locations_deletes_newly_absent_locations_from_same_organization(self):
+        first_location = LocationBuilder(self.organization).create()
+        LocationBuilder(self.organization).create()
+        LocationBuilder(self.organization).create()
+
+        locations = Location.objects.all()
+        self.assertEqual(len(locations), 3)
+
+        new_locations = [(LocationBuilder(self.organization).
+                          with_id(first_location.id).
+                          build_dto())]
+
+        save_locations(new_locations, {}, ImportCounters())
+
+        locations = Location.objects.all()
+        self.assertEqual(len(locations), 1)
+        self.assertEqual(locations[0].id, first_location.id)
+
+    def test_saving_locations_does_not_cause_deletion_of_locations_for_other_organization(self):
+        first_organization = OrganizationBuilder().create()
+        first_location = LocationBuilder(first_organization).create()
+
+        second_organization = OrganizationBuilder().create()
+        second_location = LocationBuilder(second_organization).create()
+
+        save_locations([(LocationBuilder(second_organization).
+                         with_id(second_location.id).
+                         build_dto())], {}, ImportCounters())
+
+        locations = [location.id for location in Location.objects.all()]
+        self.assertEqual(len(locations), 2)
+        self.assertIn(first_location.id, locations)
+        self.assertIn(second_location.id, locations)

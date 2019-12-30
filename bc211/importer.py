@@ -64,6 +64,14 @@ def build_organization_active_record(record):
 
 
 def save_locations(locations, city_latlong_map, counters):
+    if not locations:
+        return
+    organizations = {location.organization_id for location in locations}
+    if len(organizations) > 1:
+        raise RuntimeError('Unexpected to get locations from more than one organization')
+    location_ids = {location.id for location in locations}
+    organization_id = locations[0].organization_id
+    Location.objects.filter(organization_id=organization_id).exclude(pk__in=location_ids).delete()
     for location in locations:
         save_location(location, city_latlong_map, counters)
 
@@ -115,10 +123,10 @@ def build_location_active_record(record):
     active_record = get_or_create_location_active_record(record.id)
     active_record.name = record.name
     active_record.organization_id = record.organization_id
+    active_record.description = record.description
     has_location = record.spatial_location is not None
     if has_location:
         active_record.point = Point(record.spatial_location.longitude, record.spatial_location.latitude)
-    active_record.description = record.description
     return active_record
 
 
