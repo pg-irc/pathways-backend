@@ -8,6 +8,6 @@ class PhoneNumberType(models.Model):
 
 
 class PhoneAtLocation(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name='phone_numbers')
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='phone_numbers')
     phone_number_type = models.ForeignKey(PhoneNumberType, on_delete=models.PROTECT)
     phone_number = models.TextField()

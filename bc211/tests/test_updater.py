@@ -177,7 +177,17 @@ class LocationUpdateTests(TestCase):
         self.assertEqual(len(LocationAddress.objects.all()), 0)
 
     def test_saving_locations_with_newly_absent_location_removes_phone_nubmer_record(self):
-        pass
+        location = (LocationBuilder(self.organization). create())
+        PhoneAtLocation.objects.create(phone_number_type=self.phone_number_type,
+                                       phone_number=a_phone_number(),
+                                       location=location)
+        self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
+
+        second_location = LocationBuilder(self.organization).build_dto()
+
+        save_locations([second_location], {}, ImportCounters())
+
+        self.assertEqual(len(PhoneAtLocation.objects.all()), 0)
 
     def test_saving_locations_does_not_cause_deletion_of_locations_for_other_organization(self):
         first_organization = OrganizationBuilder().create()
