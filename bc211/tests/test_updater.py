@@ -132,10 +132,25 @@ class LocationUpdateTests(TestCase):
         self.assertEqual(len(locations), 1)
 
     def test_saving_locations_creates_new_address_entry(self):
-        pass
+        address = (AddressBuilder().
+                   with_location_id(self.location_id).
+                   with_address_type('postal_address').
+                   build_dto())
+        location = LocationBuilder(self.organization).with_postal_address(address).build_dto()
+
+        save_locations([location], {}, ImportCounters())
+        self.assertEqual(len(Address.objects.all()), 1)
 
     def test_saving_locations_creates_new_phone_number_entry(self):
-        pass
+        phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=self.phone_number_type_id,
+                                                     phone_number=a_phone_number(),
+                                                     location_id=self.location_id)
+        location_dto = (LocationBuilder(self.organization).
+                        with_id(self.location_id).
+                        with_phone_numbers([phone_at_location_dto]).
+                        build_dto())
+        save_locations([location_dto], {}, ImportCounters())
+        self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
 
     def test_saving_locations_deletes_newly_absent_locations_from_same_organization(self):
         first_location = LocationBuilder(self.organization).create()
