@@ -11,7 +11,7 @@ from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumber
 from common.testhelpers.random_test_values import a_phone_number, a_string
 
 
-class LocationUpdateTests(TestCase):
+class UpdateLocationTests(TestCase):
     def setUp(self):
         self.location_id = a_string()
         self.organization = OrganizationBuilder().create()
@@ -29,11 +29,10 @@ class LocationUpdateTests(TestCase):
                         address_type=self.postal_address_type).save()
 
     def test_update_existing_location(self):
-        the_id = a_string()
-        LocationBuilder(self.organization).with_id(the_id).create()
+        LocationBuilder(self.organization).with_id(self.location_id).create()
         the_new_name = a_string()
         new_location_dto = (LocationBuilder(self.organization).
-                            with_id(the_id).
+                            with_id(self.location_id).
                             with_name(the_new_name).
                             build_dto())
 
@@ -41,7 +40,7 @@ class LocationUpdateTests(TestCase):
 
         all_locations = Location.objects.all()
         self.assertEqual(len(all_locations), 1)
-        self.assertEqual(all_locations[0].id, the_id)
+        self.assertEqual(all_locations[0].id, self.location_id)
         self.assertEqual(all_locations[0].name, new_location_dto.name)
 
     def test_update_phone_number_on_existing_location(self):
@@ -82,11 +81,11 @@ class LocationUpdateTests(TestCase):
                        with_location_id(self.location_id).
                        with_address_type('physical_address').
                        build_dto())
-        location = (LocationBuilder(self.organization).
-                    with_id(self.location_id).
-                    with_physical_address(new_address).
-                    build_dto())
-        save_locations([location], {}, ImportCounters())
+        location_with_new_address = (LocationBuilder(self.organization).
+                                     with_id(self.location_id).
+                                     with_physical_address(new_address).
+                                     build_dto())
+        save_locations([location_with_new_address], {}, ImportCounters())
 
         location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
         self.assertEqual(len(location_addresses), 1)
@@ -111,11 +110,11 @@ class LocationUpdateTests(TestCase):
                        with_location_id(self.location_id).
                        with_address_type('postal_address').
                        build_dto())
-        location = (LocationBuilder(self.organization).
-                    with_id(self.location_id).
-                    with_physical_address(new_address).
-                    build_dto())
-        save_locations([location], {}, ImportCounters())
+        location_with_new_address = (LocationBuilder(self.organization).
+                                     with_id(self.location_id).
+                                     with_physical_address(new_address).
+                                     build_dto())
+        save_locations([location_with_new_address], {}, ImportCounters())
 
         location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
         self.assertEqual(len(location_addresses), 1)
@@ -154,8 +153,8 @@ class LocationUpdateTests(TestCase):
 
     def test_saving_locations_deletes_newly_absent_locations_from_same_organization(self):
         first_location = LocationBuilder(self.organization).create()
-        LocationBuilder(self.organization).create()
-        LocationBuilder(self.organization).create()
+        second_location = LocationBuilder(self.organization).create()
+        third_location = LocationBuilder(self.organization).create()
 
         locations = Location.objects.all()
         self.assertEqual(len(locations), 3)
@@ -215,7 +214,7 @@ class LocationUpdateTests(TestCase):
                          with_id(second_location.id).
                          build_dto())], {}, ImportCounters())
 
-        locations = [location.id for location in Location.objects.all()]
-        self.assertEqual(len(locations), 2)
-        self.assertIn(first_location.id, locations)
-        self.assertIn(second_location.id, locations)
+        location_ids = [location.id for location in Location.objects.all()]
+        self.assertEqual(len(location_ids), 2)
+        self.assertIn(first_location.id, location_ids)
+        self.assertIn(second_location.id, location_ids)
