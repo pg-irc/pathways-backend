@@ -9,43 +9,87 @@ from human_services.locations.models import Location, LocationAddress
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
+from human_services.services.models import Service
+from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_phone_number, a_string
 
 
 class UpdateOrganizationTests(TestCase):
 
-    def test_update_an_organization(self):
-        the_id = a_string()
-        old_organization = OrganizationBuilder().with_id(the_id).create()
-        new_organization = OrganizationBuilder().with_id(the_id).build_dto()
+    def test_can_update_an_organization(self):
+        old_organization = OrganizationBuilder().create()
+        new_organization = OrganizationBuilder().with_id(old_organization.id).build_dto()
 
         save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].name, new_organization.name)
 
-    def test_create_a_new_organization(self):
-        save_organization_with_locations_and_services(
-            OrganizationBuilder().build_dto(), {}, ImportCounters()
-        )
+    def test_can_create_a_new_organization(self):
+        organization = OrganizationBuilder().build_dto()
+        save_organization_with_locations_and_services(organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
         self.assertEqual(len(organizations), 1)
+        self.assertEqual(organizations[0].id, organization.id)
 
-    def test_delete_newly_absent_organization(self):
+    def test_can_delete_newly_absent_organization(self):
         pass
 
-    def test_create_new_location_record(self):
+    def test_can_create_new_location_record(self):
+        organization = OrganizationBuilder().create()
+
+        location = LocationBuilder(organization).build_dto()
+        organization_with_location = (OrganizationBuilder().
+                                      with_id(organization.id).
+                                      with_locations([location]).
+                                      build_dto())
+
+        save_organization_with_locations_and_services(organization_with_location, {}, ImportCounters())
+
+        locations = Location.objects.all()
+        self.assertEqual(len(locations), 1)
+        self.assertEqual(locations[0].id, location.id)
+
+    def test_can_remove_existing_location_record(self):
         pass
 
-    def test_creates_service_record(self):
-        pass
+    def test_can_create_new_service_record(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
 
-    def test_removes_existing_location_record(self):
-        pass
+        service_dto = (ServiceBuilder(organization).
+                       with_location(location).
+                       build_dto())
+        location_dto = (LocationBuilder(self.organization).
+                        with_id(location.id).
+                        with_services([service_dto]).
+                        build_dto())
+        new_organization_dto = (OrganizationBuilder().
+                                with_id(organization.id).
+                                with_locations([location_dto]).
+                                build_dto())
+        save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
+        services = Service.objects.all()
+        self.assertEqual(len(services), 1)
+        self.assertEqual(services[0].id, service_dto.id)
 
-    def test_removes_existing_service_record(self):
-        pass
+    def test_can_remove_existing_service_record(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        ServiceBuilder(organization).with_location(location).create()
+
+        self.assertEqual(len(Service.objects.all()), 0)
+
+        new_location_dto = (LocationBuilder(organization).
+                            with_id(location.id).
+                            build_dto())
+        new_organization_dto = (OrganizationBuilder().with_id(organization.id).
+                                with_locations([new_location_dto]).
+                                build())
+        save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
+
+        self.assertEqual(len(Service.objects.all()), 0)
 
 
 class UpdateLocationTests(TestCase):
