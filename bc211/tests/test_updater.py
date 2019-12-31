@@ -5,7 +5,7 @@ from bc211.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
-from human_services.locations.models import Location, LocationAddress
+from human_services.locations.models import Location, LocationAddress, ServiceAtLocation
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
@@ -61,7 +61,7 @@ class UpdateOrganizationTests(TestCase):
         service_dto = (ServiceBuilder(organization).
                        with_location(location).
                        build_dto())
-        location_dto = (LocationBuilder(self.organization).
+        location_dto = (LocationBuilder(organization).
                         with_id(location.id).
                         with_services([service_dto]).
                         build_dto())
@@ -70,11 +70,17 @@ class UpdateOrganizationTests(TestCase):
                                 with_locations([location_dto]).
                                 build_dto())
         save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
+
         services = Service.objects.all()
         self.assertEqual(len(services), 1)
         self.assertEqual(services[0].id, service_dto.id)
 
-    def test_can_remove_existing_service_record(self):
+        sal = ServiceAtLocation.objects.all()
+        self.assertEqual(len(sal), 1)
+        self.assertEqual(sal[0].location.id, location_dto.id)
+        self.assertEqual(sal[0].service.id, service_dto.id)
+
+    def xxxxx_test_can_remove_existing_service_record(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
         ServiceBuilder(organization).with_location(location).create()
@@ -90,6 +96,9 @@ class UpdateOrganizationTests(TestCase):
         save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
+
+    def test_does_not_remove_service_record_for_unrelated_organization(self):
+        pass
 
 
 class UpdateLocationTests(TestCase):

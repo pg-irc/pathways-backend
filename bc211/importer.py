@@ -146,13 +146,20 @@ def get_or_create_location_active_record(pk):
 
 
 def build_service_active_record(record):
-    active_record = Service()
-    active_record.id = record.id
+    active_record = get_or_create_service_active_record(record.id)
     active_record.name = record.name
     active_record.organization_id = record.organization_id
     active_record.description = record.description
     active_record.last_verified_date = record.last_verified_date
     return active_record
+
+
+def get_or_create_service_active_record(pk):
+    if Service.objects.filter(id=pk).exists():
+        return Service.objects.get(id=pk)
+    record = Service()
+    record.id = pk
+    return record
 
 
 def build_service_at_location_active_record(record):
@@ -164,7 +171,7 @@ def build_service_at_location_active_record(record):
 
 def save_services(services, counters):
     for service in services:
-        if is_inactive(service) or service_already_exists(service):
+        if is_inactive(service):
             continue
         active_record = build_service_active_record(service)
         active_record.save()
