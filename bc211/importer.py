@@ -54,13 +54,20 @@ def handle_parser_errors(generator):
 
 
 def build_organization_active_record(record):
-    active_record = Organization()
-    active_record.id = record.id
+    active_record = get_or_create_organization_active_record(record.id)
     active_record.name = record.name
     active_record.description = record.description
     active_record.website = record.website
     active_record.email = record.email
     return active_record
+
+
+def get_or_create_organization_active_record(pk):
+    if Organization.objects.filter(id=pk).exists():
+        return Organization.objects.get(id=pk)
+    record = Organization()
+    record.id = pk
+    return record
 
 
 def save_locations(locations, city_latlong_map, counters):

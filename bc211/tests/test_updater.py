@@ -1,14 +1,51 @@
 from django.test import TestCase
 from bc211 import dtos
-from bc211.importer import save_locations
+from bc211.importer import save_locations, save_organization_with_locations_and_services
 from bc211.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import Location, LocationAddress
 from human_services.locations.tests.helpers import LocationBuilder
+from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
 from common.testhelpers.random_test_values import a_phone_number, a_string
+
+
+class UpdateOrganizationTests(TestCase):
+
+    def test_update_an_organization(self):
+        the_id = a_string()
+        old_organization = OrganizationBuilder().with_id(the_id).create()
+        new_organization = OrganizationBuilder().with_id(the_id).build_dto()
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        organizations = Organization.objects.all()
+        self.assertEqual(organizations[0].name, new_organization.name)
+
+    def test_create_a_new_organization(self):
+        save_organization_with_locations_and_services(
+            OrganizationBuilder().build_dto(), {}, ImportCounters()
+        )
+
+        organizations = Organization.objects.all()
+        self.assertEqual(len(organizations), 1)
+
+    def test_delete_newly_absent_organization(self):
+        pass
+
+    def test_create_new_location_record(self):
+        pass
+
+    def test_creates_service_record(self):
+        pass
+
+    def test_removes_existing_location_record(self):
+        pass
+
+    def test_removes_existing_service_record(self):
+        pass
 
 
 class UpdateLocationTests(TestCase):
@@ -124,7 +161,7 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(len(addresses), 1)
         self.assertEqual(addresses[0].city, new_address.city)
 
-    def test_saving_locations_creates_new_location_etry(self):
+    def test_saving_locations_creates_new_location_entry(self):
         save_locations([(LocationBuilder(self.organization).build_dto())], {}, ImportCounters())
 
         locations = Location.objects.all()
@@ -218,3 +255,7 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(len(location_ids), 2)
         self.assertIn(first_location.id, location_ids)
         self.assertIn(second_location.id, location_ids)
+
+
+class UpdateServiceTests(TestCase):
+    pass
