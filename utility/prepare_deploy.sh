@@ -9,6 +9,10 @@ while (( "$#" )); do
     then
         BC211Path=$2
         shift 2
+    elif [ "$1" == "--cityLatLongs" ]
+    then
+        CityLatLongs=$2
+        shift 2
     elif [ "$1" == "--newComersGuidePath" ]
     then
         NewcomersGuidePath=$2
@@ -39,6 +43,9 @@ usage() {
     echo
     echo "    --bc211Path"
     echo "                The path to the BC211 data set in XML iCarol format."
+    echo
+    echo "    --cityLatLongs"
+    echo "                The path to the city and latlong dictionary in CSV format."
     echo
     echo "    --newComersGuidePath"
     echo "                The path to the Newcomers' guide content."
@@ -105,6 +112,8 @@ validateOutputFile () {
 
 validateFilePath "$BC211Path" "BC 211 data"
 
+validateFilePath "$CityLatLongs" "Latlong Replacement file"
+
 validateNewcomersGuidePath
 
 validateDirectoryPath "$ManualRecommendations" "Recommendations to add"
@@ -112,10 +121,11 @@ validateDirectoryPath "$ManualRecommendations" "Recommendations to add"
 validateOutputFile
 
 echo "About to reinitialize database with data from:"
-echo "BC211 data at:             $BC211Path"
-echo "Newcomers data at:         $NewcomersGuidePath"
-echo "Manual recommendations:    $ManualRecommendations"
-echo "Output file:               $OutputFile"
+echo "BC211 data at:                $BC211Path"
+echo "Latlong replacement file at:  $CityLatLongs"
+echo "Newcomers data at:            $NewcomersGuidePath"
+echo "Manual recommendations:       $ManualRecommendations"
+echo "Output file:                  $OutputFile"
 read -p "Enter to continue, Ctrl-C to abort "
 
 checkForSuccess () {
@@ -136,7 +146,7 @@ checkForSuccess "reset database"
 checkForSuccess "migrate database"
 
 echo "importing BC-211 data ..."
-./manage.py import_bc211_data $BC211Path
+./manage.py import_bc211_data $BC211Path --cityLatLongs $CityLatLongs
 checkForSuccess "import BC211 data into the database"
 
 ./manage.py import_newcomers_guide $NewcomersGuidePath

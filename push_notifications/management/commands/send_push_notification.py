@@ -19,7 +19,15 @@ class Command(BaseCommand):
                                   'comma separated, locale in first column, message in second column'))
         parser.add_argument('users',
                             metavar='users',
-                            help=(''))
+                            help=('path to file containing users, comma separated, expo push notification '
+                                  'token in first column, locale in second column'))
+        parser.add_argument('url',
+                            metavar='url',
+                            nargs='?',
+                            help=('optional url to route to in the app, can be "store", "welcome" or '
+                                  '"/task/<task id>". "store" is disabled and doesn\'t do anything until '
+                                  'we decide what the UX should be around that.'),
+                            default=None)
 
     def handle(self, *args, **options):
         users = options['users']
@@ -30,7 +38,9 @@ class Command(BaseCommand):
         notifications = read_csv_data_from_file(message)
         valid_notifications = validate_localized_notifications(notifications)
 
-        send_push_notifications(valid_users, valid_notifications)
+        url = options['url']
+
+        send_push_notifications(valid_users, valid_notifications, url)
 
 
 def validate_users(users):
@@ -67,15 +77,22 @@ def validate_localized_notifications(notifications):
     return result
 
 
-def send_push_notifications(users, localized_notifications):
+def send_push_notifications(users, localized_notifications, url):
     for user in users:
         token = user['token']
         locale = user['locale']
         message = localized_notifications[locale]
-        send_push_message(token, message)
+        extra = build_extra_data(url)
+        send_push_message(token, message, extra)
 
 
-def send_push_message(token, message, extra=None):
+def build_extra_data(url):
+    if url:
+        return {'navigateToRoute': url}
+    return None
+
+
+def send_push_message(token, message, extra):
     try:
         response = PushClient().publish(PushMessage(to=token, body=message, data=extra))
 
