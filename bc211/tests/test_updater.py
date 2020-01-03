@@ -11,7 +11,7 @@ from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
 from human_services.services.models import Service
 from human_services.services.tests.helpers import ServiceBuilder
-from common.testhelpers.random_test_values import a_phone_number, a_string
+from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
 
 
 class UpdateOrganizationTests(TestCase):
@@ -80,22 +80,81 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(sal[0].location.id, location_dto.id)
         self.assertEqual(sal[0].service.id, service_dto.id)
 
-    def xxxxx_test_can_remove_existing_service_record(self):
+    def test_that_a_new_service_under_a_location_is_created(self):
+        pass
+
+    def test_that_a_removed_service_under_a_location_causes_service_to_be_deleted(self):
         organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
+        location = (LocationBuilder(organization).
+                    with_long_lat(a_float(), a_float()).
+                    create())
         ServiceBuilder(organization).with_location(location).create()
 
-        self.assertEqual(len(Service.objects.all()), 0)
+        self.assertEqual(len(Service.objects.all()), 1)
+        # TODO Move this to the more specific test below
+        self.assertEqual(len(ServiceAtLocation.objects.all()), 1)
 
-        new_location_dto = (LocationBuilder(organization).
-                            with_id(location.id).
+        new_location = (LocationBuilder(organization).
+                        with_id(location.id).
+                        with_long_lat(a_float(), a_float()).
+                        build_dto())
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([new_location]).
                             build_dto())
-        new_organization_dto = (OrganizationBuilder().with_id(organization.id).
-                                with_locations([new_location_dto]).
-                                build())
-        save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
+        # TODO Move this to the more specific test below
+        self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
+
+    def test_that_service_under_different_location_is_not_deleted(self):
+        pass
+
+    def test_that_service_in_input_is_not_deleted(self):
+        # organization with location and two services, update with one service gone, make sure the other one is still there...
+        pass
+
+    def test_that_service_under_different_organization_is_not_deleted(self):
+        pass
+
+    def test_that_a_removed_service_under_a_location_causes_serviceatlocation_to_be_deleted(self):
+        pass
+
+    def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
+        pass
+
+    def test_that_a_removed_service_under_a_location_causes_taskservicesimilarity_to_be_deleted(self):
+        pass
+
+    def test_that_changes_to_a_service_under_a_location_are_saved(self):
+        pass
+
+    def test_that_changes_to_service_taxonomy_terms_are_saved(self):
+        pass
+
+    # def test_can_remove_existing_service_record(self):
+    #     # for a given location, find all related services through the ServiceAtLocation
+    #     # relation, compare list of these ids with the incoming ones, remove newly absent
+    #     # services, with their related ServiceAtLocation and Taxonomy bridging rows
+    #     organization = OrganizationBuilder().create()
+    #     location = LocationBuilder(organization).create()
+    #     ServiceBuilder(organization).with_location(location).create()
+
+    #     self.assertEqual(len(Service.objects.all()), 1)
+    #     self.assertEqual(len(ServiceAtLocation.objects.all()), 1)
+
+    #     location_dto_without_service = (LocationBuilder(organization).
+    #                                     with_id(location.id).
+    #                                     build_dto())
+    #     new_organization_dto = (OrganizationBuilder().with_id(organization.id).
+    #                             with_locations([location_dto_without_service]).
+    #                             build_dto())
+    #     save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
+
+    #     self.assertEqual(len(Service.objects.all()), 0)
+    #     self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
 
     def test_does_not_remove_service_record_for_unrelated_organization(self):
         pass

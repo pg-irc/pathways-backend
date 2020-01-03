@@ -26,7 +26,7 @@ def save_organization_with_locations_and_services(organization, city_latlong_map
     locations = list(organization.locations)
     save_locations(locations, city_latlong_map, counters)
     for location in locations:
-        save_services(location.services, counters)
+        save_services_for_location(location.id, location.services, counters)
 
 
 def save_organization(organization, counters):
@@ -168,8 +168,29 @@ def build_service_at_location_active_record(record):
     active_record.location_id = record.site_id
     return active_record
 
+# TODO rename to reflect that it assumes all services belong to the same location....
 
-def save_services(services, counters):
+# for a given location, find all related services through the ServiceAtLocation
+# relation, compare list of these ids with the incoming ones, remove newly absent
+# services, with their related ServiceAtLocation and Taxonomy bridging rows
+
+# get the location id
+# get all service_at_location records
+# get all the service ids from that
+# get all the ids that are in that list and absent from the new services
+
+
+def save_services_for_location(location_id, services, counters):
+    new_service_ids = [s.id for s in services]
+
+    old_services = ServiceAtLocation.objects.filter(location_id=location_id).all()
+    services_to_remove = [s.service_id for s in old_services if s.id not in new_service_ids]
+    links_to_remove = [s.id for s in old_services if s.service_id not in new_service_ids]
+
+    # TODO make this a cascade delete
+    ServiceAtLocation.objects.filter(pk__in=links_to_remove).delete()
+    Service.objects.filter(pk__in=services_to_remove).delete()
+
     for service in services:
         if is_inactive(service):
             continue

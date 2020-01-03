@@ -1,6 +1,6 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.importer import parse_csv, save_locations, save_organization, save_organization_with_locations_and_services, save_services
+from bc211.importer import parse_csv, save_locations, save_organization, save_organization_with_locations_and_services, save_services_for_location
 from bc211.parser import parse_agency
 from bc211.import_counters import ImportCounters
 from bc211.exceptions import XmlParseException

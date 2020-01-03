@@ -1,6 +1,6 @@
 import logging
 from bc211 import dtos
-from bc211.importer import handle_parser_errors, save_locations, save_organization, save_organization_with_locations_and_services, save_services, save_services
+from bc211.importer import handle_parser_errors, save_locations, save_organization, save_organization_with_locations_and_services, save_services_for_location, save_services_for_location
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
 from django.contrib.gis.geos import Point
@@ -159,7 +159,7 @@ class InactiveDataImportTests(TestCase):
                           with_location(location).
                           build_dto())
 
-        save_services([inactive_service, active_service], ImportCounters())
+        save_services_for_location(location.id, [inactive_service, active_service], ImportCounters())
         all_records_from_database = Service.objects.all()
 
         self.assertEqual(len(all_records_from_database), 1)
