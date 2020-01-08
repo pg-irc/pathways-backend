@@ -1,5 +1,5 @@
 language: python
-python: 3.6.3
+python: 3.7.6
 # See https://github.com/travis-ci/travis-ci/issues/6972.
 addons:
   postgresql: 9.6
