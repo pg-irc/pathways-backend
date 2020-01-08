@@ -85,7 +85,7 @@ class LocationWithMissingLatLongImportTests(TestCase):
                                     with_physical_address(address_in_vancouver).
                                     build_dto())
 
-        save_locations([location_without_latlong], {'Vancouver': Point(-123.120738, 49.282729)}, ImportCounters())
+        save_locations([location_without_latlong], organization.id, {'Vancouver': Point(-123.120738, 49.282729)}, ImportCounters())
 
         self.assertAlmostEqual(location_without_latlong.spatial_location.latitude, 49.282729)
         self.assertAlmostEqual(location_without_latlong.spatial_location.longitude, -123.120738)
@@ -104,7 +104,7 @@ class LocationWithMissingLatLongImportTests(TestCase):
                                     with_physical_address(address_in_vancouver).
                                     build_dto())
 
-        save_locations([location_without_latlong], {}, ImportCounters())
+        save_locations([location_without_latlong], organization.id, {}, ImportCounters())
 
         self.assertEqual(location_without_latlong.spatial_location, None)
 
@@ -141,7 +141,7 @@ class InactiveDataImportTests(TestCase):
         inactive_location = LocationBuilder(organization).with_description(inactive_description).build_dto()
         active_location = LocationBuilder(organization).build_dto()
 
-        save_locations([inactive_location, active_location], {}, ImportCounters())
+        save_locations([inactive_location, active_location], organization.id, {}, ImportCounters())
         all_records_from_database = Location.objects.all()
 
         self.assertEqual(len(all_records_from_database), 1)

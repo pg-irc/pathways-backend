@@ -24,7 +24,7 @@ def parse_csv(csv_path):
 def save_organization_with_locations_and_services(organization, city_latlong_map, counters):
     save_organization(organization, counters)
     locations = list(organization.locations)
-    save_locations(locations, city_latlong_map, counters)
+    save_locations(locations, organization.id, city_latlong_map, counters)
     for location in locations:
         save_services_for_location(location.id, location.services, counters)
 
@@ -70,14 +70,8 @@ def get_or_create_organization_active_record(pk):
     return record
 
 
-def save_locations(locations, city_latlong_map, counters):
-    if not locations:
-        return
-    organizations = {location.organization_id for location in locations}
-    if len(organizations) > 1:
-        raise RuntimeError('Unexpected to get locations from more than one organization')
+def save_locations(locations, organization_id, city_latlong_map, counters):
     location_ids = {location.id for location in locations}
-    organization_id = locations[0].organization_id
     Location.objects.filter(organization_id=organization_id).exclude(pk__in=location_ids).delete()
     for location in locations:
         save_location(location, city_latlong_map, counters)
