@@ -14,6 +14,15 @@ from human_services.services.tests.helpers import ServiceBuilder
 from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
 
 
+# def test_that_new_C_under_P_creates_record(self):
+# def test_that_newly_absent_C_under_P_is_removed(self):
+# def test_that_C_under_newly_absent_P_is_removed(self):
+# def test_that_newly_inactive_C_under_P_is_removed(self):
+# def test_that_changed_C_under_P_is_updated(self):
+# def test_that_C_under_different_P_is_not_deleted(self):
+# def test_saving_C_does_not_cause_deletion_of_Cs_for_other_Ps(self):
+
+
 class UpdateOrganizationTests(TestCase):
 
     def test_can_update_an_organization(self):
@@ -36,7 +45,7 @@ class UpdateOrganizationTests(TestCase):
     def test_can_delete_newly_absent_organization(self):
         pass
 
-    def test_can_create_new_location_record(self):
+    def test_that_new_location_under_organization_creates_record(self):
         organization = OrganizationBuilder().create()
 
         location = LocationBuilder(organization).build_dto()
@@ -51,7 +60,7 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(len(locations), 1)
         self.assertEqual(locations[0].id, location.id)
 
-    def test_that_newly_absent_location_is_removed(self):
+    def test_that_newly_absent_location_under_organization_is_removed(self):
         organization = OrganizationBuilder().create()
         LocationBuilder(organization).create()
         new_organization_without_location_dto = OrganizationBuilder().with_id(organization.id).build_dto()
@@ -60,7 +69,17 @@ class UpdateOrganizationTests(TestCase):
 
         self.assertEqual(len(Location.objects.all()), 0)
 
-    def test_can_create_new_service_record(self):
+    def test_that_newly_inactive_location_under_organization_is_removed(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        new_location = LocationBuilder(organization).with_id(location.id).with_description('DEL').build_dto()
+        new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location]).build_dto()
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(Location.objects.all()), 0)
+
+    def test_that_new_service_under_location_creates_record(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
 
@@ -86,10 +105,7 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(sal[0].location.id, location_dto.id)
         self.assertEqual(sal[0].service.id, service_dto.id)
 
-    def test_that_a_new_service_under_a_location_is_created(self):
-        pass
-
-    def test_that_a_removed_service_under_a_location_causes_service_to_be_deleted(self):
+    def test_that_newly_absent_service_under_location_is_removed(self):
         organization = OrganizationBuilder().create()
         location = (LocationBuilder(organization).
                     with_long_lat(a_float(), a_float()).
@@ -115,9 +131,6 @@ class UpdateOrganizationTests(TestCase):
         # TODO Move this to the more specific test below
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
 
-    def test_that_service_under_different_location_is_not_deleted(self):
-        pass
-
     def test_that_service_in_input_is_not_deleted(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).with_long_lat(a_float(), a_float()).create()
@@ -141,9 +154,7 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(len(Service.objects.all()), 1)
         self.assertEqual(Service.objects.all()[0].id, service_id)
 
-    # TODO test records newly marked as inactive
-
-    def test_that_service_under_different_organization_is_not_deleted(self):
+    def test_saving_service_does_not_cause_deletion_of_services_for_other_organizations(self):
         pass
 
     def test_that_a_removed_service_under_a_location_causes_serviceatlocation_to_be_deleted(self):
@@ -155,35 +166,7 @@ class UpdateOrganizationTests(TestCase):
     def test_that_a_removed_service_under_a_location_causes_taskservicesimilarity_to_be_deleted(self):
         pass
 
-    def test_that_changes_to_a_service_under_a_location_are_saved(self):
-        pass
-
     def test_that_changes_to_service_taxonomy_terms_are_saved(self):
-        pass
-
-    # def test_can_remove_existing_service_record(self):
-    #     # for a given location, find all related services through the ServiceAtLocation
-    #     # relation, compare list of these ids with the incoming ones, remove newly absent
-    #     # services, with their related ServiceAtLocation and Taxonomy bridging rows
-    #     organization = OrganizationBuilder().create()
-    #     location = LocationBuilder(organization).create()
-    #     ServiceBuilder(organization).with_location(location).create()
-
-    #     self.assertEqual(len(Service.objects.all()), 1)
-    #     self.assertEqual(len(ServiceAtLocation.objects.all()), 1)
-
-    #     location_dto_without_service = (LocationBuilder(organization).
-    #                                     with_id(location.id).
-    #                                     build_dto())
-    #     new_organization_dto = (OrganizationBuilder().with_id(organization.id).
-    #                             with_locations([location_dto_without_service]).
-    #                             build_dto())
-    #     save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
-
-    #     self.assertEqual(len(Service.objects.all()), 0)
-    #     self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
-
-    def test_does_not_remove_service_record_for_unrelated_organization(self):
         pass
 
 
@@ -204,7 +187,7 @@ class UpdateLocationTests(TestCase):
         LocationAddress(address=address, location=location,
                         address_type=self.postal_address_type).save()
 
-    def test_update_existing_location(self):
+    def test_that_changed_location_under_organization_is_updated(self):
         LocationBuilder(self.organization).with_id(self.location_id).create()
         the_new_name = a_string()
         new_location_dto = (LocationBuilder(self.organization).
@@ -219,7 +202,7 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(all_locations[0].id, self.location_id)
         self.assertEqual(all_locations[0].name, new_location_dto.name)
 
-    def test_update_phone_number_on_existing_location(self):
+    def test_that_changed_phone_number_under_location_is_updated(self):
         location = (LocationBuilder(self.organization).
                     with_id(self.location_id).
                     create())
@@ -242,7 +225,7 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(len(phone_numbers), 1)
         self.assertEqual(phone_numbers[0].phone_number, new_phone_number)
 
-    def test_changing_physical_address_on_location_replaces_address_record(self):
+    def test_that_changed_physical_address_under_location_is_updated(self):
         old_address = (AddressBuilder().
                        with_location_id(self.location_id).
                        create())
@@ -271,13 +254,13 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(len(addresses), 1)
         self.assertEqual(addresses[0].city, new_address.city)
 
-    def test_changing_postal_address_on_location_replaces_address_record(self):
+    def test_that_changed_postal_address_under_location_is_updated(self):
         old_address = (AddressBuilder().
                        with_location_id(self.location_id).
                        create())
         location = (LocationBuilder(self.organization).
                     with_id(self.location_id).
-                    with_physical_address(old_address).
+                    with_postal_address(old_address).
                     create())
 
         self.set_postal_address(location, old_address)
@@ -300,13 +283,13 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(len(addresses), 1)
         self.assertEqual(addresses[0].city, new_address.city)
 
-    def test_saving_locations_creates_new_location_entry(self):
+    def test_that_new_location_under_organization_creates_record(self):
         save_locations([(LocationBuilder(self.organization).build_dto())], self.organization.id, {}, ImportCounters())
 
         locations = Location.objects.all()
         self.assertEqual(len(locations), 1)
 
-    def test_saving_locations_creates_new_address_entry(self):
+    def test_that_new_address_under_location_creates_record(self):
         address = (AddressBuilder().
                    with_location_id(self.location_id).
                    with_address_type('postal_address').
@@ -316,7 +299,7 @@ class UpdateLocationTests(TestCase):
         save_locations([location], self.organization.id, {}, ImportCounters())
         self.assertEqual(len(Address.objects.all()), 1)
 
-    def test_saving_locations_creates_new_phone_number_entry(self):
+    def test_that_new_phone_number_under_location_creates_record(self):
         phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=self.phone_number_type_id,
                                                      phone_number=a_phone_number(),
                                                      location_id=self.location_id)
@@ -327,7 +310,7 @@ class UpdateLocationTests(TestCase):
         save_locations([location_dto], self.organization.id, {}, ImportCounters())
         self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
 
-    def test_saving_locations_deletes_newly_absent_locations_from_same_organization(self):
+    def test_that_newly_absent_locations_under_organization_is_removed(self):
         first_location = LocationBuilder(self.organization).create()
         second_location = LocationBuilder(self.organization).create()
         third_location = LocationBuilder(self.organization).create()
@@ -345,7 +328,7 @@ class UpdateLocationTests(TestCase):
         self.assertEqual(len(locations), 1)
         self.assertEqual(locations[0].id, first_location.id)
 
-    def test_saving_locations_with_newly_absent_location_removes_address_record_for_missing_location(self):
+    def test_that_address_under_newly_absent_location_is_removed(self):
         address = (AddressBuilder().
                    with_location_id(self.location_id).
                    create())
@@ -366,7 +349,7 @@ class UpdateLocationTests(TestCase):
 
         self.assertEqual(len(LocationAddress.objects.all()), 0)
 
-    def test_saving_locations_with_newly_absent_location_removes_phone_nubmer_record(self):
+    def test_that_phone_number_under_newly_absent_location_is_removed(self):
         location = (LocationBuilder(self.organization). create())
         PhoneAtLocation.objects.create(phone_number_type=self.phone_number_type,
                                        phone_number=a_phone_number(),
@@ -396,5 +379,3 @@ class UpdateLocationTests(TestCase):
         self.assertIn(second_location.id, location_ids)
 
 
-class UpdateServiceTests(TestCase):
-    pass
