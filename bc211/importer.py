@@ -184,10 +184,9 @@ def save_services_for_location(location_id, services, counters):
     new_service_ids = [s.id for s in services]
 
     old_services = ServiceAtLocation.objects.filter(location_id=location_id).all()
-    services_to_remove = [s.service_id for s in old_services if s.id not in new_service_ids]
+    services_to_remove = [s.service_id for s in old_services if s.service_id not in new_service_ids]
     links_to_remove = [s.id for s in old_services if s.service_id not in new_service_ids]
 
-    # TODO make this a cascade delete
     ServiceAtLocation.objects.filter(pk__in=links_to_remove).delete()
     Service.objects.filter(pk__in=services_to_remove).delete()
 

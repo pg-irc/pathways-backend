@@ -113,8 +113,29 @@ class UpdateOrganizationTests(TestCase):
         pass
 
     def test_that_service_in_input_is_not_deleted(self):
-        # organization with location and two services, update with one service gone, make sure the other one is still there...
-        pass
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).with_long_lat(a_float(), a_float()).create()
+        service_id = a_string()
+        first_service_builder = ServiceBuilder(organization).with_id(service_id).with_location(location)
+        second_service_builder = ServiceBuilder(organization).with_location(location)
+
+        first_service_builder.create()
+        second_service_builder.create()
+
+        new_location = (LocationBuilder(organization).
+                        with_id(location.id).
+                        with_services([first_service_builder.build_dto()]).
+                        build_dto())
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([new_location]).
+                            build_dto())
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(Service.objects.all()), 1)
+        self.assertEqual(Service.objects.all()[0].id, service_id)
+
+    # TODO test records newly marked as inactive
 
     def test_that_service_under_different_organization_is_not_deleted(self):
         pass
