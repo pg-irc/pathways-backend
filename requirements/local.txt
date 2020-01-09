@@ -21,3 +21,6 @@ pur==5.3.0
 
 # documentation, TODO remove
 Sphinx==2.3.1
+
+# Parse yaml files
+pyyaml==5.3

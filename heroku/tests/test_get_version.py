@@ -1,7 +1,6 @@
 from django.test import TestCase
 from heroku import version
-import yaml
-
+from yaml import safe_load
 
 class TestVersion(TestCase):
 
@@ -15,7 +14,7 @@ class TestVersion(TestCase):
 
     def test_version_in_heroku_init_py_matches_travis_yml(self):
         with open('.travis.yml', 'r') as stream:
-            travis_configuration_data = yaml.safe_load(stream)
+            travis_configuration_data = safe_load(stream)
             travis_python_version = travis_configuration_data['python']
             prefixed_travis_python_version = 'python-{}'.format(travis_python_version)
             self.assertEqual(prefixed_travis_python_version, self.version)
