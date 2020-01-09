@@ -162,17 +162,6 @@ def build_service_at_location_active_record(record):
     active_record.location_id = record.site_id
     return active_record
 
-# TODO rename to reflect that it assumes all services belong to the same location....
-
-# for a given location, find all related services through the ServiceAtLocation
-# relation, compare list of these ids with the incoming ones, remove newly absent
-# services, with their related ServiceAtLocation and Taxonomy bridging rows
-
-# get the location id
-# get all service_at_location records
-# get all the service ids from that
-# get all the ids that are in that list and absent from the new services
-
 
 def save_services_for_location(location_id, services, counters):
     new_service_ids = [s.id for s in services]
