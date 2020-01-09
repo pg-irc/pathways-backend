@@ -71,7 +71,7 @@ def get_or_create_organization_active_record(pk):
 
 
 def save_locations(locations, organization_id, city_latlong_map, counters):
-    location_ids = {location.id for location in locations}
+    location_ids = {location.id for location in locations if not is_inactive(location)}
     Location.objects.filter(organization_id=organization_id).exclude(pk__in=location_ids).delete()
     for location in locations:
         save_location(location, city_latlong_map, counters)
