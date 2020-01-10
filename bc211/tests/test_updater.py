@@ -42,6 +42,16 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(len(organizations), 1)
         self.assertEqual(organizations[0].id, organization.id)
 
+    def test_that_changed_organization_is_updated(self):
+        organization = OrganizationBuilder().create()
+        new_organization = OrganizationBuilder().with_id(organization.id).build_dto()
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        organizations = Organization.objects.all()
+        self.assertEqual(len(organizations), 1)
+        self.assertEqual(organizations[0].name, new_organization.name)
+
     def test_can_delete_newly_absent_organization(self):
         pass
 
@@ -72,7 +82,7 @@ class LocationsUnderOrganizationTests(TestCase):
         second_location = LocationBuilder(organization).create()
 
         locations = Location.objects.all()
-        self.assertEqual(len(locations), 3)
+        self.assertEqual(len(locations), 2)
 
         new_locations = [(LocationBuilder(organization).
                           with_id(first_location.id).
@@ -117,10 +127,8 @@ class LocationsUnderOrganizationTests(TestCase):
         organization = OrganizationBuilder().create()
         location_id = a_string()
         LocationBuilder(organization).with_id(location_id).create()
-        the_new_name = a_string()
         new_location_dto = (LocationBuilder(organization).
                             with_id(location_id).
-                            with_name(the_new_name).
                             build_dto())
 
         save_locations([new_location_dto], organization.id, {}, ImportCounters())
@@ -258,9 +266,7 @@ class LocationPropertiesTests(TestCase):
                         address_type=self.postal_address_type).save()
 
     def test_that_changed_phone_number_under_location_is_updated(self):
-        location = (LocationBuilder(self.organization).
-                    with_id(self.location_id).
-                    create())
+        location = LocationBuilder(self.organization). with_id(self.location_id). create()
         PhoneAtLocation.objects.create(phone_number_type=self.phone_number_type,
                                        phone_number=a_phone_number(),
                                        location=location)
@@ -281,9 +287,7 @@ class LocationPropertiesTests(TestCase):
         self.assertEqual(phone_numbers[0].phone_number, new_phone_number)
 
     def test_that_changed_physical_address_under_location_is_updated(self):
-        old_address = (AddressBuilder().
-                       with_location_id(self.location_id).
-                       create())
+        old_address = AddressBuilder().with_location_id(self.location_id).create()
         location = (LocationBuilder(self.organization).
                     with_id(self.location_id).
                     with_physical_address(old_address).
