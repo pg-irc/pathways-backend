@@ -10,6 +10,7 @@ from human_services.addresses.models import Address, AddressType
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from taxonomies.models import TaxonomyTerm
 from bc211.exceptions import XmlParseException
+from search.models import TaskServiceSimilarityScore
 
 LOGGER = logging.getLogger(__name__)
 
@@ -173,6 +174,7 @@ def save_services_for_location(location_id, services, counters):
     links_to_delete = ServiceAtLocation.objects.filter(location_id=location_id).exclude(service_id__in=new_service_ids).all()
     services_to_delete = [s.service_id for s in links_to_delete]
     ServiceAtLocation.objects.filter(pk__in=[s.id for s in links_to_delete]).delete()
+    TaskServiceSimilarityScore.objects.filter(service_id__in=services_to_delete).delete()
     Service.objects.filter(pk__in=services_to_delete).delete()
     for service in services:
         if is_inactive(service):

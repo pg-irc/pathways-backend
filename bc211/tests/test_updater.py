@@ -11,9 +11,10 @@ from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
 from human_services.services.models import Service
 from human_services.services.tests.helpers import ServiceBuilder
-from common.testhelpers.random_test_values import a_phone_number, a_string
+from human_services.services_at_location.tests.helpers import set_service_similarity_score
+from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
+from search.models import Task, TaskServiceSimilarityScore
 from taxonomies.tests.helpers import TaxonomyTermBuilder
-
 
 # def test_that_new_C_under_P_creates_record(self):
 # def test_that_newly_absent_C_under_P_is_removed(self):
@@ -233,8 +234,53 @@ class ServicesUnderLocationTests(TestCase):
     def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
         pass
 
+    def test_that_a_changed_service_under_a_location_keeps_the_taskservicesimilarity_unchangeds(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        service = ServiceBuilder(organization).with_location(location).create()
+
+        task_id = a_string()
+        Task(id=task_id, name=a_string(), description=a_string()).save()
+        set_service_similarity_score(task_id, service.id, a_float())
+
+        self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
+
+        new_service = (ServiceBuilder(organization).
+                       with_id(service.id).
+                       with_location(location).
+                       build_dto())
+        new_location = (LocationBuilder(organization).
+                        with_id(location.id).
+                        with_services([new_service]).
+                        build_dto())
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([new_location]).
+                            build_dto())
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
+        self.assertEqual(TaskServiceSimilarityScore.objects.all()[0].service_id, service.id)
+
     def test_that_a_removed_service_under_a_location_causes_taskservicesimilarity_to_be_deleted(self):
-        pass
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        service = ServiceBuilder(organization).with_location(location).create()
+
+        task_id = a_string()
+        Task(id=task_id, name=a_string(), description=a_string()).save()
+        set_service_similarity_score(task_id, service.id, a_float())
+
+        self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
+
+        location_without_service = LocationBuilder(organization).with_id(location.id).build_dto()
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([location_without_service]).
+                            build_dto())
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 0)
 
     def test_that_changes_to_service_taxonomy_terms_are_saved(self):
         organization = OrganizationBuilder().create()
