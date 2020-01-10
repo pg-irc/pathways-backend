@@ -225,7 +225,7 @@ class ServicesUnderLocationTests(TestCase):
 
     def test_that_service_in_input_is_not_deleted(self):
         organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).with_long_lat(a_float(), a_float()).create()
+        location = LocationBuilder(organization).create()
         service_id = a_string()
         first_service_builder = ServiceBuilder(organization).with_id(service_id).with_location(location)
         second_service_builder = ServiceBuilder(organization).with_location(location)
