@@ -171,28 +171,44 @@ class ServicesUnderLocationTests(TestCase):
 
     def test_that_newly_absent_service_under_location_is_removed(self):
         organization = OrganizationBuilder().create()
-        location = (LocationBuilder(organization).
-                    with_long_lat(a_float(), a_float()).
-                    create())
+        location = LocationBuilder(organization).create()
         ServiceBuilder(organization).with_location(location).create()
 
-        self.assertEqual(len(Service.objects.all()), 1)
-        # TODO Move this to the more specific test below
-        self.assertEqual(len(ServiceAtLocation.objects.all()), 1)
-
-        new_location = (LocationBuilder(organization).
-                        with_id(location.id).
-                        with_long_lat(a_float(), a_float()).
-                        build_dto())
+        location_without_service = (LocationBuilder(organization).
+                                    with_id(location.id).
+                                    build_dto())
         new_organization = (OrganizationBuilder().
                             with_id(organization.id).
-                            with_locations([new_location]).
+                            with_locations([location_without_service]).
                             build_dto())
 
         save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
-        # TODO Move this to the more specific test below
+        self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
+
+    def test_that_newly_inactive_service_under_location_is_removed(self):
+        organization = OrganizationBuilder().create()
+        location = (LocationBuilder(organization).create())
+        service = ServiceBuilder(organization).with_location(location).create()
+
+        inactive_service = (ServiceBuilder(organization).
+                            with_id(service.id).
+                            with_description('DEL').
+                            with_location(location).
+                            build_dto())
+        location_with_inactive_service = (LocationBuilder(organization).
+                                          with_id(location.id).
+                                          with_services([inactive_service]).
+                                          build_dto())
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([location_with_inactive_service]).
+                            build_dto())
+
+        save_organization_with_locations_and_services(new_organization, (), ImportCounters())
+
+        self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
 
     def test_that_service_in_input_is_not_deleted(self):
@@ -386,4 +402,3 @@ class LocationPropertiesTests(TestCase):
         save_locations([second_location], self.organization.id, {}, ImportCounters())
 
         self.assertEqual(len(PhoneAtLocation.objects.all()), 0)
-
