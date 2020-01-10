@@ -209,6 +209,20 @@ class ServicesUnderLocationTests(TestCase):
         self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
 
+    def test_that_changed_service_under_location_is_updated(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        service = ServiceBuilder(organization).with_location(location).create()
+
+        new_service = ServiceBuilder(organization).with_id(service.id).with_location(location).build_dto()
+        new_location = LocationBuilder(organization).with_id(location.id).with_services([new_service]).build_dto()
+        new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location]).build_dto()
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(Service.objects.all()), 1)
+        self.assertEqual(Service.objects.all()[0].name, new_service.name)
+
     def test_that_service_in_input_is_not_deleted(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).with_long_lat(a_float(), a_float()).create()
