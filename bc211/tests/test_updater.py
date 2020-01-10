@@ -11,7 +11,8 @@ from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
 from human_services.services.models import Service
 from human_services.services.tests.helpers import ServiceBuilder
-from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
+from common.testhelpers.random_test_values import a_phone_number, a_string
+from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 
 # def test_that_new_C_under_P_creates_record(self):
@@ -222,29 +223,6 @@ class ServicesUnderLocationTests(TestCase):
 
         self.assertEqual(len(Service.objects.all()), 1)
         self.assertEqual(Service.objects.all()[0].name, new_service.name)
-
-    def test_that_service_in_input_is_not_deleted(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        service_id = a_string()
-        first_service_builder = ServiceBuilder(organization).with_id(service_id).with_location(location)
-        second_service_builder = ServiceBuilder(organization).with_location(location)
-
-        first_service_builder.create()
-        second_service_builder.create()
-
-        new_location = (LocationBuilder(organization).
-                        with_id(location.id).
-                        with_services([first_service_builder.build_dto()]).
-                        build_dto())
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([new_location]).
-                            build_dto())
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(Service.objects.all()), 1)
-        self.assertEqual(Service.objects.all()[0].id, service_id)
 
     def test_saving_service_does_not_cause_deletion_of_services_for_other_organizations(self):
         pass
