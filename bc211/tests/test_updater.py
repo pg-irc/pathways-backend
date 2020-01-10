@@ -237,7 +237,33 @@ class ServicesUnderLocationTests(TestCase):
         pass
 
     def test_that_changes_to_service_taxonomy_terms_are_saved(self):
-        pass
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        taxonomy_term = TaxonomyTermBuilder().create()
+        service = (ServiceBuilder(organization).
+                   with_location(location).
+                   with_taxonomy_terms([taxonomy_term]).
+                   create())
+
+        new_taxonomy_term = TaxonomyTermBuilder().create()
+        new_service = (ServiceBuilder(organization).
+                       with_location(location).
+                       with_taxonomy_terms([new_taxonomy_term]).
+                       build_dto())
+        new_location = (LocationBuilder(organization).
+                        with_id(location.id).
+                        with_services([new_service]).
+                        build_dto())
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([new_location]).
+                            build_dto())
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(Service.objects.all()), 1)
+        sss = Service.objects.all()[0]
+        self.assertEqual(sss.taxonomy_terms.all()[0].taxonomy_id, new_taxonomy_term.taxonomy_id)
 
 
 class LocationPropertiesTests(TestCase):

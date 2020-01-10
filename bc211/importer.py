@@ -71,8 +71,13 @@ def get_or_create_organization_active_record(pk):
 
 
 def save_locations(locations, organization_id, city_latlong_map, counters):
-    location_ids = {location.id for location in locations if not is_inactive(location)}
-    Location.objects.filter(organization_id=organization_id).exclude(pk__in=location_ids).delete()
+    new_location_ids = [l.id for l in locations if not is_inactive(l)]
+    locations_to_delete = (Location.objects.filter(organization_id=organization_id).
+                           exclude(pk__in=new_location_ids).
+                           all())
+    location_ids_to_delete = [l.id for l in locations_to_delete]
+    ServiceAtLocation.objects.filter(location_id__in=location_ids_to_delete).delete()
+    Location.objects.filter(pk__in=location_ids_to_delete).delete()
     for location in locations:
         save_location(location, city_latlong_map, counters)
 
