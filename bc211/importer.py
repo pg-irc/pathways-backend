@@ -177,6 +177,7 @@ def save_services_for_location(location_id, services, counters):
     TaskServiceSimilarityScore.objects.filter(service_id__in=services_to_delete).delete()
     Service.objects.filter(pk__in=services_to_delete).delete()
     for service in services:
+        delete_existing_service_taxonomy_terms(service)
         if is_inactive(service):
             continue
         active_record = build_service_active_record(service)
@@ -186,6 +187,10 @@ def save_services_for_location(location_id, services, counters):
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
+
+def delete_existing_service_taxonomy_terms(service):
+    for s in Service.objects.filter(pk=service.id):
+        s.taxonomy_terms.clear()
 
 def service_already_exists(service):
     return Service.objects.filter(pk=service.id).exists()

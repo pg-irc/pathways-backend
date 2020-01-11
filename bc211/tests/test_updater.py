@@ -14,6 +14,7 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.services_at_location.tests.helpers import set_service_similarity_score
 from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
 from search.models import Task, TaskServiceSimilarityScore
+from taxonomies.models import TaxonomyTerm
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 
 # def test_that_new_C_under_P_creates_record(self):
@@ -228,12 +229,6 @@ class ServicesUnderLocationTests(TestCase):
     def test_saving_service_does_not_cause_deletion_of_services_for_other_organizations(self):
         pass
 
-    def test_that_a_removed_service_under_a_location_causes_serviceatlocation_to_be_deleted(self):
-        pass
-
-    def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
-        pass
-
     def test_that_a_changed_service_under_a_location_keeps_the_taskservicesimilarity_unchangeds(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
@@ -308,8 +303,42 @@ class ServicesUnderLocationTests(TestCase):
         save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 1)
-        sss = Service.objects.all()[0]
-        self.assertEqual(sss.taxonomy_terms.all()[0].taxonomy_id, new_taxonomy_term.taxonomy_id)
+        all_services = Service.objects.all()
+        self.assertEqual(all_services[0].taxonomy_terms.all()[0].taxonomy_id, new_taxonomy_term.taxonomy_id)
+
+    def test_that_a_changed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        term = TaxonomyTermBuilder().create()
+        service = (ServiceBuilder(organization).
+                   with_location(location).
+                   with_taxonomy_terms([term]).
+                   create())
+        self.assertEqual((Service.objects.
+                          filter(pk=service.id).all()[0].
+                          taxonomy_terms.all()[0].
+                          taxonomy_id), term.taxonomy_id)
+
+        new_service_without_taxonomy_term = (ServiceBuilder(organization).
+                                             with_id(service.id).
+                                             with_location(location).
+                                             build_dto())
+        new_location = (LocationBuilder(organization).
+                        with_id(location.id).
+                        with_services([new_service_without_taxonomy_term]).
+                        build_dto())
+        new_organization = (OrganizationBuilder().
+                            with_id(organization.id).
+                            with_locations([new_location]).
+                            build_dto())
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(Service.objects.filter(pk=service.id).all()[0].taxonomy_terms.all()), 0)
+
+    def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
+        pass
+
 
 
 class LocationPropertiesTests(TestCase):
