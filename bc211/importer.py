@@ -22,16 +22,16 @@ def parse_csv(csv_path):
         return city_to_latlong
 
 
-def save_organization_with_locations_and_services(organization, city_latlong_map, counters):
-    save_organization(organization, counters)
+def update_organization(organization, city_latlong_map, counters):
+    save_organization_if_needed(organization, counters)
     locations = list(organization.locations)
-    save_locations(locations, organization.id, city_latlong_map, counters)
+    update_locations(locations, organization.id, city_latlong_map, counters)
     for location in locations:
         if not is_inactive(location):
-            save_services_for_location(location.id, location.services, counters)
+            update_services_for_location(location.id, location.services, counters)
 
 
-def save_organization(organization, counters):
+def save_organization_if_needed(organization, counters):
     if is_inactive(organization):
         return
     translation.activate('en')
@@ -72,7 +72,7 @@ def get_or_create_organization_active_record(pk):
     return record
 
 
-def save_locations(locations, organization_id, city_latlong_map, counters):
+def update_locations(locations, organization_id, city_latlong_map, counters):
     new_location_ids = [l.id for l in locations if not is_inactive(l)]
     locations_to_delete = (Location.objects.filter(organization_id=organization_id).
                            exclude(pk__in=new_location_ids).
@@ -81,10 +81,10 @@ def save_locations(locations, organization_id, city_latlong_map, counters):
     ServiceAtLocation.objects.filter(location_id__in=location_ids_to_delete).delete()
     Location.objects.filter(pk__in=location_ids_to_delete).delete()
     for location in locations:
-        save_location(location, city_latlong_map, counters)
+        save_location_if_needed(location, city_latlong_map, counters)
 
 
-def save_location(location, city_latlong_map, counters):
+def save_location_if_needed(location, city_latlong_map, counters):
     if is_inactive(location):
         return
     location_with_latlong = validate_latlong_on_location(location, city_latlong_map)
@@ -170,7 +170,7 @@ def build_service_at_location_active_record(record):
     return active_record
 
 
-def save_services_for_location(location_id, services, counters):
+def update_services_for_location(location_id, services, counters):
     new_service_ids = [s.id for s in services if not is_inactive(s)]
     links_to_delete = ServiceAtLocation.objects.filter(location_id=location_id).exclude(service_id__in=new_service_ids).all()
     services_to_delete = [s.service_id for s in links_to_delete]
@@ -178,20 +178,25 @@ def save_services_for_location(location_id, services, counters):
     TaskServiceSimilarityScore.objects.filter(service_id__in=services_to_delete).delete()
     Service.objects.filter(pk__in=services_to_delete).delete()
     for service in services:
-        delete_existing_service_taxonomy_terms(service)
-        if is_inactive(service):
-            continue
-        active_record = build_service_active_record(service)
-        active_record.save()
-        counters.count_service()
-        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
-        save_service_at_location(service)
-        save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
+        save_service_if_needed(service, counters)
+
+
+def save_service_if_needed(service, counters):
+    delete_existing_service_taxonomy_terms(service)
+    if is_inactive(service):
+        return
+    active_record = build_service_active_record(service)
+    active_record.save()
+    counters.count_service()
+    LOGGER.debug('Service "%s" "%s"', service.id, service.name)
+    save_service_at_location(service)
+    save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
 
 def delete_existing_service_taxonomy_terms(service):
     for s in Service.objects.filter(pk=service.id):
         s.taxonomy_terms.clear()
+
 
 def service_already_exists(service):
     return Service.objects.filter(pk=service.id).exists()

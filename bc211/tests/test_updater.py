@@ -1,7 +1,7 @@
 from django.db import connection
 from django.test import TestCase
 from bc211 import dtos
-from bc211.importer import save_locations, save_organization_with_locations_and_services
+from bc211.importer import update_locations, update_organization
 from bc211.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
@@ -33,7 +33,7 @@ class UpdateOrganizationTests(TestCase):
         old_organization = OrganizationBuilder().create()
         new_organization = OrganizationBuilder().with_id(old_organization.id).build_dto()
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
         self.assertEqual(len(organizations), 1)
@@ -41,7 +41,7 @@ class UpdateOrganizationTests(TestCase):
 
     def test_can_create_a_new_organization(self):
         organization = OrganizationBuilder().build_dto()
-        save_organization_with_locations_and_services(organization, {}, ImportCounters())
+        update_organization(organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
         self.assertEqual(len(organizations), 1)
@@ -65,7 +65,7 @@ class LocationsUnderOrganizationTests(TestCase):
                                       with_locations([location]).
                                       build_dto())
 
-        save_organization_with_locations_and_services(organization_with_location, {}, ImportCounters())
+        update_organization(organization_with_location, {}, ImportCounters())
 
         locations = Location.objects.all()
         self.assertEqual(len(locations), 1)
@@ -83,7 +83,7 @@ class LocationsUnderOrganizationTests(TestCase):
                           with_id(first_location.id).
                           build_dto())]
 
-        save_locations(new_locations, organization.id, {}, ImportCounters())
+        update_locations(new_locations, organization.id, {}, ImportCounters())
 
         locations = Location.objects.all()
         self.assertEqual(len(locations), 1)
@@ -98,7 +98,7 @@ class LocationsUnderOrganizationTests(TestCase):
                             with_locations([inactive_location]).
                             build_dto())
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Location.objects.all()), 0)
 
@@ -109,7 +109,7 @@ class LocationsUnderOrganizationTests(TestCase):
         second_organization = OrganizationBuilder().create()
         second_location = LocationBuilder(second_organization).create()
 
-        save_locations([(LocationBuilder(second_organization).
+        update_locations([(LocationBuilder(second_organization).
                          with_id(second_location.id).
                          build_dto())], second_organization.id, {}, ImportCounters())
 
@@ -126,7 +126,7 @@ class LocationsUnderOrganizationTests(TestCase):
                             with_id(location_id).
                             build_dto())
 
-        save_locations([new_location_dto], organization.id, {}, ImportCounters())
+        update_locations([new_location_dto], organization.id, {}, ImportCounters())
 
         all_locations = Location.objects.all()
         self.assertEqual(len(all_locations), 1)
@@ -150,7 +150,7 @@ class ServicesUnderLocationTests(TestCase):
                                 with_id(organization.id).
                                 with_locations([location_dto]).
                                 build_dto())
-        save_organization_with_locations_and_services(new_organization_dto, {}, ImportCounters())
+        update_organization(new_organization_dto, {}, ImportCounters())
 
         services = Service.objects.all()
         self.assertEqual(len(services), 1)
@@ -174,7 +174,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([location_without_service]).
                             build_dto())
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
@@ -198,7 +198,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([location_with_inactive_service]).
                             build_dto())
 
-        save_organization_with_locations_and_services(new_organization, (), ImportCounters())
+        update_organization(new_organization, (), ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
@@ -212,7 +212,7 @@ class ServicesUnderLocationTests(TestCase):
         new_location = LocationBuilder(organization).with_id(location.id).with_services([new_service]).build_dto()
         new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location]).build_dto()
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 1)
         self.assertEqual(Service.objects.all()[0].name, new_service.name)
@@ -243,7 +243,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_id(organization.id).
                             with_locations([new_location]).
                             build_dto())
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
         self.assertEqual(TaskServiceSimilarityScore.objects.all()[0].service_id, service.id)
@@ -264,7 +264,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_id(organization.id).
                             with_locations([location_without_service]).
                             build_dto())
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 0)
 
@@ -291,7 +291,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([new_location]).
                             build_dto())
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 1)
         all_services = Service.objects.all()
@@ -323,7 +323,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([new_location]).
                             build_dto())
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.filter(pk=service.id).all()[0].taxonomy_terms.all()), 0)
 
@@ -343,7 +343,7 @@ class ServicesUnderLocationTests(TestCase):
         new_location_without_service = LocationBuilder(organization).with_id(location.id).build_dto()
         new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location_without_service]).build_dto()
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
 
@@ -363,7 +363,7 @@ class ServicesUnderLocationTests(TestCase):
          with_taxonomy_terms([term]).
          build_dto())
 
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+        update_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
 
@@ -424,7 +424,7 @@ class LocationPropertiesTests(TestCase):
                                     with_phone_numbers([new_phone_at_location_dto]).
                                     build_dto())
 
-        save_locations([location_with_new_number], self.organization.id, {}, ImportCounters())
+        update_locations([location_with_new_number], self.organization.id, {}, ImportCounters())
 
         phone_numbers = PhoneAtLocation.objects.all()
         self.assertEqual(len(phone_numbers), 1)
@@ -447,7 +447,7 @@ class LocationPropertiesTests(TestCase):
                                      with_id(self.location_id).
                                      with_physical_address(new_address).
                                      build_dto())
-        save_locations([location_with_new_address], self.organization.id, {}, ImportCounters())
+        update_locations([location_with_new_address], self.organization.id, {}, ImportCounters())
 
         location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
         self.assertEqual(len(location_addresses), 1)
@@ -476,7 +476,7 @@ class LocationPropertiesTests(TestCase):
                                      with_id(self.location_id).
                                      with_physical_address(new_address).
                                      build_dto())
-        save_locations([location_with_new_address], self.organization.id, {}, ImportCounters())
+        update_locations([location_with_new_address], self.organization.id, {}, ImportCounters())
 
         location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
         self.assertEqual(len(location_addresses), 1)
@@ -493,7 +493,7 @@ class LocationPropertiesTests(TestCase):
                    build_dto())
         location = LocationBuilder(self.organization).with_postal_address(address).build_dto()
 
-        save_locations([location], self.organization.id, {}, ImportCounters())
+        update_locations([location], self.organization.id, {}, ImportCounters())
         self.assertEqual(len(Address.objects.all()), 1)
 
     def test_that_new_phone_number_under_location_creates_record(self):
@@ -504,7 +504,7 @@ class LocationPropertiesTests(TestCase):
                         with_id(self.location_id).
                         with_phone_numbers([phone_at_location_dto]).
                         build_dto())
-        save_locations([location_dto], self.organization.id, {}, ImportCounters())
+        update_locations([location_dto], self.organization.id, {}, ImportCounters())
         self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
 
     def test_that_address_under_newly_absent_location_is_removed(self):
@@ -524,7 +524,7 @@ class LocationPropertiesTests(TestCase):
 
         self.assertEqual(len(LocationAddress.objects.all()), 1)
 
-        save_locations([updated_second_location], self.organization.id, {}, ImportCounters())
+        update_locations([updated_second_location], self.organization.id, {}, ImportCounters())
 
         self.assertEqual(len(LocationAddress.objects.all()), 0)
 
@@ -537,6 +537,6 @@ class LocationPropertiesTests(TestCase):
 
         location_without_phonenumber = LocationBuilder(self.organization).build_dto()
 
-        save_locations([location_without_phonenumber], self.organization.id, {}, ImportCounters())
+        update_locations([location_without_phonenumber], self.organization.id, {}, ImportCounters())
 
         self.assertEqual(len(PhoneAtLocation.objects.all()), 0)
