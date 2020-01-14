@@ -36,6 +36,7 @@ class UpdateOrganizationTests(TestCase):
         save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
+        self.assertEqual(len(organizations), 1)
         self.assertEqual(organizations[0].name, new_organization.name)
 
     def test_can_create_a_new_organization(self):
@@ -45,16 +46,6 @@ class UpdateOrganizationTests(TestCase):
         organizations = Organization.objects.all()
         self.assertEqual(len(organizations), 1)
         self.assertEqual(organizations[0].id, organization.id)
-
-    def test_that_changed_organization_is_updated(self):
-        organization = OrganizationBuilder().create()
-        new_organization = OrganizationBuilder().with_id(organization.id).build_dto()
-
-        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
-
-        organizations = Organization.objects.all()
-        self.assertEqual(len(organizations), 1)
-        self.assertEqual(organizations[0].name, new_organization.name)
 
     def test_can_delete_newly_absent_organization(self):
         pass
@@ -521,8 +512,8 @@ class LocationPropertiesTests(TestCase):
                                        location=location)
         self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
 
-        second_location = LocationBuilder(self.organization).build_dto()
+        location_without_phonenumber = LocationBuilder(self.organization).build_dto()
 
-        save_locations([second_location], self.organization.id, {}, ImportCounters())
+        save_locations([location_without_phonenumber], self.organization.id, {}, ImportCounters())
 
         self.assertEqual(len(PhoneAtLocation.objects.all()), 0)
