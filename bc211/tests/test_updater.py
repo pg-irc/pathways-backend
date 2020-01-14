@@ -133,7 +133,6 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(all_locations[0].id, location_id)
         self.assertEqual(all_locations[0].name, new_location_dto.name)
 
-
 class ServicesUnderLocationTests(TestCase):
 
     def test_that_new_service_under_location_creates_record(self):
@@ -367,6 +366,30 @@ class ServicesUnderLocationTests(TestCase):
         save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
+
+    # def test_that_service_under_inactive_location_is_not_saved(self):
+    #     organization_id = a_string()
+
+    #     organization = OrganizationBuilder().with_id(organization_id).build()
+    #     service_builder = ServiceBuilder(organization)
+    #     location_builder = (LocationBuilder(organization).
+    #                         with_services([service_builder]).
+    #                         with_description('XYZ'))
+    #     organization = (OrganizationBuilder().
+    #                     with_id(organization_id).
+    #                     with_locations([location_builder.
+    #                                     with_description('CXCC').
+    #                                     with_services([
+    #                                             service_builder.
+    #                                             with_location(location_builder.build()).
+    #                                             build_dto()]).
+    #                                     build_dto()]).
+    #                     build_dto())
+
+    #     save_organization_with_locations_and_services(organization, {}, ImportCounters())
+
+    #     self.assertEqual(len(Service.objects.all()), 1)
+
 
 
 class LocationPropertiesTests(TestCase):

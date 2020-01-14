@@ -27,7 +27,8 @@ def save_organization_with_locations_and_services(organization, city_latlong_map
     locations = list(organization.locations)
     save_locations(locations, organization.id, city_latlong_map, counters)
     for location in locations:
-        save_services_for_location(location.id, location.services, counters)
+        if not is_inactive(location):
+            save_services_for_location(location.id, location.services, counters)
 
 
 def save_organization(organization, counters):

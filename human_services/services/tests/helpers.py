@@ -43,6 +43,7 @@ class ServiceBuilder:
         self.taxonomy_terms = taxonomy_terms
         return self
 
+    # TODO rename to indicate that this is used for create() only
     def with_location(self, location):
         self.location_ids.append(location.id)
         return self
