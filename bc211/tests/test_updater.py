@@ -1,3 +1,4 @@
+from django.db import connection
 from django.test import TestCase
 from bc211 import dtos
 from bc211.importer import save_locations, save_organization_with_locations_and_services
@@ -336,9 +337,45 @@ class ServicesUnderLocationTests(TestCase):
 
         self.assertEqual(len(Service.objects.filter(pk=service.id).all()[0].taxonomy_terms.all()), 0)
 
-    def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
-        pass
+    def get_all_service_taxonomy_terms(self):
+        with connection.cursor() as cursor:
+            cursor.execute('select * from services_service_taxonomy_terms')
+            return cursor.fetchall()
 
+    def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        term = TaxonomyTermBuilder().create()
+        ServiceBuilder(organization).with_location(location).with_taxonomy_terms([term]).create()
+
+        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 1)
+
+        new_location_without_service = LocationBuilder(organization).with_id(location.id).build_dto()
+        new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location_without_service]).build_dto()
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
+
+    def test_that_a_newly_inactive_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+        term = TaxonomyTermBuilder().create()
+        ServiceBuilder(organization).with_location(location).with_taxonomy_terms([term]).create()
+
+        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 1)
+
+        new_location = LocationBuilder(organization).with_id(location.id).build_dto()
+        new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location]).build_dto()
+        (ServiceBuilder(organization).
+         with_location(new_location).
+         with_description('DEL').
+         with_taxonomy_terms([term]).
+         build_dto())
+
+        save_organization_with_locations_and_services(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
 
 
 class LocationPropertiesTests(TestCase):
