@@ -15,16 +15,7 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.services_at_location.tests.helpers import set_service_similarity_score
 from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
 from search.models import Task, TaskServiceSimilarityScore
-from taxonomies.models import TaxonomyTerm
 from taxonomies.tests.helpers import TaxonomyTermBuilder
-
-# def test_that_new_C_under_P_creates_record(self):
-# def test_that_newly_absent_C_under_P_is_removed(self):
-# def test_that_C_under_newly_absent_P_is_removed(self):
-# def test_that_newly_inactive_C_under_P_is_removed(self):
-# def test_that_changed_C_under_P_is_updated(self):
-# def test_that_C_under_different_P_is_not_deleted(self):
-# def test_saving_C_does_not_cause_deletion_of_Cs_for_other_Ps(self):
 
 
 class UpdateOrganizationTests(TestCase):
@@ -540,3 +531,56 @@ class LocationPropertiesTests(TestCase):
         update_locations([location_without_phonenumber], self.organization.id, {}, ImportCounters())
 
         self.assertEqual(len(PhoneAtLocation.objects.all()), 0)
+
+
+class ImportCountTests(TestCase):
+    def test_that_a_new_organization_is_counted(self):
+        organization = OrganizationBuilder().build_dto()
+        counters = ImportCounters()
+
+        update_organization(organization, {}, counters)
+
+        self.assertEqual(counters.organization_count, 1)
+
+    def test_that_a_new_location_is_counted(self):
+        organization = OrganizationBuilder().create()
+
+        location_dto = (LocationBuilder(organization).
+                        build_dto())
+        new_organization_dto = (OrganizationBuilder().
+                                with_id(organization.id).
+                                with_locations([location_dto]).
+                                build_dto())
+        counters = ImportCounters()
+
+        update_organization(new_organization_dto, {}, counters)
+
+        self.assertEqual(counters.location_count, 1)
+
+    def test_that_a_new_service_is_counted(self):
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+
+        service_dto = (ServiceBuilder(organization).
+                       with_location(location).
+                       build_dto())
+        location_dto = (LocationBuilder(organization).
+                        with_id(location.id).
+                        with_services([service_dto]).
+                        build_dto())
+        new_organization_dto = (OrganizationBuilder().
+                                with_id(organization.id).
+                                with_locations([location_dto]).
+                                build_dto())
+        counters = ImportCounters()
+        update_organization(new_organization_dto, {}, counters)
+        self.assertEqual(counters.service_count, 1)
+
+    def test_that_a_updated_organization_is_counted(self):
+        pass
+
+    def test_that_a_updated_location_is_counted(self):
+        pass
+
+    def test_that_a_updated_service_is_counted(self):
+        pass
