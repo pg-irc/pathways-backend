@@ -15,7 +15,7 @@ drf_yasg==1.17.0
 awesome-slugify==1.6.5
 polib==1.1.0
 
-# authentication, TODO remove
+# authentication: Used in testing and user registration
 argon2-cffi==19.2.0
 django-allauth==0.41.0
 
@@ -41,5 +41,5 @@ whitenoise==5.0.1
 django-redis==4.11.0
 redis==3.3.11
 
-# front end tech, TODO remove
+# front end tech: Used in Django Admin
 django-crispy-forms==1.8.1
