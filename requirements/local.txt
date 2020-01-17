@@ -1,7 +1,7 @@
 -r test.txt
 
 # Code analysis tools
-coverage==5.0.2
+coverage==5.0.3
 django-coverage-plugin==1.6.0
 flake8==3.7.9 # pyup: != 2.6.0
 pylint==2.4.4
