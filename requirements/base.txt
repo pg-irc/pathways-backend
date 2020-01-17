@@ -45,7 +45,6 @@ redis==3.3.11
 django-crispy-forms==1.8.1
 
 # code analysis, TODO move or remove
-astroid==2.3.3
 isort==4.3.21
 
 # TODO remove
