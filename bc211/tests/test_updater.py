@@ -580,7 +580,22 @@ class ImportCountTests(TestCase):
         pass
 
     def test_that_a_updated_location_is_counted(self):
-        pass
+        organization = OrganizationBuilder().create()
+        location = LocationBuilder(organization).create()
+
+        new_location_dto = (LocationBuilder(organization).
+                            with_id(location.id).
+                            build_dto())
+        new_organization_dto = (OrganizationBuilder().
+                                with_id(organization.id).
+                                with_locations([new_location_dto]).
+                                build_dto())
+        counters = ImportCounters()
+
+        update_organization(new_organization_dto, {}, counters)
+
+        self.assertEqual(counters.updated_location_count, 1)
+
 
     def test_that_a_updated_service_is_counted(self):
         pass

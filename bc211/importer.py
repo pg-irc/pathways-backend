@@ -71,17 +71,33 @@ def get_or_create_organization_active_record(pk):
     record.id = pk
     return record
 
+# Get current location ids
+# Find the set of locations to delete
+# Delete them
+# For each current location:
+# . Try to retrieve the existing location
+# . Check to see if it has changed
+# . Either create, update or do nothing
+
 
 def update_locations(locations, organization_id, city_latlong_map, counters):
-    new_location_ids = [l.id for l in locations if not is_inactive(l)]
+    location_ids_to_delete = get_ids_of_locations_to_delete(locations, organization_id)
+    delete_locations(location_ids_to_delete)
+    for location in locations:
+        save_location_if_needed(location, city_latlong_map, counters)
+
+
+def get_ids_of_locations_to_delete(locations, organization_id):
+    new_location_ids = [location.id for location in locations if not is_inactive(location)]
     locations_to_delete = (Location.objects.filter(organization_id=organization_id).
                            exclude(pk__in=new_location_ids).
                            all())
-    location_ids_to_delete = [l.id for l in locations_to_delete]
+    return [location.id for location in locations_to_delete]
+
+
+def delete_locations(location_ids_to_delete):
     ServiceAtLocation.objects.filter(location_id__in=location_ids_to_delete).delete()
     Location.objects.filter(pk__in=location_ids_to_delete).delete()
-    for location in locations:
-        save_location_if_needed(location, city_latlong_map, counters)
 
 
 def save_location_if_needed(location, city_latlong_map, counters):
