@@ -44,9 +44,6 @@ redis==3.3.11
 # front end tech, TODO remove
 django-crispy-forms==1.8.1
 
-# testing, TODO move to test.txt
-lazy-object-proxy==1.4.3
-
 # parsing TODO remove
 parse==1.14.0
 parse-type==0.5.2
