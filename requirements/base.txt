@@ -45,7 +45,6 @@ redis==3.3.11
 django-crispy-forms==1.8.1
 
 # parsing TODO remove
-parse==1.14.0
 parse-type==0.5.2
 
 # code analysis, TODO move or remove
