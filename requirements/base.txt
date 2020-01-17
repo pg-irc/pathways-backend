@@ -44,9 +44,6 @@ redis==3.3.11
 # front end tech, TODO remove
 django-crispy-forms==1.8.1
 
-# parsing TODO remove
-parse-type==0.5.2
-
 # code analysis, TODO move or remove
 astroid==2.3.3
 isort==4.3.21
