@@ -44,8 +44,5 @@ redis==3.3.11
 # front end tech, TODO remove
 django-crispy-forms==1.8.1
 
-# code analysis, TODO move or remove
-isort==4.3.21
-
 # TODO remove
 wrapt==1.11.2
