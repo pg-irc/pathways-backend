@@ -92,6 +92,7 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         elif not existing:
             save_location(location, None, city_latlong_map, counters)
 
+
 def get_ids_of_locations_to_delete(locations, organization_id):
     new_location_ids = [location.id for location in locations if not is_inactive(location)]
     locations_to_delete = (Location.objects.filter(organization_id=organization_id).
@@ -117,24 +118,24 @@ def is_location_equal(active_record, dto):
 
 
 def save_location(location, existing_active_record, city_latlong_map, counters):
-    location_with_latlong = validate_latlong_on_location(location, city_latlong_map)
+    location = set_latlong_from_address_if_missing(location, city_latlong_map)
 
     active_record = (existing_active_record if existing_active_record
                      else create_location_active_record_with_id(location.id))
     update_location_properties(location, active_record)
     active_record.save()
     counters.count_location()
-    LOGGER.debug('Location "%s" "%s"', location_with_latlong.id, location_with_latlong.name)
+    LOGGER.debug('Location "%s" "%s"', location.id, location.name)
 
-    if location_with_latlong.physical_address:
-        create_address_for_location(active_record, location_with_latlong.physical_address, counters)
-    if location_with_latlong.postal_address:
-        create_address_for_location(active_record, location_with_latlong.postal_address, counters)
-    if location_with_latlong.phone_numbers:
-        create_phone_numbers_for_location(active_record, location_with_latlong.phone_numbers, counters)
+    if location.physical_address:
+        create_address_for_location(active_record, location.physical_address, counters)
+    if location.postal_address:
+        create_address_for_location(active_record, location.postal_address, counters)
+    if location.phone_numbers:
+        create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
 
 
-def validate_latlong_on_location(location_dto, city_latlong_map):
+def set_latlong_from_address_if_missing(location_dto, city_latlong_map):
     if location_dto.spatial_location is not None:
         return location_dto
     if location_dto.physical_address is None:
