@@ -84,8 +84,13 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
     location_ids_to_delete = get_ids_of_locations_to_delete(locations, organization_id)
     delete_locations(location_ids_to_delete)
     for location in locations:
-        save_location_if_needed(location, city_latlong_map, counters)
-
+        if is_inactive(location):
+            continue
+        existing = get_existing_location_or_none(location)
+        if existing and not is_location_equal(existing, location):
+            save_location(location, existing, city_latlong_map, counters)
+        elif not existing:
+            save_location(location, None, city_latlong_map, counters)
 
 def get_ids_of_locations_to_delete(locations, organization_id):
     new_location_ids = [location.id for location in locations if not is_inactive(location)]
@@ -100,9 +105,18 @@ def delete_locations(location_ids_to_delete):
     Location.objects.filter(pk__in=location_ids_to_delete).delete()
 
 
-def save_location_if_needed(location, city_latlong_map, counters):
-    if is_inactive(location):
-        return
+def get_existing_location_or_none(location):
+    pk = location.id
+    if Location.objects.filter(id=pk).exists():
+        return Location.objects.get(id=pk)
+    return None
+
+
+def is_location_equal(active_record, dto):
+    return False
+
+
+def save_location(location, existing_active_record_or_none, city_latlong_map, counters):
     location_with_latlong = validate_latlong_on_location(location, city_latlong_map)
 
     active_record = build_location_active_record(location_with_latlong)
