@@ -116,10 +116,12 @@ def is_location_equal(active_record, dto):
     return False
 
 
-def save_location(location, existing_active_record_or_none, city_latlong_map, counters):
+def save_location(location, existing_active_record, city_latlong_map, counters):
     location_with_latlong = validate_latlong_on_location(location, city_latlong_map)
 
-    active_record = build_location_active_record(location_with_latlong)
+    active_record = (existing_active_record if existing_active_record
+                     else create_location_active_record_with_id(location.id))
+    update_location_properties(location, active_record)
     active_record.save()
     counters.count_location()
     LOGGER.debug('Location "%s" "%s"', location_with_latlong.id, location_with_latlong.name)
@@ -157,8 +159,13 @@ def is_inactive(record):
     return record.description and record.description.strip().startswith('DEL')
 
 
-def build_location_active_record(record):
-    active_record = get_or_create_location_active_record(record.id)
+def create_location_active_record_with_id(pk):
+    record = Location()
+    record.id = pk
+    return record
+
+
+def update_location_properties(record, active_record):
     active_record.name = record.name
     active_record.organization_id = record.organization_id
     active_record.description = record.description
@@ -166,14 +173,6 @@ def build_location_active_record(record):
     if has_location:
         active_record.point = Point(record.spatial_location.longitude, record.spatial_location.latitude)
     return active_record
-
-
-def get_or_create_location_active_record(pk):
-    if Location.objects.filter(id=pk).exists():
-        return Location.objects.get(id=pk)
-    record = Location()
-    record.id = pk
-    return record
 
 
 def build_service_active_record(record):
