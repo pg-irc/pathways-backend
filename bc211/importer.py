@@ -87,10 +87,10 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         if is_inactive(location):
             continue
         existing = get_existing_location_or_none(location)
-        if existing and not is_location_equal(existing, location):
-            save_location(location, existing, city_latlong_map, counters)
-        elif not existing:
+        if not existing:
             save_location(location, None, city_latlong_map, counters)
+        elif not is_location_equal(existing, location):
+            save_location(location, existing, city_latlong_map, counters)
 
 
 def get_ids_of_locations_to_delete(locations, organization_id):
@@ -114,6 +114,21 @@ def get_existing_location_or_none(location):
 
 
 def is_location_equal(active_record, dto):
+    return (active_record.id == dto.id and
+            active_record.name == dto.name and
+            active_record.organization_id == dto.organization_id and
+            active_record.description == dto.description and
+            active_record.spatial_location == dto.spatial_location and
+            is_address_equal(active_record.physical_address, dto.physical_address) and
+            is_address_equal(active_record.postal_address, dto.postal_address) and
+            is_phonenumbers_equal(active_record.phone_numbers, dto.phone_numbers))
+
+
+def is_address_equal(active_record, dto):
+    return False
+
+
+def is_phonenumbers_equal(active_record, dto):
     return False
 
 
