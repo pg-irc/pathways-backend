@@ -57,7 +57,7 @@ class Command(BaseCommand):
                             '{3} taxonomy term(s), {4} address(es), {5} phone number type(s), '
                             'and {6} phone number(s)')
         status_message = message_template.format(counts.organization_count,
-                                                 counts.location_count,
+                                                 counts.locations_created,
                                                  counts.service_count,
                                                  counts.taxonomy_term_count,
                                                  counts.address_count,

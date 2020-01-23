@@ -1,7 +1,7 @@
 class ImportCounters:
     def __init__(self):
         self.organization_count = 0
-        self.location_count = 0
+        self.locations_created = 0
         self.service_count = 0
         self.taxonomy_term_count = 0
         self.address_count = 0
@@ -12,7 +12,7 @@ class ImportCounters:
         self.organization_count += 1
 
     def count_location(self):
-        self.location_count += 1
+        self.locations_created += 1
 
     def count_service(self):
         self.service_count += 1

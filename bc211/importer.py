@@ -71,14 +71,6 @@ def get_or_create_organization_active_record(pk):
     record.id = pk
     return record
 
-# Get current location ids
-# Find the set of locations to delete
-# Delete them
-# For each current location:
-# . Try to retrieve the existing location
-# . Check to see if it has changed
-# . Either create, update or do nothing
-
 
 def update_locations(locations, organization_id, city_latlong_map, counters):
     location_ids_to_delete = get_ids_of_locations_to_delete(locations, organization_id)

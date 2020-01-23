@@ -555,7 +555,7 @@ class ImportCountTests(TestCase):
 
         update_organization(new_organization_dto, {}, counters)
 
-        self.assertEqual(counters.location_count, 1)
+        self.assertEqual(counters.locations_created, 1)
 
     def test_that_a_new_service_is_counted(self):
         organization = OrganizationBuilder().create()
@@ -575,6 +575,12 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
         update_organization(new_organization_dto, {}, counters)
         self.assertEqual(counters.service_count, 1)
+
+    # test that an unchanged location is not counted
+    # test that a changed location is counted
+    # test that a location with a changed postal address is counted
+    # test that a location with a changed physical address is counted
+    # test that a location with a changed phone number is counted
 
     def test_that_a_updated_organization_is_counted(self):
         pass
