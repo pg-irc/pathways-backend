@@ -81,8 +81,10 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         existing = get_existing_location_or_none(location)
         if not existing:
             save_location(location, None, city_latlong_map, counters)
+            counters.count_locations_created()
         elif not is_location_equal(existing, location):
             save_location(location, existing, city_latlong_map, counters)
+            counters.count_locations_updated()
 
 
 def get_ids_of_locations_to_delete(locations, organization_id):
@@ -131,7 +133,6 @@ def save_location(location, existing_active_record, city_latlong_map, counters):
                      else create_location_active_record_with_id(location.id))
     update_location_properties(location, active_record)
     active_record.save()
-    counters.count_location()
     LOGGER.debug('Location "%s" "%s"', location.id, location.name)
 
     if location.physical_address:

@@ -600,8 +600,7 @@ class ImportCountTests(TestCase):
 
         update_organization(new_organization_dto, {}, counters)
 
-        # self.assertEqual(counters.updated_location_count, 1)
-
+        self.assertEqual(counters.locations_updated, 1)
 
     def test_that_a_updated_service_is_counted(self):
         pass
