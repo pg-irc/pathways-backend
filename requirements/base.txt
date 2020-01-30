@@ -2,7 +2,7 @@
 wheel==0.33.6
 
 # python 2 compatibility
-six==1.13.0
+six==1.14.0
 
 # django
 django==3.0.2
@@ -15,7 +15,7 @@ drf_yasg==1.17.0
 awesome-slugify==1.6.5
 polib==1.1.0
 
-# authentication, TODO remove
+# authentication: Used in testing and user registration
 argon2-cffi==19.2.0
 django-allauth==0.41.0
 
@@ -41,23 +41,5 @@ whitenoise==5.0.1
 django-redis==4.11.0
 redis==3.3.11
 
-# front end tech, TODO remove
+# front end tech: Used in Django Admin
 django-crispy-forms==1.8.1
-Pillow==7.0.0
-
-# Time zones support, TODO remove
-pytz==2019.3
-
-# testing, TODO move to test.txt
-lazy-object-proxy==1.4.3
-
-# parsing TODO remove
-parse==1.14.0
-parse-type==0.5.2
-
-# code analysis, TODO move or remove
-astroid==2.3.3
-isort==4.3.21
-
-# TODO remove
-wrapt==1.11.2
