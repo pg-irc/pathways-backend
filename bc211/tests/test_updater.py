@@ -1,5 +1,6 @@
 from django.db import connection
 from django.test import TestCase
+from django.utils import translation
 from bc211 import dtos
 from bc211.importer import update_locations, update_organization
 from bc211.import_counters import ImportCounters
@@ -16,6 +17,9 @@ from human_services.services_at_location.tests.helpers import set_service_simila
 from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
 from search.models import Task, TaskServiceSimilarityScore
 from taxonomies.tests.helpers import TaxonomyTermBuilder
+
+
+translation.activate('en')
 
 
 class UpdateOrganizationTests(TestCase):
@@ -123,6 +127,7 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(len(all_locations), 1)
         self.assertEqual(all_locations[0].id, location_id)
         self.assertEqual(all_locations[0].name, new_location_dto.name)
+
 
 class ServicesUnderLocationTests(TestCase):
 
@@ -382,7 +387,6 @@ class ServicesUnderLocationTests(TestCase):
     #     self.assertEqual(len(Service.objects.all()), 1)
 
 
-
 class LocationPropertiesTests(TestCase):
     def setUp(self):
         self.location_id = a_string()
@@ -585,13 +589,12 @@ class ImportCountTests(TestCase):
     def test_that_a_updated_organization_is_counted(self):
         pass
 
-    def test_that_a_updated_location_is_counted(self):
+    def test_that_a_location_with_changed_name_is_counted_as_updated(self):
         organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
+        location_builder = LocationBuilder(organization)
+        location_builder.create()
 
-        new_location_dto = (LocationBuilder(organization).
-                            with_id(location.id).
-                            build_dto())
+        new_location_dto = location_builder.with_name(a_string()).build_dto()
         new_organization_dto = (OrganizationBuilder().
                                 with_id(organization.id).
                                 with_locations([new_location_dto]).
@@ -599,6 +602,38 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
 
         update_organization(new_organization_dto, {}, counters)
+
+        self.assertEqual(counters.locations_updated, 1)
+
+    def set_physical_address(self, location, address):
+        physical_address_type = AddressType.objects.get(pk='physical_address')
+        LocationAddress(address=address, location=location,
+                        address_type=physical_address_type).save()
+
+    def test_that_a_location_with_changed_address_is_counted_as_updated(self):
+        location_id = a_string()
+        organization = OrganizationBuilder().create()
+        old_address = (AddressBuilder().
+                       with_location_id(location_id).
+                       with_address_type('physical_address').
+                       create())
+        location_builder = (LocationBuilder(organization).
+                            with_id(location_id).
+                            with_physical_address(old_address))
+        location = location_builder.create()
+
+        self.set_physical_address(location, old_address)
+
+        new_address = (AddressBuilder().
+                       with_location_id(location_id).
+                       with_address_type('physical_address').
+                       build_dto())
+        location_with_new_address = (location_builder.
+                                     with_physical_address(old_address).
+                                     build_dto())
+
+        counters = ImportCounters()
+        update_locations([location_with_new_address], organization.id, {}, counters)
 
         self.assertEqual(counters.locations_updated, 1)
 

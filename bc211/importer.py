@@ -108,27 +108,71 @@ def get_existing_location_or_none(location):
 
 
 def is_location_equal(active_record, dto):
-    return (active_record.id == dto.id and
-            active_record.name == dto.name and
-            active_record.organization_id == dto.organization_id and
-            active_record.description == dto.description and
-            active_record.spatial_location == dto.spatial_location and
-            is_address_equal(active_record.physical_address, dto.physical_address) and
-            is_address_equal(active_record.postal_address, dto.postal_address) and
-            is_phonenumbers_equal(active_record.phone_numbers, dto.phone_numbers))
+    return hash_from_location_active_record(active_record) == hash_from_location_dto(dto)
 
 
-def is_address_equal(active_record, dto):
-    return False
+def hash_from_location_active_record(location):
+    longitude = location.point.x if location.point else None
+    latitude = location.point.y if location.point else None
+    result = hash_string_from_location(location.id, location.name, location.organization_id,
+                                       location.description, longitude, latitude)
+
+    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='foo').all()
+    if address:
+        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
+                                           address.postal_code, address.country, 'physical')
+
+    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='foo').all()
+    if address:
+        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
+                                           address.postal_code, address.country, 'postal')
+
+    phone_numbers = PhoneAtLocation.objects.filter(location_id=location.id).all()
+    phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type)
+                     for phone_number in phone_numbers]
+    phone_strings.sort()
+    for phone_string in phone_strings:
+        result += phone_string
+
+    return result
 
 
-def is_phonenumbers_equal(active_record, dto):
-    return False
+def hash_from_location_dto(location):
+    longitude = location.spatial_location.longitude if location.spatial_location else None
+    latitude = location.spatial_location.latitude if location.spatial_location else None
+    result = hash_string_from_location(location.id, location.name, location.organization_id,
+                                       location.description, longitude, latitude)
+    address = location.physical_address
+    if address:
+        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
+                                           address.postal_code, address.country, 'physical_address')
+    address = location.postal_address
+    if address:
+        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
+                                           address.postal_code, address.country, 'postal_address')
+    phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type_id)
+                     for phone_number in location.phone_numbers]
+    phone_strings.sort()
+    for phone_string in phone_strings:
+        result += phone_string
+
+    return result
+
+
+def hash_string_from_location(the_id, name, organization_id, description, longitude, latitude):
+    return f'{the_id}, {name}, {organization_id}, {description}, {longitude}, {latitude}'
+
+
+def hash_string_from_address(address, city, state, postal_code, country, the_type):
+    return f'{address}, {city}, {state}, {postal_code}, {country}, {the_type}'
+
+
+def hash_string_from_phone_number(phone_number, the_type):
+    return f'{phone_number}, {the_type}'
 
 
 def save_location(location, existing_active_record, city_latlong_map, counters):
     location = set_latlong_from_address_if_missing(location, city_latlong_map)
-
     active_record = (existing_active_record if existing_active_record
                      else create_location_active_record_with_id(location.id))
     update_location_properties(location, active_record)
