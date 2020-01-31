@@ -62,11 +62,12 @@ class LocationBuilder:
         return result
 
     def build_dto(self):
+        spatial_location = dtos.SpatialLocation(latitude=self.point.y, longitude=self.point.x) if self.point else None
         return dtos.Location(id=self.location_id,
                              name=self.name,
                              organization_id=self.organization.id,
                              description=self.description,
-                             spatial_location=None,
+                             spatial_location=spatial_location,
                              services=self.services,
                              physical_address=self.physical_address,
                              postal_address=self.postal_address,

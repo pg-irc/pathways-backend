@@ -108,6 +108,8 @@ def get_existing_location_or_none(location):
 
 
 def is_location_equal(active_record, dto):
+    print(hash_from_location_active_record(active_record))
+    print(hash_from_location_dto(dto))
     return hash_from_location_active_record(active_record) == hash_from_location_dto(dto)
 
 
@@ -117,15 +119,17 @@ def hash_from_location_active_record(location):
     result = hash_string_from_location(location.id, location.name, location.organization_id,
                                        location.description, longitude, latitude)
 
-    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='foo').all()
+    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='physical_address').all()
     if address:
-        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
-                                           address.postal_code, address.country, 'physical')
+        address = address[0].address
+        result += hash_string_from_address(address.address, address.city, address.state_province,
+                                           address.postal_code, address.country, 'physical_address')
 
-    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='foo').all()
+    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='postal_address').all()
     if address:
-        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
-                                           address.postal_code, address.country, 'postal')
+        address = address[0].address
+        result += hash_string_from_address(address.address, address.city, address.state_province,
+                                           address.postal_code, address.country, 'postal_address')
 
     phone_numbers = PhoneAtLocation.objects.filter(location_id=location.id).all()
     phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type)
