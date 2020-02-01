@@ -593,29 +593,64 @@ class ImportCountTests(TestCase):
     def test_that_an_unchanged_location_is_not_counted_as_updated(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
+        location_builder = LocationBuilder(organization).with_id(location_id)
+        location_builder.create()
+
+        new_location_dto = location_builder.build_dto()
+        new_organization_dto = (OrganizationBuilder().
+                                with_id(organization.id).
+                                with_locations([new_location_dto]).
+                                build_dto())
+        counters = ImportCounters()
+
+        update_organization(new_organization_dto, {}, counters)
+
+        self.assertEqual(counters.locations_updated, 0)
+
+    def test_that_an_unchanged_location_with_addresses_is_not_counted_as_updated(self):
+        organization = OrganizationBuilder().create()
+        location_id = a_string()
         postal_address_builder = (AddressBuilder().
                                   with_location_id(location_id).
                                   with_address_type('physical_address'))
-        postal_address = postal_address_builder.create()
         physical_address_builder = (AddressBuilder().
                                     with_location_id(location_id).
                                     with_address_type('physical_address'))
-        physical_address = physical_address_builder.create()
         location_builder = (LocationBuilder(organization).
                             with_id(location_id).
                             with_physical_address(physical_address_builder.build_dto()).
                             with_postal_address(postal_address_builder.build_dto()))
         location = location_builder.create()
 
+        postal_address = postal_address_builder.create()
+        physical_address = physical_address_builder.create()
+
         LocationAddress(address=postal_address, location=location, address_type_id='postal_address').save()
         LocationAddress(address=physical_address, location=location, address_type_id='physical_address').save()
 
+        new_location_dto = location_builder.build_dto()
+        new_organization_dto = (OrganizationBuilder().
+                                with_id(organization.id).
+                                with_locations([new_location_dto]).
+                                build_dto())
+        counters = ImportCounters()
+
+        update_organization(new_organization_dto, {}, counters)
+
+        self.assertEqual(counters.locations_updated, 0)
+
+    def test_that_an_unchanged_location_with_phone_number_is_not_counted_as_updated(self):
+        organization = OrganizationBuilder().create()
+        location_id = a_string()
+        location_builder = LocationBuilder(organization).with_id(location_id)
+        location = location_builder.create()
+
+        phone_number = a_phone_number()
         phone_type_id = a_string()
-        phone = a_phone_number()
         phone_type = PhoneNumberType.objects.create(id=phone_type_id)
-        PhoneAtLocation.objects.create(phone_number_type=phone_type, phone_number=phone, location=location)
+        PhoneAtLocation.objects.create(phone_number_type=phone_type, phone_number=phone_number, location=location)
         phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=phone_type_id,
-                                                     phone_number=phone,
+                                                     phone_number=phone_number,
                                                      location_id=location_id)
 
         new_location_dto = location_builder.with_phone_numbers([phone_at_location_dto]).build_dto()
