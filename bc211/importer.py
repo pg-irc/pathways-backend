@@ -132,7 +132,7 @@ def hash_from_location_active_record(location):
                                            address.postal_code, address.country, 'postal_address')
 
     phone_numbers = PhoneAtLocation.objects.filter(location_id=location.id).all()
-    phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type)
+    phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type.id)
                      for phone_number in phone_numbers]
     phone_strings.sort()
     for phone_string in phone_strings:

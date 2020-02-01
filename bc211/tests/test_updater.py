@@ -410,6 +410,7 @@ class LocationPropertiesTests(TestCase):
                                        phone_number=a_phone_number(),
                                        location=location)
         new_phone_number = a_phone_number()
+# HERE
         new_phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=self.phone_number_type_id,
                                                          phone_number=new_phone_number,
                                                          location_id=self.location_id)
@@ -590,7 +591,6 @@ class ImportCountTests(TestCase):
         pass
 
     def test_that_an_unchanged_location_is_not_counted_as_updated(self):
-        # TODO needs to two addresses and phone numbers
         organization = OrganizationBuilder().create()
         location_id = a_string()
         postal_address_builder = (AddressBuilder().
@@ -610,7 +610,15 @@ class ImportCountTests(TestCase):
         LocationAddress(address=postal_address, location=location, address_type_id='postal_address').save()
         LocationAddress(address=physical_address, location=location, address_type_id='physical_address').save()
 
-        new_location_dto = location_builder.build_dto()
+        phone_type_id = a_string()
+        phone = a_phone_number()
+        phone_type = PhoneNumberType.objects.create(id=phone_type_id)
+        PhoneAtLocation.objects.create(phone_number_type=phone_type, phone_number=phone, location=location)
+        phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=phone_type_id,
+                                                     phone_number=phone,
+                                                     location_id=location_id)
+
+        new_location_dto = location_builder.with_phone_numbers([phone_at_location_dto]).build_dto()
         new_organization_dto = (OrganizationBuilder().
                                 with_id(organization.id).
                                 with_locations([new_location_dto]).
