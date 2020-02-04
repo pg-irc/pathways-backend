@@ -72,18 +72,18 @@ def get_or_create_organization_active_record(pk):
     return record
 
 
-def update_locations(locations, organization_id, city_latlong_map, counters):
-    location_ids_to_delete = get_ids_of_locations_to_delete(locations, organization_id)
+def update_locations(new_locations, organization_id, city_latlong_map, counters):
+    location_ids_to_delete = get_ids_of_locations_to_delete(new_locations, organization_id)
     delete_locations(location_ids_to_delete)
-    for location in locations:
-        if is_inactive(location):
+    for new_location in new_locations:
+        if is_inactive(new_location):
             continue
-        existing = get_existing_location_or_none(location)
-        if not existing:
-            save_location(location, None, city_latlong_map, counters)
+        old_location = get_existing_location_or_none(new_location)
+        if not old_location:
+            save_location(new_location, None, city_latlong_map, counters)
             counters.count_locations_created()
-        elif not is_location_equal(existing, location):
-            save_location(location, existing, city_latlong_map, counters)
+        elif not is_location_equal(old_location, new_location):
+            save_location(new_location, old_location, city_latlong_map, counters)
             counters.count_locations_updated()
 
 
