@@ -167,6 +167,25 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(len(LocationAddress.objects.all()), 0)
         self.assertEqual(len(Address.objects.all()), 0)
 
+    def test_that_locations_with_added_phone_number_is_updated(self):
+        organization = OrganizationBuilder().create()
+        location_builder = LocationBuilder(organization)
+        location = location_builder.create()
+
+        phone_number = a_phone_number()
+        phone_number_type = a_string()
+        new_phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=phone_number_type,
+                                                         phone_number=phone_number,
+                                                         location_id=location.id)
+
+        location_dto = location_builder.with_phone_numbers([new_phone_at_location_dto]).build_dto()
+        update_locations([location_dto], organization.id, {}, ImportCounters())
+
+        phones_at_location = PhoneAtLocation.objects.filter(location_id=location.id).all()
+        self.assertEqual(len(phones_at_location), 1)
+        self.assertEqual(phones_at_location[0].phone_number, phone_number)
+        self.assertEqual(phones_at_location[0].phone_number_type.id, phone_number_type)
+
     def test_that_location_with_removed_phone_number_is_updated(self):
         organization = OrganizationBuilder().create()
         location_builder = LocationBuilder(organization)
@@ -184,13 +203,6 @@ class LocationsUnderOrganizationTests(TestCase):
         update_locations([location_dto], organization.id, {}, ImportCounters())
 
         self.assertEqual(len(PhoneAtLocation.objects.filter(location_id=location.id).all()), 0)
-
-
-        # add phone number
-        # remove phone number
-
-        # test that a changed location is counted
-        # test that a location with a changed phone number is counted
 
 
 class ServicesUnderLocationTests(TestCase):
