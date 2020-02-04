@@ -40,6 +40,10 @@ class LocationBuilder:
         self.physical_address = address
         return self
 
+    def without_physical_address(self):
+        self.physical_address = None
+        return self
+
     def with_postal_address(self, address):
         self.postal_address = address
         return self

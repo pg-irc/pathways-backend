@@ -128,6 +128,54 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(all_locations[0].id, location_id)
         self.assertEqual(all_locations[0].name, new_location_dto.name)
 
+    def test_that_location_with_added_address_is_updated(self):
+        organization = OrganizationBuilder().create()
+        location_id = a_string()
+        builder = LocationBuilder(organization).with_id(location_id)
+        builder.create()
+
+        the_city = a_string()
+        address_dto = (AddressBuilder().
+                       with_city(the_city).
+                       with_location_id(location_id).
+                       with_address_type('physical_address').
+                       build_dto())
+        location_dto = builder.with_physical_address(address_dto).build_dto()
+
+        update_locations([location_dto], organization.id, {}, ImportCounters())
+
+        location_addresses = LocationAddress.objects.filter(location_id=location_id).all()
+        self.assertEqual(len(location_addresses), 1)
+        addresses = Address.objects.filter(id=location_addresses[0].address_id).all()
+        self.assertEqual(len(addresses), 1)
+        self.assertEqual(addresses[0].city, the_city)
+
+    def test_that_location_with_removed_address_is_updated(self):
+        organization = OrganizationBuilder().create()
+        location_id = a_string()
+        address = (AddressBuilder().
+                   with_location_id(location_id).
+                   with_address_type('physical_address').
+                   create())
+        builder = LocationBuilder(organization).with_id(location_id)
+        location = builder.create()
+        LocationAddress(address=address, location=location, address_type_id='physical_address').save()
+
+        location_without_address = builder.without_physical_address().build_dto()
+
+        update_locations([location_without_address], organization.id, {}, ImportCounters())
+
+        location_addresses = LocationAddress.objects.all()
+        self.assertEqual(len(location_addresses), 0)
+        addresses = Address.objects.all()
+        self.assertEqual(len(addresses), 0)
+
+        # add phone number
+        # remove phone number
+
+        # test that a changed location is counted
+        # test that a location with a changed phone number is counted
+
 
 class ServicesUnderLocationTests(TestCase):
 
@@ -410,7 +458,6 @@ class LocationPropertiesTests(TestCase):
                                        phone_number=a_phone_number(),
                                        location=location)
         new_phone_number = a_phone_number()
-# HERE
         new_phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=self.phone_number_type_id,
                                                          phone_number=new_phone_number,
                                                          location_id=self.location_id)
@@ -580,12 +627,6 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
         update_organization(new_organization_dto, {}, counters)
         self.assertEqual(counters.service_count, 1)
-
-    # test that an unchanged location is not counted
-    # test that a changed location is counted
-    # test that a location with a changed postal address is counted
-    # test that a location with a changed physical address is counted
-    # test that a location with a changed phone number is counted
 
     def test_that_a_updated_organization_is_counted(self):
         pass
