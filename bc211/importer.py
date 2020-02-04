@@ -108,8 +108,6 @@ def get_existing_location_or_none(location):
 
 
 def is_location_equal(active_record, dto):
-    print(hash_from_location_active_record(active_record))
-    print(hash_from_location_dto(dto))
     return hash_from_location_active_record(active_record) == hash_from_location_dto(dto)
 
 
@@ -176,11 +174,7 @@ def hash_string_from_phone_number(phone_number, the_type):
 
 
 def save_location(location, existing_active_record, city_latlong_map, counters):
-    address_ids = [i.address_id for i in LocationAddress.objects.filter(location_id=location.id).all()]
-    LocationAddress.objects.filter(address_id__in=address_ids).delete()
-    Address.objects.filter(id__in=address_ids).delete()
-    PhoneAtLocation.objects.filter(location_id=location.id).delete()
-
+    delete_all_child_records_for_location(location.id)
     location = set_latlong_from_address_if_missing(location, city_latlong_map)
     active_record = (existing_active_record if existing_active_record
                      else create_location_active_record_with_id(location.id))
@@ -194,6 +188,13 @@ def save_location(location, existing_active_record, city_latlong_map, counters):
         create_address_for_location(active_record, location.postal_address, counters)
     if location.phone_numbers:
         create_phone_numbers_for_location(active_record, location.phone_numbers, counters)
+
+
+def delete_all_child_records_for_location(location_id):
+    address_ids = [i.address_id for i in LocationAddress.objects.filter(location_id=location_id).all()]
+    LocationAddress.objects.filter(address_id__in=address_ids).delete()
+    Address.objects.filter(id__in=address_ids).delete()
+    PhoneAtLocation.objects.filter(location_id=location_id).delete()
 
 
 def set_latlong_from_address_if_missing(location_dto, city_latlong_map):
