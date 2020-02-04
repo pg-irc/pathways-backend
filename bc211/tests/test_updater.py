@@ -162,13 +162,29 @@ class LocationsUnderOrganizationTests(TestCase):
         LocationAddress(address=address, location=location, address_type_id='physical_address').save()
 
         location_without_address = builder.without_physical_address().build_dto()
-
         update_locations([location_without_address], organization.id, {}, ImportCounters())
 
-        location_addresses = LocationAddress.objects.all()
-        self.assertEqual(len(location_addresses), 0)
-        addresses = Address.objects.all()
-        self.assertEqual(len(addresses), 0)
+        self.assertEqual(len(LocationAddress.objects.all()), 0)
+        self.assertEqual(len(Address.objects.all()), 0)
+
+    def test_that_location_with_removed_phone_number_is_updated(self):
+        organization = OrganizationBuilder().create()
+        location_builder = LocationBuilder(organization)
+        location = location_builder.create()
+
+        phone_number = a_phone_number()
+        phone_number_type = PhoneNumberType(id=a_string())
+        phone_number_type.save()
+        PhoneAtLocation(phone_number_type=phone_number_type,
+                        phone_number=phone_number,
+                        location=location).save()
+
+        location_dto = location_builder.with_phone_numbers([]).build_dto()
+
+        update_locations([location_dto], organization.id, {}, ImportCounters())
+
+        self.assertEqual(len(PhoneAtLocation.objects.filter(location_id=location.id).all()), 0)
+
 
         # add phone number
         # remove phone number

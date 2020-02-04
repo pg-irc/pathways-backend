@@ -179,6 +179,7 @@ def save_location(location, existing_active_record, city_latlong_map, counters):
     address_ids = [i.address_id for i in LocationAddress.objects.filter(location_id=location.id).all()]
     LocationAddress.objects.filter(address_id__in=address_ids).delete()
     Address.objects.filter(id__in=address_ids).delete()
+    PhoneAtLocation.objects.filter(location_id=location.id).delete()
 
     location = set_latlong_from_address_if_missing(location, city_latlong_map)
     active_record = (existing_active_record if existing_active_record
