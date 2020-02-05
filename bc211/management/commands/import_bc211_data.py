@@ -58,7 +58,7 @@ class Command(BaseCommand):
                             'and {6} phone number(s)')
         status_message = message_template.format(counts.organizations_created,
                                                  counts.locations_created,
-                                                 counts.service_count,
+                                                 counts.service_created,
                                                  counts.taxonomy_term_count,
                                                  counts.address_count,
                                                  counts.phone_number_types_count,

@@ -601,6 +601,7 @@ class ImportCountTests(TestCase):
         update_entire_organization(organization, {}, counters)
 
         self.assertEqual(counters.organizations_created, 1)
+        self.assertEqual(counters.organizations_updated, 0)
 
     def test_that_a_new_location_is_counted(self):
         organization = OrganizationBuilder().create()
@@ -616,6 +617,7 @@ class ImportCountTests(TestCase):
         update_entire_organization(new_organization_dto, {}, counters)
 
         self.assertEqual(counters.locations_created, 1)
+        self.assertEqual(counters.locations_updated, 0)
 
     def test_that_a_new_service_is_counted(self):
         organization = OrganizationBuilder().create()
@@ -634,7 +636,7 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
         update_entire_organization(new_organization_dto, {}, counters)
-        self.assertEqual(counters.service_count, 1)
+        self.assertEqual(counters.service_created, 1)
 
     def test_that_a_updated_organization_is_counted(self):
         organization_builder = OrganizationBuilder()
@@ -650,10 +652,36 @@ class ImportCountTests(TestCase):
         self.assertEqual(counters.organizations_updated, 1)
 
     def test_that_a_updated_location_is_counted(self):
-        pass
+        organization_builder = OrganizationBuilder()
+        organization = organization_builder.create()
+        location_builder = LocationBuilder(organization)
+        location_builder.create()
+        new_location_dto = location_builder.with_name(a_string()).build_dto()
+        new_organization_dto = organization_builder.with_locations([new_location_dto]).build_dto()
+        counters = ImportCounters()
+
+        update_entire_organization(new_organization_dto, {}, counters)
+
+        self.assertEqual(counters.locations_updated, 1)
+        self.assertEqual(counters.locations_created, 0)
 
     def test_that_a_updated_service_is_counted(self):
-        pass
+        organization_builder = OrganizationBuilder()
+        organization = organization_builder.create()
+        location_builder = LocationBuilder(organization)
+        location = location_builder.create()
+        service_builder = ServiceBuilder(organization).with_location(location)
+        service_builder.create()
+
+        changed_service = service_builder.with_name(a_string()).build_dto()
+        new_location = location_builder.with_services([changed_service]).build_dto()
+        new_organization = organization_builder.with_locations([new_location]).build_dto()
+
+        counters = ImportCounters()
+        update_entire_organization(new_organization, {}, counters)
+
+        self.assertEqual(counters.service_updated, 1)
+        self.assertEqual(counters.service_created, 0)
 
     def test_that_an_unchanged_organization_is_not_counted_as_updated(self):
         organization_builder = OrganizationBuilder()

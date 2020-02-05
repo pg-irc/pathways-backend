@@ -297,12 +297,64 @@ def save_service_if_needed(service, counters):
     delete_existing_service_taxonomy_terms(service)
     if is_inactive(service):
         return
-    active_record = build_service_active_record(service)
-    active_record.save()
-    counters.count_service()
-    LOGGER.debug('Service "%s" "%s"', service.id, service.name)
-    save_service_at_location(service)
-    save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
+    existing = get_existing_service_or_none(service)
+    if not existing:
+        active_record = build_service_active_record(service)
+        active_record.save()
+        counters.count_service()
+        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
+        save_service_at_location(service)
+        save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
+    elif not is_service_equal(existing, service):
+        active_record = build_service_active_record(service)
+        active_record.save()
+        counters.count_services_updates()
+        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
+        save_service_at_location(service)
+        save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
+
+
+def get_existing_service_or_none(service):
+    pk = service.id
+    if Service.objects.filter(id=pk).exists():
+        return Service.objects.get(id=pk)
+    return None
+
+
+def is_service_equal(active_record, dto):
+    return service_to_string(ArAdaptor(active_record)) == service_to_string(DtoAdapter(dto))
+
+
+class ArAdaptor:
+    def __init__(self, service):
+        self.service = service
+
+    def the_id(self):
+        return self.service.id
+
+    def name(self):
+        return self.service.name
+
+    def description(self):
+        return self.service.description
+
+
+class DtoAdapter:
+    def __init__(self, service):
+        self.service = service
+
+    def the_id(self):
+        return self.service.id
+
+    def name(self):
+        return self.service.name
+
+    def description(self):
+        return self.service.description
+
+
+def service_to_string(adapter):
+    return f'{adapter.the_id()}, {adapter.name()}, {adapter.description()}'
 
 
 def delete_existing_service_taxonomy_terms(service):
