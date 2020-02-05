@@ -1,6 +1,6 @@
 import logging
 from bc211 import dtos
-from bc211.importer import handle_parser_errors, update_locations, save_organization_if_needed, update_organization, update_services_for_location
+from bc211.importer import handle_parser_errors, update_locations, update_entire_organization, update_services_for_location
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
 from django.contrib.gis.geos import Point
@@ -60,7 +60,7 @@ class LocationImportTests(TestCase):
 
 def save_records_to_database(organizations, counters):
     for organization in handle_parser_errors(organizations):
-        update_organization(organization, {}, counters)
+        update_entire_organization(organization, {}, counters)
 
 
 class LocationWithMissingLatLongImportTests(TestCase):
@@ -264,7 +264,7 @@ class FullDataImportTests(TestCase):
         self.assertEqual(len(self.all_organizations), 16)
         self.assertEqual(len(self.all_locations), 40)
         self.assertEqual(len(self.all_taxonomy_terms), 134)
-        self.assertEqual(self.counts.organization_count, 16)
+        self.assertEqual(self.counts.organizations_created, 16)
         self.assertEqual(self.counts.locations_created, 40)
         self.assertEqual(self.counts.taxonomy_term_count, 134)
         self.assertEqual(self.counts.address_count, 36)

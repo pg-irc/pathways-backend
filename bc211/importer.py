@@ -22,8 +22,8 @@ def parse_csv(csv_path):
         return city_to_latlong
 
 
-def update_organization(organization, city_latlong_map, counters):
-    save_organization_if_needed(organization, counters)
+def update_entire_organization(organization, city_latlong_map, counters):
+    update_organization(organization, counters)
     locations = list(organization.locations)
     update_locations(locations, organization.id, city_latlong_map, counters)
     for location in locations:
@@ -31,14 +31,34 @@ def update_organization(organization, city_latlong_map, counters):
             update_services_for_location(location.id, location.services, counters)
 
 
-def save_organization_if_needed(organization, counters):
+def update_organization(organization, counters):
     if is_inactive(organization):
         return
     translation.activate('en')
-    active_record = build_organization_active_record(organization)
-    active_record.save()
-    counters.count_organization()
-    LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
+    existing = get_existing_organization_or_none(organization)
+    if not existing:
+        active_record = build_organization_active_record(organization)
+        active_record.save()
+        counters.count_organization_created()
+        LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
+    elif not is_organization_equal(existing, organization):
+        active_record = build_organization_active_record(organization)
+        active_record.save()
+        counters.count_organizations_updated()
+        LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
+
+
+def get_existing_organization_or_none(organization):
+    result = Organization.objects.filter(id=organization.id).all()
+    return result[0] if result else None
+
+
+def is_organization_equal(active_record, dto):
+    return (hash_string_for_organization(active_record) == hash_string_for_organization(dto))
+
+
+def hash_string_for_organization(org):
+    return f'{org.id}, {org.name}, {org.description}, {org.website}, {org.email}'
 
 
 def handle_parser_errors(generator):
@@ -72,18 +92,18 @@ def get_or_create_organization_active_record(pk):
     return record
 
 
-def update_locations(new_locations, organization_id, city_latlong_map, counters):
-    location_ids_to_delete = get_ids_of_locations_to_delete(new_locations, organization_id)
+def update_locations(locations, organization_id, city_latlong_map, counters):
+    location_ids_to_delete = get_ids_of_locations_to_delete(locations, organization_id)
     delete_locations(location_ids_to_delete)
-    for new_location in new_locations:
-        if is_inactive(new_location):
+    for location in locations:
+        if is_inactive(location):
             continue
-        old_location = get_existing_location_or_none(new_location)
-        if not old_location:
-            save_location(new_location, None, city_latlong_map, counters)
+        existing = get_existing_location_or_none(location)
+        if not existing:
+            save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
-        elif not is_location_equal(old_location, new_location):
-            save_location(new_location, old_location, city_latlong_map, counters)
+        elif not is_location_equal(existing, location):
+            save_location(location, existing, city_latlong_map, counters)
             counters.count_locations_updated()
 
 

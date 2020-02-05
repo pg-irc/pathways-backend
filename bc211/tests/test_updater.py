@@ -2,7 +2,7 @@ from django.db import connection
 from django.test import TestCase
 from django.utils import translation
 from bc211 import dtos
-from bc211.importer import update_locations, update_organization
+from bc211.importer import update_locations, update_entire_organization
 from bc211.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
@@ -28,7 +28,7 @@ class UpdateOrganizationTests(TestCase):
         old_organization = OrganizationBuilder().create()
         new_organization = OrganizationBuilder().with_id(old_organization.id).build_dto()
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
         self.assertEqual(len(organizations), 1)
@@ -36,7 +36,7 @@ class UpdateOrganizationTests(TestCase):
 
     def test_can_create_a_new_organization(self):
         organization = OrganizationBuilder().build_dto()
-        update_organization(organization, {}, ImportCounters())
+        update_entire_organization(organization, {}, ImportCounters())
 
         organizations = Organization.objects.all()
         self.assertEqual(len(organizations), 1)
@@ -46,6 +46,12 @@ class UpdateOrganizationTests(TestCase):
         pass
 
     def test_can_delete_newly_inactive_organization(self):
+        pass
+
+    def test_deleting_an_organization_deletes_its_services(self):
+        pass
+
+    def test_deleting_an_organization_deletes_its_locations(self):
         pass
 
 
@@ -60,7 +66,7 @@ class LocationsUnderOrganizationTests(TestCase):
                                       with_locations([location]).
                                       build_dto())
 
-        update_organization(organization_with_location, {}, ImportCounters())
+        update_entire_organization(organization_with_location, {}, ImportCounters())
 
         locations = Location.objects.all()
         self.assertEqual(len(locations), 1)
@@ -93,7 +99,7 @@ class LocationsUnderOrganizationTests(TestCase):
                             with_locations([inactive_location]).
                             build_dto())
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Location.objects.all()), 0)
 
@@ -222,7 +228,7 @@ class ServicesUnderLocationTests(TestCase):
                                 with_id(organization.id).
                                 with_locations([location_dto]).
                                 build_dto())
-        update_organization(new_organization_dto, {}, ImportCounters())
+        update_entire_organization(new_organization_dto, {}, ImportCounters())
 
         services = Service.objects.all()
         self.assertEqual(len(services), 1)
@@ -246,7 +252,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([location_without_service]).
                             build_dto())
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
@@ -270,7 +276,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([location_with_inactive_service]).
                             build_dto())
 
-        update_organization(new_organization, (), ImportCounters())
+        update_entire_organization(new_organization, (), ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
@@ -284,13 +290,10 @@ class ServicesUnderLocationTests(TestCase):
         new_location = LocationBuilder(organization).with_id(location.id).with_services([new_service]).build_dto()
         new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location]).build_dto()
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 1)
         self.assertEqual(Service.objects.all()[0].name, new_service.name)
-
-    def test_saving_service_does_not_cause_deletion_of_services_for_other_organizations(self):
-        pass
 
     def test_that_a_changed_service_under_a_location_keeps_the_taskservicesimilarity_unchangeds(self):
         organization = OrganizationBuilder().create()
@@ -315,7 +318,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_id(organization.id).
                             with_locations([new_location]).
                             build_dto())
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
         self.assertEqual(TaskServiceSimilarityScore.objects.all()[0].service_id, service.id)
@@ -336,7 +339,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_id(organization.id).
                             with_locations([location_without_service]).
                             build_dto())
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 0)
 
@@ -363,7 +366,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([new_location]).
                             build_dto())
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.all()), 1)
         all_services = Service.objects.all()
@@ -395,7 +398,7 @@ class ServicesUnderLocationTests(TestCase):
                             with_locations([new_location]).
                             build_dto())
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(Service.objects.filter(pk=service.id).all()[0].taxonomy_terms.all()), 0)
 
@@ -415,7 +418,7 @@ class ServicesUnderLocationTests(TestCase):
         new_location_without_service = LocationBuilder(organization).with_id(location.id).build_dto()
         new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location_without_service]).build_dto()
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
 
@@ -435,7 +438,7 @@ class ServicesUnderLocationTests(TestCase):
          with_taxonomy_terms([term]).
          build_dto())
 
-        update_organization(new_organization, {}, ImportCounters())
+        update_entire_organization(new_organization, {}, ImportCounters())
 
         self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
 
@@ -595,9 +598,9 @@ class ImportCountTests(TestCase):
         organization = OrganizationBuilder().build_dto()
         counters = ImportCounters()
 
-        update_organization(organization, {}, counters)
+        update_entire_organization(organization, {}, counters)
 
-        self.assertEqual(counters.organization_count, 1)
+        self.assertEqual(counters.organizations_created, 1)
 
     def test_that_a_new_location_is_counted(self):
         organization = OrganizationBuilder().create()
@@ -610,7 +613,7 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
 
-        update_organization(new_organization_dto, {}, counters)
+        update_entire_organization(new_organization_dto, {}, counters)
 
         self.assertEqual(counters.locations_created, 1)
 
@@ -630,11 +633,30 @@ class ImportCountTests(TestCase):
                                 with_locations([location_dto]).
                                 build_dto())
         counters = ImportCounters()
-        update_organization(new_organization_dto, {}, counters)
+        update_entire_organization(new_organization_dto, {}, counters)
         self.assertEqual(counters.service_count, 1)
 
     def test_that_a_updated_organization_is_counted(self):
         pass
+
+    def test_that_a_updated_location_is_counted(self):
+        pass
+
+    def test_that_a_updated_service_is_counted(self):
+        pass
+
+    def test_that_an_unchanged_organization_is_not_counted_as_updated(self):
+        organization_builder = OrganizationBuilder()
+        organization_builder.create()
+
+        new_organization_dt = organization_builder.build_dto()
+
+        counters = ImportCounters()
+
+        update_entire_organization(new_organization_dt, {}, counters)
+
+        self.assertEqual(counters.organizations_updated, 0)
+        self.assertEqual(counters.organizations_created, 0)
 
     def test_that_an_unchanged_location_is_not_counted_as_updated(self):
         organization = OrganizationBuilder().create()
@@ -649,7 +671,7 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
 
-        update_organization(new_organization_dto, {}, counters)
+        update_entire_organization(new_organization_dto, {}, counters)
 
         self.assertEqual(counters.locations_updated, 0)
 
@@ -681,7 +703,7 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
 
-        update_organization(new_organization_dto, {}, counters)
+        update_entire_organization(new_organization_dto, {}, counters)
 
         self.assertEqual(counters.locations_updated, 0)
 
@@ -706,9 +728,12 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
 
-        update_organization(new_organization_dto, {}, counters)
+        update_entire_organization(new_organization_dto, {}, counters)
 
         self.assertEqual(counters.locations_updated, 0)
+
+    def test_that_an_unchanged_service_is_not_counted_as_updated(self):
+        pass
 
     def test_that_a_location_with_changed_name_is_counted_as_updated(self):
         organization = OrganizationBuilder().create()
@@ -722,7 +747,7 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
 
-        update_organization(new_organization_dto, {}, counters)
+        update_entire_organization(new_organization_dto, {}, counters)
 
         self.assertEqual(counters.locations_updated, 1)
 
@@ -757,6 +782,3 @@ class ImportCountTests(TestCase):
         update_locations([location_with_new_address], organization.id, {}, counters)
 
         self.assertEqual(counters.locations_updated, 1)
-
-    def test_that_a_updated_service_is_counted(self):
-        pass

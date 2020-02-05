@@ -1,6 +1,6 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.importer import parse_csv, update_locations, save_organization_if_needed, update_organization, update_services_for_location
+from bc211.importer import parse_csv, update_locations, update_entire_organization, update_services_for_location
 from bc211.parser import parse_agency
 from bc211.import_counters import ImportCounters
 from bc211.exceptions import XmlParseException
@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 try:
                     organization = parse_agency(elem)
                     organization_id = organization.id
-                    update_organization(organization, city_latlong_map, counts)
+                    update_entire_organization(organization, city_latlong_map, counts)
 
                 except XmlParseException as error:
                     error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
@@ -56,7 +56,7 @@ class Command(BaseCommand):
                             '{1} location(s), {2} service(s), '
                             '{3} taxonomy term(s), {4} address(es), {5} phone number type(s), '
                             'and {6} phone number(s)')
-        status_message = message_template.format(counts.organization_count,
+        status_message = message_template.format(counts.organizations_created,
                                                  counts.locations_created,
                                                  counts.service_count,
                                                  counts.taxonomy_term_count,
