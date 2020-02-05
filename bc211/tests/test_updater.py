@@ -771,7 +771,22 @@ class ImportCountTests(TestCase):
         self.assertEqual(counters.locations_updated, 0)
 
     def test_that_an_unchanged_service_is_not_counted_as_updated(self):
-        pass
+        organization_builder = OrganizationBuilder()
+        organization = organization_builder.create()
+        location_builder = LocationBuilder(organization)
+        location = location_builder.create()
+        service_builder = ServiceBuilder(organization).with_location(location)
+        service_builder.create()
+
+        new_service = service_builder.build_dto()
+        new_location = location_builder.with_services([new_service]).build_dto()
+        new_organization = organization_builder.with_locations([new_location]).build_dto()
+
+        counters = ImportCounters()
+        update_entire_organization(new_organization, {}, counters)
+
+        self.assertEqual(counters.service_updated, 0)
+        self.assertEqual(counters.service_created, 0)
 
     def test_that_a_location_with_changed_name_is_counted_as_updated(self):
         organization = OrganizationBuilder().create()
