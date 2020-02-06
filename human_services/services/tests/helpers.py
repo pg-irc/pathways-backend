@@ -52,6 +52,10 @@ class ServiceBuilder:
         self.last_verified_date = last_verified_date
         return self
 
+    def with_only_location(self, location):
+        self.location_ids = [location.id]
+        return self
+
     def build(self):
         result = models.Service()
         result.id = self.service_id

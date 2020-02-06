@@ -40,12 +40,12 @@ def update_organization(organization, counters):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization_created()
-        LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.debug('created organization "%s" "%s"', organization.id, organization.name)
     elif not is_organization_equal(existing, organization):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organizations_updated()
-        LOGGER.debug('Organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.debug('updated organization "%s" "%s"', organization.id, organization.name)
 
 
 def get_existing_organization_or_none(organization):
@@ -102,9 +102,11 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         if not existing:
             save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
+            LOGGER.debug('updated location "%s" "%s"', location.id, location.name)
         elif not is_location_equal(existing, location):
             save_location(location, existing, city_latlong_map, counters)
             counters.count_locations_updated()
+            LOGGER.debug('updated location "%s" "%s"', location.id, location.name)
 
 
 def get_ids_of_locations_to_delete(locations, organization_id):
@@ -301,7 +303,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
+        LOGGER.debug('create service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     elif not is_service_equal(existing, service):
@@ -309,7 +311,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_services_updates()
-        LOGGER.debug('Service "%s" "%s"', service.id, service.name)
+        LOGGER.debug('update service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 

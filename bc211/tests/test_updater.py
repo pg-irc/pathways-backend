@@ -280,6 +280,31 @@ class ServicesUnderLocationTests(TestCase):
         self.assertEqual(len(Service.objects.all()), 0)
         self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
 
+    def test_that_a_service_moved_to_a_different_location_is_updated(self):
+        organization_builder = OrganizationBuilder()
+        organization = organization_builder.create()
+        first_location_builder = LocationBuilder(organization)
+        first_location = first_location_builder.create()
+        second_location_builder = LocationBuilder(organization)
+        second_location = second_location_builder.create()
+        service_builder = ServiceBuilder(organization).with_only_location(first_location)
+        service = service_builder.create()
+
+        self.assertEqual(first_location.services.all()[0].id, service.id)
+        self.assertEqual(len(second_location.services.all()), 0)
+
+        service_dto = service_builder.with_only_location(second_location).build_dto()
+        first_location_without_service = first_location_builder.with_services([]).build_dto()
+        second_location_with_service = second_location_builder.with_services([service_dto]).build_dto()
+        new_organization = (organization_builder.
+                            with_locations([first_location_without_service, second_location_with_service]).
+                            build_dto())
+
+        update_entire_organization(new_organization, {}, ImportCounters())
+
+        self.assertEqual(len(first_location.services.all()), 0)
+        self.assertEqual(second_location.services.all()[0].id, service.id)
+
     def test_that_changed_service_under_location_is_updated(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
