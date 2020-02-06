@@ -212,7 +212,6 @@ class LocationsUnderOrganizationTests(TestCase):
 
 
 class ServicesUnderLocationTests(TestCase):
-
     def test_that_new_service_under_location_creates_record(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
@@ -683,6 +682,26 @@ class ImportCountTests(TestCase):
         self.assertEqual(counters.service_updated, 1)
         self.assertEqual(counters.service_created, 0)
 
+    def test_that_an_service_with_changed_taxonomy_term_is_counted_as_updated(self):
+        organization_builder = OrganizationBuilder()
+        organization = organization_builder.create()
+        location_builder = LocationBuilder(organization)
+        location = location_builder.create()
+        first_taxonomy_term = TaxonomyTermBuilder().create()
+        service_builder = ServiceBuilder(organization).with_location(location).with_taxonomy_terms([first_taxonomy_term])
+        service_builder.create()
+
+        second_taxonomy_term = TaxonomyTermBuilder().create()
+        service_dto = service_builder.with_taxonomy_terms([second_taxonomy_term]).build_dto()
+        location_dto = location_builder.with_services([service_dto]).build_dto()
+        organization_dto = organization_builder.with_locations([location_dto]).build_dto()
+
+        counters = ImportCounters()
+        update_entire_organization(organization_dto, {}, counters)
+
+        self.assertEqual(counters.service_updated, 1)
+        self.assertEqual(counters.service_created, 0)
+
     def test_that_an_unchanged_organization_is_not_counted_as_updated(self):
         organization_builder = OrganizationBuilder()
         organization_builder.create()
@@ -784,6 +803,25 @@ class ImportCountTests(TestCase):
 
         counters = ImportCounters()
         update_entire_organization(new_organization, {}, counters)
+
+        self.assertEqual(counters.service_updated, 0)
+        self.assertEqual(counters.service_created, 0)
+
+    def test_that_an_unchanged_service_with_taxonomy_term_is_not_counted_as_updated(self):
+        organization_builder = OrganizationBuilder()
+        organization = organization_builder.create()
+        location_builder = LocationBuilder(organization)
+        location = location_builder.create()
+        taxonomy_terms = TaxonomyTermBuilder().create_many()
+        service_builder = ServiceBuilder(organization).with_location(location).with_taxonomy_terms(taxonomy_terms)
+        service = service_builder.create()
+
+        service_dto = service_builder.build_dto()
+        location_dto = location_builder.with_services([service_dto]).build_dto()
+        organization_dto = organization_builder.with_locations([location_dto]).build_dto()
+
+        counters = ImportCounters()
+        update_entire_organization(organization_dto, {}, counters)
 
         self.assertEqual(counters.service_updated, 0)
         self.assertEqual(counters.service_created, 0)

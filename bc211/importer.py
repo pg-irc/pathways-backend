@@ -294,7 +294,6 @@ def update_services_for_location(location_id, services, counters):
 
 
 def save_service_if_needed(service, counters):
-    delete_existing_service_taxonomy_terms(service)
     if is_inactive(service):
         return
     existing = get_existing_service_or_none(service)
@@ -306,6 +305,7 @@ def save_service_if_needed(service, counters):
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     elif not is_service_equal(existing, service):
+        delete_existing_service_taxonomy_terms(service)
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_services_updates()
@@ -338,6 +338,9 @@ class ArAdaptor:
     def description(self):
         return self.service.description
 
+    def taxonomy_terms(self):
+        return self.service.taxonomy_terms.all()
+
 
 class DtoAdapter:
     def __init__(self, service):
@@ -352,9 +355,21 @@ class DtoAdapter:
     def description(self):
         return self.service.description
 
+    def taxonomy_terms(self):
+        return self.service.taxonomy_terms
+
 
 def service_to_string(adapter):
-    return f'{adapter.the_id()}, {adapter.name()}, {adapter.description()}'
+    result = f'{adapter.the_id()}, {adapter.name()}, {adapter.description()}'
+    taxonomy_terms = [taxonomy_term_to_string(t) for t in adapter.taxonomy_terms()]
+    taxonomy_terms.sort()
+    for t in taxonomy_terms:
+        result += t
+    return result
+
+
+def taxonomy_term_to_string(taxonomy_term):
+    return f'{taxonomy_term.taxonomy_id}, {taxonomy_term.name}'
 
 
 def delete_existing_service_taxonomy_terms(service):
