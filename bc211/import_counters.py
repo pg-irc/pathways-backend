@@ -6,9 +6,9 @@ class ImportCounters:
         self.locations_created = 0
         self.locations_updated = 0
         self.locations_deleted = 0
-        self.service_created = 0
-        self.service_updated = 0
-        self.service_deleted = 0
+        self.services_created = 0
+        self.services_updated = 0
+        self.services_deleted = 0
         self.taxonomy_term_count = 0
         self.address_count = 0
         self.phone_number_types_count = 0
@@ -33,13 +33,13 @@ class ImportCounters:
         self.locations_deleted += locations_deleted
 
     def count_service(self):
-        self.service_created += 1
+        self.services_created += 1
 
     def count_services_updates(self):
-        self.service_updated += 1
+        self.services_updated += 1
 
     def count_services_deleted(self, services_deleted):
-        self.service_deleted += services_deleted
+        self.services_deleted += services_deleted
 
     def count_taxonomy_term(self):
         self.taxonomy_term_count += 1

@@ -34,7 +34,7 @@ class Command(BaseCommand):
     def print_status_message(self, counts):
         message = f'{counts.organizations_created} organizations created and {counts.organizations_updated} updated. '
         message += f'{counts.locations_created} locations created and {(counts.locations_updated)} updated. '
-        message += f'{counts.service_created} services created and {counts.service_updated} updated. '
+        message += f'{counts.services_created} services created and {counts.services_updated} updated. '
         message += f'{counts.taxonomy_term_count} taxonomy terms created. '
         message += f'{counts.address_count} addresses created. '
         message += f'{counts.phone_at_location_count} phone numbers created '

@@ -44,8 +44,12 @@ def update_all_organizations(nodes, city_latlong_map, counts):
 
 
 def delete_organizations_not_in(active_organizations, counts):
-    Location.objects.exclude(organization_id__in=active_organizations).delete()
-    Service.objects.exclude(organization_id__in=active_organizations).delete()
+    locs = Location.objects.exclude(organization_id__in=active_organizations)
+    counts.count_locations_deleted(locs.count())
+    locs.delete()
+    serv = Service.objects.exclude(organization_id__in=active_organizations)
+    counts.count_services_deleted(serv.count())
+    serv.delete()
     orgs = Organization.objects.exclude(pk__in=active_organizations)
     counts.count_organizations_deleted(orgs.count())
     orgs.delete()

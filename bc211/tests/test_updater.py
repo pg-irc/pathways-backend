@@ -9,7 +9,6 @@ from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.locations.models import Location, LocationAddress, ServiceAtLocation
 from human_services.locations.tests.helpers import LocationBuilder
-from human_services.organizations.models import Organization
 from human_services.phone_at_location.models import PhoneAtLocation, PhoneNumberType
 from human_services.services.models import Service
 from human_services.services.tests.helpers import ServiceBuilder
@@ -25,23 +24,29 @@ translation.activate('en')
 
 class UpdateOrganizationTests(TestCase):
 
+    def test_can_create_an_organization(self):
+        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        nodes = etree.iterparse(BASELINE, events=('end',))
+        update_all_organizations(nodes, {}, ImportCounters())
+
+        counters = ImportCounters()
+        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_more_organization.xml'
+        nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
+        update_all_organizations(nodes, {}, counters)
+
+        self.assertEqual(counters.organizations_created, 1)
+
     def test_can_update_an_organization(self):
-        old_organization = OrganizationBuilder().create()
-        new_organization = OrganizationBuilder().with_id(old_organization.id).build_dto()
+        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        nodes = etree.iterparse(BASELINE, events=('end',))
+        update_all_organizations(nodes, {}, ImportCounters())
 
-        update_entire_organization(new_organization, {}, ImportCounters())
+        counters = ImportCounters()
+        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_changed_organization.xml'
+        nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
+        update_all_organizations(nodes, {}, counters)
 
-        organizations = Organization.objects.all()
-        self.assertEqual(len(organizations), 1)
-        self.assertEqual(organizations[0].name, new_organization.name)
-
-    def test_can_create_a_new_organization(self):
-        organization = OrganizationBuilder().build_dto()
-        update_entire_organization(organization, {}, ImportCounters())
-
-        organizations = Organization.objects.all()
-        self.assertEqual(len(organizations), 1)
-        self.assertEqual(organizations[0].id, organization.id)
+        self.assertEqual(counters.organizations_updated, 1)
 
     def test_can_delete_newly_absent_organization(self):
         BASELINE = 'bc211/data/BC211_data_excerpt.xml'
@@ -68,10 +73,28 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(counters.organizations_deleted, 1)
 
     def test_deleting_an_organization_deletes_its_services(self):
-        pass
+        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        nodes = etree.iterparse(BASELINE, events=('end',))
+        update_all_organizations(nodes, {}, ImportCounters())
+
+        counters = ImportCounters()
+        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_less_organization.xml'
+        nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
+        update_all_organizations(nodes, {}, counters)
+
+        self.assertEqual(counters.services_deleted, 1)
 
     def test_deleting_an_organization_deletes_its_locations(self):
-        pass
+        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        nodes = etree.iterparse(BASELINE, events=('end',))
+        update_all_organizations(nodes, {}, ImportCounters())
+
+        counters = ImportCounters()
+        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_less_organization.xml'
+        nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
+        update_all_organizations(nodes, {}, counters)
+
+        self.assertEqual(counters.locations_deleted, 1)
 
 
 class LocationsUnderOrganizationTests(TestCase):
@@ -679,7 +702,7 @@ class ImportCountTests(TestCase):
                                 build_dto())
         counters = ImportCounters()
         update_entire_organization(new_organization_dto, {}, counters)
-        self.assertEqual(counters.service_created, 1)
+        self.assertEqual(counters.services_created, 1)
 
     def test_that_a_updated_organization_is_counted(self):
         organization_builder = OrganizationBuilder()
@@ -723,8 +746,8 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
         update_entire_organization(new_organization, {}, counters)
 
-        self.assertEqual(counters.service_updated, 1)
-        self.assertEqual(counters.service_created, 0)
+        self.assertEqual(counters.services_updated, 1)
+        self.assertEqual(counters.services_created, 0)
 
     def test_that_an_service_with_changed_taxonomy_term_is_counted_as_updated(self):
         organization_builder = OrganizationBuilder()
@@ -743,8 +766,8 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
         update_entire_organization(organization_dto, {}, counters)
 
-        self.assertEqual(counters.service_updated, 1)
-        self.assertEqual(counters.service_created, 0)
+        self.assertEqual(counters.services_updated, 1)
+        self.assertEqual(counters.services_created, 0)
 
     def test_that_an_unchanged_organization_is_not_counted_as_updated(self):
         organization_builder = OrganizationBuilder()
@@ -848,8 +871,8 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
         update_entire_organization(new_organization, {}, counters)
 
-        self.assertEqual(counters.service_updated, 0)
-        self.assertEqual(counters.service_created, 0)
+        self.assertEqual(counters.services_updated, 0)
+        self.assertEqual(counters.services_created, 0)
 
     def test_that_an_unchanged_service_with_taxonomy_term_is_not_counted_as_updated(self):
         organization_builder = OrganizationBuilder()
@@ -867,8 +890,8 @@ class ImportCountTests(TestCase):
         counters = ImportCounters()
         update_entire_organization(organization_dto, {}, counters)
 
-        self.assertEqual(counters.service_updated, 0)
-        self.assertEqual(counters.service_created, 0)
+        self.assertEqual(counters.services_updated, 0)
+        self.assertEqual(counters.services_created, 0)
 
     def test_that_a_location_with_changed_name_is_counted_as_updated(self):
         organization = OrganizationBuilder().create()
