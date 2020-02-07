@@ -2,7 +2,7 @@ from django.db import connection
 from django.test import TestCase
 from django.utils import translation
 from bc211 import dtos
-from bc211.importer import update_locations, update_entire_organization
+from bc211.importer import update_locations, update_entire_organization, update_all_organizations
 from bc211.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
@@ -17,6 +17,7 @@ from human_services.services_at_location.tests.helpers import set_service_simila
 from common.testhelpers.random_test_values import a_phone_number, a_string, a_float
 from search.models import Task, TaskServiceSimilarityScore
 from taxonomies.tests.helpers import TaxonomyTermBuilder
+import xml.etree.ElementTree as etree
 
 
 translation.activate('en')
@@ -43,7 +44,16 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(organizations[0].id, organization.id)
 
     def test_can_delete_newly_absent_organization(self):
-        pass
+        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        nodes = etree.iterparse(BASELINE, events=('end',))
+        update_all_organizations(nodes, {}, ImportCounters())
+
+        counters = ImportCounters()
+        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_less_organization.xml'
+        nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
+        update_all_organizations(nodes, {}, counters)
+
+        self.assertEqual(counters.organizations_deleted, 1)
 
     def test_can_delete_newly_inactive_organization(self):
         pass

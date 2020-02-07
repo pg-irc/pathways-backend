@@ -1,5 +1,4 @@
 import logging
-from bc211 import dtos
 from bc211.importer import handle_parser_errors, update_locations, update_entire_organization, update_services_for_location
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string

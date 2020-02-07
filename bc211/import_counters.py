@@ -2,10 +2,13 @@ class ImportCounters:
     def __init__(self):
         self.organizations_created = 0
         self.organizations_updated = 0
+        self.organizations_deleted = 0
         self.locations_created = 0
         self.locations_updated = 0
+        self.locations_deleted = 0
         self.service_created = 0
         self.service_updated = 0
+        self.service_deleted = 0
         self.taxonomy_term_count = 0
         self.address_count = 0
         self.phone_number_types_count = 0
@@ -17,17 +20,26 @@ class ImportCounters:
     def count_organizations_updated(self):
         self.organizations_updated += 1
 
+    def count_organizations_deleted(self, organizations_deleted):
+        self.organizations_deleted += organizations_deleted
+
     def count_locations_created(self):
         self.locations_created += 1
 
     def count_locations_updated(self):
         self.locations_updated += 1
 
+    def count_locations_deleted(self, locations_deleted):
+        self.locations_deleted += locations_deleted
+
     def count_service(self):
         self.service_created += 1
 
     def count_services_updates(self):
         self.service_updated += 1
+
+    def count_services_deleted(self, services_deleted):
+        self.service_deleted += services_deleted
 
     def count_taxonomy_term(self):
         self.taxonomy_term_count += 1

@@ -29,8 +29,8 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
 
 
 class ServiceAtLocation(ValidateOnSaveMixin, models.Model):
-    service = models.ForeignKey(Service, on_delete=models.PROTECT)
-    location = models.ForeignKey(Location, on_delete=models.PROTECT)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']

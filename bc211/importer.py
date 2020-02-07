@@ -24,19 +24,31 @@ def parse_csv(csv_path):
 
 
 def update_all_organizations(nodes, city_latlong_map, counts):
+    active_organizations = []
     for _, elem in nodes:
         if elem.tag == 'Agency':
-            agency_id = ''
+            last_agency_id = ''
             try:
                 agency = parse_agency(elem)
-                agency_id = agency.id
+                last_agency_id = agency.id
+                if not is_inactive(agency):
+                    active_organizations.append(agency.id)
                 update_entire_organization(agency, city_latlong_map, counts)
             except XmlParseException as error:
-                error = f'Parser exception caught when importing the organization immediately after the one with id "{agency_id}": {error.__str__()}'
+                error = f'Parser exception caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
                 LOGGER.error(error)
             except AttributeError as error:
-                error = f'Missing field error caught when importing the organization immediately after the one with id "{agency_id}": {error.__str__()}'
+                error = f'Missing field error caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
                 LOGGER.error(error)
+    delete_organizations_not_in(active_organizations, counts)
+
+
+def delete_organizations_not_in(active_organizations, counts):
+    Location.objects.exclude(organization_id__in=active_organizations).delete()
+    Service.objects.exclude(organization_id__in=active_organizations).delete()
+    orgs = Organization.objects.exclude(pk__in=active_organizations)
+    counts.count_organizations_deleted(orgs.count())
+    orgs.delete()
 
 
 def update_entire_organization(organization, city_latlong_map, counters):
