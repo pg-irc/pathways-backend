@@ -56,7 +56,16 @@ class UpdateOrganizationTests(TestCase):
         self.assertEqual(counters.organizations_deleted, 1)
 
     def test_can_delete_newly_inactive_organization(self):
-        pass
+        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        nodes = etree.iterparse(BASELINE, events=('end',))
+        update_all_organizations(nodes, {}, ImportCounters())
+
+        counters = ImportCounters()
+        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_inactive_organization.xml'
+        nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
+        update_all_organizations(nodes, {}, counters)
+
+        self.assertEqual(counters.organizations_deleted, 1)
 
     def test_deleting_an_organization_deletes_its_services(self):
         pass
