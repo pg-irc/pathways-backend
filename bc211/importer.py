@@ -27,20 +27,28 @@ def update_all_organizations(nodes, city_latlong_map, counts):
     active_organizations = []
     for _, elem in nodes:
         if elem.tag == 'Agency':
-            last_agency_id = ''
             try:
                 agency = parse_agency(elem)
-                last_agency_id = agency.id
-                if not is_inactive(agency):
-                    active_organizations.append(agency.id)
+                if is_inactive(agency):
+                    continue
+                active_organizations.append(agency.id)
                 update_entire_organization(agency, city_latlong_map, counts)
             except XmlParseException as error:
-                error = f'Parser exception caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
-                LOGGER.error(error)
+                handle_xml_parser_exception(error, active_organizations[-1])
             except AttributeError as error:
-                error = f'Missing field error caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
-                LOGGER.error(error)
+                handle_attribute_error(error, active_organizations[-1])
+
     delete_organizations_not_in(active_organizations, counts)
+
+
+def handle_xml_parser_exception(error, last_agency_id):
+    error = f'Parser exception caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
+    LOGGER.error(error)
+
+
+def handle_attribute_error(error, last_agency_id):
+    error = f'Missing field error caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
+    LOGGER.error(error)
 
 
 def delete_organizations_not_in(active_organizations, counts):
