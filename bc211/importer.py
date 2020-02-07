@@ -1,6 +1,7 @@
 import logging
 import csv
 from bc211 import dtos
+from bc211.parser import parse_agency
 from django.utils import translation
 from django.contrib.gis.geos import Point
 from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
@@ -20,6 +21,22 @@ def parse_csv(csv_path):
         csv_reader = csv.reader(file)
         city_to_latlong = {rows[0]: Point(float(rows[1]), float(rows[2])) for rows in csv_reader}
         return city_to_latlong
+
+
+def update_all_organizations(nodes, city_latlong_map, counts):
+    for _, elem in nodes:
+        if elem.tag == 'Agency':
+            agency_id = ''
+            try:
+                agency = parse_agency(elem)
+                agency_id = agency.id
+                update_entire_organization(agency, city_latlong_map, counts)
+            except XmlParseException as error:
+                error = f'Parser exception caught when importing the organization immediately after the one with id "{agency_id}": {error.__str__()}'
+                LOGGER.error(error)
+            except AttributeError as error:
+                error = f'Missing field error caught when importing the organization immediately after the one with id "{agency_id}": {error.__str__()}'
+                LOGGER.error(error)
 
 
 def update_entire_organization(organization, city_latlong_map, counters):

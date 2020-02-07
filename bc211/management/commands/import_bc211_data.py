@@ -1,10 +1,7 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.importer import parse_csv, update_entire_organization
-from bc211.parser import parse_agency
+from bc211.importer import parse_csv, update_all_organizations
 from bc211.import_counters import ImportCounters
-from bc211.exceptions import XmlParseException
-from human_services.organizations.models import Organization
 import xml.etree.ElementTree as etree
 
 # invoke as follows:
@@ -29,40 +26,10 @@ class Command(BaseCommand):
             city_latlong_map = parse_csv(options['cityLatLongs'])
         else:
             city_latlong_map = {}
-        nodes = etree.iterparse(file, events=('end',))
-        self.import_from_xml_nodes(nodes, city_latlong_map)
-
-    def import_from_xml_nodes(self, nodes, city_latlong_map):
         counts = ImportCounters()
-        agencies = []
-        for _, elem in nodes:
-            if elem.tag == 'Agency':
-                agency_id = self.import_agency(elem, city_latlong_map, counts)
-                agencies.append(agency_id)
-        self.delete_organizations_not_in(agencies, counts)
+        nodes = etree.iterparse(file, events=('end',))
+        update_all_organizations(nodes, city_latlong_map, counts)
         self.print_status_message(counts)
-
-    def import_agency(self, elem, city_latlong_map, counts):
-        agency_id = ''
-        try:
-            agency = parse_agency(elem)
-            agency_id = agency.id
-            update_entire_organization(agency, city_latlong_map, counts)
-            return agency_id
-
-        except XmlParseException as error:
-            error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
-                the_id=agency_id, error_message=error.__str__())
-            self.stdout.write(self.style.ERROR(error))
-        except AttributeError as error:
-            error = 'Missing field error caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
-                the_id=agency_id, error_message=error.__str__())
-            self.stdout.write(self.style.ERROR(error))
-
-    def delete_organizations_not_in(self, orgs, counts):
-        orgs_to_delete = Organization.objects.exclude(pk__in=orgs).all()
-        ids = [o.id for o in orgs_to_delete]
-        self.stdout.write(self.style.SUCCESS(f'Orgs to delete: {ids}'))
 
     def print_status_message(self, counts):
         message = f'{counts.organizations_created} organizations created and {counts.organizations_updated} updated. '
