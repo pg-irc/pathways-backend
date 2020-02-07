@@ -145,7 +145,7 @@ class BC211ParserTests(unittest.TestCase):
             locations_from_first_organization[0].physical_address,
             locations_from_first_organization[0].postal_address
         ]
-        self.assertEqual(len(organizations), 16)
+        self.assertEqual(len(organizations), 15)
         self.assertEqual(len(locations_from_first_organization), 1)
         self.assertEqual(len(services_from_first_location), 1)
         self.assertEqual(len(taxonomy_terms_from_first_service), 27)

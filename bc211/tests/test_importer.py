@@ -261,12 +261,12 @@ class FullDataImportTests(TestCase):
 
     # breaking one-assert-per-test rule to speed up running tests by only calling setup once for all the below checks
     def test_can_import_full_data_set(self):
-        self.assertEqual(len(self.all_organizations), 16)
-        self.assertEqual(len(self.all_locations), 40)
-        self.assertEqual(len(self.all_taxonomy_terms), 134)
-        self.assertEqual(self.counts.organizations_created, 16)
-        self.assertEqual(self.counts.locations_created, 40)
-        self.assertEqual(self.counts.taxonomy_term_count, 134)
-        self.assertEqual(self.counts.address_count, 36)
+        self.assertEqual(len(self.all_organizations), 15)
+        self.assertEqual(len(self.all_locations), 39)
+        self.assertEqual(len(self.all_taxonomy_terms), 129)
+        self.assertEqual(self.counts.organizations_created, 15)
+        self.assertEqual(self.counts.locations_created, 39)
+        self.assertEqual(self.counts.taxonomy_term_count, 129)
+        self.assertEqual(self.counts.address_count, 35)
         self.assertEqual(self.counts.phone_number_types_count, 5)
-        self.assertEqual(self.counts.phone_at_location_count, 86)
+        self.assertEqual(self.counts.phone_at_location_count, 84)
