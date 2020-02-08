@@ -145,7 +145,7 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         if not existing:
             save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
-            LOGGER.info('updated location "%s" "%s"', location.id, location.name)
+            LOGGER.info('created location "%s" "%s"', location.id, location.name)
         elif not is_location_equal(existing, location):
             save_location(location, existing, city_latlong_map, counters)
             counters.count_locations_updated()
@@ -245,7 +245,6 @@ def save_location(location, existing_active_record, city_latlong_map, counters):
                      else create_location_active_record_with_id(location.id))
     update_location_properties(location, active_record)
     active_record.save()
-    LOGGER.info('created location "%s" "%s"', location.id, location.name)
 
     if location.physical_address:
         create_address_for_location(active_record, location.physical_address, counters)
@@ -346,7 +345,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.info('create service "%s" "%s"', service.id, service.name)
+        LOGGER.info('created service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     elif not is_service_equal(existing, service):
@@ -354,7 +353,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_services_updates()
-        LOGGER.info('update service "%s" "%s"', service.id, service.name)
+        LOGGER.info('updated service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
@@ -429,7 +428,7 @@ def service_already_exists(service):
 def save_service_at_location(service):
     active_record = build_service_at_location_active_record(service)
     active_record.save()
-    LOGGER.info('create service at location: %s %s', service.id, service.site_id)
+    LOGGER.debug('created service at location: %s %s', service.id, service.site_id)
 
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
@@ -491,7 +490,7 @@ def delete_existing_location_address(location, address_type):
 def create_location_address(location, address, address_type):
     active_record = LocationAddress(address=address, location=location,
                                     address_type=address_type).save()
-    LOGGER.debug(f'create location address {address}')
+    LOGGER.debug(f'created location address {address}')
     return active_record
 
 
@@ -505,7 +504,7 @@ def create_phone_numbers_for_location(location, phone_number_dtos, counters):
             phone_number=dto.phone_number
         )
         counters.count_phone_at_location()
-        LOGGER.debug('create phone number: "%s" "%s"', number.id, number.phone_number)
+        LOGGER.debug('created phone number: "%s" "%s"', number.id, number.phone_number)
 
 
 def create_phone_number_type(dto, counters):
@@ -513,5 +512,5 @@ def create_phone_number_type(dto, counters):
     phone_number_type, created = PhoneNumberType.objects.get_or_create(id=type_id)
     if created:
         counters.count_phone_number_types()
-        LOGGER.debug('create phone number type: "%s"', phone_number_type.id)
+        LOGGER.debug('created phone number type: "%s"', phone_number_type.id)
     return phone_number_type
