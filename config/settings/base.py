@@ -146,7 +146,7 @@ ROOT_URLCONF = 'config.urls'
 
 VERBOSE_LOGGING_WITH_INFO = {
     'handlers': ['verbose-console'],
-    'level': 'DEBUG',
+    'level': 'INFO',
 }
 
 LOGGING = {

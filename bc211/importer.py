@@ -42,25 +42,27 @@ def update_all_organizations(nodes, city_latlong_map, counts):
 
 
 def handle_xml_parser_exception(error, last_agency_id):
-    error = f'Parser exception caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
-    LOGGER.error(error)
+    LOGGER.error('Parser exception caught when importing the organization immediately after the one with id "%s": "%s"',
+                 last_agency_id, error.__str__())
 
 
 def handle_attribute_error(error, last_agency_id):
-    error = f'Missing field error caught when importing the organization immediately after the one with id "{last_agency_id}": {error.__str__()}'
-    LOGGER.error(error)
+    LOGGER.error('Missing field error caught when importing the organization immediately after the one with id "%s": "%s"',
+                 last_agency_id, error.__str__())
 
 
 def delete_organizations_not_in(active_organizations, counts):
-    locs = Location.objects.exclude(organization_id__in=active_organizations)
-    counts.count_locations_deleted(locs.count())
-    locs.delete()
-    serv = Service.objects.exclude(organization_id__in=active_organizations)
-    counts.count_services_deleted(serv.count())
-    serv.delete()
-    orgs = Organization.objects.exclude(pk__in=active_organizations)
-    counts.count_organizations_deleted(orgs.count())
-    orgs.delete()
+    locations_to_delete = Location.objects.exclude(organization_id__in=active_organizations)
+    counts.count_locations_deleted(locations_to_delete.count())
+    locations_to_delete.delete()
+
+    services_to_delete = Service.objects.exclude(organization_id__in=active_organizations)
+    counts.count_services_deleted(services_to_delete.count())
+    services_to_delete.delete()
+
+    organizations_to_delete = Organization.objects.exclude(pk__in=active_organizations)
+    counts.count_organizations_deleted(organizations_to_delete.count())
+    organizations_to_delete.delete()
 
 
 def update_entire_organization(organization, city_latlong_map, counters):
@@ -81,12 +83,12 @@ def update_organization(organization, counters):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization_created()
-        LOGGER.debug('created organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.info('created organization "%s" "%s"', organization.id, organization.name)
     elif not is_organization_equal(existing, organization):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organizations_updated()
-        LOGGER.debug('updated organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.info('updated organization "%s" "%s"', organization.id, organization.name)
 
 
 def get_existing_organization_or_none(organization):
@@ -143,11 +145,11 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         if not existing:
             save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
-            LOGGER.debug('updated location "%s" "%s"', location.id, location.name)
+            LOGGER.info('updated location "%s" "%s"', location.id, location.name)
         elif not is_location_equal(existing, location):
             save_location(location, existing, city_latlong_map, counters)
             counters.count_locations_updated()
-            LOGGER.debug('updated location "%s" "%s"', location.id, location.name)
+            LOGGER.info('updated location "%s" "%s"', location.id, location.name)
 
 
 def get_ids_of_locations_to_delete(locations, organization_id):
@@ -243,7 +245,7 @@ def save_location(location, existing_active_record, city_latlong_map, counters):
                      else create_location_active_record_with_id(location.id))
     update_location_properties(location, active_record)
     active_record.save()
-    LOGGER.debug('Location "%s" "%s"', location.id, location.name)
+    LOGGER.info('created location "%s" "%s"', location.id, location.name)
 
     if location.physical_address:
         create_address_for_location(active_record, location.physical_address, counters)
@@ -344,7 +346,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.debug('create service "%s" "%s"', service.id, service.name)
+        LOGGER.info('create service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     elif not is_service_equal(existing, service):
@@ -352,7 +354,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_services_updates()
-        LOGGER.debug('update service "%s" "%s"', service.id, service.name)
+        LOGGER.info('update service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
@@ -427,7 +429,7 @@ def service_already_exists(service):
 def save_service_at_location(service):
     active_record = build_service_at_location_active_record(service)
     active_record.save()
-    LOGGER.debug('Service at location: %s %s', service.id, service.site_id)
+    LOGGER.info('create service at location: %s %s', service.id, service.site_id)
 
 
 def save_service_taxonomy_terms(taxonomy_terms, service_active_record, counters):
@@ -489,7 +491,7 @@ def delete_existing_location_address(location, address_type):
 def create_location_address(location, address, address_type):
     active_record = LocationAddress(address=address, location=location,
                                     address_type=address_type).save()
-    LOGGER.debug('Location address')
+    LOGGER.debug(f'create location address {address}')
     return active_record
 
 
@@ -503,7 +505,7 @@ def create_phone_numbers_for_location(location, phone_number_dtos, counters):
             phone_number=dto.phone_number
         )
         counters.count_phone_at_location()
-        LOGGER.debug('PhoneNumber: "%s" "%s"', number.id, number.phone_number)
+        LOGGER.debug('create phone number: "%s" "%s"', number.id, number.phone_number)
 
 
 def create_phone_number_type(dto, counters):
@@ -511,5 +513,5 @@ def create_phone_number_type(dto, counters):
     phone_number_type, created = PhoneNumberType.objects.get_or_create(id=type_id)
     if created:
         counters.count_phone_number_types()
-        LOGGER.debug('PhoneNumberType: "%s"', phone_number_type.id)
+        LOGGER.debug('create phone number type: "%s"', phone_number_type.id)
     return phone_number_type
