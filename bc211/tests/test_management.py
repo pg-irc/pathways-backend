@@ -16,7 +16,7 @@ class TestImportBc211Data(TestCase):
     def test_import_many_records(self):
         out = StringIO()
         call_command('import_bc211_data', MULTI_AGENCY_FIXTURE, stdout=out)
-        expected = ('16 organizations created and 0 updated. 40 locations created and 0 updated. 40 services created and 0 updated.')
+        expected = ('15 organizations created and 0 updated. 39 locations created and 0 updated. 39 services created and 0 updated.')
         self.assertIn(expected, out.getvalue())
 
     def test_import_invalid_file(self):

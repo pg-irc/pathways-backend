@@ -2,7 +2,8 @@ from django.db import connection
 from django.test import TestCase
 from django.utils import translation
 from bc211 import dtos
-from bc211.importer import update_locations, update_entire_organization, update_all_organizations
+from bc211.importer import update_entire_organization, update_all_organizations
+from bc211.location import update_locations
 from bc211.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder

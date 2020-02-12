@@ -1,5 +1,7 @@
 import logging
-from bc211.importer import handle_parser_errors, update_locations, update_entire_organization, update_services_for_location
+from bc211.importer import handle_parser_errors, update_entire_organization
+from bc211.service import update_services_for_location
+from bc211.location import update_locations
 from bc211.import_counters import ImportCounters
 from common.testhelpers.random_test_values import a_string
 from django.contrib.gis.geos import Point
