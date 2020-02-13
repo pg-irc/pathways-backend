@@ -22,11 +22,11 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         if not existing:
             save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
-            LOGGER.info('created location "%s" "%s"', location.id, location.name)
+            LOGGER.info('created "%s" "%s"', location.id, location.name)
         elif not is_location_equal(existing, location):
             save_location(location, existing, city_latlong_map, counters)
             counters.count_locations_updated()
-            LOGGER.info('updated location "%s" "%s"', location.id, location.name)
+            LOGGER.info('updated "%s" "%s"', location.id, location.name)
 
 
 def get_ids_of_locations_to_delete(locations, organization_id):

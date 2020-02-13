@@ -50,7 +50,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.info('created service "%s" "%s"', service.id, service.name)
+        LOGGER.info('created "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     elif not is_service_equal(existing, service):
@@ -58,7 +58,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_services_updates()
-        LOGGER.info('updated service "%s" "%s"', service.id, service.name)
+        LOGGER.info('updated "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
 
@@ -71,7 +71,9 @@ def get_existing_service_or_none(service):
 
 
 def is_service_equal(active_record, dto):
-    return service_to_string(ArAdaptor(active_record)) == service_to_string(DtoAdapter(dto))
+    ar_hash = hash(service_to_string(ArAdaptor(active_record)))
+    dto_hash = hash(service_to_string(DtoAdapter(dto)))
+    return ar_hash == dto_hash
 
 
 class ArAdaptor:
@@ -110,7 +112,8 @@ class DtoAdapter:
 
 def service_to_string(adapter):
     result = f'{adapter.the_id()}, {adapter.name()}, {adapter.description()}'
-    taxonomy_terms = [taxonomy_term_to_string(t) for t in adapter.taxonomy_terms()]
+    taxonomy_terms = {taxonomy_term_to_string(t) for t in adapter.taxonomy_terms()}
+    taxonomy_terms = list(taxonomy_terms)
     taxonomy_terms.sort()
     for t in taxonomy_terms:
         result += t
@@ -118,7 +121,7 @@ def service_to_string(adapter):
 
 
 def taxonomy_term_to_string(taxonomy_term):
-    return f'{taxonomy_term.taxonomy_id}, {taxonomy_term.name}'
+    return f'({taxonomy_term.taxonomy_id}:{taxonomy_term.name}) '
 
 
 def delete_existing_service_taxonomy_terms(service):

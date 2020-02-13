@@ -42,12 +42,12 @@ def update_organization(organization, counters):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization_created()
-        LOGGER.info('created organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.info('created "%s" "%s"', organization.id, organization.name)
     elif not is_organization_equal(existing, organization):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organizations_updated()
-        LOGGER.info('updated organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.info('updated "%s" "%s"', organization.id, organization.name)
 
 
 def get_existing_organization_or_none(organization):
