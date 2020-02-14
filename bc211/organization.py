@@ -13,14 +13,20 @@ LOGGER = logging.getLogger(__name__)
 def delete_organizations_not_in(active_organizations, counts):
     locations_to_delete = Location.objects.exclude(organization_id__in=active_organizations)
     counts.count_locations_deleted(locations_to_delete.count())
+    for i in locations_to_delete:
+        LOGGER.info('delete location "%s" because organization is removed', i.id)
     locations_to_delete.delete()
 
     services_to_delete = Service.objects.exclude(organization_id__in=active_organizations)
     counts.count_services_deleted(services_to_delete.count())
+    for i in services_to_delete:
+        LOGGER.info('delete service "%s" because organization is removed', i.id)
     services_to_delete.delete()
 
     organizations_to_delete = Organization.objects.exclude(pk__in=active_organizations)
     counts.count_organizations_deleted(organizations_to_delete.count())
+    for i in organizations_to_delete:
+        LOGGER.info('delete organization "%s"', i.id)
     organizations_to_delete.delete()
 
 
