@@ -10,7 +10,7 @@ mccabe==0.6.1
 # Debug tools - Note that upgrading django-extensions to 2.1.7 gave error "CommandError:
 # Unknown database engine django.contrib.gis.db.backends.postgis" on Ubuntu only.
 django-extensions==2.2.8
-django-debug-toolbar==2.1
+django-debug-toolbar==2.2
 ipdb==0.12.3
 Werkzeug==0.16.0
 
