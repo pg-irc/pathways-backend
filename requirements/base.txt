@@ -1,5 +1,5 @@
 # Package management
-wheel==0.33.6
+wheel==0.34.2
 
 # python 2 compatibility
 six==1.14.0
@@ -11,7 +11,7 @@ django-model-utils==4.0.0
 django-cors-headers==3.2.1
 django-parler==2.0.1
 djangorestframework==3.11.0
-drf_yasg==1.17.0
+drf_yasg==1.17.1
 awesome-slugify==1.6.5
 polib==1.1.0
 
@@ -32,14 +32,14 @@ spacy==2.2.3
 scipy==1.4.1
 textacy==0.9.1
 # see https://github.com/explosion/spaCy/issues/2995, resolves error "ValueError: 1792000 exceeds max_bin_len(1048576)"
-msgpack==0.6.2
+msgpack==1.0.0
 
 # static files
 whitenoise==5.0.1
 
 # caching
 django-redis==4.11.0
-redis==3.3.11
+redis==3.4.1
 
 # front end tech: Used in Django Admin
 django-crispy-forms==1.8.1
