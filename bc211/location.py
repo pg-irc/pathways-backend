@@ -39,7 +39,7 @@ def get_ids_of_locations_to_delete(locations, organization_id):
 
 def delete_locations(location_ids_to_delete):
     for i in location_ids_to_delete:
-        LOGGER.info('delete "%2"', i.id)
+        LOGGER.info('delete "%2"', i)
     ServiceAtLocation.objects.filter(location_id__in=location_ids_to_delete).delete()
     Location.objects.filter(pk__in=location_ids_to_delete).delete()
 
