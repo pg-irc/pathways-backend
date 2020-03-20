@@ -48,7 +48,7 @@ def set_phone_numbers_on_services(algolia_data, phone_data):
     return algolia_data
 
 
-def set_taxonomy_tersm_on_services(algolia_data, taxonomy_data):
+def set_taxonomy_terms_on_services(algolia_data, taxonomy_data):
     for service in algolia_data:
         service_id = service['service_id']
         if service_id in taxonomy_data:
@@ -75,7 +75,7 @@ def main():
     algolia_data = read_algolia_data(algolia_data_path)
 
     algolia_data_with_phones = set_phone_numbers_on_services(algolia_data, phone_data)
-    aloglia_data_with_taxonomy = set_taxonomy_tersm_on_services(algolia_data_with_phones, taxonomy_data)
+    aloglia_data_with_taxonomy = set_taxonomy_terms_on_services(algolia_data_with_phones, taxonomy_data)
 
     output_data_path = sys.argv[4]
     with open(output_data_path, 'w') as file:
