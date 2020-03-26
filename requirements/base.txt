@@ -42,4 +42,4 @@ django-redis==4.11.0
 redis==3.4.1
 
 # front end tech: Used in Django Admin
-django-crispy-forms==1.8.1
+django-crispy-forms==1.9.0
