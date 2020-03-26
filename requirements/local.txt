@@ -11,7 +11,7 @@ mccabe==0.6.1
 # Unknown database engine django.contrib.gis.db.backends.postgis" on Ubuntu only.
 django-extensions==2.2.8
 django-debug-toolbar==2.2
-ipdb==0.12.3
+ipdb==0.13.2
 Werkzeug==1.0.0
 
 # Build and code maintenance tools
