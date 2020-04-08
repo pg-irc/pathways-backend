@@ -148,6 +148,15 @@ class TestSaveChangesToDatabase(TestCase):
         records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
         self.assertEqual(len(records), 0)
 
+    def test_does_not_save_records_with_invalid_service_id(self):
+        topic_id = a_string()
+        create_topic(topic_id)
+
+        save_changes_to_database([{'topic_id': topic_id, 'service_id': 'not a valid service id', 'exclude': 'Include'}])
+
+        records = TaskServiceSimilarityScore.objects.order_by('similarity_score')
+        self.assertEqual(len(records), 0)
+
     def test_removes_existing_record_for_record_marked_with_exclude(self):
         topic_id = a_string()
         second_topic_id = a_string()
