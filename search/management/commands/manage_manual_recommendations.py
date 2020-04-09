@@ -1,10 +1,13 @@
 import os
 import re
+import logging
 from django.core.management.base import BaseCommand
 from django.core import exceptions
 from search.read_csv_data_from_file import read_csv_data_from_file
 from search.models import TaskServiceSimilarityScore
+from human_services.services.models import Service
 
+LOGGER = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = ('Given a path to a directory, this script reads all CSV files from that '
@@ -102,21 +105,29 @@ def remove_row_count_line(rows):
 
 
 def save_changes_to_database(change_records):
-    valid_records = validate(change_records)
+    valid_records = validate_records(change_records)
     for record in filter_excluded_records(valid_records):
         remove_record(record)
     for record in filter_included_records(valid_records):
-        save_record(record)
+        if validate_service_id(record):
+            save_record(record)
 
 
-def validate(change_records):
+def validate_records(change_records):
     for record in change_records:
         exclude = record['exclude']
         if exclude != 'Exclude' and exclude != 'Include':
             raise exceptions.ValidationError(exclude + ': Invalid value in the Include/Exclude column')
     return change_records
 
-
+def validate_service_id(record):
+    try:
+        Service.objects.get(id=record['service_id'])
+    except:
+        LOGGER.warning('%s: Invalid service id', record['service_id'])
+        return False
+    return True
+    
 def filter_included_records(change_records):
     return filter(lambda record: record['exclude'] != 'Exclude', change_records)
 
