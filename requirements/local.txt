@@ -1,7 +1,7 @@
 -r test.txt
 
 # Code analysis tools
-coverage==5.0.3
+coverage==5.0.4
 django-coverage-plugin==1.8.0
 flake8==3.7.9 # pyup: != 2.6.0
 pylint==2.4.4
@@ -11,7 +11,7 @@ mccabe==0.6.1
 # Unknown database engine django.contrib.gis.db.backends.postgis" on Ubuntu only.
 django-extensions==2.2.8
 django-debug-toolbar==2.2
-ipdb==0.12.3
+ipdb==0.13.2
 Werkzeug==1.0.0
 
 # Build and code maintenance tools

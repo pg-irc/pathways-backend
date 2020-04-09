@@ -12,10 +12,24 @@ def read_phone_data(phone_data_path):
             phone_number = row[1]
             phone_number_type_id = row[2]
 
-            if not location_id in result:
+            if location_id not in result:
                 result[location_id] = []
             result[location_id].append({'phone_number': phone_number, 'type': phone_number_type_id})
 
+    return result
+
+
+def read_taxonomy_data(taxonomy_data_path):
+    result = {}
+    with open(taxonomy_data_path) as csv_file:
+        reader = csv.reader(csv_file)
+        for row in reader:
+            service_id = row[0]
+            taxonomy_term = row[1]
+
+            if service_id not in result:
+                result[service_id] = []
+            result[service_id].append(taxonomy_term)
     return result
 
 
@@ -34,24 +48,38 @@ def set_phone_numbers_on_services(algolia_data, phone_data):
     return algolia_data
 
 
+def set_taxonomy_terms_on_services(algolia_data, taxonomy_data):
+    for service in algolia_data:
+        service_id = service['service_id']
+        if service_id in taxonomy_data:
+            service['taxonomy_terms'] = taxonomy_data[service_id]
+        else:
+            service['taxonomy_terms'] = []
+    return algolia_data
+
+
 def main():
 
-    if len(sys.argv) < 4:
-        print('usage: {} phone_data.csv algolia_service_data.json output_data.json'.
+    if len(sys.argv) < 5:
+        print('usage: {} phones_data.csv taxonomy_data.csv services.json output_data.json'.
               format(sys.argv[0]))
         exit()
 
     phone_data_path = sys.argv[1]
     phone_data = read_phone_data(phone_data_path)
 
-    algolia_data_path = sys.argv[2]
+    taxonomy_data_path = sys.argv[2]
+    taxonomy_data = read_taxonomy_data(taxonomy_data_path)
+
+    algolia_data_path = sys.argv[3]
     algolia_data = read_algolia_data(algolia_data_path)
 
     algolia_data_with_phones = set_phone_numbers_on_services(algolia_data, phone_data)
+    aloglia_data_with_taxonomy = set_taxonomy_terms_on_services(algolia_data_with_phones, taxonomy_data)
 
-    output_data_path = sys.argv[3]
+    output_data_path = sys.argv[4]
     with open(output_data_path, 'w') as file:
-        file.write(json.dumps(algolia_data_with_phones))
+        file.write(json.dumps(aloglia_data_with_taxonomy))
 
 
 main()
