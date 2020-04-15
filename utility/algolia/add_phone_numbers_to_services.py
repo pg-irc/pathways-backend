@@ -53,6 +53,10 @@ def set_taxonomy_terms_on_services(algolia_data, taxonomy_data):
         service_id = service['service_id']
         if service_id in taxonomy_data:
             service['taxonomy_terms'] = taxonomy_data[service_id]
+            if 'immigrantsethnocultural-groups' in taxonomy_data[service_id]:
+                service['for_newcomers'] = 1
+            else:
+                service['for_newcomers'] = 0
         else:
             service['taxonomy_terms'] = []
     return algolia_data
