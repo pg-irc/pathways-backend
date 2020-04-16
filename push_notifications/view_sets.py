@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -30,8 +30,7 @@ def create_or_update_push_notification_token(request, *args, **kwargs):
 
 
 def is_api_key_valid(key):
-    return key == 'the_api_key'
-
+    return key == settings.PATHWAYS_API_KEY
 
 def get_serializer_for_create_or_update(data):
     the_id = data['id']
