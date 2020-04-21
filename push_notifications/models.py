@@ -10,8 +10,7 @@ class PushNotificationToken(models.Model):
     api_key = RequiredCharField(max_length=50, validators=[validate_api_key])
 
     def clean(self):
-        # there is no need to store the API key in the database
-        self.api_key = 'blabla'
+        self.api_key = 'omitted_from_database'
         super(PushNotificationToken, self).clean()
 
     def save(self, *args, **kwargs):

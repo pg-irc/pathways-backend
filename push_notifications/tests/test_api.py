@@ -40,8 +40,6 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
         response = self.client.put(self.url, {'locale': 'en'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # TODO create test to check that the API key is not stored in the DB
-
     def test_put_returns_400_on_incorrect_api_key(self):
         response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_wrong_api_key'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -55,6 +53,15 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
 
         self.assertEqual(response.json()['id'], self.token)
         self.assertEqual(response.json()['locale'], 'en')
+
+    def test_put_does_not_save_api_key(self):
+        response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
+
+        self.assertEqual(response.json()['id'], self.token)
+        self.assertEqual(response.json()['api_key'], 'omitted_from_database')
+
+        database_row = PushNotificationToken.objects.all()[0]
+        self.assertEqual(database_row.api_key, 'omitted_from_database')
 
     def test_put_returns_200_also_if_record_already_exists(self):
         PushNotificationToken(id=self.token, locale='en', api_key='the_api_key').save()
