@@ -11,7 +11,7 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
         self.url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(self.token))
 
     def test_put_creates_database_row(self):
-        self.client.put(self.url, {'locale': 'en'})
+        self.client.put(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
         data = PushNotificationToken.objects.all()
 
         self.assertEqual(len(data), 1)
@@ -21,39 +21,47 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
         token = 'ExponentPushToken[AZaz12~!@#$%^&*()_+`-=\{\}\[\];:\'",.<>/?]'
         url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(token))
 
-        self.client.put(url, {'locale': 'en'})
+        self.client.put(url, {'locale': 'en', 'api_key': 'the_api_key'})
         data = PushNotificationToken.objects.all()
 
         self.assertEqual(data[0].id, token)
 
     def test_put_returns_200(self):
-        response = self.client.put(self.url, {'locale': 'en'})
+        response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_returns_404_on_invalid_token(self):
         token = 'InvalidPushToken[{}]'.format(a_string())
         url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(token))
-        response = self.client.put(url, {'locale': 'en'})
+        response = self.client.put(url, {'locale': 'en', 'api_key': 'the_api_key'})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_put_returns_400_on_missing_api_key(self):
+        response = self.client.put(self.url, {'locale': 'en' })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_put_returns_400_on_incorrect_api_key(self):
+        response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_wrong_api_key'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_put_returns_400_on_invalid_locale(self):
         response = self.client.put(self.url, {'locale': 'this is way too long to be a valid locale'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_put_returns_resulting_data(self):
-        response = self.client.put(self.url, {'locale': 'en'})
+        response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
 
         self.assertEqual(response.json()['id'], self.token)
         self.assertEqual(response.json()['locale'], 'en')
 
     def test_put_returns_200_also_if_record_already_exists(self):
         PushNotificationToken(id=self.token, locale='en').save()
-        response = self.client.put(self.url, {'locale': 'en'})
+        response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_returns_updates_locale_if_record_already_exists(self):
         PushNotificationToken(id=self.token, locale='en').save()
-        response = self.client.put(self.url, {'locale': 'fr'})
+        response = self.client.put(self.url, {'locale': 'fr', 'api_key': 'the_api_key'})
         self.assertEqual(response.json()['locale'], 'fr')
 
     def test_cannot_get_all(self):
@@ -67,7 +75,7 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_cannot_post(self):
-        response = self.client.post(self.url, {'locale': 'en'})
+        response = self.client.post(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_cannot_delete(self):

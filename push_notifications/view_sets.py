@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -19,14 +19,18 @@ from drf_yasg.utils import swagger_auto_schema
 def create_or_update_push_notification_token(request, *args, **kwargs):
     data = request.data.copy()
     data['id'] = kwargs['token']
+    api_key = data.get('api_key', None)
 
     serializer = get_serializer_for_create_or_update(data)
-    if not serializer.is_valid():
+    if not serializer.is_valid() or not is_api_key_valid(api_key):
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
     serializer.save()
     return Response(serializer.data)
 
+
+def is_api_key_valid(key):
+    return key == settings.PATHWAYS_API_KEY
 
 def get_serializer_for_create_or_update(data):
     the_id = data['id']
