@@ -29,6 +29,7 @@ INSTALLED_APPS += ['gunicorn', 'storages', ]
 AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
 MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+PATHWAYS_API_KEY = env('PATHWAYS_API_KEY', default='Invalid api key')
 
 # EMAIL
 # ------------------------------------------------------------------------------
