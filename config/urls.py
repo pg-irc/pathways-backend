@@ -1,3 +1,5 @@
+from bc211.views import Bc211VersionView
+from config import documentation
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
@@ -5,17 +7,16 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from main.version import VersionView
+from content.viewsets import AlertViewSet
 from human_services.organizations.viewsets import OrganizationViewSet
 from human_services.locations.viewsets import (LocationViewSet, LocationViewSetUnderOrganizations)
 from human_services.services_at_location.viewsets import ServiceAtLocationViewSet
 from human_services.services.viewsets import ServiceViewSet, ServiceTopicsViewSet
-from search.viewsets import TopicViewSet, RelatedTopicsViewSet, RelatedServicesViewSet
+from push_notifications.view_sets import create_or_update_push_notification_token
 from qa_tool.viewsets import AlgorithmViewSet, RelevancyScoreViewSet, SearchLocationViewSet
 from rest_framework import routers
 from rest_framework.authtoken import views
-from config import documentation
-from bc211.views import Bc211VersionView
-from push_notifications.view_sets import create_or_update_push_notification_token
+from search.viewsets import TopicViewSet, RelatedTopicsViewSet, RelatedServicesViewSet
 
 
 def build_router():
@@ -43,9 +44,13 @@ def build_router():
     router.register(r'topics', TopicViewSet, basename='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_topics', RelatedTopicsViewSet, basename='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_services', RelatedServicesViewSet, basename='topics')
+    router.register(r'alerts/(?P<locale>[\w-]+)', AlertViewSet, basename='alerts')
+    router.register(r'alerts/(?P<locale>[\w-]+)/(?P<alert_id>[\w-]+)', AlertViewSet, basename='alerts')
 
     return router
 
+
+print(build_router().urls)
 
 def build_qa_tool_routes():
     router = routers.DefaultRouter()

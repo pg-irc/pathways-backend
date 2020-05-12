@@ -54,6 +54,7 @@ LOCAL_APPS = [
     'translation.apps.ContentTranslationToolsConfig',
     'qa_tool.apps.QaToolConfig',
     'push_notifications.apps.PushNotificationsConfig',
+    'content.apps.ContentConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
