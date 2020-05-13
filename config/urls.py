@@ -50,8 +50,6 @@ def build_router():
     return router
 
 
-print(build_router().urls)
-
 def build_qa_tool_routes():
     router = routers.DefaultRouter()
     router.register(r'algorithms', AlgorithmViewSet, basename='algorithms')
