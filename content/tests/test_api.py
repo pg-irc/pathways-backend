@@ -16,37 +16,37 @@ class ContentApiTests(rest_test.APITestCase):
     def test_can_get_alerts(self):
         AlertBuilder().create()
         AlertBuilder().create()
-        url = '/v1/alerts/en/'
+        url = '/v1/content/alerts/en/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 2)
 
     def test_can_get_one_alert(self):
         alert = AlertBuilder().create()
-        url = '/v1/alerts/en/{0}/'.format(alert.id)
+        url = '/v1/content/alerts/en/{0}/'.format(alert.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['id'], alert.id)
 
     def test_no_response_if_no_locale(self):
-        url = '/v1/alerts/'
+        url = '/v1/content/alerts/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_cannot_post(self):
-        url = '/v1/alerts/en/'
+        url = '/v1/content/alerts/en/'
         response = self.client.post(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_cannot_put(self):
         alert = AlertBuilder().create()
-        url = '/v1/alerts/en/{0}/'.format(alert.pk)
+        url = '/v1/content/alerts/en/{0}/'.format(alert.pk)
         response = self.client.put(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_cannot_delete(self):
         alert = AlertBuilder().create()
-        url ='/v1/alerts/en/{0}/'.format(alert.pk)
+        url = '/v1/content/alerts/en/{0}/'.format(alert.pk)
         response = self.client.delete(url, self.data)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -60,13 +60,13 @@ class ContentApiTests(rest_test.APITestCase):
         self.set_content_in_language(alert, 'fr', 'La description')
         alert_from_db = validate_save_and_reload(alert)
 
-        url = '/v1/alerts/fr/{0}/'.format(alert_from_db.pk)
+        url = '/v1/content/alerts/fr/{0}/'.format(alert_from_db.pk)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['heading'], 'Titre')
         self.assertEqual(response.json()['content'], 'La description')
 
-        url = '/v1/alerts/en/{0}/'.format(alert_from_db.pk)
+        url = '/v1/content/alerts/en/{0}/'.format(alert_from_db.pk)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['heading'], 'Title')

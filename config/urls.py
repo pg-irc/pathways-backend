@@ -44,8 +44,8 @@ def build_router():
     router.register(r'topics', TopicViewSet, basename='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_topics', RelatedTopicsViewSet, basename='topics')
     router.register(r'topics/(?P<topic_id>[\w-]+)/related_services', RelatedServicesViewSet, basename='topics')
-    router.register(r'alerts/(?P<locale>[\w-]+)', AlertViewSet, basename='alerts')
-    router.register(r'alerts/(?P<locale>[\w-]+)/(?P<alert_id>[\w-]+)', AlertViewSet, basename='alerts')
+    router.register(r'content/alerts/(?P<locale>[\w-]+)', AlertViewSet, basename='alerts')
+    router.register(r'content/alerts/(?P<locale>[\w-]+)/(?P<alert_id>[\w-]+)', AlertViewSet, basename='alerts')
 
     return router
 
