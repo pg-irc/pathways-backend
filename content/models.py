@@ -8,11 +8,11 @@ class Alert(ValidateOnSaveMixin, TranslatableModel):
                            max_length=200,
                            validators=[validators.validate_slug])
 
-    translations = TranslatedFields(title=models.CharField(max_length=200),
-                                    description=models.TextField(blank=True, null=True))
+    translations = TranslatedFields(heading=models.CharField(max_length=200),
+                                    content=models.TextField(blank=True, null=True))
 
     class Meta:
         ordering = ['id']
 
     def __str__(self):
-        return self.title
+        return self.heading

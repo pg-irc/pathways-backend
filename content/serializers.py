@@ -4,4 +4,4 @@ from content import models
 class AlertSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Alert
-        fields = ('id', 'title', 'description')
+        fields = ('id', 'heading', 'content')

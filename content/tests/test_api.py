@@ -4,6 +4,7 @@ from content.tests.helpers import AlertBuilder
 from rest_framework import test as rest_test
 from rest_framework import status
 
+
 class ContentApiTests(rest_test.APITestCase):
     def setUp(self):
         self.data = {
@@ -52,29 +53,29 @@ class ContentApiTests(rest_test.APITestCase):
     def test_can_return_result_in_specific_locale(self):
         alert = AlertBuilder().build()
 
-        self.set_title_in_language(alert, 'en', 'Title')
-        self.set_title_in_language(alert, 'fr', 'Titre')
+        self.set_heading_in_language(alert, 'en', 'Title')
+        self.set_heading_in_language(alert, 'fr', 'Titre')
 
-        self.set_description_in_language(alert, 'en', 'Description')
-        self.set_description_in_language(alert, 'fr', 'La description')
+        self.set_content_in_language(alert, 'en', 'Description')
+        self.set_content_in_language(alert, 'fr', 'La description')
         alert_from_db = validate_save_and_reload(alert)
 
         url = '/v1/alerts/fr/{0}/'.format(alert_from_db.pk)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['title'], 'Titre')
-        self.assertEqual(response.json()['description'], 'La description')
+        self.assertEqual(response.json()['heading'], 'Titre')
+        self.assertEqual(response.json()['content'], 'La description')
 
         url = '/v1/alerts/en/{0}/'.format(alert_from_db.pk)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['title'], 'Title')
-        self.assertEqual(response.json()['description'], 'Description')
+        self.assertEqual(response.json()['heading'], 'Title')
+        self.assertEqual(response.json()['content'], 'Description')
 
-    def set_title_in_language(self, alert, language, text):
+    def set_heading_in_language(self, alert, language, text):
         alert.set_current_language(language)
-        alert.title = text
+        alert.heading = text
 
-    def set_description_in_language(self, alert, language, text):
+    def set_content_in_language(self, alert, language, text):
         alert.set_current_language(language)
-        alert.description = text
+        alert.content = text

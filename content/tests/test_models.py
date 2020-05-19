@@ -4,6 +4,7 @@ from content.tests.helpers import AlertBuilder
 from common.testhelpers.random_test_values import a_string
 from common.testhelpers.database import validate_save_and_reload
 
+
 # pylint: disable=too-many-public-methods
 class TestAlertModel(TestCase):
     def test_has_id_field(self):
@@ -24,16 +25,16 @@ class TestAlertModel(TestCase):
         with self.assertRaises(exceptions.ValidationError):
             alert.full_clean()
 
-    def test_has_title_field(self):
-        title = a_string()
-        alert = AlertBuilder().with_title(title).build()
+    def test_has_heading_field(self):
+        heading = a_string()
+        alert = AlertBuilder().with_heading(heading).build()
         alert_from_db = validate_save_and_reload(alert)
-        self.assertEqual(alert_from_db.title, title)
+        self.assertEqual(alert_from_db.heading, heading)
 
     def test_title_is_multilingual(self):
         alert = AlertBuilder().build()
-        set_title_in_language(alert, 'en', 'In English')
-        set_title_in_language(alert, 'fr', 'En français')
+        set_heading_in_language(alert, 'en', 'In English')
+        set_heading_in_language(alert, 'fr', 'En français')
         alert_from_db = validate_save_and_reload(alert)
 
         self.assert_title_in_language_equals(alert_from_db, 'en', 'In English')
@@ -41,18 +42,18 @@ class TestAlertModel(TestCase):
 
     def assert_title_in_language_equals(self, alert, language, expected_text):
         alert.set_current_language(language)
-        self.assertEqual(alert.title, expected_text)
+        self.assertEqual(alert.heading, expected_text)
 
-    def test_has_desription_field(self):
-        description = a_string()
-        alert = AlertBuilder().with_description(description).build()
+    def test_has_content_field(self):
+        content = a_string()
+        alert = AlertBuilder().with_content(content).build()
         alert_from_db = validate_save_and_reload(alert)
-        self.assertEqual(alert_from_db.description, description)
+        self.assertEqual(alert_from_db.content, content)
 
     def test_description_is_multilingual(self):
         alert = AlertBuilder().build()
-        set_description_in_language(alert, 'en', 'In English')
-        set_description_in_language(alert, 'fr', 'En français')
+        set_content_in_language(alert, 'en', 'In English')
+        set_content_in_language(alert, 'fr', 'En français')
         alert_from_db = validate_save_and_reload(alert)
 
         self.assert_description_in_language_equals(alert_from_db, 'en', 'In English')
@@ -60,12 +61,14 @@ class TestAlertModel(TestCase):
 
     def assert_description_in_language_equals(self, alert, language, expected_text):
         alert.set_current_language(language)
-        self.assertEqual(alert.description, expected_text)
+        self.assertEqual(alert.content, expected_text)
 
-def set_title_in_language(alert, language, text):
-    alert.set_current_language(language)
-    alert.title = text
 
-def set_description_in_language(alert, language, text):
+def set_heading_in_language(alert, language, text):
     alert.set_current_language(language)
-    alert.description = text
+    alert.heading = text
+
+
+def set_content_in_language(alert, language, text):
+    alert.set_current_language(language)
+    alert.content = text
