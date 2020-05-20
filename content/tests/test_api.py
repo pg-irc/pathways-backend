@@ -22,11 +22,15 @@ class ContentApiTests(rest_test.APITestCase):
         self.assertEqual(len(response.json()), 2)
 
     def test_can_get_one_alert(self):
+        AlertBuilder().create()
+        AlertBuilder().create()
         alert = AlertBuilder().create()
         url = '/v1/content/alerts/en/{0}/'.format(alert.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['id'], alert.id)
+        self.assertEqual(response.json()['heading'], alert.heading)
+        self.assertEqual(response.json()['content'], alert.content)
 
     def test_no_response_if_no_locale(self):
         url = '/v1/content/alerts/'
