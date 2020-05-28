@@ -4,6 +4,7 @@ from django.contrib.gis.geos import Point
 from django.db.models import F
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import Distance as DistanceMeasure
+from content.models import Alert
 from common.filter_parameter_parsers import ProximityParser, TaxonomyParser
 from human_services.locations.models import ServiceAtLocation
 from human_services.services.models import Service
@@ -176,4 +177,13 @@ class OrganizationIdFilter(filters.BaseFilterBackend):
         if organization_id:
             if queryset.model is Service:
                 queryset = queryset.filter(organization_id=organization_id)
+        return queryset
+
+class AlertIdFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        alert_id = view.kwargs.get('alert_id', None)
+        if alert_id:
+            if queryset.model is Alert:
+                queryset = queryset.filter(alert_id=alert_id)
         return queryset
