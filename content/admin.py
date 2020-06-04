@@ -1,3 +1,8 @@
 from django.contrib import admin
+from parler.admin import TranslatableAdmin
+from content.models import Alert
 
-# Register your models here.
+class AlertAdmin(TranslatableAdmin):
+    pass
+
+admin.site.register(Alert, AlertAdmin)
