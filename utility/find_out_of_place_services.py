@@ -1,6 +1,7 @@
 from math import sin, cos, sqrt, atan2, radians
 import json
 import csv
+import sys
 
 def read_algolia_data(algolia_data_path):
     with open(algolia_data_path, 'r') as file:
@@ -30,12 +31,24 @@ def get_distance_from_latlong_in_km(lat1, lon1, lat2, lon2):
     distance = radius * central_angle
     return distance
 
+#python ./utility/find_out_of_place_services.py ../content/city_latlong.csv output_data.json 20 distant_services.csv
 def main():
 
-    city_latlong_map = parse_csv('../content/city_latlong.csv')
-    algolia_data = read_algolia_data('output_data.json')
+    if len(sys.argv) < 4:
+        print('usage: {} city_latlong.csv output_data.json distance_threshold distant_services.csv'.
+              format(sys.argv[0]))
+        exit()
 
-    with open('./cities.txt', 'w') as file:
+    city_latlong_csv_path = sys.argv[1]
+    city_latlong_map = parse_csv(city_latlong_csv_path)
+
+    algolia_data_path = sys.argv[2]
+    algolia_data = read_algolia_data(algolia_data_path)
+
+    distance_threshold = float(sys.argv[3])
+    output_csv_path = sys.argv[4]
+
+    with open(output_csv_path, 'w') as file:
         for service in algolia_data:
             latlong = service['_geoloc']
             city = service['address']['city']
@@ -44,7 +57,7 @@ def main():
                 distance = get_distance_from_latlong_in_km(latlong['lat'], latlong['lng'], city_latlong['lat'], city_latlong['lng'])
             except ValueError:
                 continue
-            if distance > 20 and latlong['lat'] != '':
+            if distance > distance_threshold and latlong['lat'] != '':
                 file.write(service['service_id'])
                 file.write(',')
                 file.write(str(distance))

@@ -1,5 +1,6 @@
 import csv
 import json
+import sys
 import requests
 
 def read_algolia_data(algolia_data_path):
@@ -21,17 +22,29 @@ def get_latlong(city):
         return {'lng':0, 'lat':0}
     return {'lng':response_json['longt'], 'lat':response_json['latt']}
 
+# python ./utility/add_new_cities_to_csv.py ../content/city_latlong.csv output_data.json new_city_latlong.csv
 def main():
 
-    city_latlong_map = parse_csv('../content/city_latlong.csv')
-    algolia_data = read_algolia_data('output_data.json')
+    if len(sys.argv) < 3:
+        print('usage: {} city_latlong.csv output_data.json new_city_latlong.csv'.
+              format(sys.argv[0]))
+        exit()
+
+    city_latlong_csv_path = sys.argv[1]
+    city_latlong_map = parse_csv(city_latlong_csv_path)
+
+    algolia_data_path = sys.argv[2]
+    algolia_data = read_algolia_data(algolia_data_path)
+
+    output_csv_path = sys.argv[3]
+
     for service in algolia_data:
         city = service['address']['city']
         if city not in city_latlong_map:
             city_latlong = get_latlong(city)
             city_latlong_map[city] = city_latlong
 
-    with open('./cities.csv', 'w') as file:
+    with open(output_csv_path, 'w') as file:
         for city in city_latlong_map:
             file.write(city)
             file.write(',')
