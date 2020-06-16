@@ -4,7 +4,7 @@ import requests
 from algolia.helpers import read_algolia_data, parse_cities_csv
 
 # invoke as follows:
-# python ./utility/add_new_cities_to_csv.py ../content/city_latlong.csv output_data.json new_city_latlong.csv
+# python ./utility/update_csv_with_cities_from_db.py ../content/city_latlong.csv output_data.json new_city_latlong.csv
 
 def get_latlong(city):
     url = 'https://geocoder.ca/?locate=' + city + '&json=1'

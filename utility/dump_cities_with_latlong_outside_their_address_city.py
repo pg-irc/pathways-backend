@@ -4,7 +4,7 @@ import sys
 from algolia.helpers import read_algolia_data, parse_cities_csv
 
 # invoke as follows:
-# python ./utility/find_out_of_place_services.py ../content/city_latlong.csv output_data.json 20 distant_services.csv
+# python ./utility/dump_cities_with_latlong_outside_their_address_city.py ../content/city_latlong.csv output_data.json 20 distant_services.csv
 
 def get_distance_from_latlong_in_km(lat1, lon1, lat2, lon2):
     radius = 6372.8
