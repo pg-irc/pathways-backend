@@ -1,12 +1,10 @@
 import csv
-import json
 import sys
 import requests
+from algolia.helpers import read_algolia_data
 
-def read_algolia_data(algolia_data_path):
-    with open(algolia_data_path, 'r') as file:
-        return json.loads(file.read())
-
+# invoke as follows:
+# python ./utility/add_new_cities_to_csv.py ../content/city_latlong.csv output_data.json new_city_latlong.csv
 
 def parse_csv(csv_path):
     with open(csv_path, mode='r') as file:
@@ -22,7 +20,6 @@ def get_latlong(city):
         return {'lng':0, 'lat':0}
     return {'lng':response_json['longt'], 'lat':response_json['latt']}
 
-# python ./utility/add_new_cities_to_csv.py ../content/city_latlong.csv output_data.json new_city_latlong.csv
 def main():
 
     if len(sys.argv) < 3:

@@ -1,12 +1,10 @@
 from math import sin, cos, sqrt, atan2, radians
-import json
 import csv
 import sys
+from algolia.helpers import read_algolia_data
 
-def read_algolia_data(algolia_data_path):
-    with open(algolia_data_path, 'r') as file:
-        return json.loads(file.read())
-
+# invoke as follows:
+# python ./utility/find_out_of_place_services.py ../content/city_latlong.csv output_data.json 20 distant_services.csv
 
 def parse_csv(csv_path):
     with open(csv_path, mode='r') as file:
@@ -31,7 +29,6 @@ def get_distance_from_latlong_in_km(lat1, lon1, lat2, lon2):
     distance = radius * central_angle
     return distance
 
-#python ./utility/find_out_of_place_services.py ../content/city_latlong.csv output_data.json 20 distant_services.csv
 def main():
 
     if len(sys.argv) < 4:
