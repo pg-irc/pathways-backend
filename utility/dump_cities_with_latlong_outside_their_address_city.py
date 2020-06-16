@@ -1,5 +1,4 @@
 from math import sin, cos, sqrt, atan2, radians
-import csv
 import sys
 from algolia.helpers import read_algolia_data, parse_cities_csv
 

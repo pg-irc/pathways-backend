@@ -1,4 +1,3 @@
-import csv
 import sys
 import requests
 from algolia.helpers import read_algolia_data, parse_cities_csv
