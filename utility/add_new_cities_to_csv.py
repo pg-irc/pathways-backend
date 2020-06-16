@@ -1,16 +1,10 @@
 import csv
 import sys
 import requests
-from algolia.helpers import read_algolia_data
+from algolia.helpers import read_algolia_data, parse_cities_csv
 
 # invoke as follows:
 # python ./utility/add_new_cities_to_csv.py ../content/city_latlong.csv output_data.json new_city_latlong.csv
-
-def parse_csv(csv_path):
-    with open(csv_path, mode='r') as file:
-        csv_reader = csv.reader(file)
-        city_to_latlong = {rows[0]: {'lng': float(rows[1]), 'lat': float(rows[2])} for rows in csv_reader}
-        return city_to_latlong
 
 def get_latlong(city):
     url = 'https://geocoder.ca/?locate=' + city + '&json=1'
@@ -28,7 +22,7 @@ def main():
         exit()
 
     city_latlong_csv_path = sys.argv[1]
-    city_latlong_map = parse_csv(city_latlong_csv_path)
+    city_latlong_map = parse_cities_csv(city_latlong_csv_path)
 
     algolia_data_path = sys.argv[2]
     algolia_data = read_algolia_data(algolia_data_path)

@@ -1,16 +1,10 @@
 from math import sin, cos, sqrt, atan2, radians
 import csv
 import sys
-from algolia.helpers import read_algolia_data
+from algolia.helpers import read_algolia_data, parse_cities_csv
 
 # invoke as follows:
 # python ./utility/find_out_of_place_services.py ../content/city_latlong.csv output_data.json 20 distant_services.csv
-
-def parse_csv(csv_path):
-    with open(csv_path, mode='r') as file:
-        csv_reader = csv.reader(file)
-        city_to_latlong = {rows[0]: {'lat': float(rows[1]), 'lng': float(rows[2])} for rows in csv_reader}
-        return city_to_latlong
 
 def get_distance_from_latlong_in_km(lat1, lon1, lat2, lon2):
     radius = 6372.8
@@ -37,7 +31,7 @@ def main():
         exit()
 
     city_latlong_csv_path = sys.argv[1]
-    city_latlong_map = parse_csv(city_latlong_csv_path)
+    city_latlong_map = parse_cities_csv(city_latlong_csv_path)
 
     algolia_data_path = sys.argv[2]
     algolia_data = read_algolia_data(algolia_data_path)
