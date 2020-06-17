@@ -6,21 +6,23 @@ import os
 
 class TopicApiTests(rest_test.APITestCase):
 
-    def get_search_results(self, data, element_count):
+    def get_search_results(self, request_data, element_count):
         ALGOLIA_INDEX = 'dev_phones'
         ALGOLIA_SEARCH_API_KEY = os.environ.get('ALGOLIA_SEARCH_API_KEY')
         ALGOLIA_APPLICATION_ID = 'MMYH1Z0D3O'
+
         url = 'https://MMYH1Z0D3O-dsn.algolia.net/1/indexes/' + ALGOLIA_INDEX + '/query'
         headers = {
             'X-Algolia-API-Key': ALGOLIA_SEARCH_API_KEY,
             'Content-Type': 'application/json',
             'X-Algolia-Application-Id': ALGOLIA_APPLICATION_ID,
         }
-        response = requests.post(url, headers=headers, data=json.dumps(data))
+        request_json = json.dumps(request_data)
+        response = requests.post(url, headers=headers, data=request_json)
         content_json = response.content.decode('utf-8')
         content = json.loads(content_json)
-        elements = content['hits'][0:element_count]
-        return elements
+        first_n_hits = content['hits'][0:element_count]
+        return first_n_hits
 
     def is_disabled(self):
         return os.environ.get('ALGOLIA_SEARCH_API_KEY') is None
@@ -30,10 +32,8 @@ class TopicApiTests(rest_test.APITestCase):
             print('Algolia tests not run, set environment variable ALGOLIA_SEARCH_API_KEY to enable')
             return
 
-        self.assertEqual(os.environ.get('ALGOLIA_SEARCH_API_KEY'), '')
-
         data = {'query': 'Food', 'page': '1', 'hitsPerPage': '20',
                 'aroundLatLng': '', 'aroundPrecision': ''}
-        five_first_results = self.get_search_results(data, 5)
-        elements = [element['service_id'] for element in five_first_results]
-        self.assertIn('47982057', elements)
+        first_five_results = self.get_search_results(data, 5)
+        service_ids = [result['service_id'] for result in first_five_results]
+        self.assertIn('47982057', service_ids)
