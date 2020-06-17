@@ -22,7 +22,16 @@ class TopicApiTests(rest_test.APITestCase):
         elements = content['hits'][0:element_count]
         return elements
 
+    def is_disabled(self):
+        return os.environ.get('ALGOLIA_SEARCH_API_KEY') is None
+
     def test_foo(self):
+        if self.is_disabled():
+            print('Algolia tests not run, set environment variable ALGOLIA_SEARCH_API_KEY to enable')
+            return
+
+        self.assertEqual(os.environ.get('ALGOLIA_SEARCH_API_KEY'), '')
+
         data = {'query': 'Food', 'page': '1', 'hitsPerPage': '20',
                 'aroundLatLng': '', 'aroundPrecision': ''}
         five_first_results = self.get_search_results(data, 5)
