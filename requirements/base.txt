@@ -39,7 +39,7 @@ whitenoise==5.1.0
 
 # caching
 django-redis==4.12.1
-redis==3.5.2
+redis==3.5.3
 
 # front end tech: Used in Django Admin
 django-crispy-forms==1.9.1
