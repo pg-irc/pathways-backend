@@ -38,7 +38,7 @@ msgpack==1.0.0
 whitenoise==5.1.0
 
 # caching
-django-redis==4.11.0
+django-redis==4.12.1
 redis==3.5.2
 
 # front end tech: Used in Django Admin
