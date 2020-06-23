@@ -6,8 +6,8 @@ import os
 
 class TopicApiTests(rest_test.APITestCase):
 
-    def get_search_results(self, request_data, element_count):
-        ALGOLIA_INDEX = 'dev_phones'
+    def get_search_results(self, request_data):
+        ALGOLIA_INDEX = 'dev_match_city'
         ALGOLIA_SEARCH_API_KEY = os.environ.get('ALGOLIA_SEARCH_API_KEY')
         ALGOLIA_APPLICATION_ID = 'MMYH1Z0D3O'
 
@@ -20,9 +20,7 @@ class TopicApiTests(rest_test.APITestCase):
         request_json = json.dumps(request_data)
         response = requests.post(url, headers=headers, data=request_json)
         content_json = response.content.decode('utf-8')
-        content = json.loads(content_json)
-        first_n_hits = content['hits'][0:element_count]
-        return first_n_hits
+        return json.loads(content_json)
 
     def is_disabled(self):
         return os.environ.get('ALGOLIA_SEARCH_API_KEY') is None
@@ -32,16 +30,19 @@ class TopicApiTests(rest_test.APITestCase):
     # Test with a query with lat/long in Surrey close to the surrey/new west border, with a search term that
     # includes "Surrey", and confirm that we get results that are all in Surrey. See also #919.
 
-    def test_city_in_query(self):
+    def test_search_with_city_name_in_query_returns_results_from_city(self):
         if self.is_disabled():
             print('Algolia tests not run, set environment variable ALGOLIA_SEARCH_API_KEY to enable')
             return
-        surrey = '49.183333,-122.850000'
-        data = {'query': 'Food', 'page': '1', 'hitsPerPage': '20',
-                'aroundLatLng': surrey, 'aroundPrecision': ''}
-        first_five_results = self.get_search_results(data, 5)
-        service_ids = [result['service_id'] for result in first_five_results]
-        self.assertIn('47982057', service_ids)
+        surrey_geocoder = '49.183333,-122.850000'
+        query_with_city_name = 'Food Surrey'
+        data = {'query': query_with_city_name, 'page': '1', 'hitsPerPage': '20',
+                'aroundLatLng': surrey_geocoder, 'aroundPrecision': '5000'}
+        results = self.get_search_results(data)
+        cities_from_results = [f['address']['city'] for f in results['hits']]
+        number_of_results_in_surrey = sum(1 for c in cities_from_results if c == 'Surrey')
+        fraction_in_surrey = number_of_results_in_surrey / len(cities_from_results)
+        self.assertGreater(fraction_in_surrey, 0.8)
 
     # https://github.com/pg-irc/pathways-frontend/issues/1127 need a test to show that search with lat/long
     # returns a result and empty string for lat/long also returns a result
