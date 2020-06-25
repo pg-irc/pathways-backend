@@ -36,7 +36,7 @@ class TopicApiTests(rest_test.APITestCase):
             return
         surrey_geocoder = '49.183333,-122.850000'
         query_with_city_name = 'Food Surrey'
-        data = {'query': query_with_city_name, 'page': '1', 'hitsPerPage': '20',
+        data = {'query': query_with_city_name, 'page': '0', 'hitsPerPage': '20',
                 'aroundLatLng': surrey_geocoder, 'aroundPrecision': '5000'}
         results = self.get_search_results(data)
         cities_from_results = [f['address']['city'] for f in results['hits']]
