@@ -73,6 +73,20 @@ class TopicApiTests(rest_test.APITestCase):
         fraction_in_taxonomy = number_of_results_in_taxonomy / len(synonym_results['hits'])
         self.assertGreater(fraction_in_taxonomy, 0.8)
 
+
+    def test_search_icbc_matching_organization_name(self):
+        if self.is_disabled():
+            print('Algolia tests not run, set environment variable ALGOLIA_SEARCH_API_KEY to enable')
+            return
+
+        query = 'icbc'
+        data = {'query': query, 'page': '0', 'hitsPerPage': '20'}
+        results = self.get_search_results(data)
+        organizations_from_results = [f['organization']['name'] for f in results['hits']]
+        number_of_results_in_org = sum(1 for c in organizations_from_results if str.lower(query) in str.lower(c))
+        fraction_in_organization = number_of_results_in_org / len(results['hits'])
+        self.assertGreater(fraction_in_organization, 0.8)
+
     # https://github.com/pg-irc/pathways-frontend/issues/916 is just about passing the correct oarameters to
     # Algolia, nothing for us to test.
 
