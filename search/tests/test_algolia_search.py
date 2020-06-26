@@ -50,10 +50,28 @@ class TopicApiTests(rest_test.APITestCase):
     # https://github.com/pg-irc/pathways-frontend/issues/971 need a test with a phrase like "english classes"
     # and compare it to the result with "english for all the classes" or something. Same with "settelment worker",
     # see #919
+    # the issue was referring to the fact that the description matched 'english' and 'classes' in a FOODSAFE service that has both words very far in the description
+    # that particular issue was solved by synonym pushing taxonomy related service up and eclipsing the seriously out of place service
+    # not confident a long query term would yield meaningful test here
 
     # https://github.com/pg-irc/pathways-frontend/issues/919 test with search for "ICBC" should return results
     # with icbc in the service title. Tests covering all the different synonyms should go in here, "english classes"
     # to "language-english" taxonomy term
+
+    def test_search_with_synonyms_returns_results_containing_taxonomy(self):
+        if self.is_disabled():
+            print('Algolia tests not run, set environment variable ALGOLIA_SEARCH_API_KEY to enable')
+            return
+
+        query_with_synonym = 'english classes'
+        taxonomy = 'language-english'
+        synonym_data = {'query': query_with_synonym, 'page': '0', 'hitsPerPage': '20'}
+        synonym_results = self.get_search_results(synonym_data)
+
+        taxonomies_from_results = [f['taxonomy_terms'] for f in synonym_results['hits']]
+        number_of_results_in_taxonomy = sum(1 for c in taxonomies_from_results if taxonomy in c)
+        fraction_in_taxonomy = number_of_results_in_taxonomy / len(synonym_results['hits'])
+        self.assertGreater(fraction_in_taxonomy, 0.8)
 
     # https://github.com/pg-irc/pathways-frontend/issues/916 is just about passing the correct oarameters to
     # Algolia, nothing for us to test.
