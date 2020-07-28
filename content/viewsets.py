@@ -2,6 +2,7 @@ from django.utils.decorators import method_decorator
 from rest_framework import viewsets
 from common.filters import (AlertIdFilter)
 from content import models, serializers, documentation
+from content.convert_locale_code import (convert_locale_code)
 
 # pylint: disable=too-many-ancestors
 @method_decorator(name='list', decorator=documentation.get_alerts_list_schema())
@@ -12,4 +13,5 @@ class AlertViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         locale = self.kwargs['locale']
-        return models.Alert.objects.language(locale).all()
+        converted_locale = convert_locale_code(locale)
+        return models.Alert.objects.language(converted_locale).all()

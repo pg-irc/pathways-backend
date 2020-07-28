@@ -76,6 +76,22 @@ class ContentApiTests(rest_test.APITestCase):
         self.assertEqual(response.json()['heading'], 'Title')
         self.assertEqual(response.json()['content'], 'Description')
 
+    def test_can_return_correct_chinese_translation(self):
+        alert = AlertBuilder().build()
+
+        self.set_heading_in_language(alert, 'zh-hans', 'Simplified Chinese Title')
+        self.set_heading_in_language(alert, 'zh-hant', 'Traditional Chinese Title')
+
+        self.set_content_in_language(alert, 'zh-hans', 'Simplified Chinese description')
+        self.set_content_in_language(alert, 'zh-hant', 'Traditional Chinese description')
+        alert_from_db = validate_save_and_reload(alert)
+
+        url = '/v1/content/alerts/zh_TW/{0}/'.format(alert_from_db.pk)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['heading'], 'Traditional Chinese Title')
+        self.assertEqual(response.json()['content'], 'Traditional Chinese description')
+
     def set_heading_in_language(self, alert, language, text):
         alert.set_current_language(language)
         alert.heading = text
