@@ -29,7 +29,7 @@ psycopg2==2.8.5 --no-binary psycopg2
 
 # Natural language processing
 spacy==2.3.2
-scipy==1.5.1
+scipy==1.5.2
 textacy==0.10.0
 # see https://github.com/explosion/spaCy/issues/2995, resolves error "ValueError: 1792000 exceeds max_bin_len(1048576)"
 msgpack==1.0.0
