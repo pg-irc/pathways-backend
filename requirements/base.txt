@@ -1,16 +1,16 @@
 # Package management
-wheel==0.34.2
+wheel==0.35.1
 
 # python 2 compatibility
 six==1.15.0
 
 # django
-django==3.0.8
+django==3.1
 django-environ==0.4.5
 django-model-utils==4.0.0
 django-cors-headers==3.4.0
-django-parler==2.0.1
-djangorestframework==3.11.0
+django-parler==2.1
+djangorestframework==3.11.1
 drf_yasg==1.17.1
 awesome-slugify==1.6.5
 polib==1.1.0
@@ -29,13 +29,13 @@ psycopg2==2.8.5 --no-binary psycopg2
 
 # Natural language processing
 spacy==2.3.2
-scipy==1.5.1
+scipy==1.5.2
 textacy==0.10.0
 # see https://github.com/explosion/spaCy/issues/2995, resolves error "ValueError: 1792000 exceeds max_bin_len(1048576)"
 msgpack==1.0.0
 
 # static files
-whitenoise==5.1.0
+whitenoise==5.2.0
 
 # caching
 django-redis==4.12.1
