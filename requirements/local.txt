@@ -16,7 +16,7 @@ Werkzeug==1.0.1
 
 # Build and code maintenance tools
 docker==4.3.1
-docker-compose==1.26.2
+docker-compose==1.27.3
 pur==5.3.0
 
 # Parse yaml files
