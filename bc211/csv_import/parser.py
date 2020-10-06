@@ -22,4 +22,5 @@ header_map = {
     'AgencyDescription': 'description',
     'AlternateName': 'alternate_name',
     'EmailAddressMain': 'email',
+    'WebsiteAddress': 'url',
 }
