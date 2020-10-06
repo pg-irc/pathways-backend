@@ -22,13 +22,13 @@ class Bc211CsvDataBuilder:
 
     def build(self):
         result = ''
-        keys = list(self.data[0].keys())
-        random.shuffle(keys)
-        for key in keys:
+        shuffled_keys = list(self.data[0].keys())
+        random.shuffle(shuffled_keys)
+        for key in shuffled_keys:
             result += key + ','
         result += '\n'
         for row in self.data:
-            for key in keys:
+            for key in shuffled_keys:
                 value = row.get(key)
                 result += value + ','
             result += '\n'
