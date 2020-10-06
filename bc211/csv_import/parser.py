@@ -21,4 +21,5 @@ header_map = {
     'PublicName': 'name',
     'AgencyDescription': 'description',
     'AlternateName': 'alternate_name',
+    'EmailAddressMain': 'email',
 }
