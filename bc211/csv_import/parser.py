@@ -4,7 +4,7 @@ import csv
 def parse(lines):
     reader = csv.reader(lines.split('\n'))
     headers = reader.__next__()
-    result = [{}]
+    result = [{'type': 'organization'}]
     for values in reader:
         if not values:
             break

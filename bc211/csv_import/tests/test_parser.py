@@ -44,6 +44,11 @@ class ParsingOfOrganizationsTests(TestCase):
         parsed_data = parse(data)
         self.assertEqual(parsed_data[0]['url'], the_url)
 
+    def test_can_get_type(self):
+        data = Bc211CsvDataBuilder().build()
+        parsed_data = parse(data)
+        self.assertEqual(parsed_data[0]['type'], 'organization')
+
     def test_can_parse_two_organizations(self):
         first_name = a_string()
         second_name = a_string()
