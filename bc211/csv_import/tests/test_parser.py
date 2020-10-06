@@ -13,3 +13,9 @@ class ParserTests(TestCase):
         data = Bc211CsvDataBuilder().with_organization_id(the_id).build()
         parsed_data = parse(data)
         self.assertEqual(parsed_data['organization_id'], the_id)
+
+    def test_can_import_organization_name(self):
+        the_name = a_string()
+        data = Bc211CsvDataBuilder().with_organization_name(the_name).build()
+        parsed_data = parse(data)
+        self.assertEqual(parsed_data['organization_name'], the_name)

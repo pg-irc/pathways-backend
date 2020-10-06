@@ -1,11 +1,24 @@
 class Bc211CsvDataBuilder:
     def __init__(self):
         self.data = {}
+        self.data['ResourceAgencyNum'] = ''
+        self.data['PublicName'] = ''
 
-    def with_organization_id(self, name):
-        self.data['ResourceAgencyNum'] = name
+    def with_organization_id(self, id):
+        self.data['ResourceAgencyNum'] = id
+        return self
+
+    def with_organization_name(self, name):
+        self.data['PublicName'] = name
         return self
 
     def build(self):
-        for key in self.data.keys():
-            return f'{key},\n{self.data[key]},\n'
+        result = ''
+        keys = self.data.keys()
+        for key in keys:
+            result += key + ','
+        result += '\n'
+        for key in keys:
+            result += self.data.get(key) + ','
+        result += '\n'
+        return result

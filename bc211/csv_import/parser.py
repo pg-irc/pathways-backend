@@ -9,4 +9,5 @@ def parse(lines):
         if not len(row):
             break
         result['organization_id'] = row[0]
+        result['organization_name'] = row[1]
     return result
