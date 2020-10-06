@@ -9,6 +9,7 @@ class Bc211CsvDataBuilder:
         row = {}
         row['ResourceAgencyNum'] = ''
         row['PublicName'] = ''
+        row['AlternateName'] = ''
         row['AgencyDescription'] = ''
         return row
 

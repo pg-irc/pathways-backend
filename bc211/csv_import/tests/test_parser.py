@@ -24,6 +24,12 @@ class ParserTests(TestCase):
         parsed_data = parse(data)
         self.assertEqual(parsed_data[0]['name'], the_name)
 
+    def test_can_parse_organization_alternate_name(self):
+        the_name = a_string()
+        data = Bc211CsvDataBuilder().with_field('AlternateName', the_name).build()
+        parsed_data = parse(data)
+        self.assertEqual(parsed_data[0]['alternate_name'], the_name)
+
     def test_can_parse_description(self):
         the_description = a_string()
         data = Bc211CsvDataBuilder().with_field(ORGANIZATION_DESCRIPTION, the_description).build()

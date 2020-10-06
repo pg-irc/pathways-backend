@@ -20,4 +20,5 @@ header_map = {
     'ResourceAgencyNum': 'id',
     'PublicName': 'name',
     'AgencyDescription': 'description',
+    'AlternateName': 'alternate_name',
 }
