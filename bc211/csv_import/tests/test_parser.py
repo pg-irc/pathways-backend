@@ -8,6 +8,7 @@ logging.disable(logging.ERROR)
 
 ORGANIZATION_ID_HEADER = 'ResourceAgencyNum'
 ORGANIZATION_NAME_HEADER = 'PublicName'
+ORGANIZATION_DESCRIPTION = 'AgencyDescription'
 
 
 class ParserTests(TestCase):
@@ -22,6 +23,12 @@ class ParserTests(TestCase):
         data = Bc211CsvDataBuilder().with_field(ORGANIZATION_NAME_HEADER, the_name).build()
         parsed_data = parse(data)
         self.assertEqual(parsed_data[0]['name'], the_name)
+
+    def test_can_parse_description(self):
+        the_description = a_string()
+        data = Bc211CsvDataBuilder().with_field(ORGANIZATION_DESCRIPTION, the_description).build()
+        parsed_data = parse(data)
+        self.assertEqual(parsed_data[0]['description'], the_description)
 
     def test_can_parse_two_organizations(self):
         first_name = a_string()

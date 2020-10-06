@@ -10,5 +10,6 @@ def parse(lines):
             break
         result[-1]['id'] = row[0]
         result[-1]['name'] = row[1]
+        result[-1]['description'] = row[2]
         result.append({})
     return result

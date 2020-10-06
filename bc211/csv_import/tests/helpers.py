@@ -6,6 +6,7 @@ class Bc211CsvDataBuilder:
         row = {}
         row['ResourceAgencyNum'] = ''
         row['PublicName'] = ''
+        row['AgencyDescription'] = ''
         return row
 
     def next_row(self):
