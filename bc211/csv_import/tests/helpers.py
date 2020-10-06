@@ -12,12 +12,8 @@ class Bc211CsvDataBuilder:
         self.data.append(self.a_row())
         return self
 
-    def with_organization_id(self, id):
-        self.data[-1]['ResourceAgencyNum'] = id
-        return self
-
-    def with_organization_name(self, name):
-        self.data[-1]['PublicName'] = name
+    def with_field(self, key, value):
+        self.data[-1][key] = value
         return self
 
     def build(self):
