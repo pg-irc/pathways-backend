@@ -3,23 +3,24 @@ import csv
 
 def parse(lines):
     reader = csv.reader(lines.split('\n'))
-    headers = reader.__next__()
+    fields = reader.__next__()
     result = [{}]
     for values in reader:
         if not values:
             break
-        for header, value in zip(headers, values):
-            output_header = header_map.get(header, None)
-            if header == 'ParentAgencyNum':
+        for field, value in zip(fields, values):
+            output_field = map_to_output_field.get(field, None)
+            if field == 'ParentAgencyNum':
                 is_organization = value == '0'
-                result[-1]['type'] = 'organization' if is_organization else 'service'
-            if output_header:
-                result[-1][output_header] = value
+                the_type = 'organization' if is_organization else 'service'
+                result[-1]['type'] = the_type
+            if output_field:
+                result[-1][output_field] = value
         result.append({})
     return result
 
 
-header_map = {
+map_to_output_field = {
     'ResourceAgencyNum': 'id',
     'PublicName': 'name',
     'AgencyDescription': 'description',
