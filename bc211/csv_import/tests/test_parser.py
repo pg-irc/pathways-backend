@@ -1,6 +1,6 @@
 import logging
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_string, a_website_address, an_email_address
+from common.testhelpers.random_test_values import a_string, a_website_address, an_email_address, an_integer
 from ..parser import parse
 from .helpers import Bc211CsvDataBuilder
 
@@ -44,10 +44,17 @@ class ParsingOfOrganizationsTests(TestCase):
         parsed_data = parse(data)
         self.assertEqual(parsed_data[0]['url'], the_url)
 
-    def test_can_get_type(self):
-        data = Bc211CsvDataBuilder().build()
+    def test_sets_type_to_organization_if_parent_agency_is_zero(self):
+        parent_id = '0'
+        data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
         parsed_data = parse(data)
         self.assertEqual(parsed_data[0]['type'], 'organization')
+
+    def test_sets_type_to_service_if_parent_agency_is_not_zero(self):
+        parent_id = str(an_integer(min=1))
+        data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
+        parsed_data = parse(data)
+        self.assertEqual(parsed_data[0]['type'], 'service')
 
     def test_can_parse_two_organizations(self):
         first_name = a_string()

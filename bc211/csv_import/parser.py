@@ -4,12 +4,15 @@ import csv
 def parse(lines):
     reader = csv.reader(lines.split('\n'))
     headers = reader.__next__()
-    result = [{'type': 'organization'}]
+    result = [{}]
     for values in reader:
         if not values:
             break
         for header, value in zip(headers, values):
             output_header = header_map.get(header, None)
+            if header == 'ParentAgencyNum':
+                is_organization = value == '0'
+                result[-1]['type'] = 'organization' if is_organization else 'service'
             if output_header:
                 result[-1][output_header] = value
         result.append({})
