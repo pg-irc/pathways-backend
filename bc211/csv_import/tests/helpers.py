@@ -1,3 +1,6 @@
+import random
+
+
 class Bc211CsvDataBuilder:
     def __init__(self):
         self.data = [self.a_row()]
@@ -19,7 +22,8 @@ class Bc211CsvDataBuilder:
 
     def build(self):
         result = ''
-        keys = self.data[0].keys()
+        keys = list(self.data[0].keys())
+        random.shuffle(keys)
         for key in keys:
             result += key + ','
         result += '\n'

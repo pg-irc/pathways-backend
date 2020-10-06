@@ -8,8 +8,16 @@ def parse(lines):
     for row in reader:
         if not len(row):
             break
-        result[-1]['id'] = row[0]
-        result[-1]['name'] = row[1]
-        result[-1]['description'] = row[2]
+        for column, value in zip(header, row):
+            name = name_map.get(column, None)
+            if name:
+                result[-1][name] = value
         result.append({})
     return result
+
+
+name_map = {
+    'ResourceAgencyNum': 'id',
+    'PublicName': 'name',
+    'AgencyDescription': 'description',
+}
