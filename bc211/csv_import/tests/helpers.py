@@ -13,6 +13,7 @@ class Bc211CsvDataBuilder:
         row['AgencyDescription'] = ''
         row['EmailAddressMain'] = ''
         row['WebsiteAddress'] = ''
+        row['Phone1Number'] = ''
         return row
 
     def next_row(self):

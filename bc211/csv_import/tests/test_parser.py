@@ -1,6 +1,7 @@
 import logging
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_string, a_website_address, an_email_address, an_integer
+from common.testhelpers.random_test_values import (a_phone_number, a_string, a_website_address,
+                                                   an_email_address, an_integer)
 from ..parser import parse
 from .helpers import Bc211CsvDataBuilder
 
@@ -10,9 +11,13 @@ logging.disable(logging.ERROR)
 class TestDataSink:
     def __init__(self):
         self.organizations = []
+        self.phone_numbers = []
 
     def write_organization(self, organization):
         self.organizations.append(organization)
+
+    def write_phone(self, phone):
+        self.phone_numbers.append(phone)
 
     def organizations(self):
         return self.organizations
@@ -20,8 +25,11 @@ class TestDataSink:
     def first_organization(self):
         return self.organizations[0]
 
+    def first_phone_number(self):
+        return self.phone_numbers[0]
 
-class ParsingOfOrganizationsTests(TestCase):
+
+class ParsinorganizationanizationsTests(TestCase):
     def tesorganizationparse_organization_id(self):
         the_id = a_string()
         data = Bc211CsvDataBuilder().with_field('ResourceAgencyNum', the_id).build()
@@ -79,3 +87,12 @@ class ParsingOfOrganizationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data).organizations
         self.assertEqual(parsed_data[0]['name'], first_name)
         self.assertEqual(parsed_data[1]['name'], second_name)
+
+    def test_can_parse_organization_phone_number(self):
+        the_number = a_phone_number()
+        data = (Bc211CsvDataBuilder().
+                with_field('ParentAgencyNum', '0').
+                with_field('Phone1Number', the_number).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
