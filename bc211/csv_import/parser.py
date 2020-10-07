@@ -36,4 +36,5 @@ map_to_output_field = {
 
 map_to_phone_field = {
     'Phone1Number': 'number',
+    'Phone1Type': 'type',
 }

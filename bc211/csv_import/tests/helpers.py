@@ -14,6 +14,7 @@ class Bc211CsvDataBuilder:
         row['EmailAddressMain'] = ''
         row['WebsiteAddress'] = ''
         row['Phone1Number'] = ''
+        row['Phone1Type'] = ''
         return row
 
     def next_row(self):
