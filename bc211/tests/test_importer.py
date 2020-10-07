@@ -221,8 +221,7 @@ class ServiceImportTests(TestCase):
         self.assertCountEqual(last_post_fund_service_taxonomy_terms,
                               expected_last_post_fund_service_taxonony_terms)
 
-    # TODO rename to snake case
-    def testTwoServicesCanBeRelatedToOneLocation(self):
+    def test_two_services_can_be_related_to_one_location(self):
         file = open(SHARED_SERVICE_FIXTURE, 'r')
         save_records_to_database(read_records_from_file(file), ImportCounters())
         self.assertEqual(Service.objects.filter(locations__id='9493390').count(), 2)

@@ -11,8 +11,6 @@ from bc211.exceptions import MissingRequiredFieldXmlParseException
 
 LOGGER = logging.getLogger(__name__)
 
-# This is used in production
-
 
 def parse_agency(agency):
     id = parse_agency_key(agency)
@@ -68,7 +66,6 @@ def website_with_http_prefix(website):
     return whole_with_extra_slash.replace('///', '//')
 
 
-# This is used in production
 def parse_sites(agency, organization_id):
     sites = agency.findall('Site')
     return map(SiteParser(organization_id), sites)
@@ -82,7 +79,6 @@ class SiteParser:
         return parse_site(site, self.organization_id)
 
 
-# Used in prod
 def parse_site(site, organization_id):
     id = parse_site_id(site)
     name = parse_site_name(site)
@@ -119,7 +115,6 @@ def parse_spatial_location_if_defined(site):
     return dtos.SpatialLocation(latitude=latitude, longitude=longitude)
 
 
-# Used in prod
 def parse_service_list(site, organization_id, site_id):
     services = site.findall('SiteService')
     return list(map(ServiceParser(organization_id, site_id), services))
@@ -134,7 +129,6 @@ class ServiceParser:
         return parse_service(service, self.organization_id, self.site_id)
 
 
-# Used in prod
 def parse_service(service, organization_id, site_id):
     id = parse_service_id(service)
     name = parse_service_name(service)
