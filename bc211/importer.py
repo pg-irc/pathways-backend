@@ -2,7 +2,7 @@ import logging
 import csv
 from bc211.is_inactive import is_inactive
 from bc211.parser import parse_agency
-from bc211.organization import update_entire_organization, delete_organizations_not_in
+from bc211.organization import update_entire_organization
 from django.contrib.gis.geos import Point
 from bc211.exceptions import XmlParseException
 
@@ -17,21 +17,19 @@ def parse_csv(csv_path):
 
 
 def update_all_organizations(nodes, city_latlong_map, counts):
-    active_organizations = []
+    last_organization = None
     for _, elem in nodes:
         if elem.tag == 'Agency':
             try:
                 agency = parse_agency(elem)
                 if is_inactive(agency):
                     continue
-                active_organizations.append(agency.id)
+                last_organization = agency.id
                 update_entire_organization(agency, city_latlong_map, counts)
             except XmlParseException as error:
-                handle_xml_parser_exception(error, active_organizations[-1])
+                handle_xml_parser_exception(error, last_organization)
             except AttributeError as error:
-                handle_attribute_error(error, active_organizations[-1])
-
-    delete_organizations_not_in(active_organizations, counts)
+                handle_attribute_error(error, last_organization)
 
 
 def handle_xml_parser_exception(error, last_agency_id):
