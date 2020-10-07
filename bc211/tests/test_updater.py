@@ -104,23 +104,6 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(len(addresses), 1)
         self.assertEqual(addresses[0].city, the_city)
 
-    def test_that_location_with_removed_address_is_updated(self):
-        organization = OrganizationBuilder().create()
-        location_id = a_string()
-        address = (AddressBuilder().
-                   with_location_id(location_id).
-                   with_address_type('physical_address').
-                   create())
-        builder = LocationBuilder(organization).with_id(location_id)
-        location = builder.create()
-        LocationAddress(address=address, location=location, address_type_id='physical_address').save()
-
-        location_without_address = builder.without_physical_address().build_dto()
-        update_locations([location_without_address], organization.id, {}, ImportCounters())
-
-        self.assertEqual(len(LocationAddress.objects.all()), 0)
-        self.assertEqual(len(Address.objects.all()), 0)
-
     def test_that_locations_with_added_phone_number_is_updated(self):
         organization = OrganizationBuilder().create()
         location_builder = LocationBuilder(organization)
@@ -139,24 +122,6 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(len(phones_at_location), 1)
         self.assertEqual(phones_at_location[0].phone_number, phone_number)
         self.assertEqual(phones_at_location[0].phone_number_type.id, phone_number_type)
-
-    def test_that_location_with_removed_phone_number_is_updated(self):
-        organization = OrganizationBuilder().create()
-        location_builder = LocationBuilder(organization)
-        location = location_builder.create()
-
-        phone_number = a_phone_number()
-        phone_number_type = PhoneNumberType(id=a_string())
-        phone_number_type.save()
-        PhoneAtLocation(phone_number_type=phone_number_type,
-                        phone_number=phone_number,
-                        location=location).save()
-
-        location_dto = location_builder.with_phone_numbers([]).build_dto()
-
-        update_locations([location_dto], organization.id, {}, ImportCounters())
-
-        self.assertEqual(len(PhoneAtLocation.objects.filter(location_id=location.id).all()), 0)
 
 
 class ServicesUnderLocationTests(TestCase):
@@ -228,36 +193,6 @@ class ServicesUnderLocationTests(TestCase):
         self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
         self.assertEqual(TaskServiceSimilarityScore.objects.all()[0].service_id, service.id)
 
-    def test_that_a_changed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        term = TaxonomyTermBuilder().create()
-        service = (ServiceBuilder(organization).
-                   with_location(location).
-                   with_taxonomy_terms([term]).
-                   create())
-        self.assertEqual((Service.objects.
-                          filter(pk=service.id).all()[0].
-                          taxonomy_terms.all()[0].
-                          taxonomy_id), term.taxonomy_id)
-
-        new_service_without_taxonomy_term = (ServiceBuilder(organization).
-                                             with_id(service.id).
-                                             with_location(location).
-                                             build_dto())
-        new_location = (LocationBuilder(organization).
-                        with_id(location.id).
-                        with_services([new_service_without_taxonomy_term]).
-                        build_dto())
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([new_location]).
-                            build_dto())
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(Service.objects.filter(pk=service.id).all()[0].taxonomy_terms.all()), 0)
-
     def get_all_service_taxonomy_terms(self):
         with connection.cursor() as cursor:
             cursor.execute('select * from services_service_taxonomy_terms')
@@ -280,83 +215,6 @@ class LocationPropertiesTests(TestCase):
     def set_postal_address(self, location, address):
         LocationAddress(address=address, location=location,
                         address_type=self.postal_address_type).save()
-
-    def test_that_changed_phone_number_under_location_is_updated(self):
-        location = LocationBuilder(self.organization). with_id(self.location_id). create()
-        PhoneAtLocation.objects.create(phone_number_type=self.phone_number_type,
-                                       phone_number=a_phone_number(),
-                                       location=location)
-        new_phone_number = a_phone_number()
-        new_phone_at_location_dto = dtos.PhoneAtLocation(phone_number_type_id=self.phone_number_type_id,
-                                                         phone_number=new_phone_number,
-                                                         location_id=self.location_id)
-
-        location_with_new_number = (LocationBuilder(self.organization).
-                                    with_id(self.location_id).
-                                    with_phone_numbers([new_phone_at_location_dto]).
-                                    build_dto())
-
-        update_locations([location_with_new_number], self.organization.id, {}, ImportCounters())
-
-        phone_numbers = PhoneAtLocation.objects.all()
-        self.assertEqual(len(phone_numbers), 1)
-        self.assertEqual(phone_numbers[0].phone_number, new_phone_number)
-
-    def test_that_changed_physical_address_under_location_is_updated(self):
-        old_address = AddressBuilder().with_location_id(self.location_id).create()
-        location = (LocationBuilder(self.organization).
-                    with_id(self.location_id).
-                    with_physical_address(old_address).
-                    create())
-
-        self.set_physical_address(location, old_address)
-
-        new_address = (AddressBuilder().
-                       with_location_id(self.location_id).
-                       with_address_type('physical_address').
-                       build_dto())
-        location_with_new_address = (LocationBuilder(self.organization).
-                                     with_id(self.location_id).
-                                     with_physical_address(new_address).
-                                     build_dto())
-        update_locations([location_with_new_address], self.organization.id, {}, ImportCounters())
-
-        location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
-        self.assertEqual(len(location_addresses), 1)
-        self.assertEqual(location_addresses[0].address.city, new_address.city)
-
-        addresses = Address.objects.all()
-        self.assertEqual(len(addresses), 1)
-        self.assertEqual(addresses[0].city, new_address.city)
-
-    def test_that_changed_postal_address_under_location_is_updated(self):
-        old_address = (AddressBuilder().
-                       with_location_id(self.location_id).
-                       create())
-        location = (LocationBuilder(self.organization).
-                    with_id(self.location_id).
-                    with_postal_address(old_address).
-                    create())
-
-        self.set_postal_address(location, old_address)
-
-        new_address = (AddressBuilder().
-                       with_location_id(self.location_id).
-                       with_address_type('postal_address').
-                       build_dto())
-        location_with_new_address = (LocationBuilder(self.organization).
-                                     with_id(self.location_id).
-                                     with_physical_address(new_address).
-                                     build_dto())
-        update_locations([location_with_new_address], self.organization.id, {}, ImportCounters())
-
-        location_addresses = LocationAddress.objects.filter(location_id=self.location_id)
-        self.assertEqual(len(location_addresses), 1)
-        self.assertEqual(location_addresses[0].address.city, new_address.city)
-
-        addresses = Address.objects.all()
-        self.assertEqual(len(addresses), 1)
-        self.assertEqual(addresses[0].city, new_address.city)
 
     def test_that_new_address_under_location_creates_record(self):
         address = (AddressBuilder().
@@ -634,30 +492,3 @@ class ImportCountTests(TestCase):
         physical_address_type = AddressType.objects.get(pk='physical_address')
         LocationAddress(address=address, location=location,
                         address_type=physical_address_type).save()
-
-    def test_that_a_location_with_changed_address_is_counted_as_updated(self):
-        location_id = a_string()
-        organization = OrganizationBuilder().create()
-        old_address = (AddressBuilder().
-                       with_location_id(location_id).
-                       with_address_type('physical_address').
-                       create())
-        location_builder = (LocationBuilder(organization).
-                            with_id(location_id).
-                            with_physical_address(old_address))
-        location = location_builder.create()
-
-        self.set_physical_address(location, old_address)
-
-        new_address = (AddressBuilder().
-                       with_location_id(location_id).
-                       with_address_type('physical_address').
-                       build_dto())
-        location_with_new_address = (location_builder.
-                                     with_physical_address(new_address).
-                                     build_dto())
-
-        counters = ImportCounters()
-        update_locations([location_with_new_address], organization.id, {}, counters)
-
-        self.assertEqual(counters.locations_updated, 1)

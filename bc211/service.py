@@ -48,7 +48,6 @@ def save_service_if_needed(service, counters):
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     elif not is_service_equal(existing, service):
-        delete_existing_service_taxonomy_terms(service)
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_services_updates()
@@ -116,11 +115,6 @@ def service_to_string(adapter):
 
 def taxonomy_term_to_string(taxonomy_term):
     return f'({taxonomy_term.taxonomy_id}:{taxonomy_term.name}) '
-
-
-def delete_existing_service_taxonomy_terms(service):
-    for s in Service.objects.filter(pk=service.id):
-        s.taxonomy_terms.clear()
 
 
 def service_already_exists(service):
