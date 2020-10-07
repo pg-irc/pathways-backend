@@ -116,3 +116,22 @@ class ParsinorganizationanizationsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['type'], the_type)
+
+    def test_can_parse_organization_phone_number_description(self):
+        the_description = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('Phone1Name', the_description).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_phone_number()['description'], the_description)
+
+    def test_can_parse_second_phone_number(self):
+        the_number = a_phone_number()
+        fieldname = 'Phone' + str(an_integer(min=2, max=5)) + 'Number'
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field(fieldname, the_number).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_phone_number()['number'], the_number)

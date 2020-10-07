@@ -1,5 +1,5 @@
 import csv
-
+import re
 
 def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
@@ -11,7 +11,7 @@ def parse(sink, lines):
             break
         for field, value in zip(fields, values):
             output_field = map_to_output_field.get(field, None)
-            phone_field = map_to_phone_field.get(field, None)
+            phone_field = map_to_phone_field.get(normalize_phone_field_index(field), None)
             if field == 'ParentAgencyNum':
                 is_organization = value == '0'
                 the_type = 'organization' if is_organization else 'service'
@@ -35,7 +35,15 @@ map_to_output_field = {
     'WebsiteAddress': 'url',
 }
 
+
+def normalize_phone_field_index(phone_field_with_any_index):
+    format = r'^Phone\\d'
+    phonefield_with_index_one = re.sub(format, 'Phone1', phone_field_with_any_index)
+    return phonefield_with_index_one
+
+
 map_to_phone_field = {
     'Phone1Number': 'number',
     'Phone1Type': 'type',
+    'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
 }
