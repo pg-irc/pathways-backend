@@ -1,11 +1,11 @@
 import csv
 
 
-def parse(lines):
+def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
     fields = reader.__next__()
-    result = [{}]
     for values in reader:
+        organization = {}
         if not values:
             break
         for field, value in zip(fields, values):
@@ -13,11 +13,11 @@ def parse(lines):
             if field == 'ParentAgencyNum':
                 is_organization = value == '0'
                 the_type = 'organization' if is_organization else 'service'
-                result[-1]['type'] = the_type
+                organization['type'] = the_type
             if output_field:
-                result[-1][output_field] = value
-        result.append({})
-    return result
+                organization[output_field] = value
+        sink.write_organization(organization)
+    return sink
 
 
 map_to_output_field = {

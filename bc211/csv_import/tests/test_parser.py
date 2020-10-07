@@ -7,54 +7,68 @@ from .helpers import Bc211CsvDataBuilder
 logging.disable(logging.ERROR)
 
 
+class TestDataSink:
+    def __init__(self):
+        self.organizations = []
+
+    def write_organization(self, organization):
+        self.organizations.append(organization)
+
+    def organizations(self):
+        return self.organizations
+
+    def first_organization(self):
+        return self.organizations[0]
+
+
 class ParsingOfOrganizationsTests(TestCase):
-    def test_can_parse_organization_id(self):
+    def tesorganizationparse_organization_id(self):
         the_id = a_string()
         data = Bc211CsvDataBuilder().with_field('ResourceAgencyNum', the_id).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['id'], the_id)
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['id'], the_id)
 
     def test_can_parse_organization_name(self):
         the_name = a_string()
         data = Bc211CsvDataBuilder().with_field('PublicName', the_name).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['name'], the_name)
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['name'], the_name)
 
     def test_can_parse_organization_alternate_name(self):
         the_name = a_string()
         data = Bc211CsvDataBuilder().with_field('AlternateName', the_name).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['alternate_name'], the_name)
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['alternate_name'], the_name)
 
     def test_can_parse_description(self):
         the_description = a_string()
         data = Bc211CsvDataBuilder().with_field('AgencyDescription', the_description).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['description'], the_description)
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['description'], the_description)
 
     def test_can_parse_email(self):
         the_email = an_email_address()
         data = Bc211CsvDataBuilder().with_field('EmailAddressMain', the_email).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['email'], the_email)
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['email'], the_email)
 
     def test_can_parse_url(self):
         the_url = a_website_address()
         data = Bc211CsvDataBuilder().with_field('WebsiteAddress', the_url).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['url'], the_url)
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['url'], the_url)
 
     def test_sets_type_to_organization_if_parent_agency_is_zero(self):
         parent_id = '0'
         data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['type'], 'organization')
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['type'], 'organization')
 
     def test_sets_type_to_service_if_parent_agency_is_not_zero(self):
         parent_id = str(an_integer(min=1))
         data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
-        parsed_data = parse(data)
-        self.assertEqual(parsed_data[0]['type'], 'service')
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_organization()['type'], 'service')
 
     def test_can_parse_two_organizations(self):
         first_name = a_string()
@@ -62,6 +76,6 @@ class ParsingOfOrganizationsTests(TestCase):
         data = (Bc211CsvDataBuilder().
                 with_field('PublicName', first_name).next_row().
                 with_field('PublicName', second_name).build())
-        parsed_data = parse(data)
+        parsed_data = parse(TestDataSink(), data).organizations
         self.assertEqual(parsed_data[0]['name'], first_name)
         self.assertEqual(parsed_data[1]['name'], second_name)
