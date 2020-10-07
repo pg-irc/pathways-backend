@@ -21,6 +21,7 @@ def parse(sink, lines):
             if phone_field:
                 phone[phone_field] = value
         sink.write_organization(organization)
+        phone['organization_id'] = organization['id']
         sink.write_phone(phone)
     return sink
 
