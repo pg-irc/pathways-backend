@@ -67,53 +67,6 @@ class LocationsUnderOrganizationTests(TestCase):
         self.assertEqual(len(locations), 1)
         self.assertEqual(locations[0].id, location.id)
 
-    def test_that_newly_absent_locations_under_organization_is_removed(self):
-        organization = OrganizationBuilder().create()
-        first_location = LocationBuilder(organization).create()
-        second_location = LocationBuilder(organization).create()
-
-        locations = Location.objects.all()
-        self.assertEqual(len(locations), 2)
-
-        new_locations = [(LocationBuilder(organization).
-                          with_id(first_location.id).
-                          build_dto())]
-
-        update_locations(new_locations, organization.id, {}, ImportCounters())
-
-        locations = Location.objects.all()
-        self.assertEqual(len(locations), 1)
-        self.assertEqual(locations[0].id, first_location.id)
-
-    def test_that_newly_inactive_location_under_organization_is_removed(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        inactive_location = LocationBuilder(organization).with_id(location.id).with_description('DEL').build_dto()
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([inactive_location]).
-                            build_dto())
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(Location.objects.all()), 0)
-
-    def test_saving_locations_does_not_cause_deletion_of_locations_for_other_organization(self):
-        first_organization = OrganizationBuilder().create()
-        first_location = LocationBuilder(first_organization).create()
-
-        second_organization = OrganizationBuilder().create()
-        second_location = LocationBuilder(second_organization).create()
-
-        update_locations([(LocationBuilder(second_organization).
-                         with_id(second_location.id).
-                         build_dto())], second_organization.id, {}, ImportCounters())
-
-        location_ids = [location.id for location in Location.objects.all()]
-        self.assertEqual(len(location_ids), 2)
-        self.assertIn(first_location.id, location_ids)
-        self.assertIn(second_location.id, location_ids)
-
     def test_that_changed_location_under_organization_is_updated(self):
         organization = OrganizationBuilder().create()
         location_id = a_string()
@@ -233,73 +186,6 @@ class ServicesUnderLocationTests(TestCase):
         self.assertEqual(sal[0].location.id, location_dto.id)
         self.assertEqual(sal[0].service.id, service_dto.id)
 
-    def test_that_newly_absent_service_under_location_is_removed(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        ServiceBuilder(organization).with_location(location).create()
-
-        location_without_service = (LocationBuilder(organization).
-                                    with_id(location.id).
-                                    build_dto())
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([location_without_service]).
-                            build_dto())
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(Service.objects.all()), 0)
-        self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
-
-    def test_that_newly_inactive_service_under_location_is_removed(self):
-        organization = OrganizationBuilder().create()
-        location = (LocationBuilder(organization).create())
-        service = ServiceBuilder(organization).with_location(location).create()
-
-        inactive_service = (ServiceBuilder(organization).
-                            with_id(service.id).
-                            with_description('DEL').
-                            with_location(location).
-                            build_dto())
-        location_with_inactive_service = (LocationBuilder(organization).
-                                          with_id(location.id).
-                                          with_services([inactive_service]).
-                                          build_dto())
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([location_with_inactive_service]).
-                            build_dto())
-
-        update_entire_organization(new_organization, (), ImportCounters())
-
-        self.assertEqual(len(Service.objects.all()), 0)
-        self.assertEqual(len(ServiceAtLocation.objects.all()), 0)
-
-    def test_that_a_service_moved_to_a_different_location_is_updated(self):
-        organization_builder = OrganizationBuilder()
-        organization = organization_builder.create()
-        first_location_builder = LocationBuilder(organization)
-        first_location = first_location_builder.create()
-        second_location_builder = LocationBuilder(organization)
-        second_location = second_location_builder.create()
-        service_builder = ServiceBuilder(organization).with_only_location(first_location)
-        service = service_builder.create()
-
-        self.assertEqual(first_location.services.all()[0].id, service.id)
-        self.assertEqual(len(second_location.services.all()), 0)
-
-        service_dto = service_builder.with_only_location(second_location).build_dto()
-        first_location_without_service = first_location_builder.with_services([]).build_dto()
-        second_location_with_service = second_location_builder.with_services([service_dto]).build_dto()
-        new_organization = (organization_builder.
-                            with_locations([first_location_without_service, second_location_with_service]).
-                            build_dto())
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(first_location.services.all()), 0)
-        self.assertEqual(second_location.services.all()[0].id, service.id)
-
     def test_that_changed_service_under_location_is_updated(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
@@ -342,55 +228,6 @@ class ServicesUnderLocationTests(TestCase):
         self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
         self.assertEqual(TaskServiceSimilarityScore.objects.all()[0].service_id, service.id)
 
-    def test_that_a_removed_service_under_a_location_causes_taskservicesimilarity_to_be_deleted(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        service = ServiceBuilder(organization).with_location(location).create()
-
-        task_id = a_string()
-        Task(id=task_id, name=a_string(), description=a_string()).save()
-        set_service_similarity_score(task_id, service.id, a_float())
-
-        self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 1)
-
-        location_without_service = LocationBuilder(organization).with_id(location.id).build_dto()
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([location_without_service]).
-                            build_dto())
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(TaskServiceSimilarityScore.objects.all()), 0)
-
-    def test_that_changes_to_service_taxonomy_terms_are_saved(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        taxonomy_term = TaxonomyTermBuilder().create()
-        service = (ServiceBuilder(organization).
-                   with_location(location).
-                   with_taxonomy_terms([taxonomy_term]).
-                   create())
-
-        new_taxonomy_term = TaxonomyTermBuilder().create()
-        new_service = (ServiceBuilder(organization).
-                       with_location(location).
-                       with_taxonomy_terms([new_taxonomy_term]).
-                       build_dto())
-        new_location = (LocationBuilder(organization).
-                        with_id(location.id).
-                        with_services([new_service]).
-                        build_dto())
-        new_organization = (OrganizationBuilder().
-                            with_id(organization.id).
-                            with_locations([new_location]).
-                            build_dto())
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(Service.objects.all()), 1)
-        all_services = Service.objects.all()
-        self.assertEqual(all_services[0].taxonomy_terms.all()[0].taxonomy_id, new_taxonomy_term.taxonomy_id)
-
     def test_that_a_changed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
@@ -425,41 +262,6 @@ class ServicesUnderLocationTests(TestCase):
         with connection.cursor() as cursor:
             cursor.execute('select * from services_service_taxonomy_terms')
             return cursor.fetchall()
-
-    def test_that_a_removed_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        term = TaxonomyTermBuilder().create()
-        ServiceBuilder(organization).with_location(location).with_taxonomy_terms([term]).create()
-
-        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 1)
-
-        new_location_without_service = LocationBuilder(organization).with_id(location.id).build_dto()
-        new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location_without_service]).build_dto()
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
-
-    def test_that_a_newly_inactive_service_under_a_location_causes_taxonomy_term_to_be_deleted(self):
-        organization = OrganizationBuilder().create()
-        location = LocationBuilder(organization).create()
-        term = TaxonomyTermBuilder().create()
-        ServiceBuilder(organization).with_location(location).with_taxonomy_terms([term]).create()
-
-        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 1)
-
-        new_location = LocationBuilder(organization).with_id(location.id).build_dto()
-        new_organization = OrganizationBuilder().with_id(organization.id).with_locations([new_location]).build_dto()
-        (ServiceBuilder(organization).
-         with_location(new_location).
-         with_description('DEL').
-         with_taxonomy_terms([term]).
-         build_dto())
-
-        update_entire_organization(new_organization, {}, ImportCounters())
-
-        self.assertEqual(len(self.get_all_service_taxonomy_terms()), 0)
 
 
 class LocationPropertiesTests(TestCase):
@@ -576,40 +378,6 @@ class LocationPropertiesTests(TestCase):
                         build_dto())
         update_locations([location_dto], self.organization.id, {}, ImportCounters())
         self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
-
-    def test_that_address_under_newly_absent_location_is_removed(self):
-        address = (AddressBuilder().
-                   with_location_id(self.location_id).
-                   create())
-        first_location = (LocationBuilder(self.organization).
-                          with_physical_address(address).
-                          create())
-        self.set_physical_address(first_location, address)
-
-        second_location = LocationBuilder(self.organization).create()
-
-        updated_second_location = (LocationBuilder(self.organization).
-                                   with_id(second_location.id).
-                                   build_dto())
-
-        self.assertEqual(len(LocationAddress.objects.all()), 1)
-
-        update_locations([updated_second_location], self.organization.id, {}, ImportCounters())
-
-        self.assertEqual(len(LocationAddress.objects.all()), 0)
-
-    def test_that_phone_number_under_newly_absent_location_is_removed(self):
-        location = (LocationBuilder(self.organization). create())
-        PhoneAtLocation.objects.create(phone_number_type=self.phone_number_type,
-                                       phone_number=a_phone_number(),
-                                       location=location)
-        self.assertEqual(len(PhoneAtLocation.objects.all()), 1)
-
-        location_without_phonenumber = LocationBuilder(self.organization).build_dto()
-
-        update_locations([location_without_phonenumber], self.organization.id, {}, ImportCounters())
-
-        self.assertEqual(len(PhoneAtLocation.objects.all()), 0)
 
 
 class ImportCountTests(TestCase):

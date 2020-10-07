@@ -32,14 +32,6 @@ def build_service_at_location_active_record(record):
 
 
 def update_services_for_location(location_id, services, counters):
-    new_service_ids = [s.id for s in services if not is_inactive(s)]
-    links_to_delete = ServiceAtLocation.objects.filter(location_id=location_id).exclude(service_id__in=new_service_ids).all()
-    services_to_delete = [s.service_id for s in links_to_delete]
-    for i in services_to_delete:
-        LOGGER.info('delete "%s"', i)
-    ServiceAtLocation.objects.filter(pk__in=[s.id for s in links_to_delete]).delete()
-    TaskServiceSimilarityScore.objects.filter(service_id__in=services_to_delete).delete()
-    Service.objects.filter(pk__in=services_to_delete).delete()
     for service in services:
         save_service_if_needed(service, counters)
 

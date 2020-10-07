@@ -13,8 +13,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 def update_locations(locations, organization_id, city_latlong_map, counters):
-    location_ids_to_delete = get_ids_of_locations_to_delete(locations, organization_id)
-    delete_locations(location_ids_to_delete)
     for location in locations:
         if is_inactive(location):
             continue
@@ -27,21 +25,6 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
             save_location(location, existing, city_latlong_map, counters)
             counters.count_locations_updated()
             LOGGER.info('updated "%s" "%s"', location.id, location.name)
-
-
-def get_ids_of_locations_to_delete(locations, organization_id):
-    new_location_ids = [location.id for location in locations if not is_inactive(location)]
-    locations_to_delete = (Location.objects.filter(organization_id=organization_id).
-                           exclude(pk__in=new_location_ids).
-                           all())
-    return [location.id for location in locations_to_delete]
-
-
-def delete_locations(location_ids_to_delete):
-    for i in location_ids_to_delete:
-        LOGGER.info('delete "%2"', i)
-    ServiceAtLocation.objects.filter(location_id__in=location_ids_to_delete).delete()
-    Location.objects.filter(pk__in=location_ids_to_delete).delete()
 
 
 def get_existing_location_or_none(location):
