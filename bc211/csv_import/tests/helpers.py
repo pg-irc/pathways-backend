@@ -1,4 +1,5 @@
 import random
+from common.testhelpers.random_test_values import an_integer
 
 
 class Bc211CsvDataBuilder:
@@ -23,6 +24,14 @@ class Bc211CsvDataBuilder:
 
     def with_field(self, key, value):
         self.data[-1][key] = value
+        return self
+
+    def as_organization(self):
+        self.data[-1]['ParentAgencyNum'] = '0'
+        return self
+
+    def as_service(self):
+        self.data[-1]['ParentAgencyNum'] = str(an_integer(min=1))
         return self
 
     def build(self):

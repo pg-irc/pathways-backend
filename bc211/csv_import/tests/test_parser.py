@@ -82,8 +82,8 @@ class ParsinorganizationanizationsTests(TestCase):
         first_name = a_string()
         second_name = a_string()
         data = (Bc211CsvDataBuilder().
-                with_field('PublicName', first_name).next_row().
-                with_field('PublicName', second_name).build())
+                as_organization().with_field('PublicName', first_name).next_row().
+                as_organization().with_field('PublicName', second_name).build())
         parsed_data = parse(TestDataSink(), data).organizations
         self.assertEqual(parsed_data[0]['name'], first_name)
         self.assertEqual(parsed_data[1]['name'], second_name)
@@ -91,7 +91,7 @@ class ParsinorganizationanizationsTests(TestCase):
     def test_can_parse_organization_phone_number(self):
         the_number = a_phone_number()
         data = (Bc211CsvDataBuilder().
-                with_field('ParentAgencyNum', '0').
+                as_organization().
                 with_field('Phone1Number', the_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
@@ -101,8 +101,8 @@ class ParsinorganizationanizationsTests(TestCase):
         the_number = a_phone_number()
         the_organization_id = a_string()
         data = (Bc211CsvDataBuilder().
+                as_organization().
                 with_field('ResourceAgencyNum', the_organization_id).
-                with_field('ParentAgencyNum', '0').
                 with_field('Phone1Number', the_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
@@ -111,7 +111,7 @@ class ParsinorganizationanizationsTests(TestCase):
     def test_can_parse_organization_phone_number_type(self):
         the_type = a_string()
         data = (Bc211CsvDataBuilder().
-                with_field('ParentAgencyNum', '0').
+                as_organization().
                 with_field('Phone1Type', the_type).
                 build())
         parsed_data = parse(TestDataSink(), data)
