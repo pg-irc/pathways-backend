@@ -44,16 +44,11 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.info('created "%s" "%s"', service.id, service.name)
+        LOGGER.info('created service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
-    elif not is_service_equal(existing, service):
-        active_record = build_service_active_record(service)
-        active_record.save()
-        counters.count_services_updates()
-        LOGGER.info('updated "%s" "%s"', service.id, service.name)
-        save_service_at_location(service)
-        save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
+    else:
+        LOGGER.warn('duplicate service "%s" "%s"', service.id, service.name)
 
 
 def get_existing_service_or_none(service):
@@ -61,60 +56,6 @@ def get_existing_service_or_none(service):
     if Service.objects.filter(id=pk).exists():
         return Service.objects.get(id=pk)
     return None
-
-
-def is_service_equal(active_record, dto):
-    ar_hash = hash(service_to_string(ArAdaptor(active_record)))
-    dto_hash = hash(service_to_string(DtoAdapter(dto)))
-    return ar_hash == dto_hash
-
-
-class ArAdaptor:
-    def __init__(self, service):
-        self.service = service
-
-    def the_id(self):
-        return self.service.id
-
-    def name(self):
-        return self.service.name
-
-    def description(self):
-        return self.service.description
-
-    def taxonomy_terms(self):
-        return self.service.taxonomy_terms.all()
-
-
-class DtoAdapter:
-    def __init__(self, service):
-        self.service = service
-
-    def the_id(self):
-        return self.service.id
-
-    def name(self):
-        return self.service.name
-
-    def description(self):
-        return self.service.description
-
-    def taxonomy_terms(self):
-        return self.service.taxonomy_terms
-
-
-def service_to_string(adapter):
-    result = f'{adapter.the_id()}, {adapter.name()}, {adapter.description()}'
-    taxonomy_terms = {taxonomy_term_to_string(t) for t in adapter.taxonomy_terms()}
-    taxonomy_terms = list(taxonomy_terms)
-    taxonomy_terms.sort()
-    for t in taxonomy_terms:
-        result += t
-    return result
-
-
-def taxonomy_term_to_string(taxonomy_term):
-    return f'({taxonomy_term.taxonomy_id}:{taxonomy_term.name}) '
 
 
 def service_already_exists(service):

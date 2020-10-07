@@ -4,10 +4,7 @@ from bc211.phone_number import create_phone_numbers_for_location
 from bc211.is_inactive import is_inactive
 from bc211 import dtos
 from django.contrib.gis.geos import Point
-from human_services.addresses.models import Address
-from human_services.phone_at_location.models import PhoneAtLocation
-from human_services.locations.models import Location, LocationAddress
-from human_services.locations.models import ServiceAtLocation
+from human_services.locations.models import Location
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,10 +18,8 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
             save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
             LOGGER.info('created "%s" "%s"', location.id, location.name)
-        elif not is_location_equal(existing, location):
-            save_location(location, existing, city_latlong_map, counters)
-            counters.count_locations_updated()
-            LOGGER.info('updated "%s" "%s"', location.id, location.name)
+        else:
+            LOGGER.warn('duplicate location "%s" "%s"', location.id, location.name)
 
 
 def get_existing_location_or_none(location):
@@ -32,72 +27,6 @@ def get_existing_location_or_none(location):
     if Location.objects.filter(id=pk).exists():
         return Location.objects.get(id=pk)
     return None
-
-
-def is_location_equal(active_record, dto):
-    return hash_from_location_active_record(active_record) == hash_from_location_dto(dto)
-
-
-def hash_from_location_active_record(location):
-    longitude = location.point.x if location.point else None
-    latitude = location.point.y if location.point else None
-    result = hash_string_from_location(location.id, location.name, location.organization_id,
-                                       location.description, longitude, latitude)
-
-    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='physical_address').all()
-    if address:
-        address = address[0].address
-        result += hash_string_from_address(address.address, address.city, address.state_province,
-                                           address.postal_code, address.country, 'physical_address')
-
-    address = LocationAddress.objects.filter(location_id=location.id).filter(address_type_id='postal_address').all()
-    if address:
-        address = address[0].address
-        result += hash_string_from_address(address.address, address.city, address.state_province,
-                                           address.postal_code, address.country, 'postal_address')
-
-    phone_numbers = PhoneAtLocation.objects.filter(location_id=location.id).all()
-    phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type.id)
-                     for phone_number in phone_numbers]
-    phone_strings.sort()
-    for phone_string in phone_strings:
-        result += phone_string
-
-    return result
-
-
-def hash_from_location_dto(location):
-    longitude = location.spatial_location.longitude if location.spatial_location else None
-    latitude = location.spatial_location.latitude if location.spatial_location else None
-    result = hash_string_from_location(location.id, location.name, location.organization_id,
-                                       location.description, longitude, latitude)
-    address = location.physical_address
-    if address:
-        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
-                                           address.postal_code, address.country, 'physical_address')
-    address = location.postal_address
-    if address:
-        result += hash_string_from_address(address.address_lines, address.city, address.state_province,
-                                           address.postal_code, address.country, 'postal_address')
-    phone_strings = [hash_string_from_phone_number(phone_number.phone_number, phone_number.phone_number_type_id)
-                     for phone_number in location.phone_numbers]
-    phone_strings.sort()
-    for phone_string in phone_strings:
-        result += phone_string
-
-    return result
-
-
-def hash_string_from_location(the_id, name, organization_id, description, longitude, latitude):
-    return f'{the_id}, {name}, {organization_id}, {description}, {longitude}, {latitude}'
-
-
-def hash_string_from_address(address, city, state, postal_code, country, the_type):
-    return f'{address}, {city}, {state}, {postal_code}, {country}, {the_type}'
-
-
-def hash_string_from_phone_number(phone_number, the_type):
-    return f'{phone_number}, {the_type}'
 
 
 def save_location(location, existing_active_record, city_latlong_map, counters):

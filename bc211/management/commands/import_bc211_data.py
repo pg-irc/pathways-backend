@@ -32,9 +32,9 @@ class Command(BaseCommand):
         self.print_status_message(counts)
 
     def print_status_message(self, counts):
-        message = f'{counts.organizations_created} organizations created and {counts.organizations_updated} updated. '
-        message += f'{counts.locations_created} locations created and {(counts.locations_updated)} updated. '
-        message += f'{counts.services_created} services created and {counts.services_updated} updated. '
+        message = f'{counts.organizations_created} organizations created. '
+        message += f'{counts.locations_created} locations created. '
+        message += f'{counts.services_created} services created. '
         message += f'{counts.taxonomy_term_count} taxonomy terms created. '
         message += f'{counts.address_count} addresses created. '
         message += f'{counts.phone_at_location_count} phone numbers created '
