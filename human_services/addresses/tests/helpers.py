@@ -67,4 +67,6 @@ class AddressBuilder:
         return self
 
     def create(self):
-        self.build().save()
+        result = self.build()
+        result.save()
+        return result

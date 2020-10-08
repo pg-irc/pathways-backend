@@ -10,6 +10,7 @@ class OrganizationBuilder:
         self.description = a_string()
         self.website = a_website_address()
         self.email = an_email_address()
+        self.locations = []
 
     def with_id(self, organization_id):
         self.organization_id = organization_id
@@ -21,6 +22,10 @@ class OrganizationBuilder:
 
     def with_description(self, description):
         self.description = description
+        return self
+
+    def with_locations(self, locations):
+        self.locations = locations
         return self
 
     def with_website(self, website):
@@ -46,7 +51,7 @@ class OrganizationBuilder:
                                  description=self.description,
                                  website=self.website,
                                  email=self.email,
-                                 locations=[])
+                                 locations=self.locations)
 
     def create(self):
         result = self.build()

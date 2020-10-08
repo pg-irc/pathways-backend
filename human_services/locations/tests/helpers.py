@@ -11,7 +11,10 @@ class LocationBuilder:
         self.name = a_string()
         self.point = a_point()
         self.description = a_string()
+        self.phone_numbers = []
         self.physical_address = None
+        self.postal_address = None
+        self.services = []
 
     def with_id(self, location_id):
         self.location_id = location_id
@@ -33,8 +36,24 @@ class LocationBuilder:
         self.description = description
         return self
 
-    def with_physical_address(self, physical_address):
-        self.physical_address = physical_address
+    def with_physical_address(self, address):
+        self.physical_address = address
+        return self
+
+    def without_physical_address(self):
+        self.physical_address = None
+        return self
+
+    def with_postal_address(self, address):
+        self.postal_address = address
+        return self
+
+    def with_phone_numbers(self, phone_numbers):
+        self.phone_numbers = phone_numbers
+        return self
+
+    def with_services(self, services):
+        self.services = services
         return self
 
     def build(self):
@@ -47,15 +66,16 @@ class LocationBuilder:
         return result
 
     def build_dto(self):
+        spatial_location = dtos.SpatialLocation(latitude=self.point.y, longitude=self.point.x) if self.point else None
         return dtos.Location(id=self.location_id,
                              name=self.name,
                              organization_id=self.organization.id,
                              description=self.description,
-                             spatial_location=None,
-                             services=[],
+                             spatial_location=spatial_location,
+                             services=self.services,
                              physical_address=self.physical_address,
-                             postal_address=None,
-                             phone_numbers=[])
+                             postal_address=self.postal_address,
+                             phone_numbers=self.phone_numbers)
 
     def create(self):
         result = self.build()

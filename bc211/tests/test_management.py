@@ -10,19 +10,13 @@ class TestImportBc211Data(TestCase):
     def test_import_one_record(self):
         out = StringIO()
         call_command('import_bc211_data', ONE_AGENCY_FIXTURE, stdout=out)
-        expected = ('Successfully imported 1 organization(s), '
-                    '1 location(s), 1 service(s), '
-                    '17 taxonomy term(s), 1 address(es), 2 phone number type(s), '
-                    'and 2 phone number(s)')
+        expected = ('1 organizations created. 1 locations created. 1 services created.')
         self.assertIn(expected, out.getvalue())
 
     def test_import_many_records(self):
         out = StringIO()
         call_command('import_bc211_data', MULTI_AGENCY_FIXTURE, stdout=out)
-        expected = ('Successfully imported 16 organization(s), '
-                    '40 location(s), 40 service(s), '
-                    '134 taxonomy term(s), 36 address(es), 5 phone number type(s), '
-                    'and 86 phone number(s)')
+        expected = ('15 organizations created. 39 locations created. 39 services created.')
         self.assertIn(expected, out.getvalue())
 
     def test_import_invalid_file(self):

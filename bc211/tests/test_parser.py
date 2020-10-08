@@ -6,6 +6,7 @@ from common.testhelpers.random_test_values import a_string, a_phone_number
 
 from bc211 import parser, dtos
 from bc211.exceptions import MissingRequiredFieldXmlParseException
+from bc211.parser import parse_agency
 
 logging.disable(logging.ERROR)
 
@@ -126,11 +127,17 @@ MINIMAL_211_DATA_SET = '''
 </Source>'''
 
 
+def parse(xml_data_as_string):
+    root_xml = etree.fromstring(xml_data_as_string)
+    agencies = root_xml.findall('Agency')
+    return map(parse_agency, agencies)
+
+
 class BC211ParserTests(unittest.TestCase):
     def test_parse_many_locations(self):
         file_open_for_reading = open(MULTI_AGENCY__211_DATA_SET, 'r')
         xml = file_open_for_reading.read()
-        organizations = list(parser.parse(xml))
+        organizations = list(parse(xml))
         locations_from_first_organization = list(organizations[0].locations)
         services_from_first_location = list(locations_from_first_organization[0].services)
         taxonomy_terms_from_first_service = list(services_from_first_location[0].taxonomy_terms)
@@ -138,7 +145,7 @@ class BC211ParserTests(unittest.TestCase):
             locations_from_first_organization[0].physical_address,
             locations_from_first_organization[0].postal_address
         ]
-        self.assertEqual(len(organizations), 16)
+        self.assertEqual(len(organizations), 15)
         self.assertEqual(len(locations_from_first_organization), 1)
         self.assertEqual(len(services_from_first_location), 1)
         self.assertEqual(len(taxonomy_terms_from_first_service), 27)
@@ -511,6 +518,7 @@ class AddressParserTests(unittest.TestCase):
         address_type_id = 'physical_address'
         site_id = a_string()
         self.assertIsNone(parser.parse_address(root.find('PhysicalAddress'), site_id, address_type_id))
+
 
 class AddressLineParserTests(unittest.TestCase):
 
