@@ -1,9 +1,8 @@
 import logging
 from django.test import TestCase
-from common.testhelpers.random_test_values import (a_phone_number, a_string, a_website_address,
-                                                   an_email_address, an_integer)
-from ..parser import parse
-from .helpers import Bc211CsvDataBuilder
+from common.testhelpers.random_test_values import a_phone_number, a_string, a_website_address, an_email_address, an_integer
+from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
+from bc211.csv_import.parser import phone_header_with_index_one, parse
 
 logging.disable(logging.ERROR)
 
@@ -16,14 +15,17 @@ class TestDataSink:
     def write_organization(self, organization):
         self.organizations.append(organization)
 
-    def write_phone(self, phone):
-        self.phone_numbers.append(phone)
+    def write_phone_numbers(self, phone_numbers):
+        self.phone_numbers += phone_numbers
 
     def organizations(self):
         return self.organizations
 
     def first_organization(self):
         return self.organizations[0]
+
+    def phone_numbers(self):
+        return self.phone_numbers
 
     def first_phone_number(self):
         return self.phone_numbers[0]
@@ -126,12 +128,20 @@ class ParsinorganizationanizationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['description'], the_description)
 
+    def test_set_index_on_phone_number_field_to_one(self):
+        self.assertEqual(phone_header_with_index_one('Phone1Number'), 'Phone1Number')
+        self.assertEqual(phone_header_with_index_one('Phone2Number'), 'Phone1Number')
+        self.assertEqual(phone_header_with_index_one('Phone2Type'), 'Phone1Type')
+        self.assertEqual(phone_header_with_index_one('PhoneXNumber'), 'PhoneXNumber')
+
     def test_can_parse_second_phone_number(self):
-        the_number = a_phone_number()
-        fieldname = 'Phone' + str(an_integer(min=2, max=5)) + 'Number'
+        first_number = a_phone_number()
+        second_number = a_phone_number()
         data = (Bc211CsvDataBuilder().
                 as_organization().
-                with_field(fieldname, the_number).
+                with_field('Phone1Number', first_number).
+                with_field('Phone2Number', second_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
+        self.assertEqual(parsed_data.phone_numbers[0]['number'], first_number)
+        self.assertEqual(parsed_data.phone_numbers[1]['number'], second_number)

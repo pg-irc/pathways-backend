@@ -1,32 +1,40 @@
 import csv
 import re
 
+
 def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
-    fields = reader.__next__()
-    for values in reader:
+    headers = reader.__next__()
+    for row in reader:
         organization = {}
-        phone = {}
-        if not values:
+        phone_numbers = [{}]
+        last_phone_index = 0
+        if not row:
             break
-        for field, value in zip(fields, values):
-            output_field = map_to_output_field.get(field, None)
-            phone_field = map_to_phone_field.get(normalize_phone_field_index(field), None)
-            if field == 'ParentAgencyNum':
+        for header, value in zip(headers, row):
+            output_header = organization_header_map.get(header, None)
+            output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
+            current_phone_index = get_zero_based_phone_index(header)
+            if current_phone_index and last_phone_index != current_phone_index:
+                last_phone_index = current_phone_index
+                while len(phone_numbers) <= current_phone_index:
+                    phone_numbers.append({})
+            if header == 'ParentAgencyNum':
                 is_organization = value == '0'
                 the_type = 'organization' if is_organization else 'service'
                 organization['type'] = the_type
-            if output_field:
-                organization[output_field] = value
-            if phone_field:
-                phone[phone_field] = value
+            elif output_header:
+                organization[output_header] = value
+            elif output_phone_header:
+                phone_numbers[current_phone_index][output_phone_header] = value
         sink.write_organization(organization)
-        phone['organization_id'] = organization['id']
-        sink.write_phone(phone)
+        for i, item in enumerate(phone_numbers):
+            phone_numbers[i]['organization_id'] = organization['id']
+        sink.write_phone_numbers(phone_numbers)
     return sink
 
 
-map_to_output_field = {
+organization_header_map = {
     'ResourceAgencyNum': 'id',
     'PublicName': 'name',
     'AgencyDescription': 'description',
@@ -36,13 +44,16 @@ map_to_output_field = {
 }
 
 
-def normalize_phone_field_index(phone_field_with_any_index):
-    format = r'^Phone\\d'
-    phonefield_with_index_one = re.sub(format, 'Phone1', phone_field_with_any_index)
-    return phonefield_with_index_one
+def phone_header_with_index_one(phone_field_with_any_index):
+    return re.sub(r'^Phone\d', 'Phone1', phone_field_with_any_index)
 
 
-map_to_phone_field = {
+def get_zero_based_phone_index(phone):
+    r = re.match(r'^Phone(\d)', phone)
+    return int(r[1]) - 1 if r else None
+
+
+phone_header_map = {
     'Phone1Number': 'number',
     'Phone1Type': 'type',
     'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
