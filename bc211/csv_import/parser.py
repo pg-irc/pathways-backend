@@ -8,17 +8,14 @@ def parse(sink, lines):
     for row in reader:
         organization = {}
         phone_numbers = [{}]
-        last_phone_index = 0
         if not row:
             break
         for header, value in zip(headers, row):
             output_header = organization_header_map.get(header, None)
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
-            current_phone_index = get_zero_based_phone_index(header)
-            if current_phone_index and last_phone_index != current_phone_index:
-                last_phone_index = current_phone_index
-                while len(phone_numbers) <= current_phone_index:
-                    phone_numbers.append({})
+            phone_index = get_zero_based_phone_index(header)
+            while phone_index and len(phone_numbers) <= phone_index:
+                phone_numbers.append({})
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
                 the_type = 'organization' if is_organization else 'service'
@@ -26,8 +23,9 @@ def parse(sink, lines):
             elif output_header:
                 organization[output_header] = value
             elif output_phone_header:
-                phone_numbers[current_phone_index][output_phone_header] = value
+                phone_numbers[phone_index][output_phone_header] = value
         sink.write_organization(organization)
+        phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
             phone_numbers[i]['organization_id'] = organization['id']
         sink.write_phone_numbers(phone_numbers)

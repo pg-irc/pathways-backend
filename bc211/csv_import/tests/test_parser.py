@@ -115,6 +115,7 @@ class ParsinorganizationanizationsTests(TestCase):
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('Phone1Type', the_type).
+                with_field('Phone1Number', a_phone_number()).
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['type'], the_type)
@@ -124,6 +125,7 @@ class ParsinorganizationanizationsTests(TestCase):
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('Phone1Name', the_description).
+                with_field('Phone1Number', a_phone_number()).
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['description'], the_description)
@@ -145,3 +147,8 @@ class ParsinorganizationanizationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.phone_numbers[0]['number'], first_number)
         self.assertEqual(parsed_data.phone_numbers[1]['number'], second_number)
+
+    def test_leaves_out_phone_numbers_with_no_values(self):
+        data = Bc211CsvDataBuilder().as_organization().with_field('Phone1Number', '').build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.phone_numbers), 0)
