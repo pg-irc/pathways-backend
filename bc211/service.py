@@ -44,7 +44,7 @@ def save_service_if_needed(service, counters):
         active_record = build_service_active_record(service)
         active_record.save()
         counters.count_service()
-        LOGGER.info('created service "%s" "%s"', service.id, service.name)
+        LOGGER.debug('created service "%s" "%s"', service.id, service.name)
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     else:

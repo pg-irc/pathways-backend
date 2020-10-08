@@ -26,7 +26,7 @@ def update_organization(organization, counters):
         active_record = build_organization_active_record(organization)
         active_record.save()
         counters.count_organization_created()
-        LOGGER.info('created "%s" "%s"', organization.id, organization.name)
+        LOGGER.debug('created "%s" "%s"', organization.id, organization.name)
     else:
         LOGGER.warn('duplicate organization "%s" "%s"', organization.id, organization.name)
 

@@ -17,7 +17,7 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
         if not existing:
             save_location(location, None, city_latlong_map, counters)
             counters.count_locations_created()
-            LOGGER.info('created "%s" "%s"', location.id, location.name)
+            LOGGER.debug('created "%s" "%s"', location.id, location.name)
         else:
             LOGGER.warn('duplicate location "%s" "%s"', location.id, location.name)
 
