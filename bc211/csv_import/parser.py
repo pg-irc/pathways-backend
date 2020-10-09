@@ -6,7 +6,8 @@ def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
     headers = reader.__next__()
     for row in reader:
-        organization = {}
+        organization_or_service = {}
+        is_organization = False
         phone_numbers = [{}]
         if not row:
             break
@@ -18,16 +19,22 @@ def parse(sink, lines):
                 phone_numbers.append({})
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
-                the_type = 'organization' if is_organization else 'service'
-                organization['type'] = the_type
             elif output_header:
-                organization[output_header] = value
+                organization_or_service[output_header] = value
             elif output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
-        sink.write_organization(organization)
+        if is_organization:
+            organization_or_service['type'] = 'organization'
+            sink.write_organization(organization_or_service)
+        else:
+            organization_or_service['type'] = 'service'
+            sink.write_service(organization_or_service)
         phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
-            phone_numbers[i]['organization_id'] = organization['id']
+            if is_organization:
+                phone_numbers[i]['organization_id'] = organization_or_service['id']
+            else:
+                phone_numbers[i]['service_id'] = organization_or_service['id']
         sink.write_phone_numbers(phone_numbers)
     return sink
 

@@ -10,10 +10,14 @@ logging.disable(logging.ERROR)
 class TestDataSink:
     def __init__(self):
         self.organizations = []
+        self.services = []
         self.phone_numbers = []
 
     def write_organization(self, organization):
         self.organizations.append(organization)
+
+    def write_service(self, service):
+        self.services.append(service)
 
     def write_phone_numbers(self, phone_numbers):
         self.phone_numbers += phone_numbers
@@ -23,6 +27,12 @@ class TestDataSink:
 
     def first_organization(self):
         return self.organizations[0]
+
+    def services(self):
+        return self.services
+
+    def first_service(self):
+        return self.services[0]
 
     def phone_numbers(self):
         return self.phone_numbers
@@ -34,37 +44,37 @@ class TestDataSink:
 class ParseOrganizationsTests(TestCase):
     def test_can_parse_organization_id(self):
         the_id = a_string()
-        data = Bc211CsvDataBuilder().with_field('ResourceAgencyNum', the_id).build()
+        data = Bc211CsvDataBuilder().as_organization().with_field('ResourceAgencyNum', the_id).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['id'], the_id)
 
     def test_can_parse_organization_name(self):
         the_name = a_string()
-        data = Bc211CsvDataBuilder().with_field('PublicName', the_name).build()
+        data = Bc211CsvDataBuilder().as_organization().with_field('PublicName', the_name).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['name'], the_name)
 
     def test_can_parse_organization_alternate_name(self):
         the_name = a_string()
-        data = Bc211CsvDataBuilder().with_field('AlternateName', the_name).build()
+        data = Bc211CsvDataBuilder().as_organization().with_field('AlternateName', the_name).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['alternate_name'], the_name)
 
     def test_can_parse_description(self):
         the_description = a_string()
-        data = Bc211CsvDataBuilder().with_field('AgencyDescription', the_description).build()
+        data = Bc211CsvDataBuilder().as_organization().with_field('AgencyDescription', the_description).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['description'], the_description)
 
     def test_can_parse_email(self):
         the_email = an_email_address()
-        data = Bc211CsvDataBuilder().with_field('EmailAddressMain', the_email).build()
+        data = Bc211CsvDataBuilder().as_organization().with_field('EmailAddressMain', the_email).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['email'], the_email)
 
     def test_can_parse_url(self):
         the_url = a_website_address()
-        data = Bc211CsvDataBuilder().with_field('WebsiteAddress', the_url).build()
+        data = Bc211CsvDataBuilder().as_organization().with_field('WebsiteAddress', the_url).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['url'], the_url)
 
@@ -90,7 +100,7 @@ class ParseServicesTests(TestCase):
         parent_id = str(an_integer(min=1))
         data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_organization()['type'], 'service')
+        self.assertEqual(parsed_data.first_service()['type'], 'service')
 
 
 class ParsePhoneNumbersTests(TestCase):
@@ -113,6 +123,17 @@ class ParsePhoneNumbersTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['organization_id'], the_organization_id)
+
+    def test_sets_service_id_on_phone_number_record(self):
+        the_number = a_phone_number()
+        the_service_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('ResourceAgencyNum', the_service_id).
+                with_field('Phone1Number', the_number).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_phone_number()['service_id'], the_service_id)
 
     def test_can_parse_organization_phone_number_type(self):
         the_type = a_string()
