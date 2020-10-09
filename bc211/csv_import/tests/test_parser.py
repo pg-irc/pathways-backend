@@ -78,11 +78,15 @@ class ParseOrganizationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['url'], the_url)
 
-    def test_sets_type_to_organization_if_parent_agency_is_zero(self):
+    def test_parse_as_organization_if_parent_agency_is_zero(self):
         parent_id = '0'
-        data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
+        the_id = str(an_integer(min=1))
+        data = (Bc211CsvDataBuilder().
+                with_field('ResourceAgencyNum', the_id).
+                with_field('ParentAgencyNum', parent_id).
+                build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_organization()['type'], 'organization')
+        self.assertEqual(parsed_data.first_organization()['id'], the_id)
 
     def test_can_parse_two_organizations(self):
         first_name = a_string()
@@ -96,11 +100,15 @@ class ParseOrganizationsTests(TestCase):
 
 
 class ParseServicesTests(TestCase):
-    def test_sets_type_to_service_if_parent_agency_is_not_zero(self):
+    def test_parse_as_service_if_parent_agency_is_not_zero(self):
         parent_id = str(an_integer(min=1))
-        data = Bc211CsvDataBuilder().with_field('ParentAgencyNum', parent_id).build()
+        the_id = str(an_integer(min=1))
+        data = (Bc211CsvDataBuilder().
+                with_field('ResourceAgencyNum', the_id).
+                with_field('ParentAgencyNum', parent_id).
+                build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_service()['type'], 'service')
+        self.assertEqual(parsed_data.first_service()['id'], the_id)
 
 
 class ParsePhoneNumbersTests(TestCase):

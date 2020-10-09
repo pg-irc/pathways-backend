@@ -24,10 +24,8 @@ def parse(sink, lines):
             elif output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
         if is_organization:
-            organization_or_service['type'] = 'organization'
             sink.write_organization(organization_or_service)
         else:
-            organization_or_service['type'] = 'service'
             sink.write_service(organization_or_service)
         phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
