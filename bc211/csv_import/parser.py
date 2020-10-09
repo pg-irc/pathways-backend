@@ -10,7 +10,7 @@ def parse(sink, lines):
         is_organization = False
         phone_numbers = [{}]
         if not row:
-            break
+            continue
         for header, value in zip(headers, row):
             output_header = organization_header_map.get(header, None)
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
