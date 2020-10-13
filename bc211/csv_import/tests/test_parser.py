@@ -253,8 +253,6 @@ class ParseLocationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
 
-# id 	location_id 	attention 	address_1 	address_2 	address_3 	address_4 	city 	region 	state_province 	postal_code 	country
-
 
 class ParseAddressTests(TestCase):
     def test_can_parse_address_line_one(self):
@@ -266,11 +264,53 @@ class ParseAddressTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
 
-    def test_can_parse_address_line_two(self):
+    def test_can_parse_remaining_address_lines(self):
+        address_line_2 = a_string()
+        address_line_3 = a_string()
+        address_line_4 = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingAddress2', address_line_2).
+                with_field('MailingAddress3', address_line_3).
+                with_field('MailingAddress4', address_line_4).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['address_2'], address_line_2)
+        self.assertEqual(parsed_data.first_address()['address_3'], address_line_3)
+        self.assertEqual(parsed_data.first_address()['address_4'], address_line_4)
+
+    def test_can_parse_address_city(self):
         the_address_line = a_string()
         data = (Bc211CsvDataBuilder().
                 as_organization().
-                with_field('MailingAddress2', the_address_line).
+                with_field('MailingCity', the_address_line).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_address()['address_2'], the_address_line)
+        self.assertEqual(parsed_data.first_address()['city'], the_address_line)
+
+    def test_can_parse_address_state_province(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingStateProvince', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['state_province'], the_address_line)
+
+    def test_can_parse_address_postal_code(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingPostalCode', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['state_province'], the_address_line)
+
+    def test_can_parse_address_country(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingCountry', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['country'], the_address_line)
