@@ -314,3 +314,12 @@ class ParseAddressTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_address()['country'], the_address_line)
+
+    def test_can_parse_physical_address(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('PhysicalAddress1', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
