@@ -16,7 +16,8 @@ def parse(sink, lines):
         for header, value in zip(headers, row):
             output_header = organization_header_map.get(header, None)
             output_location_header = location_header_map.get(header, None)
-            output_address_header = address_header_map.get(header, None)
+            output_address_header = address_header_map.get(get_normalized_address_header(header), None)
+            is_physical_address_type = header.startswith('Physical')
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
             phone_index = get_zero_based_phone_index(header)
             while phone_index and len(phone_numbers) <= phone_index:
@@ -30,7 +31,9 @@ def parse(sink, lines):
                     value = float(value)
                 location[output_location_header] = value
             if output_address_header:
-                addresses[0][output_address_header] = value
+                index = 1 if is_physical_address_type else 0
+                addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
+                addresses[index][output_address_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
         if is_organization:
@@ -70,7 +73,6 @@ location_header_map = {
 
 address_header_map = {
     'MailingAddress1': 'address_1',
-    'PhysicalAddress1': 'address_1',
     'MailingAddress2': 'address_2',
     'MailingAddress3': 'address_3',
     'MailingAddress4': 'address_4',
@@ -79,6 +81,10 @@ address_header_map = {
     'MailingPostalCode': 'state_province',
     'MailingCountry': 'country',
 }
+
+
+def get_normalized_address_header(fff):
+    return re.sub(r'^Physical', 'Mailing', fff)
 
 
 def phone_header_with_index_one(phone_field_with_any_index):

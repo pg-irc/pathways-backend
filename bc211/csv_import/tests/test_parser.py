@@ -50,6 +50,9 @@ class TestDataSink:
     def first_address(self):
         return self.addresses[0]
 
+    def second_address(self):
+        return self.addresses[1]
+
     def phone_numbers(self):
         return self.phone_numbers
 
@@ -322,4 +325,32 @@ class ParseAddressTests(TestCase):
                 with_field('PhysicalAddress1', the_address_line).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
+        self.assertEqual(parsed_data.second_address()['address_1'], the_address_line)
+
+    def test_marks_physical_address_as_physical(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('PhysicalAddress1', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.second_address()['type'], 'physical_address')
+
+    def test_marks_postal_address_as_postal(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingAddress1', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['type'], 'postal_address')
+
+    def test_can_parse_both_physical_and_postal_address(self):
+        the_physical_address_line = a_string()
+        the_postal_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingAddress1', the_postal_address_line).
+                with_field('PhysicalAddress1', the_physical_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['address_1'], the_postal_address_line)
+        self.assertEqual(parsed_data.second_address()['address_1'], the_physical_address_line)
