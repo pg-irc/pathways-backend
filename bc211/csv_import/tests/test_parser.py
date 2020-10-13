@@ -209,6 +209,17 @@ class ParseLocationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['name'], the_name)
 
+    def test_parses_organization_alternate_name_as_location_name(self):
+        the_name = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('AlternateName', the_name).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_location()['alternate_name'], the_name)
+
+
+
     def test_sets_organization_id_on_parsed_location(self):
         the_id = a_string()
         data = (Bc211CsvDataBuilder().
@@ -226,3 +237,12 @@ class ParseLocationsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['latitude'], the_latitude)
+
+    def test_parse_location_longitude(self):
+        the_longitude = a_latitude()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('Longitude', str(the_longitude)).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
