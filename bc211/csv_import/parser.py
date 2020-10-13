@@ -70,6 +70,7 @@ location_header_map = {
 
 address_header_map = {
     'MailingAddress1': 'address_1',
+    'MailingAddress2': 'address_2',
 }
 
 
