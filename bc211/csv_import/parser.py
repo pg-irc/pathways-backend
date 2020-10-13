@@ -24,6 +24,8 @@ def parse(sink, lines):
             if output_header:
                 organization_or_service[output_header] = value
             if output_location_header:
+                if output_location_header in ['latitude']:
+                    value = float(value)
                 location[output_location_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
@@ -55,6 +57,7 @@ organization_header_map = {
 location_header_map = {
     'ResourceAgencyNum': 'organization_id',
     'PublicName': 'name',
+    'Latitude': 'latitude',
 }
 
 def phone_header_with_index_one(phone_field_with_any_index):

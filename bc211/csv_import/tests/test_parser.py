@@ -1,6 +1,6 @@
 import logging
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_phone_number, a_string, a_website_address, an_email_address, an_integer
+from common.testhelpers.random_test_values import a_latitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
 from bc211.csv_import.parser import phone_header_with_index_one, parse
 
@@ -217,3 +217,12 @@ class ParseLocationsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['organization_id'], the_id)
+
+    def test_parse_location_latitude(self):
+        the_latitude = a_latitude()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('Latitude', str(the_latitude)).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_location()['latitude'], the_latitude)
