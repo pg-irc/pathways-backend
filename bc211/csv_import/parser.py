@@ -7,14 +7,16 @@ def parse(sink, lines):
     headers = reader.__next__()
     for row in reader:
         organization_or_service = {}
-        location = {}
         is_organization = False
+        location = {}
+        addresses = [{}, {}]
         phone_numbers = [{}]
         if not row:
             continue
         for header, value in zip(headers, row):
             output_header = organization_header_map.get(header, None)
             output_location_header = location_header_map.get(header, None)
+            output_address_header = address_header_map.get(header, None)
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
             phone_index = get_zero_based_phone_index(header)
             while phone_index and len(phone_numbers) <= phone_index:
@@ -27,6 +29,8 @@ def parse(sink, lines):
                 if output_location_header in ['latitude', 'longitude']:
                     value = float(value)
                 location[output_location_header] = value
+            if output_address_header:
+                addresses[0][output_address_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
         if is_organization:
@@ -34,6 +38,7 @@ def parse(sink, lines):
         else:
             sink.write_service(organization_or_service)
         sink.write_location(location)
+        sink.write_addresses(addresses)
         phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
             if is_organization:
@@ -60,6 +65,11 @@ location_header_map = {
     'AlternateName': 'alternate_name',
     'Latitude': 'latitude',
     'Longitude': 'longitude',
+}
+
+
+address_header_map = {
+    'MailingAddress1': 'address_1',
 }
 
 

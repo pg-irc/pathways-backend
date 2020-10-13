@@ -12,6 +12,7 @@ class TestDataSink:
         self.organizations = []
         self.services = []
         self.locations = []
+        self.addresses = []
         self.phone_numbers = []
 
     def write_organization(self, organization):
@@ -22,6 +23,10 @@ class TestDataSink:
 
     def write_location(self, location):
         self.locations.append(location)
+        return self
+
+    def write_addresses(self, addresses):
+        self.addresses += addresses
         return self
 
     def write_phone_numbers(self, phone_numbers):
@@ -41,6 +46,9 @@ class TestDataSink:
 
     def first_location(self):
         return self.locations[0]
+
+    def first_address(self):
+        return self.addresses[0]
 
     def phone_numbers(self):
         return self.phone_numbers
@@ -218,8 +226,6 @@ class ParseLocationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['alternate_name'], the_name)
 
-
-
     def test_sets_organization_id_on_parsed_location(self):
         the_id = a_string()
         data = (Bc211CsvDataBuilder().
@@ -246,3 +252,16 @@ class ParseLocationsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
+
+# id 	location_id 	attention 	address_1 	address_2 	address_3 	address_4 	city 	region 	state_province 	postal_code 	country
+
+
+class ParseAddressTests(TestCase):
+    def test_can_parse_address_line_one(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingAddress1', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
