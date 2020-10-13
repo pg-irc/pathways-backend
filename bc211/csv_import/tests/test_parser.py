@@ -11,6 +11,7 @@ class TestDataSink:
     def __init__(self):
         self.organizations = []
         self.services = []
+        self.locations = []
         self.phone_numbers = []
 
     def write_organization(self, organization):
@@ -18,6 +19,10 @@ class TestDataSink:
 
     def write_service(self, service):
         self.services.append(service)
+
+    def write_location(self, location):
+        self.locations.append(location)
+        return self
 
     def write_phone_numbers(self, phone_numbers):
         self.phone_numbers += phone_numbers
@@ -33,6 +38,9 @@ class TestDataSink:
 
     def first_service(self):
         return self.services[0]
+
+    def first_location(self):
+        return self.locations[0]
 
     def phone_numbers(self):
         return self.phone_numbers
@@ -185,3 +193,27 @@ class ParsePhoneNumbersTests(TestCase):
         data = Bc211CsvDataBuilder().as_organization().with_field('Phone1Number', '').build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.phone_numbers), 0)
+
+# TODO determine if the other kinds of phone numbers contain any data
+
+
+class ParseLocationsTests(TestCase):
+
+    # organization_id, name, alternate_name, description, transportation, latitude, longitude
+    def test_parses_organization_name_as_location_name(self):
+        the_name = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('PublicName', the_name).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_location()['name'], the_name)
+
+    def test_sets_organization_id_on_parsed_location(self):
+        the_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', the_id).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_location()['organization_id'], the_id)
