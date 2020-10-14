@@ -287,7 +287,11 @@ class ServicesAtLocationTests(TestCase):
         the_postal_code = a_string()
         the_country = a_string()
         the_first_service_id = a_string()
+        the_first_service_address = a_string()
+        the_first_service_phone_number = a_phone_number()
         the_second_service_id = a_string()
+        the_second_service_address = a_string()
+        the_second_service_phone_number = a_phone_number()
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('ResourceAgencyNum', the_organization_id).
@@ -311,33 +315,66 @@ class ServicesAtLocationTests(TestCase):
                 as_service().
                 with_field('ResourceAgencyNum', the_first_service_id).
                 with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_first_service_address).
+                with_field('Phone1Number', the_first_service_phone_number).
                 next_row().
                 as_service().
                 with_field('ResourceAgencyNum', the_second_service_id).
                 with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_second_service_address).
+                with_field('Phone1Number', the_second_service_phone_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
+
+        self.assertEqual(len(parsed_data.organizations), 1)
         self.assertEqual(parsed_data.first_organization()['id'], the_organization_id)
         self.assertEqual(parsed_data.first_organization()['name'], the_name)
         self.assertEqual(parsed_data.first_organization()['alternate_name'], the_alternate_name)
         self.assertEqual(parsed_data.first_organization()['description'], the_description)
         self.assertEqual(parsed_data.first_organization()['email'], the_email)
         self.assertEqual(parsed_data.first_organization()['url'], the_url)
+
+        self.assertEqual(len(parsed_data.services), 2)
+        self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
+        self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)
+
+        self.assertEqual(len(parsed_data.phone_numbers), 4)
         self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
         self.assertEqual(parsed_data.first_phone_number()['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.first_phone_number()['type'], the_type)
         self.assertEqual(parsed_data.first_phone_number()['description'], the_phone_description)
         self.assertEqual(parsed_data.phone_numbers[1]['number'], the_second_number)
+
+        self.assertEqual(len(parsed_data.locations), 3)  # TODO this is not right
         self.assertEqual(parsed_data.first_location()['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.first_location()['name'], the_name)
         self.assertEqual(parsed_data.first_location()['alternate_name'], the_alternate_name)
         self.assertEqual(parsed_data.first_location()['latitude'], the_latitude)
         self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
+
+        self.assertEqual(len(parsed_data.addresses), 6)  # TODO this is not right
         self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
         self.assertEqual(parsed_data.first_address()['city'], the_city_line)
         self.assertEqual(parsed_data.first_address()['state_province'], the_province)
         self.assertEqual(parsed_data.first_address()['postal_code'], the_postal_code)
         self.assertEqual(parsed_data.first_address()['country'], the_country)
+
+        self.assertEqual(parsed_data.services[0]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
+
+        self.assertEqual(parsed_data.locations[0]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.locations[1]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.locations[2]['organization_id'], the_organization_id)
+
+        self.assertEqual(parsed_data.phone_numbers[0]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.phone_numbers[1]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.phone_numbers[2]['service_id'], the_first_service_id)
+        self.assertEqual(parsed_data.phone_numbers[3]['service_id'], the_second_service_id)
+
+        # Each service has a different location
+        # Each location has an address
+        # Each location has a phone number
+
         self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
         self.assertEqual(parsed_data.first_service()['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)

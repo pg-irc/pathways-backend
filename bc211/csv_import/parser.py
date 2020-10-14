@@ -46,6 +46,7 @@ def parse(sink, lines):
         else:
             organization_or_service['organization_id'] = parent_organization_id
             sink.write_service(organization_or_service)
+        location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
         sink.write_location(location)
         sink.write_addresses(addresses)
         phone_numbers = [n for n in phone_numbers if n['number']]
