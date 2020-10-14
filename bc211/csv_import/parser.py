@@ -8,6 +8,7 @@ def parse(sink, lines):
     for row in reader:
         organization_or_service = {}
         is_organization = False
+        parent_organization_id = None
         location = {}
         addresses = [{}, {}]
         phone_numbers = [{}]
@@ -24,6 +25,7 @@ def parse(sink, lines):
                 phone_numbers.append({})
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
+                parent_organization_id = None if is_organization else value
             if output_header:
                 organization_or_service[output_header] = value
             if output_location_header:
@@ -39,6 +41,7 @@ def parse(sink, lines):
         if is_organization:
             sink.write_organization(organization_or_service)
         else:
+            organization_or_service['organization_id'] = parent_organization_id
             sink.write_service(organization_or_service)
         sink.write_location(location)
         sink.write_addresses(addresses)
@@ -78,7 +81,7 @@ address_header_map = {
     'MailingAddress4': 'address_4',
     'MailingCity': 'city',
     'MailingStateProvince': 'state_province',
-    'MailingPostalCode': 'state_province',
+    'MailingPostalCode': 'postal_code',
     'MailingCountry': 'country',
 }
 

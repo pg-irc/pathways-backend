@@ -43,7 +43,7 @@ class Bc211CsvDataBuilder:
         result += '\n'
         for row in self.data:
             for key in shuffled_keys:
-                value = row.get(key)
+                value = row.get(key, '')
                 result += value + ','
             result += '\n'
         return result
