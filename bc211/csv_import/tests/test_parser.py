@@ -311,14 +311,10 @@ class ServicesAtLocationTests(TestCase):
                 as_service().
                 with_field('ResourceAgencyNum', the_first_service_id).
                 with_field('ParentAgencyNum', the_organization_id).
-                with_field('Latitude', str(a_latitude())).
-                with_field('Longitude', str(a_longitude())).
                 next_row().
                 as_service().
                 with_field('ResourceAgencyNum', the_second_service_id).
                 with_field('ParentAgencyNum', the_organization_id).
-                with_field('Latitude', str(a_latitude())).
-                with_field('Longitude', str(a_longitude())).
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_organization()['id'], the_organization_id)

@@ -30,7 +30,10 @@ def parse(sink, lines):
                 organization_or_service[output_header] = value
             if output_location_header:
                 if output_location_header in ['latitude', 'longitude']:
-                    value = float(value)
+                    try:
+                        value = float(value)
+                    except:
+                        value = None
                 location[output_location_header] = value
             if output_address_header:
                 index = 1 if is_physical_address_type else 0
