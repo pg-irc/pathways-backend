@@ -3,7 +3,7 @@ import hashlib
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_float, a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
-from bc211.csv_import.parser import phone_header_with_index_one, parse
+from bc211.csv_import.parser import compute_hash, parse, phone_header_with_index_one
 
 logging.disable(logging.ERROR)
 
@@ -260,17 +260,10 @@ class ParseLocationsTests(TestCase):
     # Need the test to show that one service can have >1 locations, and each location can have >1 service
 
 
-def compute_hash(*args):
-    hasher = hashlib.sha1()
-    for arg in args:
-        hasher.update(arg.encode('utf-8'))
-    return hasher.hexdigest()
-
-
 class ServicesAtLocationTests(TestCase):
     def test_foo(self):
         the_organization_id = a_string()
-        the_name = a_string()
+        the_organization_name = a_string()
         the_alternate_name = a_string()
         the_description = a_string()
         the_email = an_email_address()
@@ -287,15 +280,17 @@ class ServicesAtLocationTests(TestCase):
         the_postal_code = a_string()
         the_country = a_string()
         the_first_service_id = a_string()
+        the_first_service_name = a_string()
         the_first_service_address = a_string()
         the_first_service_phone_number = a_phone_number()
         the_second_service_id = a_string()
+        the_second_service_name = a_string()
         the_second_service_address = a_string()
         the_second_service_phone_number = a_phone_number()
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('ResourceAgencyNum', the_organization_id).
-                with_field('PublicName', the_name).
+                with_field('PublicName', the_organization_name).
                 with_field('AlternateName', the_alternate_name).
                 with_field('AgencyDescription', the_description).
                 with_field('EmailAddressMain', the_email).
@@ -315,12 +310,14 @@ class ServicesAtLocationTests(TestCase):
                 as_service().
                 with_field('ResourceAgencyNum', the_first_service_id).
                 with_field('ParentAgencyNum', the_organization_id).
+                with_field('PublicName', the_first_service_name).
                 with_field('MailingAddress1', the_first_service_address).
                 with_field('Phone1Number', the_first_service_phone_number).
                 next_row().
                 as_service().
                 with_field('ResourceAgencyNum', the_second_service_id).
                 with_field('ParentAgencyNum', the_organization_id).
+                with_field('PublicName', the_second_service_name).
                 with_field('MailingAddress1', the_second_service_address).
                 with_field('Phone1Number', the_second_service_phone_number).
                 build())
@@ -328,7 +325,7 @@ class ServicesAtLocationTests(TestCase):
 
         self.assertEqual(len(parsed_data.organizations), 1)
         self.assertEqual(parsed_data.first_organization()['id'], the_organization_id)
-        self.assertEqual(parsed_data.first_organization()['name'], the_name)
+        self.assertEqual(parsed_data.first_organization()['name'], the_organization_name)
         self.assertEqual(parsed_data.first_organization()['alternate_name'], the_alternate_name)
         self.assertEqual(parsed_data.first_organization()['description'], the_description)
         self.assertEqual(parsed_data.first_organization()['email'], the_email)
@@ -345,14 +342,16 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.first_phone_number()['description'], the_phone_description)
         self.assertEqual(parsed_data.phone_numbers[1]['number'], the_second_number)
 
+        the_location_id_for_now = compute_hash(the_organization_name)
         self.assertEqual(len(parsed_data.locations), 3)  # TODO this is not right
+        self.assertEqual(parsed_data.first_location()['id'], the_location_id_for_now)
         self.assertEqual(parsed_data.first_location()['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.first_location()['name'], the_name)
+        self.assertEqual(parsed_data.first_location()['name'], the_organization_name)
         self.assertEqual(parsed_data.first_location()['alternate_name'], the_alternate_name)
         self.assertEqual(parsed_data.first_location()['latitude'], the_latitude)
         self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
 
-        self.assertEqual(len(parsed_data.addresses), 6)  # TODO this is not right
+        self.assertEqual(len(parsed_data.addresses), 6)  # TODO this should be 3
         self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
         self.assertEqual(parsed_data.first_address()['city'], the_city_line)
         self.assertEqual(parsed_data.first_address()['state_province'], the_province)
@@ -370,6 +369,15 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.phone_numbers[1]['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.phone_numbers[2]['service_id'], the_first_service_id)
         self.assertEqual(parsed_data.phone_numbers[3]['service_id'], the_second_service_id)
+
+        self.assertEqual(parsed_data.addresses[0]['location_id'], the_location_id_for_now)
+        self.assertEqual(parsed_data.addresses[1]['location_id'], the_location_id_for_now)
+        the_location_id_for_now = compute_hash(the_first_service_name)
+        self.assertEqual(parsed_data.addresses[2]['location_id'], the_location_id_for_now)
+        self.assertEqual(parsed_data.addresses[3]['location_id'], the_location_id_for_now)
+        the_location_id_for_now = compute_hash(the_second_service_name)
+        self.assertEqual(parsed_data.addresses[4]['location_id'], the_location_id_for_now)
+        self.assertEqual(parsed_data.addresses[5]['location_id'], the_location_id_for_now)
 
         # Each service has a different location
         # Each location has an address

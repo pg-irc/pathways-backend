@@ -1,6 +1,6 @@
 import csv
 import re
-
+import hashlib
 
 def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
@@ -46,8 +46,11 @@ def parse(sink, lines):
         else:
             organization_or_service['organization_id'] = parent_organization_id
             sink.write_service(organization_or_service)
+        location['id'] = compute_hash(location['name'])
         location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
         sink.write_location(location)
+        for i, item in enumerate(addresses):
+            addresses[i]['location_id'] = location['id']
         sink.write_addresses(addresses)
         phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
@@ -57,6 +60,13 @@ def parse(sink, lines):
                 phone_numbers[i]['service_id'] = organization_or_service['id']
         sink.write_phone_numbers(phone_numbers)
     return sink
+
+
+def compute_hash(*args):
+    hasher = hashlib.sha1()
+    for arg in args:
+        hasher.update(arg.encode('utf-8'))
+    return hasher.hexdigest()
 
 
 organization_header_map = {
