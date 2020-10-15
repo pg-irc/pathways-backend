@@ -1,9 +1,7 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.importer import save_organization, parse_csv
-from bc211.parser import parse_agency
+from bc211.importer import parse_csv, update_all_organizations
 from bc211.import_counters import ImportCounters
-from bc211.exceptions import XmlParseException
 import xml.etree.ElementTree as etree
 
 # invoke as follows:
@@ -23,38 +21,23 @@ class Command(BaseCommand):
                             help='Path to CSV file containing city to latlong dictionary')
 
     def handle(self, *args, **options):
-        counts = ImportCounters()
         file = options['file']
         if options['cityLatLongs']:
             city_latlong_map = parse_csv(options['cityLatLongs'])
         else:
             city_latlong_map = {}
+        counts = ImportCounters()
         nodes = etree.iterparse(file, events=('end',))
-        organization_id = ''
-        for _, elem in nodes:
-            if elem.tag == 'Agency':
-                try:
-                    organization = parse_agency(elem)
-                    organization_id = organization.id
-                    save_organization(organization, city_latlong_map, counts)
-                except XmlParseException as error:
-                    error = 'Parser exception caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
-                        the_id=organization_id, error_message=error.__str__())
-                    self.stdout.write(self.style.ERROR(error))
-                except AttributeError as error:
-                    error = 'Missing field error caught when importing the organization immediately after the one with id "{the_id}": {error_message}'.format(
-                        the_id=organization_id, error_message=error.__str__())
-                    self.stdout.write(self.style.ERROR(error))
+        update_all_organizations(nodes, city_latlong_map, counts)
+        self.print_status_message(counts)
 
-        message_template = ('Successfully imported {0} organization(s), '
-                            '{1} location(s), {2} service(s), '
-                            '{3} taxonomy term(s), {4} address(es), {5} phone number type(s), '
-                            'and {6} phone number(s)')
-        status_message = message_template.format(counts.organization_count,
-                                                 counts.location_count,
-                                                 counts.service_count,
-                                                 counts.taxonomy_term_count,
-                                                 counts.address_count,
-                                                 counts.phone_number_types_count,
-                                                 counts.phone_at_location_count)
-        self.stdout.write(self.style.SUCCESS(status_message))
+    def print_status_message(self, counts):
+        message = f'{counts.organizations_created} organizations created. '
+        message += f'{counts.locations_created} locations created. '
+        message += f'{counts.services_created} services created. '
+        message += f'{counts.taxonomy_term_count} taxonomy terms created. '
+        message += f'{counts.address_count} addresses created. '
+        message += f'{counts.phone_at_location_count} phone numbers created '
+        message += f'and {counts.phone_number_types_count} phone number types created. '
+
+        self.stdout.write(self.style.SUCCESS(message))

@@ -43,12 +43,17 @@ class ServiceBuilder:
         self.taxonomy_terms = taxonomy_terms
         return self
 
+    # TODO rename to indicate that this is used for create() only
     def with_location(self, location):
         self.location_ids.append(location.id)
         return self
 
     def with_last_verified_date(self, last_verified_date):
         self.last_verified_date = last_verified_date
+        return self
+
+    def with_only_location(self, location):
+        self.location_ids = [location.id]
         return self
 
     def build(self):
