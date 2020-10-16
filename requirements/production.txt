@@ -6,7 +6,7 @@
 
 # WSGI Handler
 # ------------------------------------------------
-gevent==1.4.0
+gevent==20.9.0
 gunicorn==19.9.0
 
 # Static and Media Storage
