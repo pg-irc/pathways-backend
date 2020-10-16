@@ -336,7 +336,7 @@ class HumanServiceEntityRelationsTests(TestCase):
                 build())
         self.parsed_data = parse(TestDataSink(), data)
 
-    def test_foo(self):
+    def test_organization_fields(self):
         self.assertEqual(len(self.parsed_data.organizations), 1)
         self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.first_organization()['name'], self.the_organization_name)
@@ -345,12 +345,19 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.first_organization()['email'], self.the_email)
         self.assertEqual(self.parsed_data.first_organization()['url'], self.the_url)
 
+    def test_service_fields(self):
         self.assertEqual(len(self.parsed_data.services), 2)
         self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
         self.assertEqual(self.parsed_data.services[1]['id'], self.the_second_service_id)
 
+    def test_services_at_location(self):
         self.assertEqual(len(self.parsed_data.services_at_location), 2)
+        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
+        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
 
+    def test_phone_number_fields(self):
         self.assertEqual(len(self.parsed_data.phone_numbers), 4)
         self.assertEqual(self.parsed_data.first_phone_number()['number'], self.the_number)
         self.assertEqual(self.parsed_data.first_phone_number()['location_id'], compute_hash(self.the_organization_name))
@@ -358,6 +365,7 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.first_phone_number()['description'], self.the_phone_description)
         self.assertEqual(self.parsed_data.phone_numbers[1]['number'], self.the_second_number)
 
+    def test_location_fields(self):
         self.the_location_id_for_now = compute_hash(self.the_organization_name)
         self.assertEqual(len(self.parsed_data.locations), 3)  # TODO this is not right
         self.assertEqual(self.parsed_data.first_location()['id'], self.the_location_id_for_now)
@@ -367,6 +375,8 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.first_location()['latitude'], self.the_latitude)
         self.assertEqual(self.parsed_data.first_location()['longitude'], self.the_longitude)
 
+    def test_address_fiels(self):
+        self.the_location_id_for_now = compute_hash(self.the_organization_name)
         self.assertEqual(len(self.parsed_data.addresses), 6)  # TODO this should be 3
         self.assertEqual(self.parsed_data.first_address()['address_1'], self.the_address_line)
         self.assertEqual(self.parsed_data.first_address()['city'], self.the_city_line)
@@ -374,18 +384,23 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.first_address()['postal_code'], self.the_postal_code)
         self.assertEqual(self.parsed_data.first_address()['country'], self.the_country)
 
+    def test_organization_id_set_on_service(self):
         self.assertEqual(self.parsed_data.services[0]['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
 
+    def test_organization_id_set_on_location(self):
         self.assertEqual(self.parsed_data.locations[0]['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.locations[1]['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.locations[2]['organization_id'], self.the_organization_id)
 
+    def test_location_id_set_on_phone_numbers(self):
         self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], compute_hash(self.the_organization_name))
         self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], compute_hash(self.the_organization_name))
         self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], compute_hash(self.the_first_service_name))
         self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], compute_hash(self.the_second_service_name))
 
+    def test_location_id_set_on_addresses(self):
+        self.the_location_id_for_now = compute_hash(self.the_organization_name)
         self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.the_location_id_for_now)
         self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.the_location_id_for_now)
         self.the_location_id_for_now = compute_hash(self.the_first_service_name)
@@ -395,44 +410,56 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.the_location_id_for_now)
         self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.the_location_id_for_now)
 
-        # ids for organizations,
+    def test_id_set_on_organization(self):
         self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
-        # locations,
+
+    def test_id_set_on_location(self):
         self.the_location_id_for_now = compute_hash(self.the_organization_name)
         self.assertEqual(self.parsed_data.first_location()['id'], self.the_location_id_for_now)
-        # phone numbers,
-        self.assertGreater(len(self.parsed_data.first_phone_number()['id']), 0)
-        # addresses,
-        self.assertGreater(len(self.parsed_data.first_address()['id']), 0)
-        # services,
+
+    def test_id_set_on_service(self):
         self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
         self.assertEqual(self.parsed_data.services[1]['id'], self.the_second_service_id)
-        # service@location
+
+    def test_synthetic_keys_are_not_empty(self):
+        self.assertGreater(len(self.parsed_data.first_phone_number()['id']), 0)
+        self.assertGreater(len(self.parsed_data.first_address()['id']), 0)
         self.assertGreater(len(self.parsed_data.services_at_location[0]['id']), 0)
 
-        # location -> organization
+    def test_organization_id_on_location(self):
         self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
-        # phone -> location
+
+    def test_location_ids_on_phone_numbers(self):
         self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], compute_hash(self.the_organization_name))
         self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], compute_hash(self.the_organization_name))
         self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], compute_hash(self.the_first_service_name))
         self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], compute_hash(self.the_second_service_name))
-        # address (both kinds) -> location
+
+    def test_location_ids_on_addresses(self):
         self.assertEqual(self.parsed_data.addresses[0]['location_id'], compute_hash(self.the_organization_name))
         self.assertEqual(self.parsed_data.addresses[1]['location_id'], compute_hash(self.the_organization_name))
         self.assertEqual(self.parsed_data.addresses[2]['location_id'], compute_hash(self.the_first_service_name))
         self.assertEqual(self.parsed_data.addresses[3]['location_id'], compute_hash(self.the_first_service_name))
         self.assertEqual(self.parsed_data.addresses[4]['location_id'], compute_hash(self.the_second_service_name))
         self.assertEqual(self.parsed_data.addresses[5]['location_id'], compute_hash(self.the_second_service_name))
-        # service -> organization
+
+    def test_organization_ids_on_services(self):
         self.assertEqual(self.parsed_data.first_service()['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
-        # service -> location
-        # location -> service
+
+    def test_relations_from_services_to_locations(self):
         self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], compute_hash(self.the_first_service_name))
         self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
         self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], compute_hash(self.the_second_service_name))
         self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
+
+    # one org with two locations
+    # one org with two services
+    # one location with two services
+    # one service with two locations
+    # one location with two (or five) phone numbers
+    # one location with two addresses (postal and street)
+    # one address with two locations
 
 
 class ParseAddressTests(TestCase):
