@@ -41,14 +41,14 @@ def parse(sink, lines):
                 addresses[index][output_address_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
+        location['id'] = compute_hash(location['name'])
+        location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
+        sink.write_location(location)
         if is_organization:
             sink.write_organization(organization_or_service)
         else:
             organization_or_service['organization_id'] = parent_organization_id
-            sink.write_service(organization_or_service)
-        location['id'] = compute_hash(location['name'])
-        location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
-        sink.write_location(location)
+            sink.write_service(organization_or_service, location['id'])
         for i, item in enumerate(addresses):
             addresses[i]['location_id'] = location['id']
         sink.write_addresses(addresses)

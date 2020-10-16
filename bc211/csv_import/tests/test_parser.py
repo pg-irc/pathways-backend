@@ -13,14 +13,17 @@ class TestDataSink:
         self.organizations = []
         self.services = []
         self.locations = []
+        self.services_at_location = []
         self.addresses = []
         self.phone_numbers = []
 
     def write_organization(self, organization):
         self.organizations.append(organization)
 
-    def write_service(self, service):
+    def write_service(self, service, location_id):
         self.services.append(service)
+        the_id = compute_hash(service['id'], location_id)
+        self.services_at_location.append({'id': the_id, 'service_id': service['id'], 'location_id': location_id})
 
     def write_location(self, location):
         self.locations.append(location)
@@ -44,6 +47,9 @@ class TestDataSink:
 
     def first_service(self):
         return self.services[0]
+
+    def services_at_location(self):
+        return self.services_at_location
 
     def first_location(self):
         return self.locations[0]
@@ -342,6 +348,8 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
         self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)
 
+        self.assertEqual(len(parsed_data.services_at_location), 2)
+
         self.assertEqual(len(parsed_data.phone_numbers), 4)
         self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
         self.assertEqual(parsed_data.first_phone_number()['location_id'], compute_hash(the_organization_name))
@@ -417,6 +425,10 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
         # service -> location
         # location -> service
+        self.assertEqual(parsed_data.services_at_location[0]['location_id'], compute_hash(the_first_service_name))
+        self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_first_service_id)
+        self.assertEqual(parsed_data.services_at_location[1]['location_id'], compute_hash(the_second_service_name))
+        self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_second_service_id)
 
 
     def xxx_test_one_service_can_be_offered_at_two_locations(self):
