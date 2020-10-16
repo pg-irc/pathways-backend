@@ -272,214 +272,167 @@ class ParseLocationsTests(TestCase):
     # Need the test to show that one service can have >1 locations, and each location can have >1 service
 
 
-class ServicesAtLocationTests(TestCase):
+class HumanServiceEntityRelationsTests(TestCase):
     # TODO make this test have only one of each entity, test one-to-many relations in separate tests
-    def test_foo(self):
-        the_organization_id = a_string()
-        the_organization_name = a_string()
-        the_alternate_name = a_string()
-        the_description = a_string()
-        the_email = an_email_address()
-        the_url = a_website_address()
-        the_number = a_phone_number()
-        the_second_number = a_phone_number()
-        the_type = a_string()
-        the_phone_description = a_string()
-        the_latitude = a_latitude()
-        the_longitude = a_longitude()
-        the_address_line = a_string()
-        the_city_line = a_string()
-        the_province = a_string()
-        the_postal_code = a_string()
-        the_country = a_string()
-        the_first_service_id = a_string()
-        the_first_service_name = a_string()
-        the_first_service_address = a_string()
-        the_first_service_phone_number = a_phone_number()
-        the_second_service_id = a_string()
-        the_second_service_name = a_string()
-        the_second_service_address = a_string()
-        the_second_service_phone_number = a_phone_number()
+    def setUp(self):
+        self.the_organization_id = a_string()
+        self.the_organization_name = a_string()
+        self.the_alternate_name = a_string()
+        self.the_description = a_string()
+        self.the_email = an_email_address()
+        self.the_url = a_website_address()
+        self.the_number = a_phone_number()
+        self.the_second_number = a_phone_number()
+        self.the_type = a_string()
+        self.the_phone_description = a_string()
+        self.the_latitude = a_latitude()
+        self.the_longitude = a_longitude()
+        self.the_address_line = a_string()
+        self.the_city_line = a_string()
+        self.the_province = a_string()
+        self.the_postal_code = a_string()
+        self.the_country = a_string()
+        self.the_first_service_id = a_string()
+        self.the_first_service_name = a_string()
+        self.the_first_service_address = a_string()
+        self.the_first_service_phone_number = a_phone_number()
+        self.the_second_service_id = a_string()
+        self.the_second_service_name = a_string()
+        self.the_second_service_address = a_string()
+        self.the_second_service_phone_number = a_phone_number()
         data = (Bc211CsvDataBuilder().
                 as_organization().
-                with_field('ResourceAgencyNum', the_organization_id).
-                with_field('PublicName', the_organization_name).
-                with_field('AlternateName', the_alternate_name).
-                with_field('AgencyDescription', the_description).
-                with_field('EmailAddressMain', the_email).
-                with_field('WebsiteAddress', the_url).
-                with_field('Phone1Number', the_number).
-                with_field('Phone1Type', the_type).
-                with_field('Phone1Name', the_phone_description).
-                with_field('Phone2Number', the_second_number).
-                with_field('Latitude', str(the_latitude)).
-                with_field('Longitude', str(the_longitude)).
-                with_field('MailingAddress1', the_address_line).
-                with_field('MailingCity', the_city_line).
-                with_field('MailingStateProvince', the_province).
-                with_field('MailingPostalCode', the_postal_code).
-                with_field('MailingCountry', the_country).
+                with_field('ResourceAgencyNum', self.the_organization_id).
+                with_field('PublicName', self.the_organization_name).
+                with_field('AlternateName', self.the_alternate_name).
+                with_field('AgencyDescription', self.the_description).
+                with_field('EmailAddressMain', self.the_email).
+                with_field('WebsiteAddress', self.the_url).
+                with_field('Phone1Number', self.the_number).
+                with_field('Phone1Type', self.the_type).
+                with_field('Phone1Name', self.the_phone_description).
+                with_field('Phone2Number', self.the_second_number).
+                with_field('Latitude', str(self.the_latitude)).
+                with_field('Longitude', str(self.the_longitude)).
+                with_field('MailingAddress1', self.the_address_line).
+                with_field('MailingCity', self.the_city_line).
+                with_field('MailingStateProvince', self.the_province).
+                with_field('MailingPostalCode', self.the_postal_code).
+                with_field('MailingCountry', self.the_country).
                 next_row().
                 as_service().
-                with_field('ResourceAgencyNum', the_first_service_id).
-                with_field('ParentAgencyNum', the_organization_id).
-                with_field('PublicName', the_first_service_name).
-                with_field('MailingAddress1', the_first_service_address).
-                with_field('Phone1Number', the_first_service_phone_number).
+                with_field('ResourceAgencyNum', self.the_first_service_id).
+                with_field('ParentAgencyNum', self.the_organization_id).
+                with_field('PublicName', self.the_first_service_name).
+                with_field('MailingAddress1', self.the_first_service_address).
+                with_field('Phone1Number', self.the_first_service_phone_number).
                 next_row().
                 as_service().
-                with_field('ResourceAgencyNum', the_second_service_id).
-                with_field('ParentAgencyNum', the_organization_id).
-                with_field('PublicName', the_second_service_name).
-                with_field('MailingAddress1', the_second_service_address).
-                with_field('Phone1Number', the_second_service_phone_number).
+                with_field('ResourceAgencyNum', self.the_second_service_id).
+                with_field('ParentAgencyNum', self.the_organization_id).
+                with_field('PublicName', self.the_second_service_name).
+                with_field('MailingAddress1', self.the_second_service_address).
+                with_field('Phone1Number', self.the_second_service_phone_number).
                 build())
-        parsed_data = parse(TestDataSink(), data)
+        self.parsed_data = parse(TestDataSink(), data)
 
-        self.assertEqual(len(parsed_data.organizations), 1)
-        self.assertEqual(parsed_data.first_organization()['id'], the_organization_id)
-        self.assertEqual(parsed_data.first_organization()['name'], the_organization_name)
-        self.assertEqual(parsed_data.first_organization()['alternate_name'], the_alternate_name)
-        self.assertEqual(parsed_data.first_organization()['description'], the_description)
-        self.assertEqual(parsed_data.first_organization()['email'], the_email)
-        self.assertEqual(parsed_data.first_organization()['url'], the_url)
+    def test_foo(self):
+        self.assertEqual(len(self.parsed_data.organizations), 1)
+        self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
+        self.assertEqual(self.parsed_data.first_organization()['name'], self.the_organization_name)
+        self.assertEqual(self.parsed_data.first_organization()['alternate_name'], self.the_alternate_name)
+        self.assertEqual(self.parsed_data.first_organization()['description'], self.the_description)
+        self.assertEqual(self.parsed_data.first_organization()['email'], self.the_email)
+        self.assertEqual(self.parsed_data.first_organization()['url'], self.the_url)
 
-        self.assertEqual(len(parsed_data.services), 2)
-        self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
-        self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)
+        self.assertEqual(len(self.parsed_data.services), 2)
+        self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
+        self.assertEqual(self.parsed_data.services[1]['id'], self.the_second_service_id)
 
-        self.assertEqual(len(parsed_data.services_at_location), 2)
+        self.assertEqual(len(self.parsed_data.services_at_location), 2)
 
-        self.assertEqual(len(parsed_data.phone_numbers), 4)
-        self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
-        self.assertEqual(parsed_data.first_phone_number()['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.first_phone_number()['type'], the_type)
-        self.assertEqual(parsed_data.first_phone_number()['description'], the_phone_description)
-        self.assertEqual(parsed_data.phone_numbers[1]['number'], the_second_number)
+        self.assertEqual(len(self.parsed_data.phone_numbers), 4)
+        self.assertEqual(self.parsed_data.first_phone_number()['number'], self.the_number)
+        self.assertEqual(self.parsed_data.first_phone_number()['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.first_phone_number()['type'], self.the_type)
+        self.assertEqual(self.parsed_data.first_phone_number()['description'], self.the_phone_description)
+        self.assertEqual(self.parsed_data.phone_numbers[1]['number'], self.the_second_number)
 
-        the_location_id_for_now = compute_hash(the_organization_name)
-        self.assertEqual(len(parsed_data.locations), 3)  # TODO this is not right
-        self.assertEqual(parsed_data.first_location()['id'], the_location_id_for_now)
-        self.assertEqual(parsed_data.first_location()['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.first_location()['name'], the_organization_name)
-        self.assertEqual(parsed_data.first_location()['alternate_name'], the_alternate_name)
-        self.assertEqual(parsed_data.first_location()['latitude'], the_latitude)
-        self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
+        self.the_location_id_for_now = compute_hash(self.the_organization_name)
+        self.assertEqual(len(self.parsed_data.locations), 3)  # TODO this is not right
+        self.assertEqual(self.parsed_data.first_location()['id'], self.the_location_id_for_now)
+        self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
+        self.assertEqual(self.parsed_data.first_location()['name'], self.the_organization_name)
+        self.assertEqual(self.parsed_data.first_location()['alternate_name'], self.the_alternate_name)
+        self.assertEqual(self.parsed_data.first_location()['latitude'], self.the_latitude)
+        self.assertEqual(self.parsed_data.first_location()['longitude'], self.the_longitude)
 
-        self.assertEqual(len(parsed_data.addresses), 6)  # TODO this should be 3
-        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
-        self.assertEqual(parsed_data.first_address()['city'], the_city_line)
-        self.assertEqual(parsed_data.first_address()['state_province'], the_province)
-        self.assertEqual(parsed_data.first_address()['postal_code'], the_postal_code)
-        self.assertEqual(parsed_data.first_address()['country'], the_country)
+        self.assertEqual(len(self.parsed_data.addresses), 6)  # TODO this should be 3
+        self.assertEqual(self.parsed_data.first_address()['address_1'], self.the_address_line)
+        self.assertEqual(self.parsed_data.first_address()['city'], self.the_city_line)
+        self.assertEqual(self.parsed_data.first_address()['state_province'], self.the_province)
+        self.assertEqual(self.parsed_data.first_address()['postal_code'], self.the_postal_code)
+        self.assertEqual(self.parsed_data.first_address()['country'], self.the_country)
 
-        self.assertEqual(parsed_data.services[0]['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
+        self.assertEqual(self.parsed_data.services[0]['organization_id'], self.the_organization_id)
+        self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
 
-        self.assertEqual(parsed_data.locations[0]['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.locations[1]['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.locations[2]['organization_id'], the_organization_id)
+        self.assertEqual(self.parsed_data.locations[0]['organization_id'], self.the_organization_id)
+        self.assertEqual(self.parsed_data.locations[1]['organization_id'], self.the_organization_id)
+        self.assertEqual(self.parsed_data.locations[2]['organization_id'], self.the_organization_id)
 
-        self.assertEqual(parsed_data.phone_numbers[0]['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.phone_numbers[1]['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.phone_numbers[2]['location_id'], compute_hash(the_first_service_name))
-        self.assertEqual(parsed_data.phone_numbers[3]['location_id'], compute_hash(the_second_service_name))
+        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], compute_hash(self.the_second_service_name))
 
-        self.assertEqual(parsed_data.addresses[0]['location_id'], the_location_id_for_now)
-        self.assertEqual(parsed_data.addresses[1]['location_id'], the_location_id_for_now)
-        the_location_id_for_now = compute_hash(the_first_service_name)
-        self.assertEqual(parsed_data.addresses[2]['location_id'], the_location_id_for_now)
-        self.assertEqual(parsed_data.addresses[3]['location_id'], the_location_id_for_now)
-        the_location_id_for_now = compute_hash(the_second_service_name)
-        self.assertEqual(parsed_data.addresses[4]['location_id'], the_location_id_for_now)
-        self.assertEqual(parsed_data.addresses[5]['location_id'], the_location_id_for_now)
+        self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.the_location_id_for_now)
+        self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.the_location_id_for_now)
+        self.the_location_id_for_now = compute_hash(self.the_first_service_name)
+        self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.the_location_id_for_now)
+        self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.the_location_id_for_now)
+        self.the_location_id_for_now = compute_hash(self.the_second_service_name)
+        self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.the_location_id_for_now)
+        self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.the_location_id_for_now)
 
         # ids for organizations,
-        self.assertEqual(parsed_data.first_organization()['id'], the_organization_id)
+        self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
         # locations,
-        the_location_id_for_now = compute_hash(the_organization_name)
-        self.assertEqual(parsed_data.first_location()['id'], the_location_id_for_now)
+        self.the_location_id_for_now = compute_hash(self.the_organization_name)
+        self.assertEqual(self.parsed_data.first_location()['id'], self.the_location_id_for_now)
         # phone numbers,
-        self.assertGreater(len(parsed_data.first_phone_number()['id']), 0)
+        self.assertGreater(len(self.parsed_data.first_phone_number()['id']), 0)
         # addresses,
-        self.assertGreater(len(parsed_data.first_address()['id']), 0)
+        self.assertGreater(len(self.parsed_data.first_address()['id']), 0)
         # services,
-        self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
-        self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)
+        self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
+        self.assertEqual(self.parsed_data.services[1]['id'], self.the_second_service_id)
         # service@location
-        self.assertGreater(len(parsed_data.services_at_location[0]['id']), 0)
+        self.assertGreater(len(self.parsed_data.services_at_location[0]['id']), 0)
 
         # location -> organization
-        self.assertEqual(parsed_data.first_location()['organization_id'], the_organization_id)
+        self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
         # phone -> location
-        self.assertEqual(parsed_data.phone_numbers[0]['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.phone_numbers[1]['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.phone_numbers[2]['location_id'], compute_hash(the_first_service_name))
-        self.assertEqual(parsed_data.phone_numbers[3]['location_id'], compute_hash(the_second_service_name))
+        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], compute_hash(self.the_second_service_name))
         # address (both kinds) -> location
-        self.assertEqual(parsed_data.addresses[0]['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.addresses[1]['location_id'], compute_hash(the_organization_name))
-        self.assertEqual(parsed_data.addresses[2]['location_id'], compute_hash(the_first_service_name))
-        self.assertEqual(parsed_data.addresses[3]['location_id'], compute_hash(the_first_service_name))
-        self.assertEqual(parsed_data.addresses[4]['location_id'], compute_hash(the_second_service_name))
-        self.assertEqual(parsed_data.addresses[5]['location_id'], compute_hash(the_second_service_name))
+        self.assertEqual(self.parsed_data.addresses[0]['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.addresses[1]['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.addresses[2]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.addresses[3]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.addresses[4]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.addresses[5]['location_id'], compute_hash(self.the_second_service_name))
         # service -> organization
-        self.assertEqual(parsed_data.first_service()['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
+        self.assertEqual(self.parsed_data.first_service()['organization_id'], self.the_organization_id)
+        self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
         # service -> location
         # location -> service
-        self.assertEqual(parsed_data.services_at_location[0]['location_id'], compute_hash(the_first_service_name))
-        self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_first_service_id)
-        self.assertEqual(parsed_data.services_at_location[1]['location_id'], compute_hash(the_second_service_name))
-        self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_second_service_id)
-
-
-    def xxx_test_one_service_can_be_offered_at_two_locations(self):
-        the_address = a_string()
-        the_city = a_string()
-        the_country = a_string()
-        the_latitude = str(a_float())
-        the_longitude = str(a_float())
-
-        the_address_id = compute_hash(the_address, the_city, the_country)
-        the_location_id = compute_hash(the_address, the_city, the_country, the_latitude, the_longitude)
-
-        the_first_service_id = a_string()
-        the_second_service_id = a_string()
-
-        data = (Bc211CsvDataBuilder().
-                as_service().with_field('ResourceAgencyNum', the_first_service_id).
-                with_field('MailingAddress1', the_address).
-                with_field('MailingCity', the_city).
-                with_field('MailingCountry', the_country).
-                with_field('Latitude', the_latitude).
-                with_field('Longitude', the_longitude).
-                next_row().
-                as_service().with_field('ResourceAgencyNum', the_second_service_id).
-                with_field('MailingAddress1', the_address).
-                with_field('MailingCity', the_city).
-                with_field('MailingCountry', the_country).
-                with_field('Latitude', the_latitude).
-                with_field('Longitude', the_longitude).
-                build())
-        self.assertEqual(data, 'hey')
-        parsed_data = parse(TestDataSink(), data)
-
-        self.assertEqual(len(parsed_data.addresses), 1)
-        self.assertEqual(parsed_data.addresses[0].id, the_address_id)
-
-        self.assertEqual(len(parsed_data.locations), 1)
-        self.assertEqual(parsed_data.first_location.id, the_location_id)
-
-        self.assertEqual(len(parsed_data.services), 2)
-        self.assertEqual(parsed_data.services[0].id, the_first_service_id)
-        self.assertEqual(parsed_data.services[1].id, the_second_service_id)
-
-        self.assertEqual(len(parsed_data.services_at_location), 2)
-        self.assertEqual(parsed_data.services_at_location[0].service_id, the_first_service_id)
-        self.assertEqual(parsed_data.services_at_location[0].location_id, the_location_id)
-        self.assertEqual(parsed_data.services_at_location[1].service_id, the_second_service_id)
-        self.assertEqual(parsed_data.services_at_location[1].location_id, the_location_id)
+        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
+        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
 
 
 class ParseAddressTests(TestCase):
