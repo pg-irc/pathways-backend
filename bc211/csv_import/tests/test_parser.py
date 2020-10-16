@@ -267,6 +267,7 @@ class ParseLocationsTests(TestCase):
 
 
 class ServicesAtLocationTests(TestCase):
+    # TODO make this test have only one of each entity, test one-to-many relations in separate tests
     def test_foo(self):
         the_organization_id = a_string()
         the_organization_name = a_string()
@@ -405,6 +406,12 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.phone_numbers[2]['location_id'], compute_hash(the_first_service_name))
         self.assertEqual(parsed_data.phone_numbers[3]['location_id'], compute_hash(the_second_service_name))
         # address (both kinds) -> location
+        self.assertEqual(parsed_data.addresses[0]['location_id'], compute_hash(the_organization_name))
+        self.assertEqual(parsed_data.addresses[1]['location_id'], compute_hash(the_organization_name))
+        self.assertEqual(parsed_data.addresses[2]['location_id'], compute_hash(the_first_service_name))
+        self.assertEqual(parsed_data.addresses[3]['location_id'], compute_hash(the_first_service_name))
+        self.assertEqual(parsed_data.addresses[4]['location_id'], compute_hash(the_second_service_name))
+        self.assertEqual(parsed_data.addresses[5]['location_id'], compute_hash(the_second_service_name))
         # service -> organization
         self.assertEqual(parsed_data.first_service()['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
