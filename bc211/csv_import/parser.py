@@ -54,10 +54,7 @@ def parse(sink, lines):
         sink.write_addresses(addresses)
         phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
-            if is_organization:
-                phone_numbers[i]['organization_id'] = organization_or_service['id']
-            else:
-                phone_numbers[i]['service_id'] = organization_or_service['id']
+            phone_numbers[i]['location_id'] = location['id']
         sink.write_phone_numbers(phone_numbers)
     return sink
 

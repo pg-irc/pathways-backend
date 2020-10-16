@@ -141,27 +141,33 @@ class ParsePhoneNumbersTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
 
-    def test_sets_organization_id_on_phone_number_record(self):
+    def test_sets_location_id_on_phone_number_record_for_organization(self):
         the_number = a_phone_number()
+        the_name = a_string()
         the_organization_id = a_string()
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('ResourceAgencyNum', the_organization_id).
+                with_field('PublicName', the_name).
                 with_field('Phone1Number', the_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_phone_number()['organization_id'], the_organization_id)
+        location_id = compute_hash(the_name)
+        self.assertEqual(parsed_data.first_phone_number()['location_id'], location_id)
 
-    def test_sets_service_id_on_phone_number_record(self):
+    def test_sets_location_id_on_phone_number_record_for_service(self):
         the_number = a_phone_number()
+        the_name = a_string()
         the_service_id = a_string()
         data = (Bc211CsvDataBuilder().
                 as_service().
+                with_field('PublicName', the_name).
                 with_field('ResourceAgencyNum', the_service_id).
                 with_field('Phone1Number', the_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_phone_number()['service_id'], the_service_id)
+        the_location_id = compute_hash(the_name)
+        self.assertEqual(parsed_data.first_phone_number()['location_id'], the_location_id)
 
     def test_can_parse_organization_phone_number_type(self):
         the_type = a_string()
@@ -337,7 +343,7 @@ class ServicesAtLocationTests(TestCase):
 
         self.assertEqual(len(parsed_data.phone_numbers), 4)
         self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
-        self.assertEqual(parsed_data.first_phone_number()['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.first_phone_number()['location_id'], compute_hash(the_organization_name))
         self.assertEqual(parsed_data.first_phone_number()['type'], the_type)
         self.assertEqual(parsed_data.first_phone_number()['description'], the_phone_description)
         self.assertEqual(parsed_data.phone_numbers[1]['number'], the_second_number)
@@ -365,10 +371,10 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.locations[1]['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.locations[2]['organization_id'], the_organization_id)
 
-        self.assertEqual(parsed_data.phone_numbers[0]['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.phone_numbers[1]['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.phone_numbers[2]['service_id'], the_first_service_id)
-        self.assertEqual(parsed_data.phone_numbers[3]['service_id'], the_second_service_id)
+        self.assertEqual(parsed_data.phone_numbers[0]['location_id'], compute_hash(the_organization_name))
+        self.assertEqual(parsed_data.phone_numbers[1]['location_id'], compute_hash(the_organization_name))
+        self.assertEqual(parsed_data.phone_numbers[2]['location_id'], compute_hash(the_first_service_name))
+        self.assertEqual(parsed_data.phone_numbers[3]['location_id'], compute_hash(the_second_service_name))
 
         self.assertEqual(parsed_data.addresses[0]['location_id'], the_location_id_for_now)
         self.assertEqual(parsed_data.addresses[1]['location_id'], the_location_id_for_now)
@@ -379,14 +385,32 @@ class ServicesAtLocationTests(TestCase):
         self.assertEqual(parsed_data.addresses[4]['location_id'], the_location_id_for_now)
         self.assertEqual(parsed_data.addresses[5]['location_id'], the_location_id_for_now)
 
-        # Each service has a different location
-        # Each location has an address
-        # Each location has a phone number
-
+        # ids for organizations,
+        self.assertEqual(parsed_data.first_organization()['id'], the_organization_id)
+        # locations,
+        the_location_id_for_now = compute_hash(the_organization_name)
+        self.assertEqual(parsed_data.first_location()['id'], the_location_id_for_now)
+        # phone numbers,
+        # addresses,
+        # services,
         self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
-        self.assertEqual(parsed_data.first_service()['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)
+        # service@location
+
+        # location -> organization
+        self.assertEqual(parsed_data.first_location()['organization_id'], the_organization_id)
+        # phone -> location
+        self.assertEqual(parsed_data.phone_numbers[0]['location_id'], compute_hash(the_organization_name))
+        self.assertEqual(parsed_data.phone_numbers[1]['location_id'], compute_hash(the_organization_name))
+        self.assertEqual(parsed_data.phone_numbers[2]['location_id'], compute_hash(the_first_service_name))
+        self.assertEqual(parsed_data.phone_numbers[3]['location_id'], compute_hash(the_second_service_name))
+        # address (both kinds) -> location
+        # service -> organization
+        self.assertEqual(parsed_data.first_service()['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
+        # service -> location
+        # location -> service
+
 
     def xxx_test_one_service_can_be_offered_at_two_locations(self):
         the_address = a_string()
