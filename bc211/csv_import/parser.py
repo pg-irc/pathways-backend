@@ -1,6 +1,8 @@
 import csv
 import re
 import hashlib
+import uuid
+
 
 def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
@@ -50,10 +52,12 @@ def parse(sink, lines):
             organization_or_service['organization_id'] = parent_organization_id
             sink.write_service(organization_or_service, location['id'])
         for i, item in enumerate(addresses):
+            addresses[i]['id'] = str(uuid.uuid4())
             addresses[i]['location_id'] = location['id']
         sink.write_addresses(addresses)
         phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
+            phone_numbers[i]['id'] = str(uuid.uuid4())
             phone_numbers[i]['location_id'] = location['id']
         sink.write_phone_numbers(phone_numbers)
     return sink

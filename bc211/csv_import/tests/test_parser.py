@@ -400,11 +400,14 @@ class ServicesAtLocationTests(TestCase):
         the_location_id_for_now = compute_hash(the_organization_name)
         self.assertEqual(parsed_data.first_location()['id'], the_location_id_for_now)
         # phone numbers,
+        self.assertGreater(len(parsed_data.first_phone_number()['id']), 0)
         # addresses,
+        self.assertGreater(len(parsed_data.first_address()['id']), 0)
         # services,
         self.assertEqual(parsed_data.first_service()['id'], the_first_service_id)
         self.assertEqual(parsed_data.services[1]['id'], the_second_service_id)
         # service@location
+        self.assertGreater(len(parsed_data.services_at_location[0]['id']), 0)
 
         # location -> organization
         self.assertEqual(parsed_data.first_location()['organization_id'], the_organization_id)
