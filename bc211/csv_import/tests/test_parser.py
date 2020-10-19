@@ -453,12 +453,49 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
 
 
-class HumanServiceManyToOneRelationshipsTests(TestCase):
-    # one org with two locations
-    # one org with two services
+class HumanServiceOneToManyRelationshipsTests(TestCase):
+    def test_an_organization_with_two_locations(self):
+        the_organization_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', the_organization_id).
+                with_field('MailingAddress1', a_string()).
+                with_field('MailingCity', a_string()).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', a_string()).
+                with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', a_string()).
+                with_field('MailingCity', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+
+        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(parsed_data.locations[0]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.locations[1]['organization_id'], the_organization_id)
+
+    def test_an_organization_with_two_services(self):
+        the_organization_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', the_organization_id).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', a_string()).
+                with_field('ParentAgencyNum', the_organization_id).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', a_string()).
+                with_field('ParentAgencyNum', the_organization_id).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+
+        self.assertEqual(len(parsed_data.services), 2)
+        self.assertEqual(parsed_data.services[0]['organization_id'], the_organization_id)
+        self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
+
     # one location with two services
     # one service with two locations
-    # one location with two (or five) phone numbers
     def test_a_location_can_have_five_phone_numbers(self):
         # Phone numbers uniquely identified by their phone number field
         # Addresses uniquely identified by their address fields
@@ -504,7 +541,7 @@ class HumanServiceManyToOneRelationshipsTests(TestCase):
         self.assertEqual(len(parsed_data.phone_numbers), 1)
         self.assertEqual(parsed_data.phone_numbers[0]['number'], the_phone_number)
 
-    # two locations with the same phone number (for argument's sake) have to phone number records
+    # two locations with the same phone number (for argument's sake) have two phone number records
     # one location with two addresses (postal and street)
     # one address with two locations
 
