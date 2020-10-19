@@ -14,6 +14,7 @@ def parse(sink, lines):
         location = {}
         addresses = [{}, {}]
         phone_numbers = [{}]
+        phone_ids = {}
         if not row:
             continue
         for header, value in zip(headers, row):
@@ -55,11 +56,14 @@ def parse(sink, lines):
             addresses[i]['id'] = str(uuid.uuid4())
             addresses[i]['location_id'] = location['id']
         sink.write_addresses(addresses)
-        phone_numbers = [n for n in phone_numbers if n['number']]
         for i, item in enumerate(phone_numbers):
-            phone_numbers[i]['id'] = str(uuid.uuid4())
-            phone_numbers[i]['location_id'] = location['id']
-        sink.write_phone_numbers(phone_numbers)
+            the_id = compute_hash(item['number'])
+            if not item['number'] or the_id in phone_ids:
+                continue
+            phone_ids[the_id] = 1
+            item['id'] = the_id
+            item['location_id'] = location['id']
+            sink.write_phone_number(item)
     return sink
 
 

@@ -1,7 +1,6 @@
 import logging
-import hashlib
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_float, a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
+from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
 from bc211.csv_import.parser import compute_hash, parse, phone_header_with_index_one
 
@@ -33,8 +32,8 @@ class TestDataSink:
         self.addresses += addresses
         return self
 
-    def write_phone_numbers(self, phone_numbers):
-        self.phone_numbers += phone_numbers
+    def write_phone_number(self, phone_number):
+        self.phone_numbers.append(phone_number)
 
     def organizations(self):
         return self.organizations
@@ -453,11 +452,59 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], compute_hash(self.the_second_service_name))
         self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
 
+
+class HumanServiceManyToOneRelationshipsTests(TestCase):
     # one org with two locations
     # one org with two services
     # one location with two services
     # one service with two locations
     # one location with two (or five) phone numbers
+    def test_a_location_can_have_five_phone_numbers(self):
+        # Phone numbers uniquely identified by their phone number field
+        # Addresses uniquely identified by their address fields
+        # Locations uniquely identified by their organization id, name, phone number ids and address ids
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', a_string()).
+                with_field('MailingAddress1', a_string()).
+                with_field('Phone1Number', a_phone_number()).
+                with_field('Phone1Type', a_string()).
+                with_field('Phone2Number', a_phone_number()).
+                with_field('Phone2Type', a_string()).
+                with_field('Phone3Number', a_phone_number()).
+                with_field('Phone3Type', a_string()).
+                with_field('Phone4Number', a_phone_number()).
+                with_field('Phone4Type', a_string()).
+                with_field('Phone5Number', a_phone_number()).
+                with_field('Phone5Type', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+
+        self.assertEqual(len(parsed_data.phone_numbers), 5)
+        the_location_id = parsed_data.first_location()['id']
+        self.assertEqual(parsed_data.phone_numbers[0]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.phone_numbers[1]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.phone_numbers[2]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.phone_numbers[3]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.phone_numbers[4]['location_id'], the_location_id)
+
+    def test_duplicate_phone_numbers_are_removed(self):
+        the_phone_number = a_phone_number()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', a_string()).
+                with_field('MailingAddress1', a_string()).
+                with_field('Phone1Number', the_phone_number).
+                with_field('Phone1Type', a_string()).
+                with_field('Phone2Number', the_phone_number).
+                with_field('Phone2Type', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+
+        self.assertEqual(len(parsed_data.phone_numbers), 1)
+        self.assertEqual(parsed_data.phone_numbers[0]['number'], the_phone_number)
+
+    # two locations with the same phone number (for argument's sake) have to phone number records
     # one location with two addresses (postal and street)
     # one address with two locations
 
