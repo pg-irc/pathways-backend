@@ -13,7 +13,7 @@ def parse(sink, lines):
         is_organization = False
         parent_organization_id = None
         location = {}
-        addresses = [{'type': 'postal_address'}, {'type': 'physical_address'}]
+        addresses = [{}, {}]
         phone_numbers = [{}]
         phone_ids = {}
         if not row:
@@ -42,6 +42,7 @@ def parse(sink, lines):
             if output_address_header:
                 index = 1 if is_physical_address_type else 0
                 addresses[index][output_address_header] = value
+                addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
         location['id'] = compute_location_id(location, addresses, phone_numbers)
@@ -55,6 +56,8 @@ def parse(sink, lines):
             organization_or_service['organization_id'] = parent_organization_id
             sink.write_service(organization_or_service, location['id'])
         for i, item in enumerate(addresses):
+            if not addresses[i]:
+                continue
             addresses[i]['id'] = str(uuid.uuid4())
             addresses[i]['location_id'] = location['id']
             sink.write_address(addresses[i])

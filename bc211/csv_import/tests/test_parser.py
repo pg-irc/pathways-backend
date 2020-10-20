@@ -1,5 +1,4 @@
 import logging
-import json
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
@@ -147,34 +146,6 @@ class ParsePhoneNumbersTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_phone_number()['number'], the_number)
 
-    def test_sets_location_id_on_phone_number_record_for_organization(self):
-        the_number = a_phone_number()
-        the_name = a_string()
-        the_organization_id = a_string()
-        data = (Bc211CsvDataBuilder().
-                as_organization().
-                with_field('ResourceAgencyNum', the_organization_id).
-                with_field('PublicName', the_name).
-                with_field('Phone1Number', the_number).
-                build())
-        parsed_data = parse(TestDataSink(), data)
-        location_id = parsed_data.first_location()['id']
-        self.assertEqual(parsed_data.first_phone_number()['location_id'], location_id)
-
-    def test_sets_location_id_on_phone_number_record_for_service(self):
-        the_number = a_phone_number()
-        the_name = a_string()
-        the_service_id = a_string()
-        data = (Bc211CsvDataBuilder().
-                as_service().
-                with_field('PublicName', the_name).
-                with_field('ResourceAgencyNum', the_service_id).
-                with_field('Phone1Number', the_number).
-                build())
-        parsed_data = parse(TestDataSink(), data)
-        the_location_id = parsed_data.first_location()['id']
-        self.assertEqual(parsed_data.first_phone_number()['location_id'], the_location_id)
-
     def test_can_parse_organization_phone_number_type(self):
         the_type = a_string()
         data = (Bc211CsvDataBuilder().
@@ -223,7 +194,6 @@ class ParsePhoneNumbersTests(TestCase):
 
 
 class ParseLocationsTests(TestCase):
-
     def test_parses_organization_name_as_location_name(self):
         the_name = a_string()
         data = (Bc211CsvDataBuilder().
@@ -241,15 +211,6 @@ class ParseLocationsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['alternate_name'], the_alternate_name)
-
-    def test_sets_organization_id_on_parsed_location(self):
-        the_id = a_string()
-        data = (Bc211CsvDataBuilder().
-                as_organization().
-                with_field('ResourceAgencyNum', the_id).
-                build())
-        parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_location()['organization_id'], the_id)
 
     def test_parse_location_latitude(self):
         the_latitude = a_latitude()
@@ -269,11 +230,8 @@ class ParseLocationsTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_location()['longitude'], the_longitude)
 
-    # Need the test to show that one service can have >1 locations, and each location can have >1 service
-
 
 class ParseCompleteRecordTests(TestCase):
-    # TODO remove tests that have to do with computed id values, restrict to just parsed values
     def setUp(self):
         self.the_organization_id = a_string()
         self.the_organization_name = a_string()
@@ -351,39 +309,25 @@ class ParseCompleteRecordTests(TestCase):
         self.assertEqual(self.parsed_data.first_location()['longitude'], self.the_longitude)
 
     def test_address_fields(self):
-        self.assertEqual(len(self.parsed_data.addresses), 4)  # because each record creates a post and a physical address
+        self.assertEqual(len(self.parsed_data.addresses), 2)
         self.assertEqual(self.parsed_data.first_address()['address_1'], self.the_address_line)
         self.assertEqual(self.parsed_data.first_address()['city'], self.the_city_line)
         self.assertEqual(self.parsed_data.first_address()['state_province'], self.the_province)
         self.assertEqual(self.parsed_data.first_address()['postal_code'], self.the_postal_code)
         self.assertEqual(self.parsed_data.first_address()['country'], self.the_country)
 
-    def test_organization_id_set_on_service(self):
-        self.assertEqual(self.parsed_data.services[0]['organization_id'], self.the_organization_id)
-
-    def test_organization_id_set_on_location(self):
-        self.assertEqual(self.parsed_data.locations[0]['organization_id'], self.the_organization_id)
-        self.assertEqual(self.parsed_data.locations[1]['organization_id'], self.the_organization_id)
-
-    def test_id_set_on_organization(self):
-        self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
-
-    def test_id_set_on_service(self):
-        self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
-
     def test_synthetic_keys_are_not_empty(self):
         self.assertGreater(len(self.parsed_data.first_phone_number()['id']), 0)
         self.assertGreater(len(self.parsed_data.first_address()['id']), 0)
         self.assertGreater(len(self.parsed_data.services_at_location[0]['id']), 0)
 
-    def test_organization_id_on_location(self):
-        self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
 
-    def test_organization_ids_on_services(self):
-        self.assertEqual(self.parsed_data.first_service()['organization_id'], self.the_organization_id)
+class ParseTaxonomyTests(TestCase):
+    def test_foo(self):
+        pass
 
-
-class LocationIdTests(TestCase):
+    
+class AreTwoLocationsConsideredDuplicateTests(TestCase):
     # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
     # Downstream: address and phone number. Name is taken from owning service or organization, so should be exluded
     # So changes in these alter id: lat, long, phone number hash, postal address hash, physical address hash
@@ -547,8 +491,7 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
         self.assertEqual(parsed_data.services[0]['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
 
-    # one location with two services
-    def xxx_test_location_with_two_services(self):
+    def test_location_with_two_services(self):
         the_organization_id = a_string()
         the_address_line = a_string()
         the_city_line = a_string()
@@ -582,17 +525,55 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
 
-        the_first_location_id = parsed_data.locations[0]['id']
-        the_second_location_id = parsed_data.locations[1]['id']
+        the_location_id = parsed_data.first_location()['id']
 
         self.assertEqual(len(parsed_data.services_at_location), 2)
         self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_first_service_id)
         self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_second_service_id)
-        self.assertEqual(parsed_data.services_at_location[0]['location_id'], the_first_location_id)
-        self.assertEqual(parsed_data.services_at_location[1]['location_id'], the_second_location_id)
+        self.assertEqual(parsed_data.services_at_location[0]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.services_at_location[1]['location_id'], the_location_id)
 
+    def test_service_at_two_locations(self):
+        the_organization_id = a_string()
+        the_address_line = a_string()
+        the_city_line = a_string()
+        the_province = a_string()
+        the_service_id = a_string()
+        the_service_name = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', the_service_id).
+                with_field('PublicName', the_service_name).
+                with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', the_service_id).
+                with_field('PublicName', the_service_name).
+                with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', a_string()).
+                with_field('MailingCity', a_string()).
+                with_field('MailingStateProvince', a_string()).
+                build())
 
-    # one service with two locations
+        parsed_data = parse(TestDataSink(), data)
+        first_location_id = parsed_data.locations[0]['id']
+        second_location_id = parsed_data.locations[1]['id']
+
+        self.assertEqual(len(parsed_data.services_at_location), 2)
+        self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_service_id)
+        self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_service_id)
+        self.assertEqual(parsed_data.services_at_location[0]['location_id'], first_location_id)
+        self.assertEqual(parsed_data.services_at_location[1]['location_id'], second_location_id)
+
     def test_a_location_can_have_five_phone_numbers(self):
         data = (Bc211CsvDataBuilder().
                 as_organization().
@@ -636,10 +617,73 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
         self.assertEqual(parsed_data.phone_numbers[0]['number'], the_phone_number)
 
     # two locations with the same phone number (for argument's sake) have two phone number records
-    # one location with two addresses (postal and street)
-    # one address with two locations
-    # duplicate addresses are removed
-    # duplicate locations are removed
+    def test_one_location_with_postal_and_physical_address(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', a_string()).
+                with_field('PublicName', a_string()).
+                with_field('AlternateName', a_string()).
+                with_field('EmailAddressMain', an_email_address()).
+                with_field('MailingAddress1', a_string()).
+                with_field('MailingAddress2', a_string()).
+                with_field('MailingAddress3', a_string()).
+                with_field('MailingAddress4', a_string()).
+                with_field('MailingCity', a_string()).
+                with_field('MailingStateProvince', a_string()).
+                with_field('MailingPostalCode', a_string()).
+                with_field('MailingCountry', a_string()).
+                with_field('PhysicalAddress1', a_string()).
+                with_field('PhysicalAddress2', a_string()).
+                with_field('PhysicalAddress3', a_string()).
+                with_field('PhysicalAddress4', a_string()).
+                with_field('PhysicalCity', a_string()).
+                with_field('PhysicalStateProvince', a_string()).
+                with_field('PhysicalPostalCode', a_string()).
+                with_field('PhysicalCountry', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        the_location_id = parsed_data.locations[0]['id']
+
+        self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertEqual(parsed_data.addresses[0]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.addresses[1]['location_id'], the_location_id)
+
+    def test_two_locations_with_the_same_address(self):
+        the_organization_id = a_string()
+        the_address_line = a_string()
+        the_city_line = a_string()
+        the_province = a_string()
+        the_postal_code = a_string()
+        the_country = a_string()
+        the_first_service_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', the_organization_id).
+                with_field('Latitude', str(a_latitude())).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                with_field('MailingPostalCode', the_postal_code).
+                with_field('MailingCountry', the_country).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', the_first_service_id).
+                with_field('ParentAgencyNum', the_organization_id).
+                with_field('Latitude', str(a_latitude())).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                with_field('MailingPostalCode', the_postal_code).
+                with_field('MailingCountry', the_country).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        the_first_location_id = parsed_data.locations[0]['id']
+        the_second_location_id = parsed_data.locations[1]['id']
+
+        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertEqual(parsed_data.addresses[0]['location_id'], the_first_location_id)
+        self.assertEqual(parsed_data.addresses[1]['location_id'], the_second_location_id)
     # Phone numbers uniquely identified by their phone number field
     # Addresses uniquely identified by their address fields
     # Locations uniquely identified by their organization id, name, phone number ids and address ids
@@ -713,7 +757,7 @@ class ParseAddressTests(TestCase):
                 with_field('PhysicalAddress1', the_address_line).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.second_address()['address_1'], the_address_line)
+        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
 
     def test_marks_physical_address_as_physical(self):
         data = (Bc211CsvDataBuilder().
@@ -721,7 +765,7 @@ class ParseAddressTests(TestCase):
                 with_field('PhysicalAddress1', a_string()).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.second_address()['type'], 'physical_address')
+        self.assertEqual(parsed_data.first_address()['type'], 'physical_address')
 
     def test_marks_postal_address_as_postal(self):
         data = (Bc211CsvDataBuilder().

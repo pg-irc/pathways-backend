@@ -58,6 +58,7 @@ def a_list_of_integers(length=3):
 def a_phone_number(dummy_number='xxx-xxx-xxxx'):
     return ''.join([random.choice(string.digits) if char == 'x' else char for char in dummy_number])
 
+
 def a_date():
     rand_delta = random.randint(0, 1e9)
     now = datetime.timestamp(datetime.now())
