@@ -273,6 +273,7 @@ class ParseLocationsTests(TestCase):
 
 class HumanServiceEntityRelationsTests(TestCase):
     # TODO make this test have only one of each entity, test one-to-many relations in separate tests
+    # TODO remove tests that have to do with computed id values, restrict to just parsed values
     def setUp(self):
         self.the_organization_id = a_string()
         self.the_organization_name = a_string()
@@ -351,23 +352,21 @@ class HumanServiceEntityRelationsTests(TestCase):
 
     def test_services_at_location(self):
         self.assertEqual(len(self.parsed_data.services_at_location), 2)
-        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], self.parsed_data.locations[1]['id'])
         self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
-        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], self.parsed_data.locations[2]['id'])
         self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
 
     def test_phone_number_fields(self):
         self.assertEqual(len(self.parsed_data.phone_numbers), 4)
         self.assertEqual(self.parsed_data.first_phone_number()['number'], self.the_number)
-        self.assertEqual(self.parsed_data.first_phone_number()['location_id'], compute_hash(self.the_organization_name))
+        self.assertEqual(self.parsed_data.first_phone_number()['location_id'], self.parsed_data.first_location()['id'])
         self.assertEqual(self.parsed_data.first_phone_number()['type'], self.the_type)
         self.assertEqual(self.parsed_data.first_phone_number()['description'], self.the_phone_description)
         self.assertEqual(self.parsed_data.phone_numbers[1]['number'], self.the_second_number)
 
     def test_location_fields(self):
-        self.the_location_id_for_now = compute_hash(self.the_organization_name)
         self.assertEqual(len(self.parsed_data.locations), 3)  # TODO this is not right
-        self.assertEqual(self.parsed_data.first_location()['id'], self.the_location_id_for_now)
         self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.first_location()['name'], self.the_organization_name)
         self.assertEqual(self.parsed_data.first_location()['alternate_name'], self.the_alternate_name)
@@ -393,28 +392,21 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.locations[2]['organization_id'], self.the_organization_id)
 
     def test_location_id_set_on_phone_numbers(self):
-        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], compute_hash(self.the_organization_name))
-        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], compute_hash(self.the_organization_name))
-        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], compute_hash(self.the_first_service_name))
-        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], self.parsed_data.locations[1]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_location_id_set_on_addresses(self):
-        self.the_location_id_for_now = compute_hash(self.the_organization_name)
-        self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.the_location_id_for_now)
-        self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.the_location_id_for_now)
-        self.the_location_id_for_now = compute_hash(self.the_first_service_name)
-        self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.the_location_id_for_now)
-        self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.the_location_id_for_now)
-        self.the_location_id_for_now = compute_hash(self.the_second_service_name)
-        self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.the_location_id_for_now)
-        self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.the_location_id_for_now)
+        self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.parsed_data.locations[1]['id'])
+        self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.parsed_data.locations[1]['id'])
+        self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.parsed_data.locations[2]['id'])
+        self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_id_set_on_organization(self):
         self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
-
-    def test_id_set_on_location(self):
-        self.the_location_id_for_now = compute_hash(self.the_organization_name)
-        self.assertEqual(self.parsed_data.first_location()['id'], self.the_location_id_for_now)
 
     def test_id_set_on_service(self):
         self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
@@ -429,28 +421,74 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
 
     def test_location_ids_on_phone_numbers(self):
-        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], compute_hash(self.the_organization_name))
-        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], compute_hash(self.the_organization_name))
-        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], compute_hash(self.the_first_service_name))
-        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], self.parsed_data.locations[1]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_location_ids_on_addresses(self):
-        self.assertEqual(self.parsed_data.addresses[0]['location_id'], compute_hash(self.the_organization_name))
-        self.assertEqual(self.parsed_data.addresses[1]['location_id'], compute_hash(self.the_organization_name))
-        self.assertEqual(self.parsed_data.addresses[2]['location_id'], compute_hash(self.the_first_service_name))
-        self.assertEqual(self.parsed_data.addresses[3]['location_id'], compute_hash(self.the_first_service_name))
-        self.assertEqual(self.parsed_data.addresses[4]['location_id'], compute_hash(self.the_second_service_name))
-        self.assertEqual(self.parsed_data.addresses[5]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.parsed_data.locations[0]['id'])
+        self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.parsed_data.locations[1]['id'])
+        self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.parsed_data.locations[1]['id'])
+        self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.parsed_data.locations[2]['id'])
+        self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_organization_ids_on_services(self):
         self.assertEqual(self.parsed_data.first_service()['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
 
     def test_relations_from_services_to_locations(self):
-        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], compute_hash(self.the_first_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], self.parsed_data.locations[1]['id'])
         self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
-        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], compute_hash(self.the_second_service_name))
+        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], self.parsed_data.locations[2]['id'])
         self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
+
+class LocationIdTests(TestCase):
+    # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
+    # Downstream: address and phone number. Name is taken from owning service or organization, so should be exluded
+    # So changes in these alter id: lat, long, phone number hash, postal address hash, physical address hash
+    # Changes in these do not alter id: organization id, org name, alternate name, description
+    def setUp(self):
+        self.builder = (Bc211CsvDataBuilder().
+                        as_organization().
+                        with_field('ResourceAgencyNum', a_string()).
+                        with_field('PublicName', a_string()).
+                        with_field('AlternateName', a_string()).
+                        with_field('AgencyDescription', a_string()).
+                        with_field('EmailAddressMain', an_email_address()).
+                        with_field('WebsiteAddress', a_website_address()).
+                        with_field('Phone1Number', a_phone_number()).
+                        with_field('Phone1Type', a_string()).
+                        with_field('Phone1Name', a_string()).
+                        with_field('Phone2Number', a_phone_number()).
+                        with_field('Latitude', str(a_latitude())).
+                        with_field('Longitude', str(a_longitude())).
+                        with_field('MailingAddress1', a_string()).
+                        with_field('MailingAddress2', a_string()).
+                        with_field('MailingAddress3', a_string()).
+                        with_field('MailingAddress4', a_string()).
+                        with_field('MailingCity', a_string()).
+                        with_field('MailingStateProvince', a_string()).
+                        with_field('MailingPostalCode', a_string()).
+                        with_field('MailingCountry', a_string()))
+        self.location_id = self.get_location_id_from_builder(self.builder)
+
+    def get_location_id_from_builder(self, builder):
+        parsed_data = parse(TestDataSink(), builder.build())
+        return parsed_data.first_location()['id']
+
+    def get_location_id_with_field_set_to(self, field, value):
+        builder = self.builder.with_field(field, value)
+        return self.get_location_id_from_builder(builder)
+
+    def test_agency_id_does_not_change_location_id(self):
+        the_id = self.get_location_id_with_field_set_to('ResourceAgencyNum', a_string())
+        self.assertEqual(the_id, self.location_id)
+
+    def test_latitude_changes_location_id(self):
+        the_id = self.get_location_id_with_field_set_to('Latitude', str(a_latitude()))
+        self.assertNotEqual(the_id, self.location_id)
 
 
 class HumanServiceOneToManyRelationshipsTests(TestCase):
@@ -495,11 +533,52 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
         self.assertEqual(parsed_data.services[1]['organization_id'], the_organization_id)
 
     # one location with two services
+    def xxx_test_location_with_two_services(self):
+        the_organization_id = a_string()
+        the_address_line = a_string()
+        the_city_line = a_string()
+        the_province = a_string()
+        the_first_service_id = a_string()
+        the_first_service_name = a_string()
+        the_second_service_id = a_string()
+        the_second_service_name = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('ResourceAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', the_first_service_id).
+                with_field('PublicName', the_first_service_name).
+                with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                next_row().
+                as_service().
+                with_field('ResourceAgencyNum', the_second_service_id).
+                with_field('PublicName', the_second_service_name).
+                with_field('ParentAgencyNum', the_organization_id).
+                with_field('MailingAddress1', the_address_line).
+                with_field('MailingCity', the_city_line).
+                with_field('MailingStateProvince', the_province).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+
+        the_first_location_id = parsed_data.locations[0]['id']
+        the_second_location_id = parsed_data.locations[1]['id']
+
+        self.assertEqual(len(parsed_data.services_at_location), 2)
+        self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_first_service_id)
+        self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_second_service_id)
+        self.assertEqual(parsed_data.services_at_location[0]['location_id'], the_first_location_id)
+        self.assertEqual(parsed_data.services_at_location[1]['location_id'], the_second_location_id)
+
+
     # one service with two locations
     def test_a_location_can_have_five_phone_numbers(self):
-        # Phone numbers uniquely identified by their phone number field
-        # Addresses uniquely identified by their address fields
-        # Locations uniquely identified by their organization id, name, phone number ids and address ids
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('ResourceAgencyNum', a_string()).
@@ -544,6 +623,11 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
     # two locations with the same phone number (for argument's sake) have two phone number records
     # one location with two addresses (postal and street)
     # one address with two locations
+    # duplicate addresses are removed
+    # duplicate locations are removed
+    # Phone numbers uniquely identified by their phone number field
+    # Addresses uniquely identified by their address fields
+    # Locations uniquely identified by their organization id, name, phone number ids and address ids
 
 
 class ParseAddressTests(TestCase):
