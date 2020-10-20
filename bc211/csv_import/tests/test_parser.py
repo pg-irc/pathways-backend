@@ -282,7 +282,6 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.the_email = an_email_address()
         self.the_url = a_website_address()
         self.the_number = a_phone_number()
-        self.the_second_number = a_phone_number()
         self.the_type = a_string()
         self.the_phone_description = a_string()
         self.the_latitude = a_latitude()
@@ -296,10 +295,6 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.the_first_service_name = a_string()
         self.the_first_service_address = a_string()
         self.the_first_service_phone_number = a_phone_number()
-        self.the_second_service_id = a_string()
-        self.the_second_service_name = a_string()
-        self.the_second_service_address = a_string()
-        self.the_second_service_phone_number = a_phone_number()
         data = (Bc211CsvDataBuilder().
                 as_organization().
                 with_field('ResourceAgencyNum', self.the_organization_id).
@@ -311,7 +306,6 @@ class HumanServiceEntityRelationsTests(TestCase):
                 with_field('Phone1Number', self.the_number).
                 with_field('Phone1Type', self.the_type).
                 with_field('Phone1Name', self.the_phone_description).
-                with_field('Phone2Number', self.the_second_number).
                 with_field('Latitude', str(self.the_latitude)).
                 with_field('Longitude', str(self.the_longitude)).
                 with_field('MailingAddress1', self.the_address_line).
@@ -326,13 +320,6 @@ class HumanServiceEntityRelationsTests(TestCase):
                 with_field('PublicName', self.the_first_service_name).
                 with_field('MailingAddress1', self.the_first_service_address).
                 with_field('Phone1Number', self.the_first_service_phone_number).
-                next_row().
-                as_service().
-                with_field('ResourceAgencyNum', self.the_second_service_id).
-                with_field('ParentAgencyNum', self.the_organization_id).
-                with_field('PublicName', self.the_second_service_name).
-                with_field('MailingAddress1', self.the_second_service_address).
-                with_field('Phone1Number', self.the_second_service_phone_number).
                 build())
         self.parsed_data = parse(TestDataSink(), data)
 
@@ -346,36 +333,31 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.first_organization()['url'], self.the_url)
 
     def test_service_fields(self):
-        self.assertEqual(len(self.parsed_data.services), 2)
+        self.assertEqual(len(self.parsed_data.services), 1)
         self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
-        self.assertEqual(self.parsed_data.services[1]['id'], self.the_second_service_id)
 
     def test_services_at_location(self):
-        self.assertEqual(len(self.parsed_data.services_at_location), 2)
+        self.assertEqual(len(self.parsed_data.services_at_location), 1)
         self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], self.parsed_data.locations[1]['id'])
         self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
-        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], self.parsed_data.locations[2]['id'])
-        self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
 
     def test_phone_number_fields(self):
-        self.assertEqual(len(self.parsed_data.phone_numbers), 4)
+        self.assertEqual(len(self.parsed_data.phone_numbers), 2)
         self.assertEqual(self.parsed_data.first_phone_number()['number'], self.the_number)
         self.assertEqual(self.parsed_data.first_phone_number()['location_id'], self.parsed_data.first_location()['id'])
         self.assertEqual(self.parsed_data.first_phone_number()['type'], self.the_type)
         self.assertEqual(self.parsed_data.first_phone_number()['description'], self.the_phone_description)
-        self.assertEqual(self.parsed_data.phone_numbers[1]['number'], self.the_second_number)
 
     def test_location_fields(self):
-        self.assertEqual(len(self.parsed_data.locations), 3)  # TODO this is not right
+        self.assertEqual(len(self.parsed_data.locations), 2)
         self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.first_location()['name'], self.the_organization_name)
         self.assertEqual(self.parsed_data.first_location()['alternate_name'], self.the_alternate_name)
         self.assertEqual(self.parsed_data.first_location()['latitude'], self.the_latitude)
         self.assertEqual(self.parsed_data.first_location()['longitude'], self.the_longitude)
 
-    def test_address_fiels(self):
-        self.the_location_id_for_now = compute_hash(self.the_organization_name)
-        self.assertEqual(len(self.parsed_data.addresses), 6)  # TODO this should be 3
+    def test_address_fields(self):
+        self.assertEqual(len(self.parsed_data.addresses), 4)  # because each record creates a post and a physical address
         self.assertEqual(self.parsed_data.first_address()['address_1'], self.the_address_line)
         self.assertEqual(self.parsed_data.first_address()['city'], self.the_city_line)
         self.assertEqual(self.parsed_data.first_address()['state_province'], self.the_province)
@@ -384,33 +366,26 @@ class HumanServiceEntityRelationsTests(TestCase):
 
     def test_organization_id_set_on_service(self):
         self.assertEqual(self.parsed_data.services[0]['organization_id'], self.the_organization_id)
-        self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
 
     def test_organization_id_set_on_location(self):
         self.assertEqual(self.parsed_data.locations[0]['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.locations[1]['organization_id'], self.the_organization_id)
-        self.assertEqual(self.parsed_data.locations[2]['organization_id'], self.the_organization_id)
 
     def test_location_id_set_on_phone_numbers(self):
         self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], self.parsed_data.locations[2]['id'])
+        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], self.parsed_data.locations[1]['id'])
 
     def test_location_id_set_on_addresses(self):
         self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.parsed_data.locations[0]['id'])
         self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.parsed_data.locations[0]['id'])
         self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.parsed_data.locations[1]['id'])
         self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.parsed_data.locations[2]['id'])
-        self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_id_set_on_organization(self):
         self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
 
     def test_id_set_on_service(self):
         self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
-        self.assertEqual(self.parsed_data.services[1]['id'], self.the_second_service_id)
 
     def test_synthetic_keys_are_not_empty(self):
         self.assertGreater(len(self.parsed_data.first_phone_number()['id']), 0)
@@ -422,27 +397,20 @@ class HumanServiceEntityRelationsTests(TestCase):
 
     def test_location_ids_on_phone_numbers(self):
         self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[2]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[3]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_location_ids_on_addresses(self):
         self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.parsed_data.locations[0]['id'])
         self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.parsed_data.locations[0]['id'])
         self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.parsed_data.locations[1]['id'])
         self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.addresses[4]['location_id'], self.parsed_data.locations[2]['id'])
-        self.assertEqual(self.parsed_data.addresses[5]['location_id'], self.parsed_data.locations[2]['id'])
 
     def test_organization_ids_on_services(self):
         self.assertEqual(self.parsed_data.first_service()['organization_id'], self.the_organization_id)
-        self.assertEqual(self.parsed_data.services[1]['organization_id'], self.the_organization_id)
 
     def test_relations_from_services_to_locations(self):
         self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], self.parsed_data.locations[1]['id'])
         self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
-        self.assertEqual(self.parsed_data.services_at_location[1]['location_id'], self.parsed_data.locations[2]['id'])
-        self.assertEqual(self.parsed_data.services_at_location[1]['service_id'], self.the_second_service_id)
+
 
 class LocationIdTests(TestCase):
     # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
