@@ -271,8 +271,7 @@ class ParseLocationsTests(TestCase):
     # Need the test to show that one service can have >1 locations, and each location can have >1 service
 
 
-class HumanServiceEntityRelationsTests(TestCase):
-    # TODO make this test have only one of each entity, test one-to-many relations in separate tests
+class ParseCompleteRecordTests(TestCase):
     # TODO remove tests that have to do with computed id values, restrict to just parsed values
     def setUp(self):
         self.the_organization_id = a_string()
@@ -336,15 +335,9 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(len(self.parsed_data.services), 1)
         self.assertEqual(self.parsed_data.first_service()['id'], self.the_first_service_id)
 
-    def test_services_at_location(self):
-        self.assertEqual(len(self.parsed_data.services_at_location), 1)
-        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
-
     def test_phone_number_fields(self):
         self.assertEqual(len(self.parsed_data.phone_numbers), 2)
         self.assertEqual(self.parsed_data.first_phone_number()['number'], self.the_number)
-        self.assertEqual(self.parsed_data.first_phone_number()['location_id'], self.parsed_data.first_location()['id'])
         self.assertEqual(self.parsed_data.first_phone_number()['type'], self.the_type)
         self.assertEqual(self.parsed_data.first_phone_number()['description'], self.the_phone_description)
 
@@ -371,16 +364,6 @@ class HumanServiceEntityRelationsTests(TestCase):
         self.assertEqual(self.parsed_data.locations[0]['organization_id'], self.the_organization_id)
         self.assertEqual(self.parsed_data.locations[1]['organization_id'], self.the_organization_id)
 
-    def test_location_id_set_on_phone_numbers(self):
-        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.phone_numbers[1]['location_id'], self.parsed_data.locations[1]['id'])
-
-    def test_location_id_set_on_addresses(self):
-        self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.parsed_data.locations[1]['id'])
-
     def test_id_set_on_organization(self):
         self.assertEqual(self.parsed_data.first_organization()['id'], self.the_organization_id)
 
@@ -395,21 +378,8 @@ class HumanServiceEntityRelationsTests(TestCase):
     def test_organization_id_on_location(self):
         self.assertEqual(self.parsed_data.first_location()['organization_id'], self.the_organization_id)
 
-    def test_location_ids_on_phone_numbers(self):
-        self.assertEqual(self.parsed_data.phone_numbers[0]['location_id'], self.parsed_data.locations[0]['id'])
-
-    def test_location_ids_on_addresses(self):
-        self.assertEqual(self.parsed_data.addresses[0]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.addresses[1]['location_id'], self.parsed_data.locations[0]['id'])
-        self.assertEqual(self.parsed_data.addresses[2]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.addresses[3]['location_id'], self.parsed_data.locations[1]['id'])
-
     def test_organization_ids_on_services(self):
         self.assertEqual(self.parsed_data.first_service()['organization_id'], self.the_organization_id)
-
-    def test_relations_from_services_to_locations(self):
-        self.assertEqual(self.parsed_data.services_at_location[0]['location_id'], self.parsed_data.locations[1]['id'])
-        self.assertEqual(self.parsed_data.services_at_location[0]['service_id'], self.the_first_service_id)
 
 
 class LocationIdTests(TestCase):
