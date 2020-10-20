@@ -29,8 +29,8 @@ class TestDataSink:
         self.locations.append(location)
         return self
 
-    def write_addresses(self, addresses):
-        self.addresses += addresses
+    def write_address(self, address):
+        self.addresses.append(address)
         return self
 
     def write_phone_number(self, phone_number):
@@ -410,7 +410,8 @@ class LocationIdTests(TestCase):
                         with_field('MailingCity', a_string()).
                         with_field('MailingStateProvince', a_string()).
                         with_field('MailingPostalCode', a_string()).
-                        with_field('MailingCountry', a_string()))
+                        with_field('MailingCountry', a_string()).
+                        with_field('PhysicalAddress1', a_string()))
 
     def test_two_locations_with_different_agency_id_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('ResourceAgencyNum', a_string()).build()
@@ -461,6 +462,14 @@ class LocationIdTests(TestCase):
         data = self.builder.duplicate_last_row().with_field('MailingCountry', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 2)
+
+    def test_two_locations_with_different_physical_address_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('PhysicalAddress1', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+    # TODO need to confirm what happens when one location has a physical address and the other does not
+
 
 
 class HumanServiceOneToManyRelationshipsTests(TestCase):

@@ -13,7 +13,7 @@ def parse(sink, lines):
         is_organization = False
         parent_organization_id = None
         location = {}
-        addresses = [{}, {}]
+        addresses = [{'type': 'postal_address'}, {'type': 'physical_address'}]
         phone_numbers = [{}]
         phone_ids = {}
         if not row:
@@ -41,7 +41,6 @@ def parse(sink, lines):
                 location[output_location_header] = value
             if output_address_header:
                 index = 1 if is_physical_address_type else 0
-                addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
                 addresses[index][output_address_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
@@ -58,7 +57,7 @@ def parse(sink, lines):
         for i, item in enumerate(addresses):
             addresses[i]['id'] = str(uuid.uuid4())
             addresses[i]['location_id'] = location['id']
-        sink.write_addresses(addresses)
+            sink.write_address(addresses[i])
         for i, item in enumerate(phone_numbers):
             the_id = compute_hash(item['number'])
             if not item['number'] or the_id in phone_ids:
@@ -74,8 +73,8 @@ def compute_location_id(location, addresses):
     return compute_hash(location.get('name', ''),
                         compute_address_id(addresses[0]),
                         compute_address_id(addresses[1]),
-                        location.get('address_1', ''),
-                        str(location.get('latitude', '')))
+                        str(location.get('latitude', ''))
+                        )
 
 
 def compute_address_id(address):
