@@ -70,11 +70,11 @@ def parse(sink, lines):
 
 
 def compute_location_id(location, addresses, phone_numbers):
-    return compute_hash(location.get('name', ''),
-                        compute_address_id(addresses[0]),
+    return compute_hash(compute_address_id(addresses[0]),
                         compute_address_id(addresses[1]),
                         compute_phone_number_id(phone_numbers[0]),
-                        str(location.get('latitude', ''))
+                        str(location.get('latitude', '')),
+                        str(location.get('longitude', ''))
                         )
 
 
@@ -92,6 +92,8 @@ def compute_address_id(address):
 
 
 def compute_phone_number_id(phone_number):
+    if not phone_number:
+        return ''
     return compute_hash(phone_number.get('number', ''))
 
 

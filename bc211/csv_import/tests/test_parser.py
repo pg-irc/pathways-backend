@@ -413,13 +413,33 @@ class LocationIdTests(TestCase):
                         with_field('MailingCountry', a_string()).
                         with_field('PhysicalAddress1', a_string()))
 
-    def test_two_locations_with_different_agency_id_are_duplicates(self):
+    def test_two_locations_with_different_organization_id_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('ResourceAgencyNum', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 1)
+
+    def test_two_locations_with_different_public_names_id_are_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('PublicName', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 1)
+
+    def test_two_locations_with_different_alternate_names_are_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('AlternateName', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 1)
+
+    def test_two_locations_with_different_descriptions_are_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('AgencyDescription', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
     def test_two_locations_with_different_latitude_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('Latitude', str(a_latitude())).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+    def test_two_locations_with_different_longitudes_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('Longitude', str(a_longitude())).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 2)
 
@@ -484,7 +504,6 @@ class LocationIdTests(TestCase):
         data = self.builder.duplicate_last_row().with_field('Phone1Name', a_phone_number()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
-
 
 
 class HumanServiceOneToManyRelationshipsTests(TestCase):
