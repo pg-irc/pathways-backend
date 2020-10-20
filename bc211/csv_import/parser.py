@@ -44,7 +44,7 @@ def parse(sink, lines):
                 addresses[index][output_address_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
-        location['id'] = compute_location_id(location, addresses)
+        location['id'] = compute_location_id(location, addresses, phone_numbers)
         location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
         if location['id'] not in location_ids:
             sink.write_location(location)
@@ -69,10 +69,11 @@ def parse(sink, lines):
     return sink
 
 
-def compute_location_id(location, addresses):
+def compute_location_id(location, addresses, phone_numbers):
     return compute_hash(location.get('name', ''),
                         compute_address_id(addresses[0]),
                         compute_address_id(addresses[1]),
+                        compute_phone_number_id(phone_numbers[0]),
                         str(location.get('latitude', ''))
                         )
 
@@ -88,6 +89,10 @@ def compute_address_id(address):
         address.get('postal_code', ''),
         address.get('country', ''),
         )
+
+
+def compute_phone_number_id(phone_number):
+    return compute_hash(phone_number.get('number', ''))
 
 
 def compute_hash(*args):

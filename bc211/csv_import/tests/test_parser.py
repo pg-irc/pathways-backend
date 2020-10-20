@@ -470,6 +470,21 @@ class LocationIdTests(TestCase):
 
     # TODO need to confirm what happens when one location has a physical address and the other does not
 
+    def test_two_locations_with_different_phone_number_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('Phone1Number', a_phone_number()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+    def test_two_locations_with_different_phone_number_type_are_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('Phone1Type', a_phone_number()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 1)
+
+    def test_two_locations_with_different_phone_number_names_are_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('Phone1Name', a_phone_number()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 1)
+
 
 
 class HumanServiceOneToManyRelationshipsTests(TestCase):
