@@ -442,6 +442,27 @@ class LocationIdTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 2)
 
+    def test_two_locations_with_different_mailing_city_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('MailingCity', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+    def test_two_locations_with_different_province_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('MailingStateProvince', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+    def test_two_locations_with_different_postal_code_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('MailingPostalCode', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+    def test_two_locations_with_different_mailing_country_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('MailingCountry', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
+
+
 class HumanServiceOneToManyRelationshipsTests(TestCase):
     def test_an_organization_with_two_locations(self):
         the_organization_id = a_string()

@@ -84,6 +84,10 @@ def compute_address_id(address):
         address.get('address_2', ''),
         address.get('address_3', ''),
         address.get('address_4', ''),
+        address.get('city', ''),
+        address.get('state_province', ''),
+        address.get('postal_code', ''),
+        address.get('country', ''),
         )
 
 
