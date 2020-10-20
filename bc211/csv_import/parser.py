@@ -79,7 +79,12 @@ def compute_location_id(location, addresses):
 
 
 def compute_address_id(address):
-    return compute_hash(address.get('address_1', ''))
+    return compute_hash(
+        address.get('address_1', ''),
+        address.get('address_2', ''),
+        address.get('address_3', ''),
+        address.get('address_4', ''),
+        )
 
 
 def compute_hash(*args):
