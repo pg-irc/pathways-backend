@@ -22,8 +22,8 @@ def parse(sink, lines):
         if not row:
             continue
         for header, value in zip(headers, row):
+            location = process_locations_fields(header, value, location)
             output_header = organization_header_map.get(header, None)
-            output_location_header = location_header_map.get(header, None)
             output_address_header = address_header_map.get(get_normalized_address_header(header), None)
             is_physical_address_type = header.startswith('Physical')
             if header == 'TaxonomyTerm':
@@ -37,13 +37,6 @@ def parse(sink, lines):
                 parent_organization_id = None if is_organization else value
             if output_header:
                 organization_or_service[output_header] = value
-            if output_location_header:
-                if output_location_header in ['latitude', 'longitude']:
-                    try:
-                        value = float(value)
-                    except:
-                        value = None
-                location[output_location_header] = value
             if output_address_header:
                 index = 1 if is_physical_address_type else 0
                 addresses[index][output_address_header] = value
@@ -87,6 +80,18 @@ def parse(sink, lines):
                 taxonomy_term_ids[item['id']] = 1
         sink.write_service_taxonomy_terms(service_taxonomy_terms)
     return sink
+
+
+def process_locations_fields(header, value, location):
+    output_location_header = location_header_map.get(header, None)
+    if output_location_header:
+        if output_location_header in ['latitude', 'longitude']:
+            try:
+                value = float(value)
+            except:
+                value = None
+        location[output_location_header] = value
+    return location
 
 
 def compute_location_id(location, addresses, phone_numbers):
