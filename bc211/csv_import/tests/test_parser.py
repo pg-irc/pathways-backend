@@ -1,4 +1,5 @@
 import logging
+import json
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
@@ -157,7 +158,7 @@ class ParsePhoneNumbersTests(TestCase):
                 with_field('Phone1Number', the_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        location_id = compute_hash(the_name)
+        location_id = parsed_data.first_location()['id']
         self.assertEqual(parsed_data.first_phone_number()['location_id'], location_id)
 
     def test_sets_location_id_on_phone_number_record_for_service(self):
@@ -171,7 +172,7 @@ class ParsePhoneNumbersTests(TestCase):
                 with_field('Phone1Number', the_number).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        the_location_id = compute_hash(the_name)
+        the_location_id = parsed_data.first_location()['id']
         self.assertEqual(parsed_data.first_phone_number()['location_id'], the_location_id)
 
     def test_can_parse_organization_phone_number_type(self):
@@ -410,23 +411,21 @@ class LocationIdTests(TestCase):
                         with_field('MailingStateProvince', a_string()).
                         with_field('MailingPostalCode', a_string()).
                         with_field('MailingCountry', a_string()))
-        self.location_id = self.get_location_id_from_builder(self.builder)
 
-    def get_location_id_from_builder(self, builder):
-        parsed_data = parse(TestDataSink(), builder.build())
-        return parsed_data.first_location()['id']
+    def test_two_locations_with_different_agency_id_are_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('ResourceAgencyNum', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def get_location_id_with_field_set_to(self, field, value):
-        builder = self.builder.with_field(field, value)
-        return self.get_location_id_from_builder(builder)
+    def test_two_locations_with_different_latitude_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('Latitude', str(a_latitude())).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
 
-    def test_agency_id_does_not_change_location_id(self):
-        the_id = self.get_location_id_with_field_set_to('ResourceAgencyNum', a_string())
-        self.assertEqual(the_id, self.location_id)
-
-    def test_latitude_changes_location_id(self):
-        the_id = self.get_location_id_with_field_set_to('Latitude', str(a_latitude()))
-        self.assertNotEqual(the_id, self.location_id)
+    def test_two_locations_with_different_address_lines_are_not_duplicates(self):
+        data = self.builder.duplicate_last_row().with_field('MailingAddress1', a_string()).build()
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.locations), 2)
 
 
 class HumanServiceOneToManyRelationshipsTests(TestCase):

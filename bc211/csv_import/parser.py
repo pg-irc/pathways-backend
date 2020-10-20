@@ -7,6 +7,7 @@ import uuid
 def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
     headers = reader.__next__()
+    location_ids = {}
     for row in reader:
         organization_or_service = {}
         is_organization = False
@@ -44,9 +45,11 @@ def parse(sink, lines):
                 addresses[index][output_address_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
-        location['id'] = compute_location_id(location)
+        location['id'] = compute_location_id(location, addresses)
         location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
-        sink.write_location(location)
+        if location['id'] not in location_ids:
+            sink.write_location(location)
+            location_ids[location['id']] = 1
         if is_organization:
             sink.write_organization(organization_or_service)
         else:
@@ -67,8 +70,16 @@ def parse(sink, lines):
     return sink
 
 
-def compute_location_id(location):
-    return compute_hash(location.get('name', ''), str(location.get('latitude', '')))
+def compute_location_id(location, addresses):
+    return compute_hash(location.get('name', ''),
+                        compute_address_id(addresses[0]),
+                        compute_address_id(addresses[1]),
+                        location.get('address_1', ''),
+                        str(location.get('latitude', '')))
+
+
+def compute_address_id(address):
+    return compute_hash(address.get('address_1', ''))
 
 
 def compute_hash(*args):

@@ -23,6 +23,11 @@ class Bc211CsvDataBuilder:
         self.data.append(self.a_row())
         return self
 
+    def duplicate_last_row(self):
+        the_copy = copy.deepcopy(self.data[-1])
+        self.data.append(the_copy)
+        return self
+
     def with_field(self, key, value):
         self.data[-1][key] = value
         return self
