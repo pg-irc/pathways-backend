@@ -384,6 +384,21 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211')
 
+    def test_set_parent_name_to_empty_string(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['parent_name'], '')
+
+    def test_set_parent_id_to_bc211(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['parent_id'], '')
+
+
+
+
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
     # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
