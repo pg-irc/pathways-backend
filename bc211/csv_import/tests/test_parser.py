@@ -413,8 +413,8 @@ class ParseTaxonomyTests(TestCase):
         the_taxonomy_term_id = parsed_data.taxonomy_terms[0]['id']
         self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_id'], the_taxonomy_term_id)
 
-        # self.assertGreater(len(parsed_data.services_taxonomy[0]['id']), 0)
-        # self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_detail'], '')
+        self.assertGreater(len(parsed_data.services_taxonomy[0]['id']), 0)
+        self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_detail'], '')
 
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):

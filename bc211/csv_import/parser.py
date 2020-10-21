@@ -60,7 +60,8 @@ def parse(sink, lines):
         else:
             organization_or_service['organization_id'] = parent_organization_id
             for item in taxonomy_terms:
-                service_taxonomy_terms.append({'id': '',
+                the_id = compute_hash(organization_or_service['id'], item['id'])
+                service_taxonomy_terms.append({'id': the_id,
                                                'service_id': organization_or_service['id'],
                                                'taxonomy_id': item['id'],
                                                'taxonomy_detail': '',
