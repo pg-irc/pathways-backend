@@ -360,6 +360,16 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms, [the_first_term, the_second_term])
 
+    def test_split_on_star(self):
+        the_first_term = a_string()
+        the_second_term = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('TaxonomyTerm', the_first_term + ' * ' + the_second_term + ';').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms, [the_first_term, the_second_term])
+
 
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
