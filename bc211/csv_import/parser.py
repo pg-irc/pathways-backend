@@ -15,7 +15,7 @@ def parse(sink, lines):
 
         organization_or_service = {}
         is_organization = False
-        parent_organization_id = None
+        parent_id = None
         location = {}
         addresses = [{}, {}]
         phone_numbers = [{}]
@@ -34,16 +34,14 @@ def parse(sink, lines):
             taxonomy_terms = parse_taxonomy_fields(header, value, taxonomy_terms)
 
             if header == 'ParentAgencyNum':
-                is_organization = value == '0'
-                parent_organization_id = value
+                parent_id = value
 
-        location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
-        location_ids = write_location_to_sink(location, addresses, phone_numbers, location_ids, sink)
-
-        if is_organization:
+        location_ids = write_location_to_sink(location, addresses, phone_numbers, organization_or_service['id'],
+                                              parent_id, location_ids, sink)
+        if parent_id == '0':
             sink.write_organization(organization_or_service)
         else:
-            write_service_to_sink(organization_or_service, location['id'], parent_organization_id, sink)
+            write_service_to_sink(organization_or_service, location['id'], parent_id, sink)
             service_taxonomy_terms = compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
 
         write_addresses_to_sink(addresses, location['id'], sink)
@@ -113,8 +111,9 @@ def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
     return service_taxonomy_terms
 
 
-def write_location_to_sink(location, addresses, phone_numbers, location_ids, sink):
+def write_location_to_sink(location, addresses, phone_numbers, service_id, parent_id, location_ids, sink):
     location['id'] = compute_location_id(location, addresses, phone_numbers)
+    location['organization_id'] = service_id if parent_id == '0' else parent_id
     if location['id'] not in location_ids:
         sink.write_location(location)
         location_ids[location['id']] = 1
