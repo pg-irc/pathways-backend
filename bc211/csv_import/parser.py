@@ -18,6 +18,7 @@ def parse(sink, lines):
         addresses = [{}, {}]
         phone_numbers = [{}]
         taxonomy_terms = []
+        service_taxonomy_terms = []
         if not row:
             continue
         for header, value in zip(headers, row):
@@ -58,6 +59,12 @@ def parse(sink, lines):
             sink.write_organization(organization_or_service)
         else:
             organization_or_service['organization_id'] = parent_organization_id
+            for item in taxonomy_terms:
+                service_taxonomy_terms.append({'id': '',
+                                               'service_id': organization_or_service['id'],
+                                               'taxonomy_id': '',
+                                               'taxonomy_detail': '',
+                                               })
             sink.write_service(organization_or_service, location['id'])
         for i, item in enumerate(addresses):
             if not addresses[i]:
@@ -77,6 +84,7 @@ def parse(sink, lines):
             if item['id'] not in taxonomy_term_ids:
                 sink.write_taxonomy_term(item)
                 taxonomy_term_ids[item['id']] = 1
+        sink.write_service_taxonomy_terms(service_taxonomy_terms)
     return sink
 
 

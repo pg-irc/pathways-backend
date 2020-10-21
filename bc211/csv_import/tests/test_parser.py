@@ -1,5 +1,4 @@
 import logging
-import json
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
@@ -17,6 +16,7 @@ class TestDataSink:
         self.addresses = []
         self.phone_numbers = []
         self.taxonomy_terms = []
+        self.services_taxonomy = []
 
     def write_organization(self, organization):
         self.organizations.append(organization)
@@ -40,20 +40,14 @@ class TestDataSink:
     def write_taxonomy_term(self, terms):
         self.taxonomy_terms.append(terms)
 
-    def organizations(self):
-        return self.organizations
+    def write_service_taxonomy_terms(self, service_taxonomy_terms):
+        self.services_taxonomy += service_taxonomy_terms
 
     def first_organization(self):
         return self.organizations[0]
 
-    def services(self):
-        return self.services
-
     def first_service(self):
         return self.services[0]
-
-    def services_at_location(self):
-        return self.services_at_location
 
     def first_location(self):
         return self.locations[0]
@@ -63,9 +57,6 @@ class TestDataSink:
 
     def second_address(self):
         return self.addresses[1]
-
-    def phone_numbers(self):
-        return self.phone_numbers
 
     def first_phone_number(self):
         return self.phone_numbers[0]
@@ -408,8 +399,21 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
 
+    def test_create_service_taxonomy_row_with_service_id(self):
+        the_service_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('ResourceAgencyNum', the_service_id).
+                with_field('TaxonomyTerm', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.services_taxonomy), 1)
+        self.assertEqual(parsed_data.services_taxonomy[0]['service_id'], the_service_id)
 
-
+        # the_taxonomy_term_id = parsed_data.taxonomy_terms[0]['id']
+        # self.assertGreater(len(parsed_data.services_taxonomy[0]['id']), 0)
+        # self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_id'], the_taxonomy_term_id)
+        # self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_detail'], '')
 
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
