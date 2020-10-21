@@ -25,17 +25,12 @@ def parse(sink, lines):
             organization_or_service = parse_organization_and_service_fields(header, value, organization_or_service)
             location = parse_locations_fields(header, value, location)
             addresses = parse_address_fields(header, value, addresses)
+            phone_numbers = parse_phone_numbers(header, value, phone_numbers)
             if header == 'TaxonomyTerm':
                 taxonomy_terms += parse_taxonomy_terms(value)
-            output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
-            phone_index = get_zero_based_phone_index(header)
-            while phone_index and len(phone_numbers) <= phone_index:
-                phone_numbers.append({})
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
                 parent_organization_id = None if is_organization else value
-            if output_phone_header:
-                phone_numbers[phone_index][output_phone_header] = value
         location['id'] = compute_location_id(location, addresses, phone_numbers)
         location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
         if location['id'] not in location_ids:
@@ -102,6 +97,16 @@ def parse_locations_fields(header, value, location):
                 value = None
         location[output_location_header] = value
     return location
+
+
+def parse_phone_numbers(header, value, phone_numbers):
+    output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
+    if output_phone_header:
+        phone_index = get_zero_based_phone_index(header)
+        while phone_index and len(phone_numbers) <= phone_index:
+            phone_numbers.append({})
+        phone_numbers[phone_index][output_phone_header] = value
+    return phone_numbers
 
 
 def compute_location_id(location, addresses, phone_numbers):
