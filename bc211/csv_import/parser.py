@@ -44,12 +44,7 @@ def parse(sink, lines):
                                                'taxonomy_detail': '',
                                                })
             sink.write_service(organization_or_service, location['id'])
-        for i, item in enumerate(addresses):
-            if not addresses[i]:
-                continue
-            addresses[i]['id'] = str(uuid.uuid4())
-            addresses[i]['location_id'] = location['id']
-            sink.write_address(addresses[i])
+        write_addresses_to_sink(addresses, location['id'], sink)
         for i, item in enumerate(phone_numbers):
             the_id = compute_hash(item['number'])
             if not item['number'] or the_id in phone_ids:
@@ -117,6 +112,15 @@ def write_location_to_sink(location, addresses, phone_numbers, location_ids, sin
         sink.write_location(location)
         location_ids[location['id']] = 1
     return location_ids
+
+
+def write_addresses_to_sink(addresses, location_id, sink):
+    for i, address in enumerate(addresses):
+        if not address:
+            continue
+        address['id'] = str(uuid.uuid4())
+        address['location_id'] = location_id
+        sink.write_address(address)
 
 
 def compute_location_id(location, addresses, phone_numbers):
