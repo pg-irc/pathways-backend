@@ -1,4 +1,4 @@
-from drf_yasg import openapi, views
+from drf_yasg2 import openapi, views
 from rest_framework import permissions
 
 def build_schema_view():

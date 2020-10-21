@@ -1,4 +1,4 @@
-from drf_yasg import openapi
+from drf_yasg2 import openapi
 
 
 def get_proximity_sort_manual_parameter():
