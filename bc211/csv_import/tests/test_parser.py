@@ -332,13 +332,15 @@ class ParseTaxonomyTests(TestCase):
         the_term = a_string()
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.taxonomy_terms, [the_term])
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
 
     def test_strip_trailing_semicolon(self):
         the_term = a_string()
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term + ';').build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.taxonomy_terms, [the_term])
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
 
     def test_split_two_terms(self):
         the_first_term = a_string()
@@ -348,7 +350,9 @@ class ParseTaxonomyTests(TestCase):
                 with_field('TaxonomyTerm', the_first_term + ';' + the_second_term + ';').
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.taxonomy_terms, [the_first_term, the_second_term])
+        self.assertEqual(len(parsed_data.taxonomy_terms), 2)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
 
     def test_split_on_minus(self):
         the_first_term = a_string()
@@ -358,7 +362,9 @@ class ParseTaxonomyTests(TestCase):
                 with_field('TaxonomyTerm', the_first_term + ' - ' + the_second_term + ';').
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.taxonomy_terms, [the_first_term, the_second_term])
+        self.assertEqual(len(parsed_data.taxonomy_terms), 2)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
 
     def test_split_on_star(self):
         the_first_term = a_string()
@@ -368,7 +374,9 @@ class ParseTaxonomyTests(TestCase):
                 with_field('TaxonomyTerm', the_first_term + ' * ' + the_second_term + ';').
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.taxonomy_terms, [the_first_term, the_second_term])
+        self.assertEqual(len(parsed_data.taxonomy_terms), 2)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
 
 
 
