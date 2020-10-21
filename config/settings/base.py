@@ -34,7 +34,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',  # registration
     'corsheaders',
     'rest_framework',
-    'drf_yasg',
+    'drf_yasg2',
     'parler',
     'rest_framework.authtoken',
 ]

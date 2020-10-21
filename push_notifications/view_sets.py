@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from push_notifications.models import PushNotificationToken
 from push_notifications.serializers import PushNotificationTokenSerializer
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg2.utils import swagger_auto_schema
 
 
 @swagger_auto_schema(
