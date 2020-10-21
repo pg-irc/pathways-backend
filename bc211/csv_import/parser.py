@@ -25,7 +25,7 @@ def parse(sink, lines):
             output_address_header = address_header_map.get(get_normalized_address_header(header), None)
             is_physical_address_type = header.startswith('Physical')
             if header == 'TaxonomyTerm':
-                taxonomy_terms.append(parse_taxonomy_terms(value))
+                taxonomy_terms += parse_taxonomy_terms(value)
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
             phone_index = get_zero_based_phone_index(header)
             while phone_index and len(phone_numbers) <= phone_index:
@@ -163,4 +163,4 @@ phone_header_map = {
 
 
 def parse_taxonomy_terms(value):
-    return value
+    return [m for m in value.split(';') if m]

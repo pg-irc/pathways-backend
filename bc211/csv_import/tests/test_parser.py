@@ -334,6 +334,12 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms, [the_term])
 
+    def test_strip_trailing_semicolo(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term + ';').build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms, [the_term])
+
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
     # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
