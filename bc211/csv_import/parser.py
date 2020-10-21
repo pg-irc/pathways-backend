@@ -163,7 +163,9 @@ phone_header_map = {
 
 
 def parse_taxonomy_terms(value):
-    # name is "housing"
-    # taxonomy id is "airs"
     names = re.split(r'[;\-\* ]', value)
-    return [{'name': name, 'vocabulary': 'bc211', 'parent_name': '', 'parent_id': ''} for name in names if name]
+    return [{'id': compute_hash(name, 'bc211'),
+             'name': name,
+             'vocabulary': 'bc211',
+             'parent_name': '',
+             'parent_id': ''} for name in names if name]

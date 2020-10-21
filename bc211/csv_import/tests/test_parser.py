@@ -396,6 +396,12 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms[0]['parent_id'], '')
 
+    def test_compute_the_id(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertGreater(len(parsed_data.taxonomy_terms[0]['id']), 0)
+
 
 
 
