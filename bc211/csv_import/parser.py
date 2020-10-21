@@ -10,7 +10,9 @@ def parse(sink, lines):
     location_ids = {}
     phone_ids = {}
     taxonomy_term_ids = {}
+
     for row in reader:
+
         organization_or_service = {}
         is_organization = False
         parent_organization_id = None
@@ -19,28 +21,34 @@ def parse(sink, lines):
         phone_numbers = [{}]
         taxonomy_terms = []
         service_taxonomy_terms = []
+
         if not row:
             continue
+
         for header, value in zip(headers, row):
+
             organization_or_service = parse_organization_and_service_fields(header, value, organization_or_service)
             location = parse_locations_fields(header, value, location)
             addresses = parse_address_fields(header, value, addresses)
             phone_numbers = parse_phone_number_fields(header, value, phone_numbers)
             taxonomy_terms = parse_taxonomy_fields(header, value, taxonomy_terms)
+
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
-                parent_organization_id = None if is_organization else value
+                parent_organization_id = value
+
         location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
         location_ids = write_location_to_sink(location, addresses, phone_numbers, location_ids, sink)
+
         if is_organization:
             sink.write_organization(organization_or_service)
         else:
             write_service_to_sink(organization_or_service, location['id'], parent_organization_id, sink)
             service_taxonomy_terms = compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
+
         write_addresses_to_sink(addresses, location['id'], sink)
         write_phone_numbers_to_sink(phone_numbers, location['id'], phone_ids, sink)
-        taxonomy_term_ids = write_taxonomy_terms_to_sink(taxonomy_terms, taxonomy_term_ids, sink)
-        sink.write_service_taxonomy_terms(service_taxonomy_terms)
+        taxonomy_term_ids = write_taxonomy_terms_to_sink(taxonomy_terms, service_taxonomy_terms, taxonomy_term_ids, sink)
     return sink
 
 
@@ -133,11 +141,12 @@ def write_phone_numbers_to_sink(phone_numbers, location_id, phone_ids, sink):
         phone_ids[the_id] = 1
 
 
-def write_taxonomy_terms_to_sink(taxonomy_terms, taxonomy_term_ids, sink):
+def write_taxonomy_terms_to_sink(taxonomy_terms, service_taxonomy_terms, taxonomy_term_ids, sink):
     for term in taxonomy_terms:
         if term['id'] not in taxonomy_term_ids:
             sink.write_taxonomy_term(term)
             taxonomy_term_ids[term['id']] = 1
+    sink.write_service_taxonomy_terms(service_taxonomy_terms)
     return taxonomy_term_ids
 
 
