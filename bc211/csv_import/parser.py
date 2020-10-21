@@ -16,6 +16,7 @@ def parse(sink, lines):
         location = {}
         addresses = [{}, {}]
         phone_numbers = [{}]
+        taxonomy_terms = []
         if not row:
             continue
         for header, value in zip(headers, row):
@@ -23,6 +24,8 @@ def parse(sink, lines):
             output_location_header = location_header_map.get(header, None)
             output_address_header = address_header_map.get(get_normalized_address_header(header), None)
             is_physical_address_type = header.startswith('Physical')
+            if header == 'TaxonomyTerm':
+                taxonomy_terms.append(parse_taxonomy_terms(value))
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
             phone_index = get_zero_based_phone_index(header)
             while phone_index and len(phone_numbers) <= phone_index:
@@ -69,6 +72,7 @@ def parse(sink, lines):
             item['id'] = the_id
             item['location_id'] = location['id']
             sink.write_phone_number(item)
+        sink.write_taxonomy_terms(taxonomy_terms)
     return sink
 
 
@@ -156,3 +160,7 @@ phone_header_map = {
     'Phone1Type': 'type',
     'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
 }
+
+
+def parse_taxonomy_terms(value):
+    return value

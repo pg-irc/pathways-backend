@@ -1,4 +1,5 @@
 import logging
+import json
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
@@ -15,6 +16,7 @@ class TestDataSink:
         self.services_at_location = []
         self.addresses = []
         self.phone_numbers = []
+        self.taxonomy_terms = []
 
     def write_organization(self, organization):
         self.organizations.append(organization)
@@ -34,6 +36,9 @@ class TestDataSink:
 
     def write_phone_number(self, phone_number):
         self.phone_numbers.append(phone_number)
+
+    def write_taxonomy_terms(self, terms):
+        self.taxonomy_terms += terms
 
     def organizations(self):
         return self.organizations
@@ -323,10 +328,13 @@ class ParseCompleteRecordTests(TestCase):
 
 
 class ParseTaxonomyTests(TestCase):
-    def test_foo(self):
-        pass
+    def test_parse_taxonomy_term(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms, [the_term])
 
-    
+
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
     # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
     # Downstream: address and phone number. Name is taken from owning service or organization, so should be exluded
