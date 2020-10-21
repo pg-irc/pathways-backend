@@ -35,15 +35,8 @@ def parse(sink, lines):
         if is_organization:
             sink.write_organization(organization_or_service)
         else:
-            organization_or_service['organization_id'] = parent_organization_id
-            for item in taxonomy_terms:
-                the_id = compute_hash(organization_or_service['id'], item['id'])
-                service_taxonomy_terms.append({'id': the_id,
-                                               'service_id': organization_or_service['id'],
-                                               'taxonomy_id': item['id'],
-                                               'taxonomy_detail': '',
-                                               })
-            sink.write_service(organization_or_service, location['id'])
+            write_service_to_sink(organization_or_service, location['id'], parent_organization_id, sink)
+            service_taxonomy_terms = compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
         write_addresses_to_sink(addresses, location['id'], sink)
         write_phone_numbers_to_sink(phone_numbers, location['id'], phone_ids, sink)
         for item in taxonomy_terms:
@@ -97,6 +90,22 @@ def parse_taxonomy_fields(header, value, taxonomy_terms):
     if header == 'TaxonomyTerm':
         taxonomy_terms += parse_taxonomy_terms(value)
     return taxonomy_terms
+
+
+def write_service_to_sink(service, location_id, parent_organization_id, sink):
+    service['organization_id'] = parent_organization_id
+    sink.write_service(service, location_id)
+
+
+def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
+    for item in taxonomy_terms:
+        the_id = compute_hash(service_id, item['id'])
+        service_taxonomy_terms.append({'id': the_id,
+                                       'service_id': service_id,
+                                       'taxonomy_id': item['id'],
+                                       'taxonomy_detail': '',
+                                       })
+    return service_taxonomy_terms
 
 
 def write_location_to_sink(location, addresses, phone_numbers, location_ids, sink):
