@@ -62,7 +62,7 @@ def parse(sink, lines):
             for item in taxonomy_terms:
                 service_taxonomy_terms.append({'id': '',
                                                'service_id': organization_or_service['id'],
-                                               'taxonomy_id': '',
+                                               'taxonomy_id': item['id'],
                                                'taxonomy_detail': '',
                                                })
             sink.write_service(organization_or_service, location['id'])

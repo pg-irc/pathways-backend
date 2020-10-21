@@ -410,9 +410,10 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(len(parsed_data.services_taxonomy), 1)
         self.assertEqual(parsed_data.services_taxonomy[0]['service_id'], the_service_id)
 
-        # the_taxonomy_term_id = parsed_data.taxonomy_terms[0]['id']
+        the_taxonomy_term_id = parsed_data.taxonomy_terms[0]['id']
+        self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_id'], the_taxonomy_term_id)
+
         # self.assertGreater(len(parsed_data.services_taxonomy[0]['id']), 0)
-        # self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_id'], the_taxonomy_term_id)
         # self.assertEqual(parsed_data.services_taxonomy[0]['taxonomy_detail'], '')
 
 
