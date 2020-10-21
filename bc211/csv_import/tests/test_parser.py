@@ -37,8 +37,8 @@ class TestDataSink:
     def write_phone_number(self, phone_number):
         self.phone_numbers.append(phone_number)
 
-    def write_taxonomy_terms(self, terms):
-        self.taxonomy_terms += terms
+    def write_taxonomy_term(self, terms):
+        self.taxonomy_terms.append(terms)
 
     def organizations(self):
         return self.organizations
@@ -401,6 +401,12 @@ class ParseTaxonomyTests(TestCase):
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertGreater(len(parsed_data.taxonomy_terms[0]['id']), 0)
+
+    def test_does_not_save_duplicate_terms(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term + ';' + the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
 
 
 

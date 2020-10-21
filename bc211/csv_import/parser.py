@@ -9,6 +9,7 @@ def parse(sink, lines):
     headers = reader.__next__()
     location_ids = {}
     phone_ids = {}
+    taxonomy_term_ids = {}
     for row in reader:
         organization_or_service = {}
         is_organization = False
@@ -72,7 +73,10 @@ def parse(sink, lines):
             item['id'] = the_id
             item['location_id'] = location['id']
             sink.write_phone_number(item)
-        sink.write_taxonomy_terms(taxonomy_terms)
+        for item in taxonomy_terms:
+            if item['id'] not in taxonomy_term_ids:
+                sink.write_taxonomy_term(item)
+                taxonomy_term_ids[item['id']] = 1
     return sink
 
 
