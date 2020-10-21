@@ -30,11 +30,8 @@ def parse(sink, lines):
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
                 parent_organization_id = None if is_organization else value
-        location['id'] = compute_location_id(location, addresses, phone_numbers)
         location['organization_id'] = organization_or_service['id'] if is_organization else parent_organization_id
-        if location['id'] not in location_ids:
-            sink.write_location(location)
-            location_ids[location['id']] = 1
+        location_ids = write_location_to_sink(location, addresses, phone_numbers, location_ids, sink)
         if is_organization:
             sink.write_organization(organization_or_service)
         else:
@@ -112,6 +109,14 @@ def parse_taxonomy_fields(header, value, taxonomy_terms):
     if header == 'TaxonomyTerm':
         taxonomy_terms += parse_taxonomy_terms(value)
     return taxonomy_terms
+
+
+def write_location_to_sink(location, addresses, phone_numbers, location_ids, sink):
+    location['id'] = compute_location_id(location, addresses, phone_numbers)
+    if location['id'] not in location_ids:
+        sink.write_location(location)
+        location_ids[location['id']] = 1
+    return location_ids
 
 
 def compute_location_id(location, addresses, phone_numbers):
