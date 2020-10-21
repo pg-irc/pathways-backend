@@ -22,10 +22,9 @@ def parse(sink, lines):
         if not row:
             continue
         for header, value in zip(headers, row):
-            location = process_locations_fields(header, value, location)
+            location = parse_locations_fields(header, value, location)
+            addresses = parse_address_fields(header, value, addresses)
             output_header = organization_header_map.get(header, None)
-            output_address_header = address_header_map.get(get_normalized_address_header(header), None)
-            is_physical_address_type = header.startswith('Physical')
             if header == 'TaxonomyTerm':
                 taxonomy_terms += parse_taxonomy_terms(value)
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
@@ -37,10 +36,6 @@ def parse(sink, lines):
                 parent_organization_id = None if is_organization else value
             if output_header:
                 organization_or_service[output_header] = value
-            if output_address_header:
-                index = 1 if is_physical_address_type else 0
-                addresses[index][output_address_header] = value
-                addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
         location['id'] = compute_location_id(location, addresses, phone_numbers)
@@ -82,7 +77,17 @@ def parse(sink, lines):
     return sink
 
 
-def process_locations_fields(header, value, location):
+def parse_address_fields(header, value, addresses):
+    output_address_header = address_header_map.get(get_normalized_address_header(header), None)
+    is_physical_address_type = header.startswith('Physical')
+    if output_address_header:
+        index = 1 if is_physical_address_type else 0
+        addresses[index][output_address_header] = value
+        addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
+    return addresses
+
+
+def parse_locations_fields(header, value, location):
     output_location_header = location_header_map.get(header, None)
     if output_location_header:
         if output_location_header in ['latitude', 'longitude']:
