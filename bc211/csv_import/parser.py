@@ -22,9 +22,9 @@ def parse(sink, lines):
         if not row:
             continue
         for header, value in zip(headers, row):
+            organization_or_service = parse_organization_and_service_fields(header, value, organization_or_service)
             location = parse_locations_fields(header, value, location)
             addresses = parse_address_fields(header, value, addresses)
-            output_header = organization_header_map.get(header, None)
             if header == 'TaxonomyTerm':
                 taxonomy_terms += parse_taxonomy_terms(value)
             output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
@@ -34,8 +34,6 @@ def parse(sink, lines):
             if header == 'ParentAgencyNum':
                 is_organization = value == '0'
                 parent_organization_id = None if is_organization else value
-            if output_header:
-                organization_or_service[output_header] = value
             if output_phone_header:
                 phone_numbers[phone_index][output_phone_header] = value
         location['id'] = compute_location_id(location, addresses, phone_numbers)
@@ -75,6 +73,13 @@ def parse(sink, lines):
                 taxonomy_term_ids[item['id']] = 1
         sink.write_service_taxonomy_terms(service_taxonomy_terms)
     return sink
+
+
+def parse_organization_and_service_fields(header, value, organization_or_service):
+    output_header = organization_header_map.get(header, None)
+    if output_header:
+        organization_or_service[output_header] = value
+    return organization_or_service
 
 
 def parse_address_fields(header, value, addresses):
