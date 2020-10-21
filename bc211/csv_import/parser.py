@@ -8,6 +8,7 @@ def parse(sink, lines):
     reader = csv.reader(lines.split('\n'))
     headers = reader.__next__()
     location_ids = {}
+    phone_ids = {}
     for row in reader:
         organization_or_service = {}
         is_organization = False
@@ -15,7 +16,6 @@ def parse(sink, lines):
         location = {}
         addresses = [{}, {}]
         phone_numbers = [{}]
-        phone_ids = {}
         if not row:
             continue
         for header, value in zip(headers, row):
