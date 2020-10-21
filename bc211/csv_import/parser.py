@@ -39,10 +39,7 @@ def parse(sink, lines):
             service_taxonomy_terms = compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
         write_addresses_to_sink(addresses, location['id'], sink)
         write_phone_numbers_to_sink(phone_numbers, location['id'], phone_ids, sink)
-        for item in taxonomy_terms:
-            if item['id'] not in taxonomy_term_ids:
-                sink.write_taxonomy_term(item)
-                taxonomy_term_ids[item['id']] = 1
+        taxonomy_term_ids = write_taxonomy_terms_to_sink(taxonomy_terms, taxonomy_term_ids, sink)
         sink.write_service_taxonomy_terms(service_taxonomy_terms)
     return sink
 
@@ -134,6 +131,14 @@ def write_phone_numbers_to_sink(phone_numbers, location_id, phone_ids, sink):
         phone_number['location_id'] = location_id
         sink.write_phone_number(phone_number)
         phone_ids[the_id] = 1
+
+
+def write_taxonomy_terms_to_sink(taxonomy_terms, taxonomy_term_ids, sink):
+    for term in taxonomy_terms:
+        if term['id'] not in taxonomy_term_ids:
+            sink.write_taxonomy_term(term)
+            taxonomy_term_ids[term['id']] = 1
+    return taxonomy_term_ids
 
 
 def compute_location_id(location, addresses, phone_numbers):
