@@ -166,4 +166,4 @@ def parse_taxonomy_terms(value):
     # name is "housing"
     # taxonomy id is "airs"
     names = re.split(r'[;\-\* ]', value)
-    return [{'name': name} for name in names if name]
+    return [{'name': name, 'vocabulary': 'bc211'} for name in names if name]

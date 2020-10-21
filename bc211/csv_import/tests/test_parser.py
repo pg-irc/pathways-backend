@@ -378,6 +378,11 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
         self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
 
+    def test_set_vocabulary_to_bc211(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211')
 
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
