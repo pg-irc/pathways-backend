@@ -163,4 +163,5 @@ phone_header_map = {
 
 
 def parse_taxonomy_terms(value):
-    return [m for m in value.split(';') if m]
+    values = re.split(r'[;\- ]', value)
+    return [m for m in values if m]
