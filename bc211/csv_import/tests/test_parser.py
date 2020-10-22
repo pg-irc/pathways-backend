@@ -12,7 +12,7 @@ def parse(sink, lines):
 
 
 # TODO test that entities are unique accross organizations
-
+# TODO make sure AIRS tax terms aren't split incorrectly
 
 class TestDataSink:
     def __init__(self):
