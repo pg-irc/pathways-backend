@@ -28,11 +28,9 @@ class TestDataSink:
 
     def write_location(self, location):
         self.locations.append(location)
-        return self
 
     def write_address(self, address):
         self.addresses.append(address)
-        return self
 
     def write_phone_number(self, phone_number):
         self.phone_numbers.append(phone_number)

@@ -53,7 +53,6 @@ def parse_organization_and_service_fields(header, value, organization_or_service
     output_header = organization_header_map.get(header, None)
     if output_header:
         organization_or_service[output_header] = value
-    return organization_or_service
 
 
 organization_header_map = {
@@ -73,7 +72,6 @@ def parse_address_fields(header, value, addresses):
         index = 1 if is_physical_address_type else 0
         addresses[index][output_address_header] = value
         addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
-    return addresses
 
 
 def get_normalized_address_header(fff):
@@ -101,7 +99,6 @@ def parse_locations_fields(header, value, location):
             except:
                 value = None
         location[output_location_header] = value
-    return location
 
 
 location_header_map = {
@@ -120,7 +117,6 @@ def parse_phone_number_fields(header, value, phone_numbers):
         while phone_index and len(phone_numbers) <= phone_index:
             phone_numbers.append({})
         phone_numbers[phone_index][output_phone_header] = value
-    return phone_numbers
 
 
 def phone_header_with_index_one(phone_field_with_any_index):
@@ -142,7 +138,6 @@ phone_header_map = {
 def parse_taxonomy_fields(header, value, taxonomy_terms):
     if header == 'TaxonomyTerm':
         taxonomy_terms += parse_taxonomy_terms(value)
-    return taxonomy_terms
 
 
 def parse_taxonomy_terms(value):
@@ -174,7 +169,6 @@ def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
                                        'taxonomy_id': item['id'],
                                        'taxonomy_detail': '',
                                        })
-    return service_taxonomy_terms
 
 
 def write_location_to_sink(location, addresses, phone_numbers, service_or_organization_id, parent_id,
@@ -185,7 +179,6 @@ def write_location_to_sink(location, addresses, phone_numbers, service_or_organi
     if location['id'] not in unique_location_ids:
         sink.write_location(location)
         unique_location_ids[location['id']] = 1
-    return unique_location_ids
 
 
 def compute_location_id(location, addresses, phone_numbers):
@@ -242,4 +235,3 @@ def write_taxonomy_terms_to_sink(taxonomy_terms, unique_taxonomy_term_ids, servi
             sink.write_taxonomy_term(term)
             unique_taxonomy_term_ids[term['id']] = 1
     sink.write_service_taxonomy_terms(service_taxonomy_terms)
-    return unique_taxonomy_term_ids
