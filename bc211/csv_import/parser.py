@@ -154,6 +154,13 @@ def parse_taxonomy_terms(value):
              'parent_id': ''} for name in names if name]
 
 
+def compute_hash(*args):
+    hasher = hashlib.sha1()
+    for arg in args:
+        hasher.update(arg.encode('utf-8'))
+    return hasher.hexdigest()
+
+
 def write_service_to_sink(service, location_id, parent_organization_id, sink):
     service['organization_id'] = parent_organization_id
     sink.write_service(service, location_id)
@@ -170,43 +177,15 @@ def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
     return service_taxonomy_terms
 
 
-def write_location_to_sink(location, addresses, phone_numbers, service_or_organization_id, parent_id, location_ids, sink):
+def write_location_to_sink(location, addresses, phone_numbers, service_or_organization_id, parent_id,
+                           unique_location_ids, sink):
     location['id'] = compute_location_id(location, addresses, phone_numbers)
     is_organization = parent_id == '0'
     location['organization_id'] = service_or_organization_id if is_organization else parent_id
-    if location['id'] not in location_ids:
+    if location['id'] not in unique_location_ids:
         sink.write_location(location)
-        location_ids[location['id']] = 1
-    return location_ids
-
-
-def write_addresses_to_sink(addresses, location_id, sink):
-    for i, address in enumerate(addresses):
-        if not address:
-            continue
-        address['id'] = str(uuid.uuid4())
-        address['location_id'] = location_id
-        sink.write_address(address)
-
-
-def write_phone_numbers_to_sink(phone_numbers, location_id, phone_ids, sink):
-    for i, phone_number in enumerate(phone_numbers):
-        the_id = compute_hash(phone_number['number'])
-        if not phone_number['number'] or the_id in phone_ids:
-            continue
-        phone_number['id'] = the_id
-        phone_number['location_id'] = location_id
-        sink.write_phone_number(phone_number)
-        phone_ids[the_id] = 1
-
-
-def write_taxonomy_terms_to_sink(taxonomy_terms, service_taxonomy_terms, taxonomy_term_ids, sink):
-    for term in taxonomy_terms:
-        if term['id'] not in taxonomy_term_ids:
-            sink.write_taxonomy_term(term)
-            taxonomy_term_ids[term['id']] = 1
-    sink.write_service_taxonomy_terms(service_taxonomy_terms)
-    return taxonomy_term_ids
+        unique_location_ids[location['id']] = 1
+    return unique_location_ids
 
 
 def compute_location_id(location, addresses, phone_numbers):
@@ -237,8 +216,30 @@ def compute_phone_number_id(phone_number):
     return compute_hash(phone_number.get('number', ''))
 
 
-def compute_hash(*args):
-    hasher = hashlib.sha1()
-    for arg in args:
-        hasher.update(arg.encode('utf-8'))
-    return hasher.hexdigest()
+def write_addresses_to_sink(addresses, location_id, sink):
+    for i, address in enumerate(addresses):
+        if not address:
+            continue
+        address['id'] = str(uuid.uuid4())
+        address['location_id'] = location_id
+        sink.write_address(address)
+
+
+def write_phone_numbers_to_sink(phone_numbers, location_id, phone_ids, sink):
+    for i, phone_number in enumerate(phone_numbers):
+        the_id = compute_hash(phone_number['number'])
+        if not phone_number['number'] or the_id in phone_ids:
+            continue
+        phone_number['id'] = the_id
+        phone_number['location_id'] = location_id
+        sink.write_phone_number(phone_number)
+        phone_ids[the_id] = 1
+
+
+def write_taxonomy_terms_to_sink(taxonomy_terms, service_taxonomy_terms, unique_taxonomy_term_ids, sink):
+    for term in taxonomy_terms:
+        if term['id'] not in unique_taxonomy_term_ids:
+            sink.write_taxonomy_term(term)
+            unique_taxonomy_term_ids[term['id']] = 1
+    sink.write_service_taxonomy_terms(service_taxonomy_terms)
+    return unique_taxonomy_term_ids
