@@ -6,6 +6,7 @@ from bc211.csv_import.parser import compute_hash, parse, phone_header_with_index
 
 logging.disable(logging.ERROR)
 
+# TODO test that entities are unique accross organizations
 
 class TestDataSink:
     def __init__(self):
