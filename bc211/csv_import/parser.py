@@ -5,7 +5,7 @@ import uuid
 
 
 def parse(sink, lines):
-    reader = csv.reader(lines.split('\n'))
+    reader = csv.reader(lines)
     headers = reader.__next__()
     unique_location_ids = {}
     unique_phone_ids = {}
