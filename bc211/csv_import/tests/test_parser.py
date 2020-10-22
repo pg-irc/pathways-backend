@@ -324,6 +324,31 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'BC211')
+
+    def test_parse_second_taxonomy_term_column(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'BC211')
+
+    def test_parse_third_taxonomy_term_column(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTermsNotDeactivated', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'BC211')
+
+    def test_parse_airs_taxonomy_term_column(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyCodes', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'AIRS')
 
     def test_strip_trailing_semicolon(self):
         the_term = a_string()
@@ -337,7 +362,7 @@ class ParseTaxonomyTests(TestCase):
         the_second_term = a_string()
         data = (Bc211CsvDataBuilder().
                 as_service().
-                with_field('TaxonomyTerm', the_first_term + ';' + the_second_term + ';').
+                with_field('TaxonomyTerm', the_first_term + '; ' + the_second_term + '; ').
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 2)
@@ -367,12 +392,6 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(len(parsed_data.taxonomy_terms), 2)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
         self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
-
-    def test_set_vocabulary_to_bc211(self):
-        the_term = a_string()
-        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
-        parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211')
 
     def test_set_parent_name_to_empty_string(self):
         the_term = a_string()

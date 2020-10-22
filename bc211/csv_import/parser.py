@@ -137,15 +137,17 @@ phone_header_map = {
 
 
 def parse_taxonomy_fields(header, value, taxonomy_terms):
-    if header == 'TaxonomyTerm':
-        taxonomy_terms += parse_taxonomy_terms(value)
+    if header in ['TaxonomyTerm', 'TaxonomyTerms', 'TaxonomyTermsNotDeactivated']:
+        taxonomy_terms += parse_taxonomy_terms(value, 'BC211')
+    if header == 'TaxonomyCodes':
+        taxonomy_terms += parse_taxonomy_terms(value, 'AIRS')
 
 
-def parse_taxonomy_terms(value):
+def parse_taxonomy_terms(value, vocabulary):
     names = re.split(r'[;\-\* ]', value)
-    return [{'id': compute_hash(name, 'bc211'),
+    return [{'id': compute_hash(name, vocabulary),
              'name': name,
-             'vocabulary': 'bc211',
+             'vocabulary': vocabulary,
              'parent_name': '',
              'parent_id': ''} for name in names if name]
 
