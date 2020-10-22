@@ -145,11 +145,15 @@ def parse_taxonomy_fields(header, value, taxonomy_terms):
 
 def parse_taxonomy_terms(value, vocabulary):
     names = re.split(r'[;\-\* ]', value)
-    return [{'id': compute_hash(name, vocabulary),
-             'name': name,
-             'vocabulary': vocabulary,
-             'parent_name': '',
-             'parent_id': ''} for name in names if name]
+    return [build_taxonomy_object(name, vocabulary) for name in names if name]
+
+
+def build_taxonomy_object(name, vocabulary):
+    return {'id': compute_hash(name, vocabulary),
+            'name': name,
+            'vocabulary': vocabulary,
+            'parent_name': '',
+            'parent_id': ''}
 
 
 def compute_hash(*args):
