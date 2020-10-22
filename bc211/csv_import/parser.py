@@ -13,6 +13,9 @@ def parse(sink, lines):
 
     for row in reader:
 
+        if not row:
+            continue
+
         organization_or_service = {}
         location = {}
         addresses = [{}, {}]
@@ -20,9 +23,6 @@ def parse(sink, lines):
         taxonomy_terms = []
         service_taxonomy_terms = []
         parent_id = None
-
-        if not row:
-            continue
 
         for header, value in zip(headers, row):
 
@@ -40,7 +40,8 @@ def parse(sink, lines):
         if parent_id == '0':
             sink.write_organization(organization_or_service)
         else:
-            write_service_to_sink(organization_or_service, location['id'], parent_id, sink)
+            organization_or_service['organization_id'] = parent_id
+            sink.write_service(organization_or_service, location['id'])
             compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
 
         write_addresses_to_sink(addresses, location['id'], sink)
@@ -164,11 +165,6 @@ def compute_hash(*args):
     for arg in args:
         hasher.update(arg.encode('utf-8'))
     return hasher.hexdigest()
-
-
-def write_service_to_sink(service, location_id, parent_organization_id, sink):
-    service['organization_id'] = parent_organization_id
-    sink.write_service(service, location_id)
 
 
 def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):

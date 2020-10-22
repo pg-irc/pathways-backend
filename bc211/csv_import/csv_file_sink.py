@@ -43,10 +43,10 @@ class CsvFileSink:
         row = [service.get(column, '') for column in service_columns]
         self.service_writer.writerow(row)
 
-        the_id = compute_hash(service['id'], location_id)
-        self.write_service_at_location(the_id, service, location_id)
+        self.write_service_at_location(service, location_id)
 
-    def write_service_at_location(self, the_id, service, location_id):
+    def write_service_at_location(self, service, location_id):
+        the_id = compute_hash(service['id'], location_id)
         service_at_location = {'id': the_id, 'service_id': service['id'], 'location_id': location_id}
         row = [service_at_location.get(column, '') for column in services_at_location_columns]
         self.services_at_location_writer.writerow(row)
