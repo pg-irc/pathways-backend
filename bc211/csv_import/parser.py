@@ -94,6 +94,15 @@ def parse_taxonomy_fields(header, value, taxonomy_terms):
     return taxonomy_terms
 
 
+def parse_taxonomy_terms(value):
+    names = re.split(r'[;\-\* ]', value)
+    return [{'id': compute_hash(name, 'bc211'),
+             'name': name,
+             'vocabulary': 'bc211',
+             'parent_name': '',
+             'parent_id': ''} for name in names if name]
+
+
 def write_service_to_sink(service, location_id, parent_organization_id, sink):
     service['organization_id'] = parent_organization_id
     sink.write_service(service, location_id)
@@ -110,9 +119,10 @@ def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
     return service_taxonomy_terms
 
 
-def write_location_to_sink(location, addresses, phone_numbers, service_id, parent_id, location_ids, sink):
+def write_location_to_sink(location, addresses, phone_numbers, service_or_organization_id, parent_id, location_ids, sink):
     location['id'] = compute_location_id(location, addresses, phone_numbers)
-    location['organization_id'] = service_id if parent_id == '0' else parent_id
+    is_organization = parent_id == '0'
+    location['organization_id'] = service_or_organization_id if is_organization else parent_id
     if location['id'] not in location_ids:
         sink.write_location(location)
         location_ids[location['id']] = 1
@@ -232,12 +242,3 @@ phone_header_map = {
     'Phone1Type': 'type',
     'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
 }
-
-
-def parse_taxonomy_terms(value):
-    names = re.split(r'[;\-\* ]', value)
-    return [{'id': compute_hash(name, 'bc211'),
-             'name': name,
-             'vocabulary': 'bc211',
-             'parent_name': '',
-             'parent_id': ''} for name in names if name]
