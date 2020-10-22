@@ -75,6 +75,10 @@ urlpatterns = [
     url(r'^users/', include('users.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
+    url(r'^swagger(?P<format>.json|.yaml)$', SCHEMA_VIEW.without_ui(cache_timeout=None), name='schema-json'),
+    url(r'^swagger/$', SCHEMA_VIEW.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
+    url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
+
     url(r'^v1/', include(build_router().urls)),
     url(r'^v1/push_notifications/tokens/(?P<token>ExponentPushToken\[.+\])/',
         create_or_update_push_notification_token),
@@ -91,10 +95,6 @@ if settings.DEBUG:
         url(r'^403/$', default_views.permission_denied, kwargs={'exception': Exception('Permission Denied')}),
         url(r'^404/$', default_views.page_not_found, kwargs={'exception': Exception('Page not Found')}),
         url(r'^500/$', default_views.server_error),
-        # Turn off swagger and redoc in production
-        url(r'^swagger(?P<format>.json|.yaml)$', SCHEMA_VIEW.without_ui(cache_timeout=None), name='schema-json'),
-        url(r'^swagger/$', SCHEMA_VIEW.with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
-        url(r'^redoc/$', SCHEMA_VIEW.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
     ]
     if 'debug_toolbar' in settings.INSTALLED_APPS:
         import debug_toolbar
