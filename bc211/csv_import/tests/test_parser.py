@@ -2,17 +2,12 @@ import logging
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
-from bc211.csv_import.parser import compute_hash, parse as real_parse, phone_header_with_index_one
+from bc211.csv_import.parser import compute_hash, parse, phone_header_with_index_one
 
 logging.disable(logging.ERROR)
 
 
-def parse(sink, lines):
-    return real_parse(sink, lines.split('\n'))
-
-
 # TODO test that entities are unique accross organizations
-# TODO make sure AIRS tax terms aren't split incorrectly
 
 class TestDataSink:
     def __init__(self):

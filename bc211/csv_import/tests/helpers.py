@@ -41,15 +41,17 @@ class Bc211CsvDataBuilder:
         return self
 
     def build(self):
-        result = ''
+        result = []
         shuffled_keys = list(self.data[0].keys())
         random.shuffle(shuffled_keys)
+        line = ''
         for key in shuffled_keys:
-            result += key + ','
-        result += '\n'
+            line += key + ','
+        result.append(line)
         for row in self.data:
+            line = ''
             for key in shuffled_keys:
                 value = row.get(key, '')
-                result += value + ','
-            result += '\n'
+                line += value + ','
+            result.append(line)
         return result
