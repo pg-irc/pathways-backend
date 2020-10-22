@@ -6,9 +6,7 @@ organization_columns = ['id', 'name', 'alternate_name', 'description', 'email', 
 
 class CsvFileSink:
     def __init__(self, path):
-        self.path = path
-        self.organizations_writer = csv.writer(open(self.path_to('organizations'), 'w'))
-        self.organizations_writer.writerow(organization_columns)
+        self.organizations_writer = self.make_writer(path, 'organizations', organization_columns)
         # self.organizations_file = open(self.path_to('services'), 'w')
         # self.organizations_file = open(self.path_to('locations'), 'w')
         # self.organizations_file = open(self.path_to('addresses'), 'w')
@@ -16,12 +14,16 @@ class CsvFileSink:
         # self.organizations_file = open(self.path_to('taxonomy'), 'w')
         # self.organizations_file = open(self.path_to('services_taxonomy'), 'w')
 
-    def path_to(self, filename):
-        return self.path + '/' + filename + '.csv'
+    def make_writer(self, path, filename, columns):
+        full_path = path + '/' + filename + '.csv'
+        writable_file_handle = open(full_path, 'w')
+        writer = csv.writer(writable_file_handle)
+        writer.writerow(columns)
+        return writer
 
     def write_organization(self, organization):
-        values = [organization.get(i, '') for i in organization_columns]
-        self.organizations_writer.writerow(values)
+        row = [organization.get(column, '') for column in organization_columns]
+        self.organizations_writer.writerow(row)
 
     def write_service(self, service, location_id):
         pass
