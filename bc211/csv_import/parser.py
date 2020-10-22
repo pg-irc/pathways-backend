@@ -144,7 +144,10 @@ def parse_taxonomy_fields(header, value, taxonomy_terms):
 
 
 def parse_taxonomy_terms(value, vocabulary):
-    names = re.split(r'[;\-\* ]', value)
+    if vocabulary == 'AIRS':
+        names = re.split(r'[;\* ]', value)
+    else:
+        names = re.split(r'[;\-\* ]', value)
     return [build_taxonomy_object(name, vocabulary) for name in names if name]
 
 

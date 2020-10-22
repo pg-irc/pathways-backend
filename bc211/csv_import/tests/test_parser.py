@@ -356,6 +356,16 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'AIRS')
 
+    def test_does_not_split_airs_taxonomy_names_on_dash_or_dot(self):
+        the_term = 'TA-3001.0750 * YB-9502.3300; TA-3003.0750 * YB-9504.1500;'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyCodes', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 4)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'TA-3001.0750')
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'YB-9502.3300')
+        self.assertEqual(parsed_data.taxonomy_terms[2]['name'], 'TA-3003.0750')
+        self.assertEqual(parsed_data.taxonomy_terms[3]['name'], 'YB-9504.1500')
+
     def test_strip_trailing_semicolon(self):
         the_term = a_string()
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term + ';').build())
