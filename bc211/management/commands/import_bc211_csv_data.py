@@ -16,6 +16,7 @@ class Command(BaseCommand):
                             type=argparse.FileType('r', encoding='ISO-8859-1'),
                             metavar='file',
                             help='Path to CSV file containing BC-211 data')
+        parser.add_argument('path', metavar='path', help='Path to output folder, which must already exist')
 
     def handle(self, *args, **options):
-        parse(CsvFileSink('.'), options['file'])
+        parse(CsvFileSink(options['path']), options['file'])
