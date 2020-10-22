@@ -56,6 +56,16 @@ def parse_organization_and_service_fields(header, value, organization_or_service
     return organization_or_service
 
 
+organization_header_map = {
+    'ResourceAgencyNum': 'id',
+    'PublicName': 'name',
+    'AgencyDescription': 'description',
+    'AlternateName': 'alternate_name',
+    'EmailAddressMain': 'email',
+    'WebsiteAddress': 'url',
+}
+
+
 def parse_address_fields(header, value, addresses):
     output_address_header = address_header_map.get(get_normalized_address_header(header), None)
     is_physical_address_type = header.startswith('Physical')
@@ -64,6 +74,22 @@ def parse_address_fields(header, value, addresses):
         addresses[index][output_address_header] = value
         addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
     return addresses
+
+
+def get_normalized_address_header(fff):
+    return re.sub(r'^Physical', 'Mailing', fff)
+
+
+address_header_map = {
+    'MailingAddress1': 'address_1',
+    'MailingAddress2': 'address_2',
+    'MailingAddress3': 'address_3',
+    'MailingAddress4': 'address_4',
+    'MailingCity': 'city',
+    'MailingStateProvince': 'state_province',
+    'MailingPostalCode': 'postal_code',
+    'MailingCountry': 'country',
+}
 
 
 def parse_locations_fields(header, value, location):
@@ -78,6 +104,15 @@ def parse_locations_fields(header, value, location):
     return location
 
 
+location_header_map = {
+    'ResourceAgencyNum': 'organization_id',
+    'PublicName': 'name',
+    'AlternateName': 'alternate_name',
+    'Latitude': 'latitude',
+    'Longitude': 'longitude',
+}
+
+
 def parse_phone_number_fields(header, value, phone_numbers):
     output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
     if output_phone_header:
@@ -86,6 +121,22 @@ def parse_phone_number_fields(header, value, phone_numbers):
             phone_numbers.append({})
         phone_numbers[phone_index][output_phone_header] = value
     return phone_numbers
+
+
+def phone_header_with_index_one(phone_field_with_any_index):
+    return re.sub(r'^Phone\d', 'Phone1', phone_field_with_any_index)
+
+
+def get_zero_based_phone_index(phone):
+    r = re.match(r'^Phone(\d)', phone)
+    return int(r[1]) - 1 if r else None
+
+
+phone_header_map = {
+    'Phone1Number': 'number',
+    'Phone1Type': 'type',
+    'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
+}
 
 
 def parse_taxonomy_fields(header, value, taxonomy_terms):
@@ -191,54 +242,3 @@ def compute_hash(*args):
     for arg in args:
         hasher.update(arg.encode('utf-8'))
     return hasher.hexdigest()
-
-
-organization_header_map = {
-    'ResourceAgencyNum': 'id',
-    'PublicName': 'name',
-    'AgencyDescription': 'description',
-    'AlternateName': 'alternate_name',
-    'EmailAddressMain': 'email',
-    'WebsiteAddress': 'url',
-}
-
-
-location_header_map = {
-    'ResourceAgencyNum': 'organization_id',
-    'PublicName': 'name',
-    'AlternateName': 'alternate_name',
-    'Latitude': 'latitude',
-    'Longitude': 'longitude',
-}
-
-
-address_header_map = {
-    'MailingAddress1': 'address_1',
-    'MailingAddress2': 'address_2',
-    'MailingAddress3': 'address_3',
-    'MailingAddress4': 'address_4',
-    'MailingCity': 'city',
-    'MailingStateProvince': 'state_province',
-    'MailingPostalCode': 'postal_code',
-    'MailingCountry': 'country',
-}
-
-
-def get_normalized_address_header(fff):
-    return re.sub(r'^Physical', 'Mailing', fff)
-
-
-def phone_header_with_index_one(phone_field_with_any_index):
-    return re.sub(r'^Phone\d', 'Phone1', phone_field_with_any_index)
-
-
-def get_zero_based_phone_index(phone):
-    r = re.match(r'^Phone(\d)', phone)
-    return int(r[1]) - 1 if r else None
-
-
-phone_header_map = {
-    'Phone1Number': 'number',
-    'Phone1Type': 'type',
-    'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
-}
