@@ -187,7 +187,7 @@ class CreateTranslatableStringTests(TestCase):
         translatable = OrganizationBuilder().with_id('test_all_from_translation_id').build()
 
         base_translation = add_base_translation(
-            translatable, name='translation_name_msgid', description='translation_description_msgid'
+            translatable, name='translation_name_msgid', alternate_name='translation_alternate_name_msgid', description='translation_description_msgid'
         )
         translation = add_translation(
             translatable, 'fr', name='translation_name_msgstr'
@@ -197,14 +197,15 @@ class CreateTranslatableStringTests(TestCase):
             errors_list = []
             results_iter = TranslatableString.all_from_translation(translation, errors_out=errors_list)
             results_list = [n for n in results_iter]
-            self.assertEqual(from_translation.call_count, 2)
+            self.assertEqual(from_translation.call_count, 3)
             from_translation.assert_has_calls([
                 call(translation, 'name'),
+                call(translation, 'alternate_name'),
                 call(translation, 'description')
             ])
 
         self.assertEqual(len(errors_list), 0)
-        self.assertEqual(len(results_list), 2)
+        self.assertEqual(len(results_list), 3)
 
 
 class ValidTranslatableStringTests(TestCase):
