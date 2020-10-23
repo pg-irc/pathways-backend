@@ -14,10 +14,16 @@ class OpenReferralImporterTests(TestCase):
 
 class OpenReferralParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id']
+        self.headers = ['id', 'name']
 
     def test_can_parse_id(self):
         the_id = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
         organization = parse_organization(self.headers, organization_data)
         self.assertEqual(organization['id'], the_id)
+    
+    def test_can_parse_name(self):
+        the_name = a_string()
+        organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
+        organization = parse_organization(self.headers, organization_data)
+        self.assertEqual(organization['name'], the_name)

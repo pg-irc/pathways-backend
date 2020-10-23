@@ -31,9 +31,12 @@ def import_organizations_file(root_folder):
 def parse_organization(headers, row):
     organization = {}
     organization_id = row[0]
+    name = row[1]
     for header in headers:
         if header == 'id':
             organization['id'] = parse_required_field('id', organization_id)
+        elif header =='name':
+            organization['name'] = parse_required_field('name', name)
         else:
             continue
     return organization
