@@ -6,11 +6,16 @@ class OpenReferralCsvOrganizationBuilder:
 
     def a_row(self):
         organization_id = a_string()
-        return [organization_id]
+        name = a_string()
+        return [organization_id, name]
     
     def with_id(self, organization_id):
         self.data[0] = organization_id
         return self
 
+    def with_name(self, name):
+        self.data[1] = name
+        return self
+        
     def build(self):
         return self.data
