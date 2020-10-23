@@ -14,7 +14,7 @@ class OpenReferralImporterTests(TestCase):
 
 class OpenReferralParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'name']
+        self.headers = ['id', 'name', 'alternate_name']
 
     def test_can_parse_id(self):
         the_id = a_string()
@@ -27,6 +27,12 @@ class OpenReferralParserTests(TestCase):
         organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
         organization = parse_organization(self.headers, organization_data)
         self.assertEqual(organization['name'], the_name)
+
+    def test_can_parse_alternate_name(self):
+        the_alternate_name = a_string()
+        organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
+        organization = parse_organization(self.headers, organization_data)
+        self.assertEqual(organization['alternate_name'], the_alternate_name)
         
 
 class HTMLMarkupParserTests(TestCase):

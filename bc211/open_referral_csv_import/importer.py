@@ -32,11 +32,14 @@ def parse_organization(headers, row):
     organization = {}
     organization_id = row[0]
     name = row[1]
+    alternate_name = row[2]
     for header in headers:
         if header == 'id':
             organization['id'] = parse_required_field('id', organization_id)
-        elif header =='name':
+        elif header == 'name':
             organization['name'] = parse_required_field('name', name)
+        elif header == 'alternate_name':
+            organization['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
         else:
             continue
     return organization
@@ -48,3 +51,9 @@ def parse_required_field(field, value):
     except AttributeError:
         LOGGER.error('Missing required field: "{0}"'.format(field))
         raise
+
+
+def parse_optional_field(field, value):
+    if value is None:
+        return None
+    return remove_double_escaped_html_markup(value)
