@@ -1,6 +1,6 @@
 import unittest
 from django.test import TestCase
-from ..importer import import_organizations_file, parse_organization
+from ..importer import import_organizations_file, parse_organization, parse_required_field
 from .helpers import OpenReferralCsvOrganizationBuilder
 from common.testhelpers.random_test_values import a_string
 
@@ -27,3 +27,15 @@ class OpenReferralParserTests(TestCase):
         organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
         organization = parse_organization(self.headers, organization_data)
         self.assertEqual(organization['name'], the_name)
+        
+
+class HTMLMarkupParserTests(TestCase):
+    def test_removes_doubly_escaped_bold_markup_from_required_field(self):
+        the_name = '&amp;lt;b&amp;gt;abc'
+        html_markup = parse_required_field('name', the_name)
+        self.assertEqual(html_markup, 'abc')
+
+    def test_removes_doubly_escaped_strong_markup_from_required_field(self):
+        the_name = '&amp;lt;strong&amp;gt;abc'
+        html_markup = parse_required_field('name', the_name)
+        self.assertEqual(html_markup, 'abc')
