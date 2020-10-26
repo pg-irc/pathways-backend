@@ -44,6 +44,7 @@ def build_active_record(organization):
     active_record = Organization()
     active_record.id = organization.id
     active_record.name = organization.name
+    active_record.alternate_name = organization.alternate_name
     return active_record
 
 

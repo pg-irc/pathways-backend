@@ -110,3 +110,11 @@ class OpenReferralOrganizationImporterTests(TestCase):
         save_organization(organization)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].name, the_name)
+
+    def test_can_import_alternate_name(self):
+        the_alternate_name = a_string()
+        organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
+        organization = parse_organization(self.headers, organization_data)
+        save_organization(organization)
+        organizations = Organization.objects.all()
+        self.assertEqual(organizations[0].alternate_name, the_alternate_name)
