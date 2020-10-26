@@ -33,6 +33,7 @@ def parse_organization(headers, row):
     organization_id = row[0]
     name = row[1]
     alternate_name = row[2]
+    description = row[3]
     for header in headers:
         if header == 'id':
             organization['id'] = parse_required_field('id', organization_id)
@@ -40,6 +41,8 @@ def parse_organization(headers, row):
             organization['name'] = parse_required_field('name', name)
         elif header == 'alternate_name':
             organization['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
+        elif header == 'description':
+            organization['description'] = parse_optional_field('description', description)
         else:
             continue
     return organization
