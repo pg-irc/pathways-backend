@@ -1,6 +1,7 @@
 import unittest
 from django.test import TestCase
-from ..importer import import_organizations_file, parse_organization, parse_required_field, parse_optional_field, parse_website_with_prefix, save_organization
+from ..organization import import_organizations_file, parse_organization, save_organization
+from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix
 from .helpers import OpenReferralCsvOrganizationBuilder
 from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
 from human_services.organizations.models import Organization
