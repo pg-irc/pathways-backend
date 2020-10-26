@@ -6,3 +6,7 @@ class CsvParseException(Exception):
 class MissingRequiredFieldCsvParseException(CsvParseException):
     def __init__(self, *args, **kwargs):
         CsvParseException.__init__(self, *args, **kwargs)
+
+class InvalidTypeCsvParseException(CsvParseException):
+    def __init__(self, *args, **kwargs):
+        CsvParseException.__init__(self, *args, **kwargs)
