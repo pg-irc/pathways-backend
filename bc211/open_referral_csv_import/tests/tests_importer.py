@@ -126,3 +126,11 @@ class OpenReferralOrganizationImporterTests(TestCase):
         save_organization(organization)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].description, the_description)
+
+    def test_can_import_email(self):
+        the_email = an_email_address()
+        organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
+        organization = parse_organization(self.headers, organization_data)
+        save_organization(organization)
+        organizations = Organization.objects.all()
+        self.assertEqual(organizations[0].email, the_email)
