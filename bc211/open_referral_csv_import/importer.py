@@ -3,7 +3,9 @@ import logging
 from bc211.parser import remove_double_escaped_html_markup
 from urllib import parse as urlparse
 from .exceptions import MissingRequiredFieldCsvParseException
-from .dtos import Organization
+from bc211.open_referral_csv_import import dtos
+from django.utils import translation
+from human_services.organizations.models import Organization
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,9 +28,22 @@ def import_organizations_file(root_folder):
                 if not row:
                     return
                 organization = parse_organization(headers, row)
+                save_organization(organization)
     except FileNotFoundError as error:
             LOGGER.error('Missing organizations.csv file.')
             raise
+
+
+def save_organization(organization):
+    translation.activate('en')
+    active_record = build_active_record(organization)
+    active_record.save()
+
+
+def build_active_record(organization):
+    active_record = Organization()
+    active_record.id = organization.id
+    return active_record
 
 
 def parse_organization(headers, row):
@@ -54,7 +69,7 @@ def parse_organization(headers, row):
             organization['website'] = parse_website_with_prefix('website', website)
         else:
             continue
-    return Organization(id=organization['id'], name=organization['name'], alternate_name=organization['alternate_name'],
+    return dtos.Organization(id=organization['id'], name=organization['name'], alternate_name=organization['alternate_name'],
                         description=organization['description'], website=organization['website'], email=organization['email'])
 
 
