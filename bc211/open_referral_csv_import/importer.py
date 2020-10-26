@@ -43,6 +43,7 @@ def save_organization(organization):
 def build_active_record(organization):
     active_record = Organization()
     active_record.id = organization.id
+    active_record.name = organization.name
     return active_record
 
 
