@@ -2,7 +2,7 @@ import unittest
 from django.test import TestCase
 from ..importer import import_organizations_file, parse_organization, parse_required_field
 from .helpers import OpenReferralCsvOrganizationBuilder
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, an_email_address
 
 
 class OpenReferralImporterTests(TestCase):
@@ -14,7 +14,7 @@ class OpenReferralImporterTests(TestCase):
 
 class OpenReferralParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'name', 'alternate_name', 'description']
+        self.headers = ['id', 'name', 'alternate_name', 'description', 'email']
 
     def test_can_parse_id(self):
         the_id = a_string()
@@ -39,6 +39,12 @@ class OpenReferralParserTests(TestCase):
         organization_data = OpenReferralCsvOrganizationBuilder().with_description(the_description).build()
         organization = parse_organization(self.headers, organization_data)
         self.assertEqual(organization['description'], the_description)
+
+    def test_can_parse_email(self):
+        the_email = an_email_address()
+        organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
+        organization = parse_organization(self.headers, organization_data)
+        self.assertEqual(organization['email'], the_email)
         
 
 class HTMLMarkupParserTests(TestCase):

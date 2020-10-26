@@ -9,7 +9,8 @@ class OpenReferralCsvOrganizationBuilder:
         name = a_string()
         alternate_name = ''
         description = ''
-        return [organization_id, name, alternate_name, description]
+        email = ''
+        return [organization_id, name, alternate_name, description, email]
     
     def with_id(self, organization_id):
         self.data[0] = organization_id
@@ -25,6 +26,10 @@ class OpenReferralCsvOrganizationBuilder:
     
     def with_description(self, description):
         self.data[3] = description
+        return self
+
+    def with_email(self, email):
+        self.data[4] = email
         return self
         
     def build(self):
