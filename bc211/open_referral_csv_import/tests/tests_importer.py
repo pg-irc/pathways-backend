@@ -1,8 +1,9 @@
 import unittest
 from django.test import TestCase
-from ..importer import import_organizations_file, parse_organization, parse_required_field, parse_optional_field, parse_website_with_prefix
+from ..importer import import_organizations_file, parse_organization, parse_required_field, parse_optional_field, parse_website_with_prefix, save_organization
 from .helpers import OpenReferralCsvOrganizationBuilder
 from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
+from human_services.organizations.models import Organization
 
 
 class OpenReferralImporterTests(TestCase):
@@ -12,7 +13,7 @@ class OpenReferralImporterTests(TestCase):
             import_organizations_file(incorrect_file_path)
 
 
-class OpenReferralParserTests(TestCase):
+class OpenReferralOrganizationParserTests(TestCase):
     def setUp(self):
         self.headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url']
 
@@ -88,3 +89,16 @@ class HTMLMarkupParserTests(TestCase):
         the_alternate_name = '&amp;lt;strong&amp;gt;abc'
         html_markup = parse_optional_field('alternate_name', the_alternate_name)
         self.assertEqual(html_markup, 'abc')
+
+
+class OpenReferralOrganizationImporterTests(TestCase):
+    def setUp(self):
+        self.headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url']
+
+    def test_can_import_id(self):
+        the_id = a_string()
+        organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
+        organization = parse_organization(self.headers, organization_data)
+        save_organization(organization)
+        organizations = Organization.objects.all()
+        self.assertEqual(organizations[0].id, the_id)
