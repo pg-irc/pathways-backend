@@ -1,4 +1,4 @@
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
 
 class OpenReferralCsvOrganizationBuilder:
     def __init__(self):
@@ -7,10 +7,10 @@ class OpenReferralCsvOrganizationBuilder:
     def a_row(self):
         organization_id = a_string()
         name = a_string()
-        alternate_name = ''
-        description = ''
-        email = ''
-        url = ''
+        alternate_name = a_string()
+        description = a_string()
+        email = an_email_address()
+        url = a_website_address()
         return [organization_id, name, alternate_name, description, email, url]
     
     def with_id(self, organization_id):
