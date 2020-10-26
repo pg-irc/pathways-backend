@@ -10,6 +10,10 @@ def validate_api_key(value):
         raise ValidationError('Invalid API key')
 
 
+class PathwaysApiKey(models.Model):
+    id = RequiredCharField(primary_key=True, max_length=200)
+
+
 class PushNotificationToken(models.Model):
     id = RequiredCharField(primary_key=True, max_length=200, validators=[validate_token])
     locale = RequiredCharField(max_length=10)
