@@ -1,6 +1,6 @@
 import unittest
 from django.test import TestCase
-from ..importer import import_organizations_file, parse_organization, parse_required_field
+from ..importer import import_organizations_file, parse_organization, parse_required_field, parse_optional_field, parse_website_with_prefix
 from .helpers import OpenReferralCsvOrganizationBuilder
 from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
 
@@ -51,6 +51,21 @@ class OpenReferralParserTests(TestCase):
         organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
         organization = parse_organization(self.headers, organization_data)
         self.assertEqual(organization['website'], the_website)
+
+    def test_website_without_prefix_parsed_as_http(self):
+        the_website = 'www.example.org'
+        parsed_website = parse_website_with_prefix('website', the_website)
+        self.assertEqual(parsed_website, 'http://www.example.org')
+
+    def test_website_with_http_prefix_parsed_as_http(self):
+        the_website = 'http://www.example.org'
+        parsed_website = parse_website_with_prefix('website', the_website)
+        self.assertEqual(parsed_website, 'http://www.example.org')
+
+    def test_website_with_https_prefix_parsed_as_https(self):
+        the_website = 'https://www.example.org'
+        parsed_website = parse_website_with_prefix('website', the_website)
+        self.assertEqual(parsed_website, 'https://www.example.org')
         
 
 class HTMLMarkupParserTests(TestCase):
@@ -62,4 +77,14 @@ class HTMLMarkupParserTests(TestCase):
     def test_removes_doubly_escaped_strong_markup_from_required_field(self):
         the_name = '&amp;lt;strong&amp;gt;abc'
         html_markup = parse_required_field('name', the_name)
+        self.assertEqual(html_markup, 'abc')
+
+    def test_removes_doubly_escaped_bold_markup_from_optional_field(self):
+        the_alternate_name = '&amp;lt;b&amp;gt;abc'
+        html_markup = parse_optional_field('alternate_name', the_alternate_name)
+        self.assertEqual(html_markup, 'abc')
+
+    def test_removes_doubly_escaped_strong_markup_from_optional_field(self):
+        the_alternate_name = '&amp;lt;strong&amp;gt;abc'
+        html_markup = parse_optional_field('alternate_name', the_alternate_name)
         self.assertEqual(html_markup, 'abc')
