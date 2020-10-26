@@ -3,6 +3,7 @@ import logging
 from bc211.parser import remove_double_escaped_html_markup
 from urllib import parse as urlparse
 from .exceptions import MissingRequiredFieldCsvParseException
+from .dtos import Organization
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +54,8 @@ def parse_organization(headers, row):
             organization['website'] = parse_website_with_prefix('website', website)
         else:
             continue
-    return organization
+    return Organization(id=organization['id'], name=organization['name'], alternate_name=organization['alternate_name'],
+                        description=organization['description'], website=organization['website'], email=organization['email'])
 
 
 def parse_required_field(field, value):
