@@ -4,6 +4,7 @@ from bc211.open_referral_csv_import import dtos
 from django.utils import translation
 from human_services.organizations.models import Organization
 from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
+from bc211.is_inactive import is_inactive
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +27,8 @@ def import_organizations_file(root_folder):
 
 
 def save_organization(organization):
+    if is_inactive(organization):
+        return
     translation.activate('en')
     active_record = build_active_record(organization)
     active_record.save()
