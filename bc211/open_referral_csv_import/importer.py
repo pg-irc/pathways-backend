@@ -2,6 +2,7 @@ import os
 import logging
 from bc211.parser import remove_double_escaped_html_markup
 from urllib import parse as urlparse
+from .exceptions import MissingRequiredFieldCsvParseException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,8 +60,7 @@ def parse_required_field(field, value):
     try:
         return remove_double_escaped_html_markup(value)
     except AttributeError:
-        LOGGER.error('Missing required field: "{0}"'.format(field))
-        raise
+        raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
 
 
 def parse_optional_field(field, value):
