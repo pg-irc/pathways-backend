@@ -1,6 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field, parse_optional_field
+from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +28,7 @@ def parse_service(headers, row):
     name = row[3]
     alternate_name = row[4]
     description = row[5]
+    website = row[6]
     for header in headers:
         if header == 'id':
             service['id'] = parse_required_field('id', service_id)
@@ -39,6 +40,8 @@ def parse_service(headers, row):
             service['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
         elif header == 'description':
             service['description'] = parse_optional_field('description', description)
+        elif header == 'url':
+            service['website'] = parse_website_with_prefix('website', website)
         else:
             continue
     return service
