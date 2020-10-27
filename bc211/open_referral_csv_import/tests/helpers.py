@@ -52,10 +52,15 @@ class OpenReferralCsvServiceBuilder:
 
     def a_row(self):
         service_id = a_string()
-        return [service_id]
+        organization_id = a_string()
+        return [service_id, organization_id]
     
     def with_id(self, service_id):
         self.data[0] = service_id
+        return self
+
+    def with_organization_id(self, organization_id):
+        self.data[1] = organization_id
         return self
     
     def build(self):

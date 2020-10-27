@@ -24,9 +24,12 @@ def import_services_file(root_folder):
 def parse_service(headers, row):
     service = {}
     service_id = row[0]
+    organization_id = row[1]
     for header in headers:
         if header == 'id':
             service['id'] = parse_required_field('id', service_id)
+        elif header == 'organization_id':
+            service['organization_id'] = parse_required_field('organization_id', organization_id)
         else:
             continue
     return service
