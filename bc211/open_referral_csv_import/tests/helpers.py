@@ -44,3 +44,19 @@ class OpenReferralCsvOrganizationBuilder:
         
     def build(self):
         return self.data
+
+
+class OpenReferralCsvServiceBuilder:
+    def __init__(self):
+        self.data = self.a_row()
+
+    def a_row(self):
+        service_id = a_string()
+        return [service_id]
+    
+    def with_id(self, service_id):
+        self.data[0] = service_id
+        return self
+    
+    def build(self):
+        return self.data

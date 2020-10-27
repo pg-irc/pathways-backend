@@ -1,7 +1,8 @@
 import unittest
 from django.test import TestCase
-from .helpers import OpenReferralCsvOrganizationBuilder
+from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder
 from ..organization import parse_organization
+from ..service import parse_service
 from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix
 from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
 
@@ -61,7 +62,18 @@ class OpenReferralOrganizationParserTests(TestCase):
         the_website = 'https://www.example.org'
         parsed_website = parse_website_with_prefix('website', the_website)
         self.assertEqual(parsed_website, 'https://www.example.org')
-        
+
+
+class OpenReferralServiceParserTests(TestCase):
+    def setUp(self):
+        self.headers = ['id']
+
+    def test_can_parse_id(self):
+        the_id = a_string()
+        service_data = OpenReferralCsvServiceBuilder().with_id(the_id).build()
+        service = parse_service(self.headers, service_data)
+        self.assertEqual(service['id'], the_id)
+
 
 class HTMLMarkupParserTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self):
