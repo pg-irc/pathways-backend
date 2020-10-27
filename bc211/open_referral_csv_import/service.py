@@ -25,11 +25,14 @@ def parse_service(headers, row):
     service = {}
     service_id = row[0]
     organization_id = row[1]
+    name = row[3]
     for header in headers:
         if header == 'id':
             service['id'] = parse_required_field('id', service_id)
         elif header == 'organization_id':
             service['organization_id'] = parse_required_field('organization_id', organization_id)
+        elif header == 'name':
+            service['name'] = parse_required_field('name', name)
         else:
             continue
     return service
