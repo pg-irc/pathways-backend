@@ -55,7 +55,8 @@ class OpenReferralCsvServiceBuilder:
         organization_id = a_string()
         not_used_program_id = a_string()
         name = a_string()
-        return [service_id, organization_id, not_used_program_id, name]
+        alternate_name = a_string()
+        return [service_id, organization_id, not_used_program_id, name, alternate_name]
     
     def with_id(self, service_id):
         self.data[0] = service_id
@@ -67,6 +68,10 @@ class OpenReferralCsvServiceBuilder:
 
     def with_name(self, name):
         self.data[3] = name
+        return self
+    
+    def with_alternate_name(self, alternate_name):
+        self.data[4] = alternate_name
         return self
     
     def build(self):
