@@ -58,7 +58,8 @@ class OpenReferralCsvServiceBuilder:
         alternate_name = a_string()
         description = a_string()
         url = a_website_address()
-        return [service_id, organization_id, not_used_program_id, name, alternate_name, description, url]
+        email = an_email_address()
+        return [service_id, organization_id, not_used_program_id, name, alternate_name, description, url, email]
     
     def with_id(self, service_id):
         self.data[0] = service_id
@@ -82,6 +83,10 @@ class OpenReferralCsvServiceBuilder:
 
     def with_url(self, url):
         self.data[6] = url
+        return self
+
+    def with_email(self, email):
+        self.data[7] = email
         return self
     
     def build(self):

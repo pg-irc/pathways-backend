@@ -29,6 +29,7 @@ def parse_service(headers, row):
     alternate_name = row[4]
     description = row[5]
     website = row[6]
+    email = row[7]
     for header in headers:
         if header == 'id':
             service['id'] = parse_required_field('id', service_id)
@@ -42,6 +43,8 @@ def parse_service(headers, row):
             service['description'] = parse_optional_field('description', description)
         elif header == 'url':
             service['website'] = parse_website_with_prefix('website', website)
+        elif header == 'email':
+            service['email'] = parse_optional_field('email', email)
         else:
             continue
     return service
