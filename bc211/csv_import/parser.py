@@ -148,8 +148,9 @@ def parse_taxonomy_terms(value, vocabulary):
     if vocabulary == 'AIRS':
         names = re.split(r'[;\* ]', value)
     else:
-        names = re.split(r'[;\-\* ]', value)
-    return [build_taxonomy_object(name, vocabulary) for name in names if name]
+        names = re.split(r'[;\-\*]', value)
+    names = [name.strip() for name in names]
+    return [build_taxonomy_object(i, vocabulary) for i in names if i]
 
 
 def build_taxonomy_object(name, vocabulary):

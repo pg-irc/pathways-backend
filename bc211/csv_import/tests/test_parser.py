@@ -317,6 +317,8 @@ class ParseCompleteRecordTests(TestCase):
         self.assertGreater(len(self.parsed_data.first_address()['id']), 0)
         self.assertGreater(len(self.parsed_data.services_at_location[0]['id']), 0)
 
+# TODO include last verified on
+
 
 class ParseTaxonomyTests(TestCase):
     def test_parse_taxonomy_term(self):
@@ -326,6 +328,14 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'BC211')
+
+    def test_parse_taxonomy_term_with_space(self):
+        the_term = 'Fire Services; Fire Stations'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 2)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'Fire Services')
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'Fire Stations')
 
     def test_parse_second_taxonomy_term_column(self):
         the_term = a_string()
