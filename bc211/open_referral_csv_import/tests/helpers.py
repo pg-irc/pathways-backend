@@ -11,7 +11,12 @@ class OpenReferralCsvOrganizationBuilder:
         description = a_string()
         email = an_email_address()
         url = a_website_address()
-        return [organization_id, name, alternate_name, description, email, url]
+        not_used_tax_status = a_string()
+        not_used_tax_id = a_string()
+        not_used_year_incorporated = a_string()
+        not_used_legal_status = a_string()
+        return [organization_id, name, alternate_name, description, email, url,
+                not_used_tax_status, not_used_tax_id, not_used_year_incorporated, not_used_legal_status]
     
     def with_id(self, organization_id):
         self.data[0] = organization_id
