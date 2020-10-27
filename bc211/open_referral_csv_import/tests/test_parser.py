@@ -66,7 +66,7 @@ class OpenReferralOrganizationParserTests(TestCase):
 
 class OpenReferralServiceParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'organization_id', 'name', 'alternate_name']
+        self.headers = ['id', 'organization_id', 'program_id','name', 'alternate_name', 'description']
 
     def test_can_parse_id(self):
         the_id = a_string()
@@ -91,6 +91,12 @@ class OpenReferralServiceParserTests(TestCase):
         service_data = OpenReferralCsvServiceBuilder().with_alternate_name(the_alternate_name).build()
         service = parse_service(self.headers, service_data)
         self.assertEqual(service['alternate_name'], the_alternate_name)
+
+    def test_can_parse_description(self):
+        the_description = a_string()
+        service_data = OpenReferralCsvServiceBuilder().with_description(the_description).build()
+        service = parse_service(self.headers, service_data)
+        self.assertEqual(service['description'], the_description)
 
 class HTMLMarkupParserTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self):
