@@ -131,6 +131,15 @@ class ParseServicesTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_service()['id'], the_id)
 
+    def test_can_parse_last_verified_date(self):
+        a_date = '9/15/2018 15:53'
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('LastVerifiedOn', a_date).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_service()['last_verified_on'], '2018-09-15')
+
 
 class ParsePhoneNumbersTests(TestCase):
     def test_can_parse_organization_phone_number(self):
@@ -316,8 +325,6 @@ class ParseCompleteRecordTests(TestCase):
         self.assertGreater(len(self.parsed_data.first_phone_number()['id']), 0)
         self.assertGreater(len(self.parsed_data.first_address()['id']), 0)
         self.assertGreater(len(self.parsed_data.services_at_location[0]['id']), 0)
-
-# TODO include last verified on
 
 
 class ParseTaxonomyTests(TestCase):

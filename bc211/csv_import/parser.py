@@ -2,6 +2,7 @@ import csv
 import re
 import hashlib
 import uuid
+import datetime
 
 
 def parse(sink, lines):
@@ -54,7 +55,17 @@ def parse(sink, lines):
 def parse_organization_and_service_fields(header, value, organization_or_service):
     output_header = organization_header_map.get(header, None)
     if output_header:
-        organization_or_service[output_header] = value
+        if output_header == 'last_verified_on':
+            organization_or_service[output_header] = fix_date_time_string(value)
+        else:
+            organization_or_service[output_header] = value
+
+
+def fix_date_time_string(date_time_string):
+    date_time = datetime.datetime.strptime(date_time_string, '%m/%d/%Y %H:%M')
+    date_time_as_iso_string = str(date_time)
+    date_as_iso_string = date_time_as_iso_string.split(' ')[0]
+    return date_as_iso_string
 
 
 organization_header_map = {
@@ -64,6 +75,7 @@ organization_header_map = {
     'AlternateName': 'alternate_name',
     'EmailAddressMain': 'email',
     'WebsiteAddress': 'url',
+    'LastVerifiedOn': 'last_verified_on',
 }
 
 

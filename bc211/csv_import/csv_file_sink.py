@@ -5,7 +5,7 @@ organization_columns = ['id', 'name', 'alternate_name', 'description', 'email', 
                         'year_incorporated', 'legal_status']
 service_columns = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
                    'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
-                   'licenses', 'taxonomy_ids']
+                   'licenses', 'taxonomy_ids', 'last_verified_on']
 location_columns = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation', 'latitude',
                     'longitude']
 services_at_location_columns = ['id', 'service_id', 'location_id', 'description']
