@@ -66,7 +66,7 @@ class OpenReferralOrganizationParserTests(TestCase):
 
 class OpenReferralServiceParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'organization_id']
+        self.headers = ['id', 'organization_id', 'name']
 
     def test_can_parse_id(self):
         the_id = a_string()
@@ -79,6 +79,12 @@ class OpenReferralServiceParserTests(TestCase):
         service_data = OpenReferralCsvServiceBuilder().with_organization_id(the_organization_id).build()
         service = parse_service(self.headers, service_data)
         self.assertEqual(service['organization_id'], the_organization_id)
+    
+    def test_can_parse_name(self):
+        the_name = a_string()
+        service_data = OpenReferralCsvServiceBuilder().with_name(the_name).build()
+        service = parse_service(self.headers, service_data)
+        self.assertEqual = (service['name'], the_name)
 
 
 class HTMLMarkupParserTests(TestCase):
