@@ -1,14 +1,11 @@
 from django.db import models
 from common.models import RequiredCharField
 from push_notifications.validation import validate_token
-from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
 def validate_api_key(value):
-    if PathwaysApiKey.objects.filter(pk=value).exists():
-        return
-    if value != settings.PATHWAYS_API_KEY:
+    if not PathwaysApiKey.objects.filter(pk=value).exists():
         raise ValidationError('Invalid API key')
 
 

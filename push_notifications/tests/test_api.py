@@ -9,6 +9,7 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def setUp(self):
         self.token = 'ExponentPushToken[{}]'.format(a_string())
         self.url = urllib.parse.quote('/v1/push_notifications/tokens/{}/'.format(self.token))
+        PathwaysApiKey(pk='the_api_key').save()
 
     def test_put_creates_database_row(self):
         self.client.put(self.url, {'locale': 'en', 'api_key': 'the_api_key'})
