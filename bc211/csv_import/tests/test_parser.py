@@ -138,7 +138,7 @@ class ParseServicesTests(TestCase):
                 with_field('LastVerifiedOn', a_date).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_service()['last_verified_on'], '2018-09-15')
+        self.assertEqual(parsed_data.first_service()['last_verified_on-x'], '2018-09-15')
 
 
 class ParsePhoneNumbersTests(TestCase):

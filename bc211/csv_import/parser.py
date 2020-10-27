@@ -55,7 +55,7 @@ def parse(sink, lines):
 def parse_organization_and_service_fields(header, value, organization_or_service):
     output_header = organization_header_map.get(header, None)
     if output_header:
-        if output_header == 'last_verified_on':
+        if output_header == 'last_verified_on-x':
             organization_or_service[output_header] = fix_date_time_string(value)
         else:
             organization_or_service[output_header] = value
@@ -75,7 +75,7 @@ organization_header_map = {
     'AlternateName': 'alternate_name',
     'EmailAddressMain': 'email',
     'WebsiteAddress': 'url',
-    'LastVerifiedOn': 'last_verified_on',
+    'LastVerifiedOn': 'last_verified_on-x',
 }
 
 
