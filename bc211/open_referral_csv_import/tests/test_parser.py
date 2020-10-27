@@ -66,7 +66,9 @@ class OpenReferralOrganizationParserTests(TestCase):
 
 class OpenReferralServiceParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'organization_id', 'program_id','name', 'alternate_name', 'description', 'url', 'email']
+        self.headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
+                        'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
+                        'licenses', 'taxonomy_ids']
 
     def test_can_parse_id(self):
         the_id = a_string()
