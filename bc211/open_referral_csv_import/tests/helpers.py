@@ -47,12 +47,12 @@ class OpenReferralCsvOrganizationBuilder:
 
 
 class OpenReferralCsvServiceBuilder:
-    def __init__(self):
-        self.data = self.a_row()
+    def __init__(self, organization):
+        self.data = self.a_row(organization)
 
-    def a_row(self):
+    def a_row(self, organization):
         service_id = a_string()
-        organization_id = a_string()
+        organization_id = organization.id
         not_used_program_id = a_string()
         name = a_string()
         alternate_name = a_string()
