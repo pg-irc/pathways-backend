@@ -8,7 +8,8 @@ from common.testhelpers.random_test_values import a_string, an_email_address, a_
 
 class OpenReferralOrganizationParserTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url']
+        self.headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
+                        'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
 
     def test_can_parse_id(self):
         the_id = a_string()
