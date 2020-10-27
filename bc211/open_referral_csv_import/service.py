@@ -1,6 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field
+from .parser import parse_required_field, parse_optional_field
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ def parse_service(headers, row):
     service_id = row[0]
     organization_id = row[1]
     name = row[3]
+    alternate_name = row[4]
     for header in headers:
         if header == 'id':
             service['id'] = parse_required_field('id', service_id)
@@ -33,6 +34,8 @@ def parse_service(headers, row):
             service['organization_id'] = parse_required_field('organization_id', organization_id)
         elif header == 'name':
             service['name'] = parse_required_field('name', name)
+        elif header == 'alternate_name':
+            service['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
         else:
             continue
     return service
