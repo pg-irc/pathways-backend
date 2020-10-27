@@ -1,6 +1,7 @@
 import os
 import logging
 from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
+from bc211.open_referral_csv_import import dtos
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,4 +48,6 @@ def parse_service(headers, row):
             service['email'] = parse_optional_field('email', email)
         else:
             continue
-    return service
+    return dtos.Service(id=service['id'], organization_id=service['organization_id'], name=service['name'],
+                        alternate_name=service['alternate_name'], description=service['description'],
+                        website=service['website'], email=service['email'])
