@@ -74,43 +74,43 @@ class OpenReferralServiceParserTests(TestCase):
         the_id = a_string()
         service_data = OpenReferralCsvServiceBuilder().with_id(the_id).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service['id'], the_id)
+        self.assertEqual(service.id, the_id)
     
     def test_can_parse_organization_id(self):
         the_organization_id = a_string()
         service_data = OpenReferralCsvServiceBuilder().with_organization_id(the_organization_id).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service['organization_id'], the_organization_id)
+        self.assertEqual(service.organization_id, the_organization_id)
     
     def test_can_parse_name(self):
         the_name = a_string()
         service_data = OpenReferralCsvServiceBuilder().with_name(the_name).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual = (service['name'], the_name)
+        self.assertEqual = (service.name, the_name)
 
     def test_can_parse_alternate_name(self):
         the_alternate_name = a_string()
         service_data = OpenReferralCsvServiceBuilder().with_alternate_name(the_alternate_name).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service['alternate_name'], the_alternate_name)
+        self.assertEqual(service.alternate_name, the_alternate_name)
 
     def test_can_parse_description(self):
         the_description = a_string()
         service_data = OpenReferralCsvServiceBuilder().with_description(the_description).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service['description'], the_description)
+        self.assertEqual(service.description, the_description)
 
     def test_can_parse_website(self):
         the_website = a_website_address()
         service_data = OpenReferralCsvServiceBuilder().with_url(the_website).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service['website'], the_website)
+        self.assertEqual(service.website, the_website)
 
     def test_can_parse_email(self):
         the_email = an_email_address()
         service_data = OpenReferralCsvServiceBuilder().with_email(the_email).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service['email'], the_email)
+        self.assertEqual(service.email, the_email)
 
 
 class HTMLMarkupParserTests(TestCase):
