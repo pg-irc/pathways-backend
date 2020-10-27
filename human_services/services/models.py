@@ -1,4 +1,4 @@
-from common.models import ValidateOnSaveMixin, RequiredCharField
+from common.models import ValidateOnSaveMixin, RequiredCharField, OptionalCharField
 from django.core import validators
 from django.db import models
 from parler.models import TranslatableModel, TranslatedFields
@@ -18,6 +18,8 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
     translations = TranslatedFields(name=models.CharField(max_length=200),
                                     alternate_name=models.CharField(blank=True, max_length=200),
                                     description=models.TextField(blank=True, null=True))
+    email = OptionalCharField(max_length=200, validators=[validators.EmailValidator()])
+    website = OptionalCharField(max_length=200, validators=[validators.URLValidator()])
     last_verified_date = models.DateField(blank=True, null=True)
     class Meta:
         ordering = ['id']
