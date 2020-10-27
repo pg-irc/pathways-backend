@@ -2,7 +2,7 @@ import urllib.parse
 from rest_framework import test as rest_test
 from rest_framework import status
 from common.testhelpers.random_test_values import a_string
-from push_notifications.models import PushNotificationToken
+from push_notifications.models import PathwaysApiKey, PushNotificationToken
 
 
 class CreatePushNotificationTokenTests(rest_test.APITestCase):
@@ -43,6 +43,12 @@ class CreatePushNotificationTokenTests(rest_test.APITestCase):
     def test_put_returns_400_on_incorrect_api_key(self):
         response = self.client.put(self.url, {'locale': 'en', 'api_key': 'the_wrong_api_key'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_key_against_value_in_database(self):
+        the_key = a_string()
+        PathwaysApiKey(pk=the_key).save()
+        response = self.client.put(self.url, {'locale': 'en', 'api_key': the_key})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_returns_400_on_invalid_locale(self):
         response = self.client.put(self.url, {'locale': 'this is way too long to be a valid locale'})

@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 
 
 def validate_api_key(value):
+    if PathwaysApiKey.objects.filter(pk=value).exists():
+        return
     if value != settings.PATHWAYS_API_KEY:
         raise ValidationError('Invalid API key')
 
