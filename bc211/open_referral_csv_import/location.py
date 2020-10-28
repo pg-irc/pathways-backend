@@ -24,9 +24,12 @@ def import_locations_file(root_folder):
 def parse_location(headers, row):
     location = {}
     location_id = row[0]
+    organization_id = row[1]
     for header in headers:
         if header == 'id':
             location['id'] = parse_required_field('id', location_id)
+        elif header == 'organization_id':
+            location['organization_id'] = parse_required_field('organization_id', organization_id)
         else:
             continue
     return location 
