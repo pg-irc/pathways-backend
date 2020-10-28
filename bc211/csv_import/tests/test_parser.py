@@ -221,9 +221,6 @@ class ParsePhoneNumbersTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.phone_numbers), 0)
 
-# TODO determine if the other kinds of phone numbers contain any data
-# TODO determine if other address fields are used for any records
-
 
 class ParseLocationsTests(TestCase):
     def test_parses_organization_name_as_location_name(self):
