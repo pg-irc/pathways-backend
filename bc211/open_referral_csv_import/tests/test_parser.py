@@ -139,6 +139,12 @@ class OpenReferralLocationParserTests(TestCase):
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build()
         location = parse_location(self.headers, location_data)
         self.assertEqual(location['name'], the_name)
+    
+    def test_can_parse_alternate_name(self):
+        the_alternate_name = a_string()
+        location_data = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build()
+        location = parse_location(self.headers, location_data)
+        self.assertEqual(location['alternate_name'], the_alternate_name)
 
 
 class HTMLMarkupParserTests(TestCase):
