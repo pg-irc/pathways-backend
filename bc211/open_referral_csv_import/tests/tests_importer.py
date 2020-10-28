@@ -1,10 +1,12 @@
 import unittest
 from django.test import TestCase
 from ..organization import import_organizations_file, parse_organization, save_organization
-from ..service import import_services_file
-from .helpers import OpenReferralCsvOrganizationBuilder
+from ..service import import_services_file, parse_service, save_service
+from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder
 from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
 from human_services.organizations.models import Organization
+from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.services.models import Service
 
 
 class OpenReferralImporterTests(TestCase):
@@ -72,3 +74,28 @@ class OpenReferralOrganizationImporterTests(TestCase):
         save_organization(organization)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].website, the_website)
+
+
+class OpenReferralServiceImporterTests(TestCase):
+    def setUp(self):
+        self.headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
+                        'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
+                        'licenses', 'taxonomy_ids']
+        self.organization_id_passed_to_parser = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_parser).build()
+        self.organization.save()
+    
+    def test_can_import_id(self): 
+        the_id = a_string()
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_id(the_id).build()
+        service = parse_service(self.headers, service_data)
+        save_service(service)
+        services = Service.objects.all()
+        self.assertEqual(services[0].id, the_id)
+
+    def test_can_import_organization_id(self):
+        service_data = OpenReferralCsvServiceBuilder(self.organization).build()
+        service = parse_service(self.headers, service_data)
+        save_service(service)
+        services = Service.objects.all()
+        self.assertEqual(services[0].organization_id, self.organization_id_passed_to_parser)
