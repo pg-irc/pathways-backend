@@ -131,3 +131,11 @@ class OpenReferralServiceImporterTests(TestCase):
         save_service(service)
         services = Service.objects.all()
         self.assertEqual(services[0].website, the_website)
+
+    def test_can_import_email(self):
+        the_email = an_email_address()
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_email(the_email).build()
+        service = parse_service(self.headers, service_data)
+        save_service(service)
+        services = Service.objects.all()
+        self.assertEqual(services[0].email, the_email)
