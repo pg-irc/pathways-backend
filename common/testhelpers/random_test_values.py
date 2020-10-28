@@ -63,3 +63,8 @@ def a_date():
     rand_delta = random.randint(0, 1e9)
     now = datetime.timestamp(datetime.now())
     return datetime.fromtimestamp(now - rand_delta)
+
+
+def a_latitude_as_a_string():
+    latitude = -90 + 180*random.random()
+    return str(latitude)
