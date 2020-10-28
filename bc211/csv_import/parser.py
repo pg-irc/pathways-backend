@@ -212,10 +212,19 @@ def write_location_to_sink(location, addresses, phone_numbers, service_or_organi
 def compute_location_id(location, addresses, phone_numbers):
     return compute_hash(compute_address_id(addresses[0]),
                         compute_address_id(addresses[1]),
-                        compute_phone_number_id(phone_numbers[0]),
+                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 0)),
+                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 1)),
+                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 2)),
+                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 3)),
+                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 4)),
+                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 5)),
                         str(location.get('latitude', '')),
                         str(location.get('longitude', ''))
                         )
+
+
+def get_array_element_if_it_exists(array, index):
+    return array[index] if index < len(array) else None
 
 
 def compute_address_id(address):
@@ -232,9 +241,7 @@ def compute_address_id(address):
 
 
 def compute_phone_number_id(phone_number):
-    if not phone_number:
-        return ''
-    return compute_hash(phone_number.get('number', ''))
+    return phone_number.get('number', '') if phone_number else ''
 
 
 def write_addresses_to_sink(addresses, location_id, sink):
