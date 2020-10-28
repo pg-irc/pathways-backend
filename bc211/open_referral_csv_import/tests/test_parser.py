@@ -51,21 +51,6 @@ class OpenReferralOrganizationParserTests(TestCase):
         organization = parse_organization(self.headers, organization_data)
         self.assertEqual(organization.website, the_website)
 
-    def test_website_without_prefix_parsed_as_http(self):
-        the_website = 'www.example.org'
-        parsed_website = parse_website_with_prefix('website', the_website)
-        self.assertEqual(parsed_website, 'http://www.example.org')
-
-    def test_website_with_http_prefix_parsed_as_http(self):
-        the_website = 'http://www.example.org'
-        parsed_website = parse_website_with_prefix('website', the_website)
-        self.assertEqual(parsed_website, 'http://www.example.org')
-
-    def test_website_with_https_prefix_parsed_as_https(self):
-        the_website = 'https://www.example.org'
-        parsed_website = parse_website_with_prefix('website', the_website)
-        self.assertEqual(parsed_website, 'https://www.example.org')
-
 
 class OpenReferralServiceParserTests(TestCase):
     def setUp(self):
@@ -186,6 +171,21 @@ class ParserHelperTests(TestCase):
         the_alternate_name = '&amp;lt;strong&amp;gt;abc'
         html_markup = parse_optional_field('alternate_name', the_alternate_name)
         self.assertEqual(html_markup, 'abc')
+
+    def test_website_without_prefix_parsed_as_http(self):
+        the_website = 'www.example.org'
+        parsed_website = parse_website_with_prefix('website', the_website)
+        self.assertEqual(parsed_website, 'http://www.example.org')
+
+    def test_website_with_http_prefix_parsed_as_http(self):
+        the_website = 'http://www.example.org'
+        parsed_website = parse_website_with_prefix('website', the_website)
+        self.assertEqual(parsed_website, 'http://www.example.org')
+
+    def test_website_with_https_prefix_parsed_as_https(self):
+        the_website = 'https://www.example.org'
+        parsed_website = parse_website_with_prefix('website', the_website)
+        self.assertEqual(parsed_website, 'https://www.example.org')
     
     def test_returns_none_if_coordinate_is_empty(self):
         empty_latitude = ''
