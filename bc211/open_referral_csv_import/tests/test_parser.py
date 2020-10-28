@@ -4,7 +4,7 @@ from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceB
 from ..organization import parse_organization
 from ..service import parse_service
 from ..location import parse_location
-from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix
+from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_coordinate_if_defined
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.tests.helpers import OrganizationBuilder
@@ -166,7 +166,7 @@ class OpenReferralLocationParserTests(TestCase):
         self.assertEqual(location['longitude'], float(the_longitude))
 
 
-class HTMLMarkupParserTests(TestCase):
+class ParserHelperTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self):
         the_name = '&amp;lt;b&amp;gt;abc'
         html_markup = parse_required_field('name', the_name)
@@ -186,3 +186,8 @@ class HTMLMarkupParserTests(TestCase):
         the_alternate_name = '&amp;lt;strong&amp;gt;abc'
         html_markup = parse_optional_field('alternate_name', the_alternate_name)
         self.assertEqual(html_markup, 'abc')
+    
+    def test_returns_none_if_coordinate_is_empty(self):
+        empty_latitude = ''
+        foo = parse_coordinate_if_defined('latitude', empty_latitude)
+        self.assertEqual(foo, None)

@@ -11,14 +11,14 @@ def parse_required_field(field, value):
 
 
 def parse_optional_field(field, value):
-    if value is None:
+    if csv_value_is_empty(value):
         return None
     return remove_double_escaped_html_markup(value)
 
 
 def parse_website_with_prefix(field, value):
     website = parse_optional_field(field, value)
-    return None if website is None else website_with_http_prefix(website)
+    return None if csv_value_is_empty(value) else website_with_http_prefix(website)
 
 
 def website_with_http_prefix(website):
@@ -28,4 +28,7 @@ def website_with_http_prefix(website):
 
 def parse_coordinate_if_defined(field, value):
     coordinate = parse_optional_field(field, value)
-    return None if coordinate is None else float(coordinate)
+    return None if csv_value_is_empty(value) else float(coordinate)
+
+def csv_value_is_empty(value):
+    return value is None or value == ''
