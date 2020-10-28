@@ -7,6 +7,17 @@ class MissingRequiredFieldCsvParseException(CsvParseException):
     def __init__(self, *args, **kwargs):
         CsvParseException.__init__(self, *args, **kwargs)
 
+
 class InvalidTypeCsvParseException(CsvParseException):
+    def __init__(self, *args, **kwargs):
+        CsvParseException.__init__(self, *args, **kwargs)
+
+
+class InvalidNestedObjectCsvParseException(CsvParseException):
+    def __init__(self, *args, **kwargs):
+        CsvParseException.__init__(self, *args, **kwargs)
+
+
+class InvalidFloatCsvParseException(CsvParseException):
     def __init__(self, *args, **kwargs):
         CsvParseException.__init__(self, *args, **kwargs)
