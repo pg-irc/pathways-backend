@@ -1,6 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field, parse_optional_field
+from .parser import parse_required_field, parse_optional_field, parse_latitude_if_defined
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +28,7 @@ def parse_location(headers, row):
     name = row[2]
     alternate_name = row[3]
     description = row[4]
+    latitude = row[6]
     for header in headers:
         if header == 'id':
             location['id'] = parse_required_field('id', location_id)
@@ -39,6 +40,8 @@ def parse_location(headers, row):
             location['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
         elif header == 'description':
             location['description'] = parse_optional_field('description', description)
+        elif header == 'latitude':
+            location['latitude'] = parse_latitude_if_defined('latitude', latitude)
         else:
             continue
     return location 

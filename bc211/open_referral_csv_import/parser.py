@@ -25,3 +25,7 @@ def website_with_http_prefix(website):
     parts = urlparse.urlparse(website, 'http')
     whole_with_extra_slash = urlparse.urlunparse(parts)
     return whole_with_extra_slash.replace('///', '//')
+
+def parse_latitude_if_defined(field, value):
+    latitude = parse_optional_field(field, value)
+    return None if latitude is None else float(latitude)

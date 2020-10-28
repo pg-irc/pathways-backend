@@ -1,4 +1,4 @@
-from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
+from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address, a_latitude_as_a_string
 
 class OpenReferralCsvOrganizationBuilder:
     def __init__(self):
@@ -114,7 +114,9 @@ class OpenReferralCsvLocationBuilder:
         name = a_string()
         alternate_name = a_string()
         description = a_string()
-        return [location_id, organization_id, name, alternate_name, description]
+        not_used_transportation = a_string()
+        latitude = a_latitude_as_a_string()
+        return [location_id, organization_id, name, alternate_name, description, not_used_transportation, latitude]
     
     def with_id(self, location_id):
         self.data[0] = location_id
@@ -134,6 +136,10 @@ class OpenReferralCsvLocationBuilder:
     
     def with_description(self, description):
         self.data[4] = description
+        return self
+    
+    def with_latitude(self, latitude):
+        self.data[6] = latitude
         return self
 
     def build(self):
