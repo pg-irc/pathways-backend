@@ -2,6 +2,7 @@ import os
 import logging
 from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
 from bc211.open_referral_csv_import import dtos
+from human_services.services.models import Service
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ def import_services_file(root_folder):
                 if not row:
                     return
                 service = parse_service(headers, row)
+                save_service(service)
     except FileNotFoundError as error:
             LOGGER.error('Missing services.csv file.')
             raise
@@ -51,3 +53,15 @@ def parse_service(headers, row):
     return dtos.Service(id=service['id'], organization_id=service['organization_id'], name=service['name'],
                         alternate_name=service['alternate_name'], description=service['description'],
                         website=service['website'], email=service['email'])
+
+
+def save_service(service):
+    active_record = build_service_active_record(service)
+    active_record.save()
+    
+
+def build_service_active_record(service):
+    active_record = Service()
+    active_record.id = service.id
+    active_record.organization_id = service.organization_id
+    return active_record
