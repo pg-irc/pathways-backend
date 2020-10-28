@@ -102,3 +102,19 @@ class OpenReferralCsvServiceBuilder:
     
     def build(self):
         return self.data
+
+
+class OpenReferralCsvLocationBuilder:
+    def __init__(self):
+        self.data = self.a_row()
+
+    def a_row(self):
+        location_id = a_string()
+        return [location_id]
+    
+    def with_id(self, location_id):
+        self.data[0] = location_id
+        return self
+
+    def build(self):
+        return self.data 
