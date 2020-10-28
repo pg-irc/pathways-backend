@@ -123,3 +123,11 @@ class OpenReferralServiceImporterTests(TestCase):
         save_service(service)
         services = Service.objects.all()
         self.assertEqual(services[0].description, the_description)
+    
+    def test_can_import_website(self):
+        the_website = a_website_address()
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_url(the_website).build()
+        service = parse_service(self.headers, service_data)
+        save_service(service)
+        services = Service.objects.all()
+        self.assertEqual(services[0].website, the_website)
