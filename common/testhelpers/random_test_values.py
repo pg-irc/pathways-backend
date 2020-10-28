@@ -64,5 +64,7 @@ def a_date():
     return datetime.fromtimestamp(now - rand_delta)
 
 def a_latitude_as_a_string():
-    latitude = -90 + 180*random.random()
-    return str(latitude)
+    return str(a_latitude())
+
+def a_longitude_as_a_string():
+    return str(a_longitude())
