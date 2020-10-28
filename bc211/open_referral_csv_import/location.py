@@ -27,6 +27,7 @@ def parse_location(headers, row):
     organization_id = row[1]
     name = row[2]
     alternate_name = row[3]
+    description = row[4]
     for header in headers:
         if header == 'id':
             location['id'] = parse_required_field('id', location_id)
@@ -36,6 +37,8 @@ def parse_location(headers, row):
             location['name'] = parse_required_field('name', name)
         elif header == 'alternate_name':
             location['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
+        elif header == 'description':
+            location['description'] = parse_optional_field('description', description)
         else:
             continue
     return location 
