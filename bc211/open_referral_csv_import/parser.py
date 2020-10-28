@@ -26,6 +26,6 @@ def website_with_http_prefix(website):
     whole_with_extra_slash = urlparse.urlunparse(parts)
     return whole_with_extra_slash.replace('///', '//')
 
-def parse_latitude_if_defined(field, value):
-    latitude = parse_optional_field(field, value)
-    return None if latitude is None else float(latitude)
+def parse_coordinate_if_defined(field, value):
+    coordinate = parse_optional_field(field, value)
+    return None if coordinate is None else float(coordinate)

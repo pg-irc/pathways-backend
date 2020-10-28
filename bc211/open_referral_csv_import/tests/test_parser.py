@@ -5,7 +5,8 @@ from ..organization import parse_organization
 from ..service import parse_service
 from ..location import parse_location
 from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix
-from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address, a_latitude_as_a_string
+from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
+                                                    a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.tests.helpers import OrganizationBuilder
 
 
@@ -157,6 +158,12 @@ class OpenReferralLocationParserTests(TestCase):
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).build()
         location = parse_location(self.headers, location_data)
         self.assertEqual(location['latitude'], float(the_latitude))
+
+    def test_can_parse_longitude(self):
+        the_longitude = a_longitude_as_a_string()
+        location_data = OpenReferralCsvLocationBuilder(self.organization).with_longitude(the_longitude).build()
+        location = parse_location(self.headers, location_data)
+        self.assertEqual(location['longitude'], float(the_longitude))
 
 
 class HTMLMarkupParserTests(TestCase):
