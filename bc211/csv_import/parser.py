@@ -125,18 +125,13 @@ location_header_map = {
 
 
 def parse_phone_number_fields(header, value, phone_numbers):
-    if header == 'PhoneFax':
-        output_phone_header = phone_header_map.get(header)
-        phone_index = get_zero_based_phone_index(header)
-        set_phone_array_length(phone_numbers, phone_index)
-        phone_numbers[phone_index][output_phone_header] = value
-        phone_numbers[phone_index]['type'] = 'Fax'
-        return
     output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
     if output_phone_header:
         phone_index = get_zero_based_phone_index(header)
         set_phone_array_length(phone_numbers, phone_index)
         phone_numbers[phone_index][output_phone_header] = value
+        if header == 'PhoneFax':
+            phone_numbers[phone_index]['type'] = 'Fax'
 
 
 def set_phone_array_length(phone_numbers, index):
@@ -145,7 +140,6 @@ def set_phone_array_length(phone_numbers, index):
 
 
 def phone_header_with_index_one(phone_field_with_any_index):
-
     return re.sub(r'^Phone\d', 'Phone1', phone_field_with_any_index)
 
 
