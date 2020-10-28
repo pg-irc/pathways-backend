@@ -2,6 +2,7 @@ import unittest
 from django.test import TestCase
 from ..organization import import_organizations_file, parse_organization, save_organization
 from ..service import import_services_file, parse_service, save_service
+from ..location import import_locations_file
 from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder
 from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
 from human_services.organizations.models import Organization
@@ -19,6 +20,11 @@ class OpenReferralImporterTests(TestCase):
         incorrect_file_path = '../foo/services.csv'
         with self.assertRaises(FileNotFoundError) as error:
             import_services_file(incorrect_file_path)
+    
+    def test_missing_locations_file_throws_exception(self):
+        incorrect_file_path = '../foo/locations.csv'
+        with self.assertRaises(FileNotFoundError) as error:
+            import_locations_file(incorrect_file_path)
 
 
 class OpenReferralOrganizationImporterTests(TestCase):
