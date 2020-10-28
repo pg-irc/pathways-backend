@@ -120,12 +120,20 @@ class OpenReferralLocationParserTests(TestCase):
     def setUp(self):
         self.headers = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation',
                         'latitude', 'longitude']
+        self.organization_id_passed_to_parser = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_parser).build()
 
     def test_can_parse_id(self):
         the_id = a_string()
-        location_data = OpenReferralCsvLocationBuilder().with_id(the_id).build()
+        location_data = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build()
         location = parse_location(self.headers, location_data)
         self.assertEqual(location['id'], the_id)
+    
+    def test_can_parse_organization_id(self):
+        location_data = OpenReferralCsvLocationBuilder(self.organization).build()
+        location = parse_location(self.headers, location_data)
+        self.assertEqual(location['organization_id'], self.organization_id_passed_to_parser)
+
 
 class HTMLMarkupParserTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self):

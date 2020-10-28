@@ -105,15 +105,20 @@ class OpenReferralCsvServiceBuilder:
 
 
 class OpenReferralCsvLocationBuilder:
-    def __init__(self):
-        self.data = self.a_row()
+    def __init__(self, organization):
+        self.data = self.a_row(organization)
 
-    def a_row(self):
+    def a_row(self, organization):
         location_id = a_string()
-        return [location_id]
+        organization_id = organization.id
+        return [location_id, organization_id]
     
     def with_id(self, location_id):
         self.data[0] = location_id
+        return self
+
+    def with_organization_id(self, organization_id):
+        self.data[1] = organization_id
         return self
 
     def build(self):
