@@ -189,6 +189,33 @@ class ParsePhoneNumbersTests(TestCase):
         self.assertEqual(parsed_data.phone_numbers[0]['number'], first_number)
         self.assertEqual(parsed_data.phone_numbers[1]['number'], second_number)
 
+    def test_can_parse_fax_number(self):
+        a_number = a_phone_number()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('PhoneFax', a_number).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.phone_numbers), 1)
+        self.assertEqual(parsed_data.phone_numbers[0]['number'], a_number)
+
+    def test_sets_number_type_to_fax_for_fax_numbers(self):
+        first_type = a_string()
+        second_type = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('Phone1Number', a_phone_number()).
+                with_field('Phone1Type', first_type).
+                with_field('Phone2Number', a_phone_number()).
+                with_field('Phone2Type', second_type).
+                with_field('PhoneFax', a_phone_number()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.phone_numbers), 3)
+        self.assertEqual(parsed_data.phone_numbers[0]['type'], first_type)
+        self.assertEqual(parsed_data.phone_numbers[1]['type'], second_type)
+        self.assertEqual(parsed_data.phone_numbers[2]['type'], 'Fax')
+
     def test_leaves_out_phone_numbers_with_no_values(self):
         data = Bc211CsvDataBuilder().as_organization().with_field('Phone1Number', '').build()
         parsed_data = parse(TestDataSink(), data)

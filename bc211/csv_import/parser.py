@@ -125,6 +125,12 @@ location_header_map = {
 
 
 def parse_phone_number_fields(header, value, phone_numbers):
+    if header == 'PhoneFax':
+        while len(phone_numbers) < 6:
+            phone_numbers.append({})
+        phone_numbers[5]['number'] = value
+        phone_numbers[5]['type'] = 'Fax'
+        return
     output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
     if output_phone_header:
         phone_index = get_zero_based_phone_index(header)
@@ -239,8 +245,10 @@ def write_addresses_to_sink(addresses, location_id, sink):
 
 def write_phone_numbers_to_sink(phone_numbers, location_id, phone_ids, sink):
     for i, phone_number in enumerate(phone_numbers):
+        if 'number' not in phone_number or not phone_number['number']:
+            continue
         the_id = compute_hash(phone_number['number'])
-        if not phone_number['number'] or the_id in phone_ids:
+        if the_id in phone_ids:
             continue
         phone_number['id'] = the_id
         phone_number['location_id'] = location_id
