@@ -3,6 +3,7 @@ import logging
 from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
 from bc211.open_referral_csv_import import dtos
 from human_services.services.models import Service
+from bc211.is_inactive import is_inactive
 
 LOGGER = logging.getLogger(__name__)
 
@@ -56,6 +57,8 @@ def parse_service(headers, row):
 
 
 def save_service(service):
+    if is_inactive(service):
+        return
     active_record = build_service_active_record(service)
     active_record.save()
     
