@@ -113,7 +113,8 @@ class OpenReferralCsvLocationBuilder:
         organization_id = organization.id
         name = a_string()
         alternate_name = a_string()
-        return [location_id, organization_id, name, alternate_name]
+        description = a_string()
+        return [location_id, organization_id, name, alternate_name, description]
     
     def with_id(self, location_id):
         self.data[0] = location_id
@@ -129,6 +130,10 @@ class OpenReferralCsvLocationBuilder:
 
     def with_alternate_name(self, alternate_name):
         self.data[3] = alternate_name
+        return self
+    
+    def with_description(self, description):
+        self.data[4] = description
         return self
 
     def build(self):
