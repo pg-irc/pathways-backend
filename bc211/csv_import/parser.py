@@ -126,24 +126,32 @@ location_header_map = {
 
 def parse_phone_number_fields(header, value, phone_numbers):
     if header == 'PhoneFax':
-        while len(phone_numbers) < 6:
-            phone_numbers.append({})
-        phone_numbers[5]['number'] = value
-        phone_numbers[5]['type'] = 'Fax'
+        output_phone_header = phone_header_map.get(header)
+        phone_index = get_zero_based_phone_index(header)
+        set_phone_array_length(phone_numbers, phone_index)
+        phone_numbers[phone_index][output_phone_header] = value
+        phone_numbers[phone_index]['type'] = 'Fax'
         return
     output_phone_header = phone_header_map.get(phone_header_with_index_one(header), None)
     if output_phone_header:
         phone_index = get_zero_based_phone_index(header)
-        while phone_index and len(phone_numbers) <= phone_index:
-            phone_numbers.append({})
+        set_phone_array_length(phone_numbers, phone_index)
         phone_numbers[phone_index][output_phone_header] = value
 
 
+def set_phone_array_length(phone_numbers, index):
+    while index and len(phone_numbers) <= index:
+        phone_numbers.append({})
+
+
 def phone_header_with_index_one(phone_field_with_any_index):
+
     return re.sub(r'^Phone\d', 'Phone1', phone_field_with_any_index)
 
 
 def get_zero_based_phone_index(phone):
+    if phone == 'PhoneFax':
+        return 5
     r = re.match(r'^Phone(\d)', phone)
     return int(r[1]) - 1 if r else None
 
@@ -152,6 +160,7 @@ phone_header_map = {
     'Phone1Number': 'number',
     'Phone1Type': 'type',
     'Phone1Name': 'description',  # there is also a field Phone1Description but BC211 does not appear to use it
+    'PhoneFax': 'number',
 }
 
 
