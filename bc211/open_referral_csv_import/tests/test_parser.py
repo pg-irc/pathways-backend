@@ -113,42 +113,42 @@ class OpenReferralLocationParserTests(TestCase):
         the_id = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['id'], the_id)
+        self.assertEqual(location.id, the_id)
     
     def test_can_parse_organization_id(self):
         location_data = OpenReferralCsvLocationBuilder(self.organization).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['organization_id'], self.organization_id_passed_to_parser)
+        self.assertEqual(location.organization_id, self.organization_id_passed_to_parser)
     
     def test_can_parse_name(self):
         the_name = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['name'], the_name)
+        self.assertEqual(location.name, the_name)
     
     def test_can_parse_alternate_name(self):
         the_alternate_name = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['alternate_name'], the_alternate_name)
+        self.assertEqual(location.alternate_name, the_alternate_name)
     
     def test_can_parse_description(self):
         the_description = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['description'], the_description)
+        self.assertEqual(location.description, the_description)
 
     def test_can_parse_latitude(self):
         the_latitude = a_latitude_as_a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['latitude'], float(the_latitude))
+        self.assertEqual(location.spatial_location.latitude, float(the_latitude))
 
     def test_can_parse_longitude(self):
         the_longitude = a_longitude_as_a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_longitude(the_longitude).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location['longitude'], float(the_longitude))
+        self.assertEqual(location.spatial_location.longitude, float(the_longitude))
 
 
 class ParserHelperTests(TestCase):
