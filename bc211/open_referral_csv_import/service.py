@@ -65,4 +65,5 @@ def build_service_active_record(service):
     active_record.id = service.id
     active_record.organization_id = service.organization_id
     active_record.name = service.name
+    active_record.alternate_name = service.alternate_name
     return active_record
