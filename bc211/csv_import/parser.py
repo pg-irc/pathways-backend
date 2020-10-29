@@ -5,7 +5,7 @@ import uuid
 import datetime
 
 
-def parse(sink, lines):
+def parse(sink, lines, vocabulary=None):
     reader = csv.reader(lines)
     headers = reader.__next__()
     unique_location_ids = {}
@@ -31,7 +31,7 @@ def parse(sink, lines):
             parse_locations_fields(header, value, location)
             parse_address_fields(header, value, addresses)
             parse_phone_number_fields(header, value, phone_numbers)
-            parse_taxonomy_fields(header, value, taxonomy_terms)
+            parse_taxonomy_fields(header, value, taxonomy_terms, vocabulary)
 
             if header == 'ParentAgencyNum':
                 parent_id = value
@@ -162,11 +162,18 @@ phone_header_map = {
 }
 
 
-def parse_taxonomy_fields(header, value, taxonomy_terms):
-    if header in ['TaxonomyTerm', 'TaxonomyTerms', 'TaxonomyTermsNotDeactivated']:
-        taxonomy_terms += parse_taxonomy_terms(value, 'BC211')
+def parse_taxonomy_fields(header, value, taxonomy_terms, vocabulary):
+    if header in ['TaxonomyTerm', 'TaxonomyTerms', 'TaxonomyTermsNotDeactivated', 'TaxonomyCodes']:
+        vocabulary = compute_vocabulary_name(vocabulary, header)
+        taxonomy_terms += parse_taxonomy_terms(value, vocabulary)
+
+
+def compute_vocabulary_name(vocabulary, header):
+    if vocabulary:
+        return vocabulary
     if header == 'TaxonomyCodes':
-        taxonomy_terms += parse_taxonomy_terms(value, 'AIRS')
+        return 'AIRS'
+    return 'BC211'
 
 
 def parse_taxonomy_terms(value, vocabulary):
