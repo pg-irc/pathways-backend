@@ -221,8 +221,8 @@ def write_location_to_sink(location, addresses, phone_numbers, service_or_organi
 
 
 def compute_location_id(location, addresses, phone_numbers):
-    return compute_hash(compute_address_id(addresses[0]),
-                        compute_address_id(addresses[1]),
+    return compute_hash(compute_address_id(get_array_element_if_it_exists(addresses, 0)),
+                        compute_address_id(get_array_element_if_it_exists(addresses, 1)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 0)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 1)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 2)),

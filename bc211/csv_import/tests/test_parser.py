@@ -1,4 +1,5 @@
 import logging
+import json
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
 from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
@@ -539,10 +540,6 @@ class ParseTaxonomyTests(TestCase):
 
 
 class AreTwoLocationsConsideredDuplicateTests(TestCase):
-    # what is the location name => what is the location id => what should make a location unique? => Upstream: organization;
-    # Downstream: address and phone number. Name is taken from owning service or organization, so should be exluded
-    # So changes in these alter id: lat, long, phone number hash, postal address hash, physical address hash
-    # Changes in these do not alter id: organization id, org name, alternate name, description
     def setUp(self):
         self.builder = (Bc211CsvDataBuilder().
                         as_organization().
@@ -642,8 +639,6 @@ class AreTwoLocationsConsideredDuplicateTests(TestCase):
         data = self.builder.duplicate_last_row().with_field('PhysicalAddress1', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 2)
-
-    # TODO need to confirm what happens when one location has a physical address and the other does not
 
     def test_two_locations_with_different_phone_number_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('Phone1Number', a_phone_number()).build()
