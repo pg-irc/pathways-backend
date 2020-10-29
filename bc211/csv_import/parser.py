@@ -36,6 +36,9 @@ def parse(sink, lines):
             if header == 'ParentAgencyNum':
                 parent_id = value
 
+        if not organization_or_service['id']:
+            organization_or_service['id'] = str(uuid.uuid4())
+
         write_location_to_sink(location, addresses, phone_numbers, organization_or_service['id'],
                                parent_id, unique_location_ids, sink)
         if parent_id == '0':

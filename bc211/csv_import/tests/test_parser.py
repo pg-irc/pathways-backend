@@ -150,6 +150,41 @@ class ParseServicesTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_service()['last_verified_on-x'], '2018-09-15')
 
+    def test_if_id_is_missing_create_random_id(self):
+        data = (Bc211CsvDataBuilder().
+                with_field('ResourceAgencyNum', '').
+                with_field('ParentAgencyNum', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.first_service()['id']), 36)
+
+    def test_if_id_is_missing_set_service_id_on_service_at_location_record(self):
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('ResourceAgencyNum', '').
+                with_field('PublicName', a_string()).
+                with_field('MailingAddress1', a_string()).
+                build())
+
+        parsed_data = parse(TestDataSink(), data)
+
+        the_service_id = parsed_data.services[0]['id']
+        self.assertEqual(len(the_service_id), 36)
+        self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_service_id)
+
+    def test_if_id_is_missing_set_service_id_on_service_taxonomy(self):
+        the_service_id = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('ResourceAgencyNum', '').
+                with_field('TaxonomyTerm', a_string()).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+
+        the_service_id = parsed_data.services[0]['id']
+        self.assertEqual(len(the_service_id), 36)
+        self.assertEqual(parsed_data.services_taxonomy[0]['service_id'], the_service_id)
+
 
 class ParsePhoneNumbersTests(TestCase):
     def test_can_parse_organization_phone_number(self):
