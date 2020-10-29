@@ -5,7 +5,6 @@ import socket
 DEBUG = env.bool('DJANGO_DEBUG', default=True)
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='Y2j7=}MQYjB.@J!rI`]~!=QE:?j#;x=e[MD1xx0Qgd8$,VDF;8')
-PATHWAYS_API_KEY = 'the_api_key'
 
 EMAIL_PORT = 1025
 EMAIL_HOST = 'localhost'

@@ -3,7 +3,6 @@ from .base import *
 DEBUG = False
 TEMPLATES[0]['OPTIONS']['debug'] = False
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='6_nmfhb8jto6u=!h3*s+@84#rf51=3cx$y6z--z@&!8mj2-(eo')
-PATHWAYS_API_KEY = 'the_api_key'
 
 INSTALLED_APPS += ['behave_django']
 

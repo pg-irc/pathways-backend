@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='pushnotificationtoken',
             name='api_key',
-            field=common.models.RequiredCharField(max_length=50, validators=[push_notifications.validation.validate_api_key]),
+            field=common.models.RequiredCharField(max_length=50, validators=[push_notifications.models.validate_api_key]),
         ),
     ]
