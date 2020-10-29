@@ -8,6 +8,7 @@ logging.disable(logging.ERROR)
 
 
 # TODO test that entities are unique accross organizations
+# TODO test unicode characters
 
 class TestDataSink:
     def __init__(self):
@@ -131,8 +132,17 @@ class ParseServicesTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_service()['id'], the_id)
 
-    def test_can_parse_last_verified_date(self):
+    def test_can_parse_last_verified_date_time(self):
         a_date = '9/15/2018 15:53'
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('LastVerifiedOn', a_date).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.first_service()['last_verified_on-x'], '2018-09-15')
+
+    def test_can_parse_last_verified_date(self):
+        a_date = '9/15/2018'
         data = (Bc211CsvDataBuilder().
                 as_service().
                 with_field('LastVerifiedOn', a_date).
