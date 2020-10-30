@@ -4,6 +4,7 @@ from ..organization import import_organizations_file, save_organization
 from ..service import import_services_file, save_service
 from ..location import import_locations_file, save_location
 from ..service_at_location import import_services_at_location_file, save_service_at_location
+from ..address import import_addresses_file
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
@@ -36,6 +37,11 @@ class OpenReferralImporterTests(TestCase):
         incorrect_file_path = '../foo/services_at_location.csv'
         with self.assertRaises(FileNotFoundError) as error:
             import_services_at_location_file(incorrect_file_path)
+
+    def test_missing_addresses_file_throws_exception(self):
+        incorrect_file_path = '../foo/addresses.csv'
+        with self.assertRaises(FileNotFoundError) as error:
+            import_addresses_file(incorrect_file_path)
 
 
 class OpenReferralOrganizationImporterTests(TestCase):
