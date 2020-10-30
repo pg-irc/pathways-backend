@@ -37,3 +37,9 @@ class SpatialLocation:
     def __init__(self, **kwargs):
         self.latitude = required_float('latitude', kwargs)
         self.longitude = required_float('longitude', kwargs)
+
+
+class ServiceAtLocation:
+    def __init__(self, **kwargs):
+        self.service_id = required_string('service_id', kwargs)
+        self.location_id = required_string('location_id', kwargs)
