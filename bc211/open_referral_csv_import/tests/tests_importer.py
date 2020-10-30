@@ -3,7 +3,7 @@ from django.test import TestCase
 from ..organization import import_organizations_file, save_organization
 from ..service import import_services_file, save_service
 from ..location import import_locations_file, save_location
-from ..services_at_location import import_services_at_location_file
+from ..service_at_location import import_services_at_location_file
 from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
