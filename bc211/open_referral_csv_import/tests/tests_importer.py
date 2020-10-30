@@ -186,3 +186,11 @@ class OpenReferralLocationImporterTests(TestCase):
         save_location(location)
         locations = Location.objects.all()
         self.assertEqual(locations[0].alternate_name, the_alternate_name)
+
+    def test_can_import_description(self):
+        the_description = a_string()
+        location_data = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build()
+        location = parse_location(self.headers, location_data)
+        save_location(location)
+        locations = Location.objects.all()
+        self.assertEqual(locations[0].description, the_description)
