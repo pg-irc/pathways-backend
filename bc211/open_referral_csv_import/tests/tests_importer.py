@@ -2,7 +2,7 @@ import unittest
 from django.test import TestCase
 from ..organization import import_organizations_file, parse_organization, save_organization
 from ..service import import_services_file, parse_service, save_service
-from ..location import import_locations_file, parse_location, save_location
+from ..location import import_locations_file, save_location
 from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
@@ -159,49 +159,43 @@ class OpenReferralLocationImporterTests(TestCase):
     
     def test_can_import_id(self):
         the_id = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build()
-        location = parse_location(self.headers, location_data)
-        save_location(location)
+        location_dto = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build_dto()
+        save_location(location_dto)
         locations = Location.objects.all()
         self.assertEqual(locations[0].id, the_id)
     
     def test_can_import_organization_id(self):
-        location_data = OpenReferralCsvLocationBuilder(self.organization).build()
-        location = parse_location(self.headers ,location_data)
-        save_location(location)
+        location_dto = OpenReferralCsvLocationBuilder(self.organization).build_dto()
+        save_location(location_dto)
         locations = Location.objects.all()
         self.assertEqual(locations[0].organization_id, self.organization_id_passed_to_organization_builder)
     
     def test_can_import_name(self):
         the_name = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build()
-        location = parse_location(self.headers, location_data)
-        save_location(location)
+        location_dto = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build_dto()
+        save_location(location_dto)
         locations = Location.objects.all()
         self.assertEqual(locations[0].name, the_name)
 
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build()
-        location = parse_location(self.headers, location_data)
-        save_location(location)
+        location_dto = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build_dto()
+        save_location(location_dto)
         locations = Location.objects.all()
         self.assertEqual(locations[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build()
-        location = parse_location(self.headers, location_data)
-        save_location(location)
+        location_dto = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build_dto()
+        save_location(location_dto)
         locations = Location.objects.all()
         self.assertEqual(locations[0].description, the_description)
     
     def test_can_import_point(self):
         the_latitude = a_latitude_as_a_string()
         the_longitude = a_longitude_as_a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).with_longitude(the_longitude).build()
-        location = parse_location(self.headers, location_data)
-        save_location(location)
+        location_dto = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).with_longitude(the_longitude).build_dto()
+        save_location(location_dto)
         locations = Location.objects.all()
-        self.assertEqual(locations[0].point.x, location.spatial_location.longitude)
-        self.assertEqual(locations[0].point.y, location.spatial_location.latitude)
+        self.assertEqual(locations[0].point.x, location_dto.spatial_location.longitude)
+        self.assertEqual(locations[0].point.y, location_dto.spatial_location.latitude)
