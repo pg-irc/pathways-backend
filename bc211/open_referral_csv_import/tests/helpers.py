@@ -187,3 +187,15 @@ class OpenReferralCsvServiceAtLocationBuilder:
     def build_dto(self):
         return dtos.ServiceAtLocation(service_id=self.service_id,
                                     location_id=self.location_id)
+
+
+class OpenReferralCsvAddressBuilder:
+    def __init__(self):
+        self.addresss_id = a_string()
+    
+    def with_id(self, addresss_id):
+        self.addresss_id = addresss_id
+        return self
+
+    def build(self):
+        return [self.addresss_id]
