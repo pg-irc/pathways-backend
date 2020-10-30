@@ -44,6 +44,14 @@ class OpenReferralCsvOrganizationBuilder:
         return [self.organization_id, self.name, self.alternate_name, self.description, self.email, self.url,
                 self.not_used_tax_status, self.not_used_tax_id, self.not_used_year_incorporated, self.not_used_legal_status]
 
+    def build_dto(self):
+        return dtos.Organization(id=self.organization_id,
+                                name=self.name,
+                                alternate_name=self.alternate_name,
+                                description=self.description,
+                                email=self.email,
+                                website=self.url)
+
 
 class OpenReferralCsvServiceBuilder:
     def __init__(self, organization):
