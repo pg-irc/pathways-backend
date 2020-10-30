@@ -3,14 +3,17 @@ from django.test import TestCase
 from ..organization import import_organizations_file, save_organization
 from ..service import import_services_file, save_service
 from ..location import import_locations_file, save_location
-from ..service_at_location import import_services_at_location_file
-from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder
+from ..service_at_location import import_services_at_location_file, save_service_at_location
+from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
+                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.models import Organization
 from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.services.tests.helpers import ServiceBuilder
+from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services.models import Service
-from human_services.locations.models import Location
+from human_services.locations.models import Location, ServiceAtLocation
 from django.contrib.gis.geos import Point
 
 class OpenReferralImporterTests(TestCase):
@@ -182,3 +185,27 @@ class OpenReferralLocationImporterTests(TestCase):
         locations = Location.objects.all()
         self.assertEqual(locations[0].point.x, location_dto.spatial_location.longitude)
         self.assertEqual(locations[0].point.y, location_dto.spatial_location.latitude)
+
+
+class OpenReferralServiceAtLocationImporterTests(TestCase):
+    def setUp(self):
+        organization = OrganizationBuilder().build()
+        organization.save()
+        self.service_id_passed_to_service_builder = a_string()
+        self.location_id_passed_to_location_builder = a_string()
+        self.service = ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).build()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
+        self.service.save()
+        self.location.save()
+    
+    def test_can_import_service_id(self):
+        service_at_location_dto = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build_dto()
+        save_service_at_location(service_at_location_dto)
+        services_at_location = ServiceAtLocation.objects.all()
+        self.assertEqual(services_at_location[0].service_id, self.service_id_passed_to_service_builder)
+    
+    def test_can_import_location_id(self):
+        service_at_location_dto = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build_dto()
+        save_service_at_location(service_at_location_dto)
+        services_at_location = ServiceAtLocation.objects.all()
+        self.assertEqual(services_at_location[0].location_id, self.location_id_passed_to_location_builder)

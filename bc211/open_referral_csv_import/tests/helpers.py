@@ -183,3 +183,7 @@ class OpenReferralCsvServiceAtLocationBuilder:
         not_used_id = a_string()
         not_used_description = a_string()
         return [not_used_id, self.service_id, self.location_id, not_used_description]
+
+    def build_dto(self):
+        return dtos.ServiceAtLocation(service_id=self.service_id,
+                                    location_id=self.location_id)
