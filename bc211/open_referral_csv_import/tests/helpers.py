@@ -104,6 +104,15 @@ class OpenReferralCsvServiceBuilder:
         return [self.service_id, self.organization_id, self.not_used_program_id, self.name, self.alternate_name, self.description, self.url, self.email,
                 self.not_used_status, self.not_used_intepretation_services, self.not_used_application_process, self.not_used_wait_time,
                 self.not_used_fees, self.not_used_accreditations, self.not_used_licenses, self.not_used_taxonomy_ids]
+    
+    def build_dto(self):
+        return dtos.Service(id=self.service_id,
+                            organization_id=self.organization_id,
+                            name=self.name,
+                            alternate_name=self.alternate_name,
+                            description=self.description,
+                            website=self.url,
+                            email=self.email)
 
 
 class OpenReferralCsvLocationBuilder:
