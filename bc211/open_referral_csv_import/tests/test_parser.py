@@ -168,12 +168,12 @@ class OpenReferralServicesAtLocationParserTests(TestCase):
     def test_can_parse_service_id(self):
         service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
         service_at_location = parse_service_at_location(self.headers, service_at_location_data)
-        self.assertEqual(service_at_location['service_id'], self.service_id_passed_to_service_builder)
+        self.assertEqual(service_at_location.service_id, self.service_id_passed_to_service_builder)
     
     def test_can_parse_location_id(self):
         service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
         service_at_location = parse_service_at_location(self.headers, service_at_location_data)
-        self.assertEqual(service_at_location['location_id'], self.location_id_passed_to_location_builder)
+        self.assertEqual(service_at_location.location_id, self.location_id_passed_to_location_builder)
 
 
 class ParserHelperTests(TestCase):

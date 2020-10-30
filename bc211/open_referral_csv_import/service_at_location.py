@@ -1,6 +1,7 @@
 import os
 import logging
 from .parser import parse_required_field
+from bc211.open_referral_csv_import import dtos
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,4 +33,5 @@ def parse_service_at_location(headers, row):
             service_at_location['location_id'] = parse_required_field('location_id', location_id)
         else: 
             continue
-    return service_at_location
+    return dtos.ServiceAtLocation(service_id=service_at_location['service_id'],
+                                location_id=service_at_location['location_id'])
