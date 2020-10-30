@@ -88,8 +88,8 @@ class OpenReferralServiceImporterTests(TestCase):
         self.headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
                         'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
                         'licenses', 'taxonomy_ids']
-        self.organization_id_passed_to_parser = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_parser).build()
+        self.organization_id_passed_to_organization_builder = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
         self.organization.save()
     
     def test_can_import_id(self): 
@@ -105,7 +105,7 @@ class OpenReferralServiceImporterTests(TestCase):
         service = parse_service(self.headers, service_data)
         save_service(service)
         services = Service.objects.all()
-        self.assertEqual(services[0].organization_id, self.organization_id_passed_to_parser)
+        self.assertEqual(services[0].organization_id, self.organization_id_passed_to_organization_builder)
     
     def test_can_import_name(self):
         the_name = a_string()
@@ -152,8 +152,8 @@ class OpenReferralLocationImporterTests(TestCase):
     def setUp(self):
         self.headers = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation',
                         'latitude', 'longitude']
-        self.organization_id_passed_to_parser = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_parser).build()
+        self.organization_id_passed_to_organization_builder = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
         self.organization.save()
     
     def test_can_import_id(self):
@@ -169,4 +169,4 @@ class OpenReferralLocationImporterTests(TestCase):
         location = parse_location(self.headers ,location_data)
         save_location(location)
         locations = Location.objects.all()
-        self.assertEqual(locations[0].organization_id, self.organization_id_passed_to_parser)
+        self.assertEqual(locations[0].organization_id, self.organization_id_passed_to_organization_builder)
