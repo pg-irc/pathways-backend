@@ -57,8 +57,8 @@ class OpenReferralServiceParserTests(TestCase):
         self.headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
                         'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
                         'licenses', 'taxonomy_ids']
-        self.organization_id_passed_to_parser = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_parser).build()
+        self.organization_id_passed_to_organization_builder = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
 
     def test_can_parse_id(self):
         the_id = a_string()
@@ -69,7 +69,7 @@ class OpenReferralServiceParserTests(TestCase):
     def test_can_parse_organization_id(self):
         service_data = OpenReferralCsvServiceBuilder(self.organization).build()
         service = parse_service(self.headers, service_data)
-        self.assertEqual(service.organization_id, self.organization_id_passed_to_parser)
+        self.assertEqual(service.organization_id, self.organization_id_passed_to_organization_builder)
     
     def test_can_parse_name(self):
         the_name = a_string()
@@ -106,8 +106,8 @@ class OpenReferralLocationParserTests(TestCase):
     def setUp(self):
         self.headers = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation',
                         'latitude', 'longitude']
-        self.organization_id_passed_to_parser = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_parser).build()
+        self.organization_id_passed_to_organization_builder = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
 
     def test_can_parse_id(self):
         the_id = a_string()
@@ -118,7 +118,7 @@ class OpenReferralLocationParserTests(TestCase):
     def test_can_parse_organization_id(self):
         location_data = OpenReferralCsvLocationBuilder(self.organization).build()
         location = parse_location(self.headers, location_data)
-        self.assertEqual(location.organization_id, self.organization_id_passed_to_parser)
+        self.assertEqual(location.organization_id, self.organization_id_passed_to_organization_builder)
     
     def test_can_parse_name(self):
         the_name = a_string()
