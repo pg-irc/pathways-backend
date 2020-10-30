@@ -1,5 +1,7 @@
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                 a_latitude_as_a_string, a_longitude_as_a_string)
+from bc211.open_referral_csv_import import dtos
+
 
 class OpenReferralCsvOrganizationBuilder:
     def __init__(self):
@@ -107,46 +109,43 @@ class OpenReferralCsvServiceBuilder:
 
 class OpenReferralCsvLocationBuilder:
     def __init__(self, organization):
-        self.data = self.a_row(organization)
-
-    def a_row(self, organization):
-        location_id = a_string()
-        organization_id = organization.id
-        name = a_string()
-        alternate_name = a_string()
-        description = a_string()
-        not_used_transportation = a_string()
-        latitude = a_latitude_as_a_string()
-        longitude = a_longitude_as_a_string()
-        return [location_id, organization_id, name, alternate_name, description, not_used_transportation, latitude, longitude]
+        self.location_id = a_string()
+        self.organization_id = organization.id
+        self.name = a_string()
+        self.alternate_name = a_string()
+        self.description = a_string()
+        self.not_used_transportation = a_string()
+        self.latitude = a_latitude_as_a_string()
+        self.longitude = a_longitude_as_a_string()
     
     def with_id(self, location_id):
-        self.data[0] = location_id
+        self.location_id = location_id
         return self
 
     def with_organization_id(self, organization_id):
-        self.data[1] = organization_id
+        self.organization_id = organization_id
         return self
     
     def with_name(self, name):
-        self.data[2] = name
+        self.name = name
         return self
 
     def with_alternate_name(self, alternate_name):
-        self.data[3] = alternate_name
+        self.alternate_name = alternate_name
         return self
     
     def with_description(self, description):
-        self.data[4] = description
+        self.description = description
         return self
     
     def with_latitude(self, latitude):
-        self.data[6] = latitude
+        self.latitude = latitude
         return self
     
     def with_longitude(self, longitude):
-        self.data[7] = longitude
+        self.longitude = longitude
         return self
 
     def build(self):
-        return self.data 
+        return [self.location_id, self.organization_id, self.name, self.alternate_name, self.description, self.not_used_transportation, self.latitude, self.longitude]
+
