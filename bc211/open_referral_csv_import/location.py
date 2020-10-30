@@ -64,4 +64,5 @@ def build_location_active_record(location):
     active_record = Location()
     active_record.id = location.id
     active_record.organization_id = location.organization_id
+    active_record.name = location.name
     return active_record
