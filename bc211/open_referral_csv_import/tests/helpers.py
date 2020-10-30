@@ -11,10 +11,6 @@ class OpenReferralCsvOrganizationBuilder:
         self.description = a_string()
         self.email = an_email_address()
         self.url = a_website_address()
-        self.not_used_tax_status = a_string()
-        self.not_used_tax_id = a_string()
-        self.not_used_year_incorporated = a_string()
-        self.not_used_legal_status = a_string()
     
     def with_id(self, organization_id):
         self.organization_id = organization_id
@@ -41,8 +37,12 @@ class OpenReferralCsvOrganizationBuilder:
         return self
         
     def build(self):
+        not_used_tax_status = a_string()
+        not_used_tax_id = a_string()
+        not_used_year_incorporated = a_string()
+        not_used_legal_status = a_string()
         return [self.organization_id, self.name, self.alternate_name, self.description, self.email, self.url,
-                self.not_used_tax_status, self.not_used_tax_id, self.not_used_year_incorporated, self.not_used_legal_status]
+                not_used_tax_status, not_used_tax_id, not_used_year_incorporated, not_used_legal_status]
 
     def build_dto(self):
         return dtos.Organization(id=self.organization_id,
@@ -57,20 +57,11 @@ class OpenReferralCsvServiceBuilder:
     def __init__(self, organization):
         self.service_id = a_string()
         self.organization_id = organization.id
-        self.not_used_program_id = a_string()
         self.name = a_string()
         self.alternate_name = a_string()
         self.description = a_string()
         self.url = a_website_address()
         self.email = an_email_address()
-        self.not_used_status = a_string()
-        self.not_used_intepretation_services = a_string()
-        self.not_used_application_process = a_string()
-        self.not_used_wait_time = a_string()
-        self.not_used_fees = a_string()
-        self.not_used_accreditations = a_string()
-        self.not_used_licenses = a_string()
-        self.not_used_taxonomy_ids = a_string()
     
     def with_id(self, service_id):
         self.service_id = service_id
@@ -101,9 +92,18 @@ class OpenReferralCsvServiceBuilder:
         return self
     
     def build(self):
-        return [self.service_id, self.organization_id, self.not_used_program_id, self.name, self.alternate_name, self.description, self.url, self.email,
-                self.not_used_status, self.not_used_intepretation_services, self.not_used_application_process, self.not_used_wait_time,
-                self.not_used_fees, self.not_used_accreditations, self.not_used_licenses, self.not_used_taxonomy_ids]
+        not_used_program_id = a_string()
+        not_used_status = a_string()
+        not_used_intepretation_services = a_string()
+        not_used_application_process = a_string()
+        not_used_wait_time = a_string()
+        not_used_fees = a_string()
+        not_used_accreditations = a_string()
+        not_used_licenses = a_string()
+        not_used_taxonomy_ids = a_string()
+        return [self.service_id, self.organization_id, not_used_program_id, self.name, self.alternate_name, self.description, self.url, self.email,
+                not_used_status, not_used_intepretation_services, not_used_application_process, not_used_wait_time,
+                not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids]
     
     def build_dto(self):
         return dtos.Service(id=self.service_id,
@@ -122,7 +122,6 @@ class OpenReferralCsvLocationBuilder:
         self.name = a_string()
         self.alternate_name = a_string()
         self.description = a_string()
-        self.not_used_transportation = a_string()
         self.latitude = a_latitude_as_a_string()
         self.longitude = a_longitude_as_a_string()
     
@@ -155,7 +154,8 @@ class OpenReferralCsvLocationBuilder:
         return self
 
     def build(self):
-        return [self.location_id, self.organization_id, self.name, self.alternate_name, self.description, self.not_used_transportation, self.latitude, self.longitude]
+        not_used_transportation = a_string()
+        return [self.location_id, self.organization_id, self.name, self.alternate_name, self.description, not_used_transportation, self.latitude, self.longitude]
     
     def build_dto(self):
         return dtos.Location(id=self.location_id,
