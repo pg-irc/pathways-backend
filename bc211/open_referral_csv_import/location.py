@@ -4,6 +4,7 @@ from .parser import parse_required_field, parse_optional_field, parse_coordinate
 from bc211.open_referral_csv_import import dtos
 from human_services.locations.models import Location
 from bc211.is_inactive import is_inactive
+from django.contrib.gis.geos import Point
 
 LOGGER = logging.getLogger(__name__)
 
@@ -70,4 +71,7 @@ def build_location_active_record(location):
     active_record.name = location.name
     active_record.alternate_name = location.alternate_name
     active_record.description = location.description
+    has_location = location.spatial_location is not None
+    if has_location:
+        active_record.point = Point(location.spatial_location.longitude, location.spatial_location.latitude)
     return active_record

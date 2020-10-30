@@ -4,12 +4,13 @@ from ..organization import import_organizations_file, parse_organization, save_o
 from ..service import import_services_file, parse_service, save_service
 from ..location import import_locations_file, parse_location, save_location
 from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder
-from common.testhelpers.random_test_values import a_string, an_email_address, a_website_address
+from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
+                                                    a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.models import Organization
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.models import Service
 from human_services.locations.models import Location
-
+from django.contrib.gis.geos import Point
 
 class OpenReferralImporterTests(TestCase):
     def test_missing_organizations_file_throws_exception(self):
@@ -194,3 +195,13 @@ class OpenReferralLocationImporterTests(TestCase):
         save_location(location)
         locations = Location.objects.all()
         self.assertEqual(locations[0].description, the_description)
+    
+    def test_can_import_point(self):
+        the_latitude = a_latitude_as_a_string()
+        the_longitude = a_longitude_as_a_string()
+        location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).with_longitude(the_longitude).build()
+        location = parse_location(self.headers, location_data)
+        save_location(location)
+        locations = Location.objects.all()
+        self.assertEqual(locations[0].point.x, location.spatial_location.longitude)
+        self.assertEqual(locations[0].point.y, location.spatial_location.latitude)
