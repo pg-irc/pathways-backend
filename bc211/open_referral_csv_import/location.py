@@ -3,6 +3,7 @@ import logging
 from .parser import parse_required_field, parse_optional_field, parse_coordinate_if_defined
 from bc211.open_referral_csv_import import dtos
 from human_services.locations.models import Location
+from bc211.is_inactive import is_inactive
 
 LOGGER = logging.getLogger(__name__)
 
@@ -56,6 +57,8 @@ def parse_location(headers, row):
 
 
 def save_location(location):
+    if is_inactive(location):
+        return
     active_record = build_location_active_record(location)
     active_record.save()
 
@@ -66,4 +69,5 @@ def build_location_active_record(location):
     active_record.organization_id = location.organization_id
     active_record.name = location.name
     active_record.alternate_name = location.alternate_name
+    active_record.description = location.description
     return active_record
