@@ -30,10 +30,6 @@ class OpenReferralImporterTests(TestCase):
 
 
 class OpenReferralOrganizationImporterTests(TestCase):
-    def setUp(self):
-        self.headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
-                        'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
-
     def test_can_import_id(self):
         the_id = a_string()
         organization_dto = OpenReferralCsvOrganizationBuilder().with_id(the_id).build_dto()
@@ -79,9 +75,6 @@ class OpenReferralOrganizationImporterTests(TestCase):
 
 class OpenReferralServiceImporterTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
-                        'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
-                        'licenses', 'taxonomy_ids']
         self.organization_id_passed_to_organization_builder = a_string()
         self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
         self.organization.save()
@@ -137,8 +130,6 @@ class OpenReferralServiceImporterTests(TestCase):
 
 class OpenReferralLocationImporterTests(TestCase):
     def setUp(self):
-        self.headers = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation',
-                        'latitude', 'longitude']
         self.organization_id_passed_to_organization_builder = a_string()
         self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
         self.organization.save()
