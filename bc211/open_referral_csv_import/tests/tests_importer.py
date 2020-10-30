@@ -1,6 +1,6 @@
 import unittest
 from django.test import TestCase
-from ..organization import import_organizations_file, parse_organization, save_organization
+from ..organization import import_organizations_file, save_organization
 from ..service import import_services_file, parse_service, save_service
 from ..location import import_locations_file, save_location
 from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder
@@ -36,50 +36,43 @@ class OpenReferralOrganizationImporterTests(TestCase):
 
     def test_can_import_id(self):
         the_id = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
-        organization = parse_organization(self.headers, organization_data)
-        save_organization(organization)
+        organization_dto = OpenReferralCsvOrganizationBuilder().with_id(the_id).build_dto()
+        save_organization(organization_dto)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].id, the_id)
     
     def test_can_import_name(self):
         the_name = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
-        organization = parse_organization(self.headers, organization_data)
-        save_organization(organization)
+        organization_dto = OpenReferralCsvOrganizationBuilder().with_name(the_name).build_dto()
+        save_organization(organization_dto)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].name, the_name)
 
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
-        organization = parse_organization(self.headers, organization_data)
-        save_organization(organization)
+        organization_dto = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build_dto()
+        save_organization(organization_dto)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_description(the_description).build()
-        organization = parse_organization(self.headers, organization_data)
-        save_organization(organization)
+        organization_dto = OpenReferralCsvOrganizationBuilder().with_description(the_description).build_dto()
+        save_organization(organization_dto)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].description, the_description)
 
     def test_can_import_email(self):
         the_email = an_email_address()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
-        organization = parse_organization(self.headers, organization_data)
-        save_organization(organization)
+        organization_dto = OpenReferralCsvOrganizationBuilder().with_email(the_email).build_dto()
+        save_organization(organization_dto)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].email, the_email)
 
     def test_can_import_website(self):
         the_website = a_website_address()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
-        organization = parse_organization(self.headers, organization_data)
-        organization.website
-        save_organization(organization)
+        organization_dto = OpenReferralCsvOrganizationBuilder().with_url(the_website).build_dto()
+        save_organization(organization_dto)
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].website, the_website)
 
