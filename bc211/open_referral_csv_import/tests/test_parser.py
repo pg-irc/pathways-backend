@@ -1,11 +1,12 @@
 import unittest
 from django.test import TestCase
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
-                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder)
+                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
 from ..organization import parse_organization
 from ..service import parse_service
 from ..location import parse_location
 from ..service_at_location import parse_service_at_location
+from ..address import parse_address
 from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_coordinate_if_defined
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
@@ -174,6 +175,18 @@ class OpenReferralServicesAtLocationParserTests(TestCase):
         service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
         service_at_location = parse_service_at_location(self.headers, service_at_location_data)
         self.assertEqual(service_at_location.location_id, self.location_id_passed_to_location_builder)
+
+
+class OpenReferralAddressesParserTests(TestCase):
+    def setUp(self):
+        self.headers = ['id', 'type', 'location_id', 'attention', 'address_1', 'address_2', 'address_3', 'address_4', 'city',
+                        'region', 'state_province', 'postal_code', 'country']
+    
+    def test_can_parse_id(self):
+        the_id = a_string()
+        address_data = OpenReferralCsvAddressBuilder().with_id(the_id).build()
+        address = parse_address(self.headers, address_data)
+        self.assertEqual(address['id'], the_id)
 
 
 class ParserHelperTests(TestCase):
