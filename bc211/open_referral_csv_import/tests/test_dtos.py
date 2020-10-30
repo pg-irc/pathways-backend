@@ -1,7 +1,7 @@
 import unittest
 from django.test import TestCase
 from ..exceptions import MissingRequiredFieldCsvParseException, InvalidTypeCsvParseException, InvalidFloatCsvParseException
-from ..dtos import Organization, Service, Location, SpatialLocation
+from ..dtos import Organization, Service, Location, SpatialLocation, ServiceAtLocation
 
 
 class OrganizationDtoTests(TestCase):
@@ -56,3 +56,13 @@ class LocationDtoTests(TestCase):
     def tests_throws_on_invalid_spatial_location_type(self):
         with self.assertRaises(InvalidFloatCsvParseException):
             Location(id='id', organization_id='organization_id', name='name', spatial_location=SpatialLocation(latitude='foo', longitude='-23.456'))
+
+
+class ServiceAtLocationDtoTests(TestCase):
+    def test_throws_on_missing_service_id(self):
+        with self.assertRaises(MissingRequiredFieldCsvParseException):
+            ServiceAtLocation(location_id='location_id')
+
+    def test_throws_on_missing_location_id(self):
+        with self.assertRaises(MissingRequiredFieldCsvParseException):
+            ServiceAtLocation(service_id='service_id')
