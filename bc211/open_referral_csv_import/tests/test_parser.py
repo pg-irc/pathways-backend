@@ -1,13 +1,17 @@
 import unittest
 from django.test import TestCase
-from .helpers import OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder
+from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
+                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder)
 from ..organization import parse_organization
 from ..service import parse_service
 from ..location import parse_location
+from ..service_at_location import parse_service_at_location
 from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_coordinate_if_defined
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.tests.helpers import OrganizationBuilder
+from human_services.services.tests.helpers import ServiceBuilder
+from human_services.locations.tests.helpers import LocationBuilder
 
 
 class OpenReferralOrganizationParserTests(TestCase):
@@ -149,6 +153,27 @@ class OpenReferralLocationParserTests(TestCase):
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_longitude(the_longitude).build()
         location = parse_location(self.headers, location_data)
         self.assertEqual(location.spatial_location.longitude, float(the_longitude))
+
+
+
+class OpenReferralServicesAtLocationParserTests(TestCase):
+    def setUp(self):
+        self.headers = ['id', 'service_id', 'location_id', 'description']
+        organization = OrganizationBuilder().build()
+        self.service_id_passed_to_service_builder = a_string()
+        self.location_id_passed_to_location_builder = a_string()
+        self.service = ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).build()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
+    
+    def test_can_parse_service_id(self):
+        service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
+        service_at_location = parse_service_at_location(self.headers, service_at_location_data)
+        self.assertEqual(service_at_location['service_id'], self.service_id_passed_to_service_builder)
+    
+    def test_can_parse_location_id(self):
+        service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
+        service_at_location = parse_service_at_location(self.headers, service_at_location_data)
+        self.assertEqual(service_at_location['location_id'], self.location_id_passed_to_location_builder)
 
 
 class ParserHelperTests(TestCase):
