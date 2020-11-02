@@ -226,6 +226,12 @@ class OpenReferralAddressesParserTests(TestCase):
         address = parse_address(self.headers, address_data)
         self.assertEqual(address['state_province'], the_state_province)
 
+    def test_can_parse_postal_code(self):
+        the_postal_code = a_string()
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_postal_code(the_postal_code).build()
+        address = parse_address(self.headers, address_data)
+        self.assertEqual(address['postal_code'], the_postal_code)
+
 
 class ParserHelperTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self):
