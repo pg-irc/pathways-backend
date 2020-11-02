@@ -43,3 +43,18 @@ class ServiceAtLocation:
     def __init__(self, **kwargs):
         self.service_id = required_string('service_id', kwargs)
         self.location_id = required_string('location_id', kwargs)
+
+
+class Address:
+    def __init__(self, **kwargs):
+        self.id = required_string('id', kwargs)
+        self.type = required_string('type', kwargs)
+        self.location_id = required_string('location_id', kwargs)
+        self.attention = optional_string('attention', kwargs)
+        self.address = optional_string('address', kwargs)
+        self.city = required_string('city', kwargs)
+        self.state_province = optional_string('state_province', kwargs)
+        self.postal_code = optional_string('postal_code', kwargs)
+        self.country = required_string('country', kwargs)
+        
+        
