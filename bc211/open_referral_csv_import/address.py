@@ -1,6 +1,7 @@
 import os
 import logging
 from .parser import parse_required_field, parse_optional_field
+from bc211.open_referral_csv_import import dtos
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,4 +54,7 @@ def parse_address(headers, row):
             address['country'] = parse_required_field('country', country)
         else:
             continue
-    return address
+    return dtos.Address(id=address['id'], type=address['type'], location_id=address['location_id'],
+                    attention=address['attention'], address=address['address'], city=address['city'],
+                    state_province=address['state_province'], postal_code=address['postal_code'],
+                    country=address['country'])
