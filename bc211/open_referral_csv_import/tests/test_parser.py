@@ -219,6 +219,12 @@ class OpenReferralAddressesParserTests(TestCase):
         address_data = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build()
         address = parse_address(self.headers, address_data)
         self.assertEqual(address['city'], the_city)
+    
+    def test_can_parse_state_province(self):
+        the_state_province = a_string()
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_state_province(the_state_province).build()
+        address = parse_address(self.headers, address_data)
+        self.assertEqual(address['state_province'], the_state_province)
 
 
 class ParserHelperTests(TestCase):

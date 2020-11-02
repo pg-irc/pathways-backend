@@ -29,6 +29,7 @@ def parse_address(headers, row):
     attention = row[3]
     address_address = row[4]
     city = row[8]
+    state_province = row[10]
     for header in headers:
         if header == 'id':
             address['id'] = parse_required_field('id', address_id)
@@ -42,6 +43,8 @@ def parse_address(headers, row):
             address['address'] = parse_optional_field('address', address_address)
         elif header == 'city':
             address['city'] = parse_required_field('city', city)
+        elif header == 'state_province':
+            address['state_province'] = parse_optional_field('state_province', state_province)
         else:
             continue
     return address
