@@ -194,7 +194,7 @@ class OpenReferralCsvAddressBuilder:
         self.addresss_id = a_string()
         self.address_type = ''
         self.location_id = location.id
-
+        self.attention = a_string()
     
     def with_id(self, addresss_id):
         self.addresss_id = addresss_id
@@ -207,5 +207,9 @@ class OpenReferralCsvAddressBuilder:
     def with_location_id(self, location_id):
         self.location_id = location_id
 
+    def with_attention(self, attention):
+        self.attention = attention
+        return self
+
     def build(self):
-        return [self.addresss_id, self.address_type, self.location_id]
+        return [self.addresss_id, self.address_type, self.location_id, self.attention]
