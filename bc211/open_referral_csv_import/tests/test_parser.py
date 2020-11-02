@@ -202,6 +202,12 @@ class OpenReferralAddressesParserTests(TestCase):
         address = parse_address(self.headers, address_data)
         self.assertEqual(address['location_id'], self.location_id_passed_to_location_builder)
 
+    def test_can_parse_attention(self):
+        the_attention = a_string()
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_attention(the_attention).build()
+        address = parse_address(self.headers, address_data)
+        self.assertEqual(address['attention'], the_attention)
+
 
 class ParserHelperTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_required_field(self):

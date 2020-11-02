@@ -1,6 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field
+from .parser import parse_required_field, parse_optional_field
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ def parse_address(headers, row):
     address_id = row[0]
     address_type = row[1]
     location_id = row[2]
+    attention = row[3]
     for header in headers:
         if header == 'id':
             address['id'] = parse_required_field('id', address_id)
@@ -33,6 +34,8 @@ def parse_address(headers, row):
             address['type'] = parse_required_field('type', address_type)
         elif header == 'location_id':
             address['location_id'] = parse_required_field('location_id', location_id)
+        elif header == 'attention':
+            address['attention'] = parse_optional_field('attention', attention)
         else:
             continue
     return address
