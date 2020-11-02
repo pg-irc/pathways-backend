@@ -181,12 +181,26 @@ class OpenReferralAddressesParserTests(TestCase):
     def setUp(self):
         self.headers = ['id', 'type', 'location_id', 'attention', 'address_1', 'address_2', 'address_3', 'address_4', 'city',
                         'region', 'state_province', 'postal_code', 'country']
+        organization = OrganizationBuilder().build()
+        self.location_id_passed_to_location_builder = a_string()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
     
     def test_can_parse_id(self):
         the_id = a_string()
-        address_data = OpenReferralCsvAddressBuilder().with_id(the_id).build()
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_id(the_id).build()
         address = parse_address(self.headers, address_data)
         self.assertEqual(address['id'], the_id)
+    
+    def test_can_parse_type(self):
+        the_type = 'postal_address'
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_type).build()
+        address = parse_address(self.headers, address_data)
+        self.assertEqual(address['type'], the_type)
+
+    def test_can_parse_location_id(self):
+        address_data = OpenReferralCsvAddressBuilder(self.location).build()
+        address = parse_address(self.headers, address_data)
+        self.assertEqual(address['location_id'], self.location_id_passed_to_location_builder)
 
 
 class ParserHelperTests(TestCase):
