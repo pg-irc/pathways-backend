@@ -1,4 +1,4 @@
-from .validate import required_string, optional_string, optional_object, required_float
+from .validate import required_string, optional_string, optional_object, required_float, required_country_code
 from bc211.dtos import SpatialLocation
 
 
@@ -55,6 +55,6 @@ class Address:
         self.city = required_string('city', kwargs)
         self.state_province = optional_string('state_province', kwargs)
         self.postal_code = optional_string('postal_code', kwargs)
-        self.country = required_string('country', kwargs)
+        self.country = required_country_code('country', kwargs)
         
         

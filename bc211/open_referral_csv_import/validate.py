@@ -32,3 +32,9 @@ def parse_float(value):
         return float(value)
     except ValueError:
         raise InvalidFloatCsvParseException(value)
+
+def required_country_code(field, values):
+    value = required_string(field, values)
+    if len(value) == 2:
+        return value
+    raise InvalidTypeCsvParseException(field)
