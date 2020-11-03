@@ -1,6 +1,7 @@
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                 a_latitude_as_a_string, a_longitude_as_a_string)
 from bc211.open_referral_csv_import import dtos
+import string
 
 
 class OpenReferralCsvOrganizationBuilder:
@@ -199,7 +200,7 @@ class OpenReferralCsvAddressBuilder:
         self.city = a_string()
         self.state_province = a_string()
         self.postal_code = a_string()
-        self.country = a_string()
+        self.country = a_string(2, string.ascii_uppercase)
     
     def with_id(self, addresss_id):
         self.addresss_id = addresss_id

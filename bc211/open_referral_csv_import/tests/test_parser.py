@@ -1,4 +1,5 @@
 import unittest
+import string
 from django.test import TestCase
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
@@ -233,7 +234,7 @@ class OpenReferralAddressesParserTests(TestCase):
         self.assertEqual(address.postal_code, the_postal_code)
     
     def test_can_parse_country(self):
-        the_country = a_string()
+        the_country = a_string(2, string.ascii_uppercase)
         address_data = OpenReferralCsvAddressBuilder(self.location).with_country(the_country).build()
         address = parse_address(self.headers, address_data)
         self.assertEqual(address.country, the_country)

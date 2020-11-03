@@ -71,19 +71,19 @@ class ServiceAtLocationDtoTests(TestCase):
 class AddressDtoTests(TestCase):
     def test_throws_on_missing_address_id(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Address(type='postal_address', location_id='location_id', city='city', country='country')
+            Address(type='postal_address', location_id='location_id', city='city', country='CA')
     
     def test_throws_on_missing_type(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Address(id='id', location_id='location_id', city='city', country='country')
+            Address(id='id', location_id='location_id', city='city', country='CA')
 
     def test_throws_on_missing_location_id(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Address(id='id', type='postal_address', city='city', country='country')
+            Address(id='id', type='postal_address', city='city', country='CA')
 
     def test_throws_on_missing_city(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Address(id='id', type='postal_address', location_id='location_id', country='country')
+            Address(id='id', type='postal_address', location_id='location_id', country='CA')
 
     def test_throws_on_missing_country(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
@@ -91,4 +91,8 @@ class AddressDtoTests(TestCase):
     
     def tests_throws_on_invalid_type(self):
         with self.assertRaises(InvalidTypeCsvParseException):
-            Address(id='id', type='postal_address', location_id='location_id', city='city', country='country', address=123)
+            Address(id='id', type='postal_address', location_id='location_id', city='city', country='CA', address=123)
+    
+    def tests_throws_on_invalid_country_code(self):
+        with self.assertRaises(InvalidTypeCsvParseException):
+            Address(id='id', type='postal_address', location_id='location_id', city='city', country='CANADA')
