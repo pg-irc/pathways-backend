@@ -68,4 +68,5 @@ def build_address_active_record(address):
     active_record = Address()
     active_record.city = address.city
     active_record.country = address.country
+    active_record.attention = address.attention
     return active_record
