@@ -47,7 +47,6 @@ class ServiceAtLocation:
 
 class Address:
     def __init__(self, **kwargs):
-        self.id = required_string('id', kwargs)
         self.type = required_string('type', kwargs)
         self.location_id = required_string('location_id', kwargs)
         self.attention = optional_string('attention', kwargs)
