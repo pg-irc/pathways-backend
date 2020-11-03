@@ -186,12 +186,6 @@ class OpenReferralAddressesParserTests(TestCase):
         self.location_id_passed_to_location_builder = a_string()
         self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
     
-    def test_can_parse_id(self):
-        the_id = a_string()
-        address_data = OpenReferralCsvAddressBuilder(self.location).with_id(the_id).build()
-        address = parse_address(self.headers, address_data)
-        self.assertEqual(address.id, the_id)
-    
     def test_can_parse_type(self):
         the_type = 'postal_address'
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_type).build()

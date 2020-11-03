@@ -69,10 +69,6 @@ class ServiceAtLocationDtoTests(TestCase):
 
 
 class AddressDtoTests(TestCase):
-    def test_throws_on_missing_address_id(self):
-        with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Address(type='postal_address', location_id='location_id', city='city', country='CA')
-    
     def test_throws_on_missing_type(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
             Address(id='id', location_id='location_id', city='city', country='CA')
