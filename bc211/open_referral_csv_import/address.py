@@ -71,4 +71,5 @@ def build_address_active_record(address):
     active_record.attention = address.attention
     active_record.address = address.address
     active_record.state_province = address.state_province
+    active_record.postal_code = address.postal_code
     return active_record
