@@ -192,7 +192,7 @@ class OpenReferralCsvServiceAtLocationBuilder:
 
 class OpenReferralCsvAddressBuilder:
     def __init__(self, location):
-        self.address_type = ''
+        self.address_type = 'physical_address'
         self.location_id = location.id
         self.attention = a_string()
         self.address = a_string()

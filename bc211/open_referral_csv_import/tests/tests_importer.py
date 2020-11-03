@@ -5,7 +5,7 @@ from ..organization import import_organizations_file, save_organization
 from ..service import import_services_file, save_service
 from ..location import import_locations_file, save_location
 from ..service_at_location import import_services_at_location_file, save_service_at_location
-from ..address import import_addresses_file, save_address
+from ..address import import_addresses_file, save_address, save_location_address
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
@@ -16,7 +16,8 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services.models import Service
 from human_services.locations.models import Location, ServiceAtLocation
-from human_services.addresses.models import Address
+from human_services.addresses.models import Address, AddressType
+from human_services.locations.models import LocationAddress
 from django.contrib.gis.geos import Point
 
 class OpenReferralImporterTests(TestCase):
@@ -268,3 +269,35 @@ class OpenReferralAddressImporterTests(TestCase):
         save_address(address_dto)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].postal_code, the_postal_code)
+
+class OpenReferralLocationAddressImporterTests(TestCase):
+    def setUp(self):
+        organization = OrganizationBuilder().build()
+        organization.save()
+        self.location_id_passed_to_location_builder = a_string()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
+        self.location.save()
+    
+    def test_can_import_address_id(self):
+        address_dto = OpenReferralCsvAddressBuilder(self.location).build_dto()
+        address = save_address(address_dto)
+        save_location_address(address, address_dto)
+        location_addresses = LocationAddress.objects.all()
+        addresses = Address.objects.all()
+        self.assertEqual(location_addresses[0].address_id, addresses[0].id)
+
+    def test_can_import_location_id(self):
+        address_dto = OpenReferralCsvAddressBuilder(self.location).build_dto()
+        address = save_address(address_dto)
+        save_location_address(address, address_dto)
+        location_addresses = LocationAddress.objects.all()
+        self.assertEqual(location_addresses[0].location_id, self.location_id_passed_to_location_builder)
+    
+    def test_can_import_address_type(self):
+        the_address_type = 'postal_address'
+        address_dto = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_address_type).build_dto()
+        address = save_address(address_dto)
+        save_location_address(address, address_dto)
+        location_addresses = LocationAddress.objects.all()
+        the_address_type_instance = AddressType.objects.get(pk=the_address_type)
+        self.assertEqual(location_addresses[0].address_type, the_address_type_instance)
