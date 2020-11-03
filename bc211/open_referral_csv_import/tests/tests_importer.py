@@ -254,3 +254,10 @@ class OpenReferralAddressImporterTests(TestCase):
         save_address(address_dto)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].address, the_address)
+    
+    def test_can_import_state_province(self):
+        the_state_province = a_string()
+        address_dto = OpenReferralCsvAddressBuilder(self.location).with_state_province(the_state_province).build_dto()
+        save_address(address_dto)
+        addresses = Address.objects.all()
+        self.assertEqual(addresses[0].state_province, the_state_province)
