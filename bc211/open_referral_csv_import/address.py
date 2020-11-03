@@ -2,7 +2,8 @@ import os
 import logging
 from .parser import parse_required_field, parse_optional_field
 from bc211.open_referral_csv_import import dtos
-from human_services.addresses.models import Address
+from human_services.addresses.models import Address, AddressType
+from human_services.locations.models import LocationAddress, Location
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,8 +18,9 @@ def import_addresses_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                address = parse_address(headers, row)
-                save_address(address)
+                address_dto = parse_address(headers, row)
+                address_active_record = save_address(address_dto)
+                save_location_address(address_active_record, address_dto)
     except FileNotFoundError as error:
             LOGGER.error('Missing addresses.csv file.')
             raise
@@ -62,6 +64,7 @@ def parse_address(headers, row):
 def save_address(address):
     active_record = build_address_active_record(address)
     active_record.save()
+    return active_record
 
 
 def build_address_active_record(address):
@@ -73,3 +76,9 @@ def build_address_active_record(address):
     active_record.state_province = address.state_province
     active_record.postal_code = address.postal_code
     return active_record
+
+
+def save_location_address(address_active_record, address_dto):
+    location = Location.objects.get(pk=address_dto.location_id)
+    address_type = AddressType.objects.get(pk=address_dto.type)
+    LocationAddress(address=address_active_record, location=location, address_type=address_type).save()
