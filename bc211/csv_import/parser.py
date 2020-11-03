@@ -40,8 +40,9 @@ def parse(sink, lines, vocabulary=None):
             organization_or_service['id'] = compute_hash(organization_or_service['name'],
                                                          organization_or_service['alternate_name'])
 
-        write_location_to_sink(location, addresses, phone_numbers, organization_or_service['id'],
-                               parent_id, unique_location_ids, sink)
+        location['id'] = compute_location_id(location, addresses, phone_numbers)
+        location['organization_id'] = pick_location_organization_id(organization_or_service['id'], parent_id)
+        write_location_to_sink(location, unique_location_ids, sink)
         if parent_id == '0':
             sink.write_organization(organization_or_service)
         else:
@@ -211,11 +212,11 @@ def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
                                        })
 
 
-def write_location_to_sink(location, addresses, phone_numbers, service_or_organization_id, parent_id,
-                           unique_location_ids, sink):
-    location['id'] = compute_location_id(location, addresses, phone_numbers)
-    is_organization = parent_id == '0'
-    location['organization_id'] = service_or_organization_id if is_organization else parent_id
+def pick_location_organization_id(organization_or_service_id, parent_id):
+    return organization_or_service_id if parent_id == '0' else parent_id
+
+
+def write_location_to_sink(location, unique_location_ids, sink):
     if location['id'] not in unique_location_ids:
         sink.write_location(location)
         unique_location_ids[location['id']] = 1
