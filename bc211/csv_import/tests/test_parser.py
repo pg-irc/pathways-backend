@@ -157,7 +157,7 @@ class ParseServicesTests(TestCase):
                 with_field('ParentAgencyNum', a_string()).
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.first_service()['id']), 36)
+        self.assertGreater(len(parsed_data.first_service()['id']), 20)
 
     def test_if_id_is_missing_set_service_id_on_service_at_location_record(self):
         data = (Bc211CsvDataBuilder().
@@ -170,7 +170,7 @@ class ParseServicesTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
 
         the_service_id = parsed_data.services[0]['id']
-        self.assertEqual(len(the_service_id), 36)
+        self.assertGreater(len(the_service_id), 20)
         self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_service_id)
 
     def test_if_id_is_missing_set_service_id_on_service_taxonomy(self):
@@ -183,7 +183,7 @@ class ParseServicesTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
 
         the_service_id = parsed_data.services[0]['id']
-        self.assertEqual(len(the_service_id), 36)
+        self.assertGreater(len(the_service_id), 20)
         self.assertEqual(parsed_data.services_taxonomy[0]['service_id'], the_service_id)
 
 
