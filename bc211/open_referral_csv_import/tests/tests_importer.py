@@ -1,12 +1,13 @@
 import unittest
+import string
 from django.test import TestCase
 from ..organization import import_organizations_file, save_organization
 from ..service import import_services_file, save_service
 from ..location import import_locations_file, save_location
 from ..service_at_location import import_services_at_location_file, save_service_at_location
-from ..address import import_addresses_file
+from ..address import import_addresses_file, save_address
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
-                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder)
+                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.models import Organization
@@ -15,6 +16,7 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services.models import Service
 from human_services.locations.models import Location, ServiceAtLocation
+from human_services.addresses.models import Address
 from django.contrib.gis.geos import Point
 
 class OpenReferralImporterTests(TestCase):
@@ -215,3 +217,26 @@ class OpenReferralServiceAtLocationImporterTests(TestCase):
         save_service_at_location(service_at_location_dto)
         services_at_location = ServiceAtLocation.objects.all()
         self.assertEqual(services_at_location[0].location_id, self.location_id_passed_to_location_builder)
+
+
+class OpenReferralAddressImporterTests(TestCase):
+    def setUp(self):
+        organization = OrganizationBuilder().build()
+        organization.save()
+        self.location_id_passed_to_location_builder = a_string()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
+        self.location.save()
+    
+    def test_can_import_city(self):
+        the_city = a_string()
+        address_dto = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build_dto()
+        save_address(address_dto)
+        addresses = Address.objects.all()
+        self.assertEqual(addresses[0].city, the_city)
+
+    def test_can_import_country(self):
+        the_country = a_string(2, string.ascii_uppercase)
+        address_dto = OpenReferralCsvAddressBuilder(self.location).with_country(the_country).build_dto()
+        save_address(address_dto)
+        addresses = Address.objects.all()
+        self.assertEqual(addresses[0].country, the_country)
