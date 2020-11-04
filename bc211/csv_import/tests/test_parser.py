@@ -150,6 +150,14 @@ class ParseServicesTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_service()['last_verified_on-x'], '2018-09-15')
 
+    def test_last_verified_date_can_be_empty(self):
+        data = (Bc211CsvDataBuilder().
+                as_service().
+                with_field('LastVerifiedOn', '').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertIsNone(parsed_data.first_service()['last_verified_on-x'])
+
     def test_if_id_is_missing_create_random_id(self):
         data = (Bc211CsvDataBuilder().
                 with_field('ResourceAgencyNum', '').

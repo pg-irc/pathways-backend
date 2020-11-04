@@ -66,6 +66,8 @@ def parse_organization_and_service_fields(header, value, organization_or_service
 
 
 def fix_date_time_string(date_time_string):
+    if not date_time_string:
+        return None
     date_string = date_time_string.split()[0]
     date = datetime.datetime.strptime(date_string, '%m/%d/%Y')
     date_time_as_iso_string = str(date)
