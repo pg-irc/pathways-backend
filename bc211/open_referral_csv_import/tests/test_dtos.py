@@ -4,20 +4,6 @@ from ..exceptions import MissingRequiredFieldCsvParseException, InvalidTypeCsvPa
 from ..dtos import Organization, Service, Location, SpatialLocation, ServiceAtLocation, Address
 
 
-class OrganizationDtoTests(TestCase):
-    def test_throws_on_missing_id(self):
-        with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Organization(name='name')
-
-    def test_throws_on_missing_name(self):
-        with self.assertRaises(MissingRequiredFieldCsvParseException):
-            Organization(id='id')
-
-    def test_throws_on_invalid_type(self):
-        with self.assertRaises(InvalidTypeCsvParseException):
-            Organization(id='id', name='name', alternate_name=123)
-
-
 class ServiceDtoTests(TestCase):
     def test_throws_on_missing_id(self):
         with self.assertRaises(MissingRequiredFieldCsvParseException):

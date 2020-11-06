@@ -21,37 +21,37 @@ class OpenReferralOrganizationParserTests(TestCase):
         the_id = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
         organization = parse_organization(organization_data)
-        self.assertEqual(organization.id, the_id)
+        self.assertEqual(organization['id'], the_id)
     
     def test_can_parse_name(self):
         the_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
         organization = parse_organization(organization_data)
-        self.assertEqual(organization.name, the_name)
+        self.assertEqual(organization['name'], the_name)
 
     def test_can_parse_alternate_name(self):
         the_alternate_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
         organization = parse_organization(organization_data)
-        self.assertEqual(organization.alternate_name, the_alternate_name)
+        self.assertEqual(organization['alternate_name'], the_alternate_name)
     
     def test_can_parse_description(self):
         the_description = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_description(the_description).build()
         organization = parse_organization(organization_data)
-        self.assertEqual(organization.description, the_description)
+        self.assertEqual(organization['description'], the_description)
 
     def test_can_parse_email(self):
         the_email = an_email_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
         organization = parse_organization(organization_data)
-        self.assertEqual(organization.email, the_email)
+        self.assertEqual(organization['email'], the_email)
 
     def test_can_parse_website(self):
         the_website = a_website_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
         organization = parse_organization(organization_data)
-        self.assertEqual(organization.website, the_website)
+        self.assertEqual(organization['website'], the_website)
 
 
 class OpenReferralServiceParserTests(TestCase):
