@@ -19,7 +19,7 @@ def import_organizations_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                organization = parse_organization(headers, row)
+                organization = parse_organization(row)
                 save_organization(organization)
     except FileNotFoundError as error:
             LOGGER.error('Missing organizations.csv file.')
@@ -45,28 +45,13 @@ def build_active_record(organization):
     return active_record
 
 
-def parse_organization(headers, row):
+def parse_organization(row):
     organization = {}
-    organization_id = row[0]
-    name = row[1]
-    alternate_name = row[2]
-    description = row[3]
-    email = row[4]
-    website = row[5]
-    for header in headers:
-        if header == 'id':
-            organization['id'] = parse_required_field('id', organization_id)
-        elif header == 'name':
-            organization['name'] = parse_required_field('name', name)
-        elif header == 'alternate_name':
-            organization['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
-        elif header == 'description':
-            organization['description'] = parse_optional_field('description', description)
-        elif header == 'email':
-            organization['email'] = parse_optional_field('email', email)
-        elif header == 'url':
-            organization['website'] = parse_website_with_prefix('website', website)
-        else:
-            continue
+    organization['id'] = parse_required_field('id', row[0])
+    organization['name'] = parse_required_field('name', row[1])
+    organization['alternate_name'] = parse_optional_field('alternate_name', row[2])
+    organization['description'] = parse_optional_field('description', row[3])
+    organization['email'] = parse_optional_field('email', row[4])
+    organization['website'] = parse_website_with_prefix('website', row[5])
     return dtos.Organization(id=organization['id'], name=organization['name'], alternate_name=organization['alternate_name'],
                         description=organization['description'], website=organization['website'], email=organization['email'])
