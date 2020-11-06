@@ -17,44 +17,40 @@ from human_services.locations.tests.helpers import LocationBuilder
 
 
 class OpenReferralOrganizationParserTests(TestCase):
-    def setUp(self):
-        self.headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
-                        'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
-
     def test_can_parse_id(self):
         the_id = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
-        organization = parse_organization(self.headers, organization_data)
+        organization = parse_organization(organization_data)
         self.assertEqual(organization.id, the_id)
     
     def test_can_parse_name(self):
         the_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
-        organization = parse_organization(self.headers, organization_data)
+        organization = parse_organization(organization_data)
         self.assertEqual(organization.name, the_name)
 
     def test_can_parse_alternate_name(self):
         the_alternate_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
-        organization = parse_organization(self.headers, organization_data)
+        organization = parse_organization(organization_data)
         self.assertEqual(organization.alternate_name, the_alternate_name)
     
     def test_can_parse_description(self):
         the_description = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_description(the_description).build()
-        organization = parse_organization(self.headers, organization_data)
+        organization = parse_organization(organization_data)
         self.assertEqual(organization.description, the_description)
 
     def test_can_parse_email(self):
         the_email = an_email_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
-        organization = parse_organization(self.headers, organization_data)
+        organization = parse_organization(organization_data)
         self.assertEqual(organization.email, the_email)
 
     def test_can_parse_website(self):
         the_website = a_website_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
-        organization = parse_organization(self.headers, organization_data)
+        organization = parse_organization(organization_data)
         self.assertEqual(organization.website, the_website)
 
 
