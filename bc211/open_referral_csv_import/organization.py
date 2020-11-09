@@ -5,6 +5,7 @@ from django.utils import translation
 from human_services.organizations.models import Organization
 from bc211.open_referral_csv_import import parser
 from bc211.is_inactive import is_inactive
+from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,6 +17,8 @@ def import_organizations_file(root_folder):
         with open(path, 'r') as file: 
             reader = csv.reader(file)
             headers = reader.__next__()
+            if not file_satisfies_open_referral_standard(headers, open_referral_standard_header):
+                raise InvalidFileCsvImportException('"{0}": does not meet open referral standards.'.format(field))
             for row in reader:
                 if not row:
                     return
@@ -23,6 +26,14 @@ def import_organizations_file(root_folder):
     except FileNotFoundError as error:
             LOGGER.error('Missing organizations.csv file.')
             raise
+
+
+open_referral_standard_header = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
+                            'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
+
+
+def file_satisfies_open_referral_standard(headers, open_referral_headers):
+    return headers == open_referral_standard_header
 
 
 def import_organization(row):
