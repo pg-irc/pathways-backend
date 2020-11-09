@@ -34,9 +34,8 @@ class OpenReferralOrganizationParserTests(TestCase):
     
     def test_can_parse_description(self):
         the_description = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_description(the_description).build()
-        organization = parse_organization(organization_data)
-        self.assertEqual(organization['description'], the_description)
+        parsed_description = parser.parse_description(the_description)
+        self.assertEqual(parsed_description, the_description)
 
     def test_can_parse_email(self):
         the_email = an_email_address()
