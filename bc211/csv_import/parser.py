@@ -69,12 +69,12 @@ def parse_organization_and_service_fields(header, value, organization_or_service
     output_header = organization_header_map.get(header, None)
     if output_header:
         if output_header == 'last_verified_on-x':
-            organization_or_service[output_header] = fix_date_time_string(value)
+            organization_or_service[output_header] = fix_date_time_string_if_exists(value)
         else:
             organization_or_service[output_header] = value
 
 
-def fix_date_time_string(date_time_string):
+def fix_date_time_string_if_exists(date_time_string):
     if not date_time_string:
         return None
     date_string = date_time_string.split()[0]
