@@ -19,38 +19,26 @@ def import_organizations_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                organization = parse_organization(row)
-                save_organization(organization)
+                import_organization(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing organizations.csv file.')
             raise
 
 
-def parse_organization(row):
-    organization = {}
-    organization['id'] = parser.parse_organization_id(row[0])
-    organization['name'] = parser.parse_name(row[1])
-    organization['alternate_name'] = parser.parse_alternate_name(row[2])
-    organization['description'] = parser.parse_description(row[3])
-    organization['email'] = parser.parse_email(row[4])
-    organization['website'] = parser.parse_website_with_prefix('website', row[5])
-    return organization
-
-
-def save_organization(organization):
-    # if is_inactive(organization):
-    #     return
+def import_organization(row):
     translation.activate('en')
-    active_record = build_active_record(organization)
+    active_record = build_active_record(row)
+    if is_inactive(active_record):
+        return
     active_record.save()
 
 
-def build_active_record(organization):
+def build_active_record(row):
     active_record = Organization()
-    active_record.id = organization['id']
-    active_record.name = organization['name']
-    active_record.alternate_name = organization['alternate_name']
-    active_record.description = organization['description']
-    active_record.email = organization['email']
-    active_record.website = organization['website']
+    active_record.id = parser.parse_organization_id(row[0])
+    active_record.name = parser.parse_name(row[1])
+    active_record.alternate_name = parser.parse_alternate_name(row[2])
+    active_record.description = parser.parse_description(row[3])
+    active_record.email = parser.parse_email(row[4])
+    active_record.website = parser.parse_website_with_prefix('website', row[5])
     return active_record
