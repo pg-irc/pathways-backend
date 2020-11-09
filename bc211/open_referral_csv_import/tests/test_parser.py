@@ -24,9 +24,8 @@ class OpenReferralOrganizationParserTests(TestCase):
     
     def test_can_parse_name(self):
         the_name = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
-        organization = parse_organization(organization_data)
-        self.assertEqual(organization['name'], the_name)
+        parsed_name = parser.parse_name(the_name)
+        self.assertEqual(parsed_name, the_name)
 
     def test_can_parse_alternate_name(self):
         the_alternate_name = a_string()

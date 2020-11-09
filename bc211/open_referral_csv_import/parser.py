@@ -8,6 +8,11 @@ def parse_organization_id(value):
     return remove_double_escaped_html_markup(organization_id)
 
 
+def parse_name(value):
+    name = parse_required_field('name', value)
+    return remove_double_escaped_html_markup(name)
+
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
