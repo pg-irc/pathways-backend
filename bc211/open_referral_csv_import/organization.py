@@ -3,7 +3,7 @@ import logging
 from bc211.open_referral_csv_import import dtos
 from django.utils import translation
 from human_services.organizations.models import Organization
-from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
+from bc211.open_referral_csv_import import parser
 from bc211.is_inactive import is_inactive
 
 LOGGER = logging.getLogger(__name__)
@@ -47,10 +47,10 @@ def build_active_record(organization):
 
 def parse_organization(row):
     organization = {}
-    organization['id'] = parse_required_field('id', row[0])
-    organization['name'] = parse_required_field('name', row[1])
-    organization['alternate_name'] = parse_optional_field('alternate_name', row[2])
-    organization['description'] = parse_optional_field('description', row[3])
-    organization['email'] = parse_optional_field('email', row[4])
-    organization['website'] = parse_website_with_prefix('website', row[5])
+    organization['id'] = parser.parse_organization_id(row[0])
+    organization['name'] = parser.parse_required_field('name', row[1])
+    organization['alternate_name'] = parser.parse_optional_field('alternate_name', row[2])
+    organization['description'] = parser.parse_optional_field('description', row[3])
+    organization['email'] = parser.parse_optional_field('email', row[4])
+    organization['website'] = parser.parse_website_with_prefix('website', row[5])
     return organization
