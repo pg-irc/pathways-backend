@@ -8,7 +8,7 @@ from ..service import parse_service
 from ..location import parse_location
 from ..service_at_location import parse_service_at_location
 from ..address import parse_address
-from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_coordinate_if_defined
+from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_coordinate_if_defined, parse_organization_id
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.tests.helpers import OrganizationBuilder
@@ -19,9 +19,8 @@ from human_services.locations.tests.helpers import LocationBuilder
 class OpenReferralOrganizationParserTests(TestCase):
     def test_can_parse_id(self):
         the_id = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
-        organization = parse_organization(organization_data)
-        self.assertEqual(organization['id'], the_id)
+        parsed_organization_id = parse_organization_id(the_id)
+        self.assertEqual(parsed_organization_id, the_id)
     
     def test_can_parse_name(self):
         the_name = a_string()
@@ -231,16 +230,6 @@ class OpenReferralAddressesParserTests(TestCase):
 
 
 class ParserHelperTests(TestCase):
-    def test_removes_doubly_escaped_bold_markup_from_required_field(self):
-        the_name = '&amp;lt;b&amp;gt;abc'
-        html_markup = parse_required_field('name', the_name)
-        self.assertEqual(html_markup, 'abc')
-
-    def test_removes_doubly_escaped_strong_markup_from_required_field(self):
-        the_name = '&amp;lt;strong&amp;gt;abc'
-        html_markup = parse_required_field('name', the_name)
-        self.assertEqual(html_markup, 'abc')
-
     def test_removes_doubly_escaped_bold_markup_from_optional_field(self):
         the_alternate_name = '&amp;lt;b&amp;gt;abc'
         html_markup = parse_optional_field('alternate_name', the_alternate_name)

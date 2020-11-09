@@ -3,11 +3,15 @@ from urllib import parse as urlparse
 from .exceptions import MissingRequiredFieldCsvParseException
 
 
+def parse_organization_id(value):
+    organization_id = parse_required_field('organization_id', value)
+    return remove_double_escaped_html_markup(organization_id)
+
+
 def parse_required_field(field, value):
-    try:
-        return remove_double_escaped_html_markup(value)
-    except AttributeError:
+    if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
+    return value
 
 
 def parse_optional_field(field, value):
