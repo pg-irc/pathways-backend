@@ -8,7 +8,7 @@ from ..service import parse_service
 from ..location import parse_location
 from ..service_at_location import parse_service_at_location
 from ..address import parse_address
-from ..parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_coordinate_if_defined, parse_organization_id
+from bc211.open_referral_csv_import import parser
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.tests.helpers import OrganizationBuilder
@@ -19,7 +19,7 @@ from human_services.locations.tests.helpers import LocationBuilder
 class OpenReferralOrganizationParserTests(TestCase):
     def test_can_parse_id(self):
         the_id = a_string()
-        parsed_organization_id = parse_organization_id(the_id)
+        parsed_organization_id = parser.parse_organization_id(the_id)
         self.assertEqual(parsed_organization_id, the_id)
     
     def test_can_parse_name(self):
@@ -232,30 +232,30 @@ class OpenReferralAddressesParserTests(TestCase):
 class ParserHelperTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_optional_field(self):
         the_alternate_name = '&amp;lt;b&amp;gt;abc'
-        html_markup = parse_optional_field('alternate_name', the_alternate_name)
+        html_markup = parser.parse_optional_field('alternate_name', the_alternate_name)
         self.assertEqual(html_markup, 'abc')
 
     def test_removes_doubly_escaped_strong_markup_from_optional_field(self):
         the_alternate_name = '&amp;lt;strong&amp;gt;abc'
-        html_markup = parse_optional_field('alternate_name', the_alternate_name)
+        html_markup = parser.parse_optional_field('alternate_name', the_alternate_name)
         self.assertEqual(html_markup, 'abc')
 
     def test_website_without_prefix_parsed_as_http(self):
         the_website = 'www.example.org'
-        parsed_website = parse_website_with_prefix('website', the_website)
+        parsed_website = parser.parse_website_with_prefix('website', the_website)
         self.assertEqual(parsed_website, 'http://www.example.org')
 
     def test_website_with_http_prefix_parsed_as_http(self):
         the_website = 'http://www.example.org'
-        parsed_website = parse_website_with_prefix('website', the_website)
+        parsed_website = parser.parse_website_with_prefix('website', the_website)
         self.assertEqual(parsed_website, 'http://www.example.org')
 
     def test_website_with_https_prefix_parsed_as_https(self):
         the_website = 'https://www.example.org'
-        parsed_website = parse_website_with_prefix('website', the_website)
+        parsed_website = parser.parse_website_with_prefix('website', the_website)
         self.assertEqual(parsed_website, 'https://www.example.org')
     
     def test_returns_none_if_coordinate_is_empty(self):
         empty_latitude = ''
-        foo = parse_coordinate_if_defined('latitude', empty_latitude)
+        foo = parser.parse_coordinate_if_defined('latitude', empty_latitude)
         self.assertEqual(foo, None)
