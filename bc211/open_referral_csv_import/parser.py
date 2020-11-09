@@ -13,6 +13,11 @@ def parse_name(value):
     return remove_double_escaped_html_markup(name)
 
 
+def parse_alternate_name(value):
+    alternate_name = parse_optional_field('alternate_name', value)
+    return remove_double_escaped_html_markup(alternate_name)
+
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
@@ -22,7 +27,7 @@ def parse_required_field(field, value):
 def parse_optional_field(field, value):
     if csv_value_is_empty(value):
         return None
-    return remove_double_escaped_html_markup(value)
+    return value
 
 
 def parse_website_with_prefix(field, value):

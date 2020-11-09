@@ -30,7 +30,7 @@ def parse_organization(row):
     organization = {}
     organization['id'] = parser.parse_organization_id(row[0])
     organization['name'] = parser.parse_name(row[1])
-    organization['alternate_name'] = parser.parse_optional_field('alternate_name', row[2])
+    organization['alternate_name'] = parser.parse_alternate_name(row[2])
     organization['description'] = parser.parse_optional_field('description', row[3])
     organization['email'] = parser.parse_optional_field('email', row[4])
     organization['website'] = parser.parse_website_with_prefix('website', row[5])
