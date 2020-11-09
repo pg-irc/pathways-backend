@@ -5,14 +5,21 @@ import uuid
 import datetime
 
 
+class CsvMissingIdParseException(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
 def parse(sink, lines, vocabulary=None):
     reader = csv.reader(lines)
     headers = reader.__next__()
     unique_location_ids = {}
     unique_phone_ids = {}
     unique_taxonomy_term_ids = {}
+    line = 0
 
     for row in reader:
+        line += 1
         if not row:
             continue
 
@@ -30,7 +37,9 @@ def parse(sink, lines, vocabulary=None):
             if header == 'ParentAgencyNum':
                 parent_id = value
 
-        set_id_if_not_already_set(organization_or_service)
+        if not organization_or_service['id']:
+            raise CsvMissingIdParseException(f'Missing service or organization id at line {line}')
+
         set_location_ids(location, addresses, phone_numbers, organization_or_service['id'], parent_id)
         write_location_to_sink(location, unique_location_ids, sink)
 
@@ -201,12 +210,6 @@ def compute_hash(*args):
     for arg in args:
         hasher.update(arg.encode('utf-8'))
     return hasher.hexdigest()
-
-
-def set_id_if_not_already_set(organization_or_service):
-    if not organization_or_service['id']:
-        organization_or_service['id'] = compute_hash(organization_or_service['name'],
-                                                     organization_or_service['alternate_name'])
 
 
 def set_location_ids(location, addresses, phone_numbers, organization_or_service_id, parent_id):

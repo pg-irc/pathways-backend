@@ -33,10 +33,12 @@ class Bc211CsvDataBuilder:
         return self
 
     def as_organization(self):
+        self.data[-1]['ResourceAgencyNum'] = str(an_integer())
         self.data[-1]['ParentAgencyNum'] = '0'
         return self
 
     def as_service(self):
+        self.data[-1]['ResourceAgencyNum'] = str(an_integer())
         self.data[-1]['ParentAgencyNum'] = str(an_integer(min=1))
         return self
 
