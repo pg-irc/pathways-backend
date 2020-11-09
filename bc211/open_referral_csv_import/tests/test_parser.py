@@ -1,9 +1,8 @@
 import unittest
 import string
 from django.test import TestCase
-from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
-                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
-from ..organization import parse_organization
+from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder,
+                                                    OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
 from ..service import parse_service
 from ..location import parse_location
 from ..service_at_location import parse_service_at_location
@@ -16,39 +15,6 @@ from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.tests.helpers import LocationBuilder
 from bc211.parser import remove_double_escaped_html_markup
 from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
-
-
-class OpenReferralOrganizationParserTests(TestCase):
-    def test_can_parse_id(self):
-        the_id = a_string()
-        parsed_organization_id = parser.parse_organization_id(the_id)
-        self.assertEqual(parsed_organization_id, the_id)
-    
-    def test_can_parse_name(self):
-        the_name = a_string()
-        parsed_name = parser.parse_name(the_name)
-        self.assertEqual(parsed_name, the_name)
-
-    def test_can_parse_alternate_name(self):
-        the_alternate_name = a_string()
-        parsed_alternate_name = parser.parse_alternate_name(the_alternate_name)
-        self.assertEqual(parsed_alternate_name, the_alternate_name)
-    
-    def test_can_parse_description(self):
-        the_description = a_string()
-        parsed_description = parser.parse_description(the_description)
-        self.assertEqual(parsed_description, the_description)
-
-    def test_can_parse_email(self):
-        the_email = an_email_address()
-        parsed_email = parser.parse_email(the_email)
-        self.assertEqual(parsed_email, the_email)
-
-    def test_can_parse_website(self):
-        the_website = a_website_address()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
-        organization = parse_organization(organization_data)
-        self.assertEqual(organization['website'], the_website)
 
 
 class OpenReferralServiceParserTests(TestCase):
