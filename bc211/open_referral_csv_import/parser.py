@@ -23,11 +23,17 @@ def parse_description(value):
     return remove_double_escaped_html_markup(description)
 
 
+def parse_email(value):
+    email = parse_optional_field('email', value)
+    return remove_double_escaped_html_markup(email)
+
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
     return value
 
+# TODO remove field argument
 
 def parse_optional_field(field, value):
     if csv_value_is_empty(value):
