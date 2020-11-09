@@ -20,32 +20,6 @@ from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
 from django.contrib.gis.geos import Point
 
-class OpenReferralImporterTests(TestCase):
-    def test_missing_organizations_file_throws_exception(self):
-        incorrect_file_path = '../foo/organizations.csv'
-        with self.assertRaises(FileNotFoundError) as error:
-            import_organizations_file(incorrect_file_path)
-
-    def test_missing_services_file_throws_exception(self):
-        incorrect_file_path = '../foo/services.csv'
-        with self.assertRaises(FileNotFoundError) as error:
-            import_services_file(incorrect_file_path)
-    
-    def test_missing_locations_file_throws_exception(self):
-        incorrect_file_path = '../foo/locations.csv'
-        with self.assertRaises(FileNotFoundError) as error:
-            import_locations_file(incorrect_file_path)
-
-    def test_missing_services_at_location_file_throws_exception(self):
-        incorrect_file_path = '../foo/services_at_location.csv'
-        with self.assertRaises(FileNotFoundError) as error:
-            import_services_at_location_file(incorrect_file_path)
-
-    def test_missing_addresses_file_throws_exception(self):
-        incorrect_file_path = '../foo/addresses.csv'
-        with self.assertRaises(FileNotFoundError) as error:
-            import_addresses_file(incorrect_file_path)
-
 
 class OpenReferralOrganizationImporterTests(TestCase):
     def test_can_import_id(self):
