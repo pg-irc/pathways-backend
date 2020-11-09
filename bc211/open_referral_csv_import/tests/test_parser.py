@@ -29,9 +29,8 @@ class OpenReferralOrganizationParserTests(TestCase):
 
     def test_can_parse_alternate_name(self):
         the_alternate_name = a_string()
-        organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
-        organization = parse_organization(organization_data)
-        self.assertEqual(organization['alternate_name'], the_alternate_name)
+        parsed_alternate_name = parser.parse_alternate_name(the_alternate_name)
+        self.assertEqual(parsed_alternate_name, the_alternate_name)
     
     def test_can_parse_description(self):
         the_description = a_string()
@@ -229,16 +228,6 @@ class OpenReferralAddressesParserTests(TestCase):
 
 
 class ParserHelperTests(TestCase):
-    def test_removes_doubly_escaped_bold_markup_from_optional_field(self):
-        the_alternate_name = '&amp;lt;b&amp;gt;abc'
-        html_markup = parser.parse_optional_field('alternate_name', the_alternate_name)
-        self.assertEqual(html_markup, 'abc')
-
-    def test_removes_doubly_escaped_strong_markup_from_optional_field(self):
-        the_alternate_name = '&amp;lt;strong&amp;gt;abc'
-        html_markup = parser.parse_optional_field('alternate_name', the_alternate_name)
-        self.assertEqual(html_markup, 'abc')
-
     def test_website_without_prefix_parsed_as_http(self):
         the_website = 'www.example.org'
         parsed_website = parser.parse_website_with_prefix('website', the_website)
