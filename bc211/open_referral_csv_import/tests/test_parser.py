@@ -14,6 +14,8 @@ from common.testhelpers.random_test_values import (a_string, an_email_address, a
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.tests.helpers import LocationBuilder
+from bc211.parser import remove_double_escaped_html_markup
+from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 
 
 class OpenReferralOrganizationParserTests(TestCase):
@@ -226,6 +228,24 @@ class OpenReferralAddressesParserTests(TestCase):
 
 
 class ParserHelperTests(TestCase):
+    def test_removes_doubly_escaped_bold_markup_from_field(self):
+        the_name = '&amp;lt;b&amp;gt;abc'
+        html_markup = remove_double_escaped_html_markup(the_name)
+        self.assertEqual(html_markup, 'abc')
+
+    def test_removes_doubly_escaped_strong_markup_from_field(self):
+        the_name = '&amp;lt;strong&amp;gt;abc'
+        html_markup = remove_double_escaped_html_markup(the_name)
+        self.assertEqual(html_markup, 'abc')
+
+    def test_throws_when_required_field_is_missing(self):
+        with self.assertRaises(MissingRequiredFieldCsvParseException):
+            parser.parse_required_field('id', None)
+
+    def test_returns_none_if_optional_field_is_missing(self):
+        parsed_id = parser.parse_optional_field('id', None)
+        self.assertEqual(parsed_id, None)
+
     def test_website_without_prefix_parsed_as_http(self):
         the_website = 'www.example.org'
         parsed_website = parser.parse_website_with_prefix('website', the_website)
