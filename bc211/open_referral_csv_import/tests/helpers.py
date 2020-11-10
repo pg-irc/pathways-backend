@@ -1,7 +1,8 @@
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                                a_latitude_as_a_string, a_longitude_as_a_string)
+                                                a_latitude_as_a_string, a_longitude_as_a_string, a_date)
 from bc211.open_referral_csv_import import dtos
 import string
+from datetime import date
 
 
 class OpenReferralCsvOrganizationBuilder:
@@ -36,7 +37,7 @@ class OpenReferralCsvOrganizationBuilder:
     def with_url(self, url):
         self.url = url
         return self
-        
+    
     def build(self):
         not_used_tax_status = ''
         not_used_tax_id = ''
@@ -55,6 +56,7 @@ class OpenReferralCsvServiceBuilder:
         self.description = a_string()
         self.url = a_website_address()
         self.email = an_email_address()
+        self.last_verified_on = date.today().strftime("%d-%m-%Y")
     
     def with_id(self, service_id):
         self.service_id = service_id
@@ -84,6 +86,10 @@ class OpenReferralCsvServiceBuilder:
         self.email = email
         return self
     
+    def with_last_verified_on(self, date):
+        self.last_verified_on = date
+        return self
+    
     def build(self):
         not_used_program_id = ''
         not_used_status = ''
@@ -96,7 +102,7 @@ class OpenReferralCsvServiceBuilder:
         not_used_taxonomy_ids = ''
         return [self.service_id, self.organization_id, not_used_program_id, self.name, self.alternate_name, self.description, self.url, self.email,
                 not_used_status, not_used_intepretation_services, not_used_application_process, not_used_wait_time,
-                not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids]
+                not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids, self.last_verified_on]
                 
 
 class OpenReferralCsvLocationBuilder:
