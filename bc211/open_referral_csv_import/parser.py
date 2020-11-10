@@ -14,6 +14,11 @@ def parse_service_id(value):
     return remove_double_escaped_html_markup(service_id)
 
 
+def parse_location_id(value):
+    location_id = parse_required_field('location_id', value)
+    return remove_double_escaped_html_markup(location_id)
+
+
 def parse_name(value):
     name = parse_required_field('name', value)
     return remove_double_escaped_html_markup(name)
