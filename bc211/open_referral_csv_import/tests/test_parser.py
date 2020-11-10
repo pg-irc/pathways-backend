@@ -3,7 +3,6 @@ import string
 from django.test import TestCase
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder,
                                                     OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
-from ..service import parse_service
 from ..location import parse_location
 from ..service_at_location import parse_service_at_location
 from ..address import parse_address

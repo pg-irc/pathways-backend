@@ -18,39 +18,26 @@ def import_services_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                service = parse_service(row)
-                save_service(service)
+                import_service(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing services.csv file.')
             raise
 
 
-def parse_service(row):
-    service = {}
-    service['id'] = parser.parse_service_id(row[0])
-    service['organization_id'] = parser.parse_organization_id(row[1])
-    service['name'] = parser.parse_name(row[3])
-    service['alternate_name'] = parser.parse_alternate_name(row[4])
-    service['description'] = parser.parse_description(row[5])
-    service['website'] = parser.parse_website_with_prefix('website', row[6])
-    service['email'] = parser.parse_email(row[7])
-    return service
-
-
-def save_service(service):
-    # if is_inactive(service):
-    #     return
-    active_record = build_service_active_record(service)
+def import_service(row):
+    active_record = build_service_active_record(row)
+    if is_inactive(active_record):
+        return
     active_record.save()
     
 
-def build_service_active_record(service):
+def build_service_active_record(row):
     active_record = Service()
-    active_record.id = service['id']
-    active_record.organization_id = service['organization_id']
-    active_record.name = service['name']
-    active_record.alternate_name = service['alternate_name']
-    active_record.description = service['description']
-    active_record.website = service['website']
-    active_record.email = service['email']
+    active_record.id = parser.parse_service_id(row[0])
+    active_record.organization_id = parser.parse_organization_id(row[1])
+    active_record.name = parser.parse_name(row[3])
+    active_record.alternate_name = parser.parse_alternate_name(row[4])
+    active_record.description = parser.parse_description(row[5])
+    active_record.website = parser.parse_website_with_prefix('website', row[6])
+    active_record.email = parser.parse_email(row[7])
     return active_record
