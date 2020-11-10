@@ -27,30 +27,13 @@ def import_services_file(root_folder):
 
 def parse_service(headers, row):
     service = {}
-    service_id = row[0]
-    organization_id = row[1]
-    name = row[3]
-    alternate_name = row[4]
-    description = row[5]
-    website = row[6]
-    email = row[7]
-    for header in headers:
-        if header == 'id':
-            service['id'] = parse_required_field('id', service_id)
-        elif header == 'organization_id':
-            service['organization_id'] = parse_required_field('organization_id', organization_id)
-        elif header == 'name':
-            service['name'] = parse_required_field('name', name)
-        elif header == 'alternate_name':
-            service['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
-        elif header == 'description':
-            service['description'] = parse_optional_field('description', description)
-        elif header == 'url':
-            service['website'] = parse_website_with_prefix('website', website)
-        elif header == 'email':
-            service['email'] = parse_optional_field('email', email)
-        else:
-            continue
+    service['id'] = parse_required_field('id', service_id)
+    service['organization_id'] = parse_required_field('organization_id', organization_id)
+    service['name'] = parse_required_field('name', name)
+    service['alternate_name'] = parse_optional_field('alternate_name', alternate_name)
+    service['description'] = parse_optional_field('description', description)
+    service['website'] = parse_website_with_prefix('website', website)
+    service['email'] = parse_optional_field('email', email)
     return dtos.Service(id=service['id'], organization_id=service['organization_id'], name=service['name'],
                         alternate_name=service['alternate_name'], description=service['description'],
                         website=service['website'], email=service['email'])
