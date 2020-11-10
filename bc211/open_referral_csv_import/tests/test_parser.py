@@ -1,8 +1,7 @@
 import unittest
 import string
 from django.test import TestCase
-from bc211.open_referral_csv_import.tests.helpers import OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder
-from ..service_at_location import parse_service_at_location
+from bc211.open_referral_csv_import.tests.helpers import OpenReferralCsvAddressBuilder
 from ..address import parse_address
 from bc211.open_referral_csv_import import parser
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
@@ -24,26 +23,6 @@ class OpenReferralLocationParserTests(TestCase):
         the_longitude = a_longitude_as_a_string()
         parsed_longitude = parser.parse_coordinate_if_defined('longitude', the_longitude)
         self.assertEqual(parsed_longitude, float(the_longitude))
-
-
-class OpenReferralServicesAtLocationParserTests(TestCase):
-    def setUp(self):
-        self.headers = ['id', 'service_id', 'location_id', 'description']
-        organization = OrganizationBuilder().build()
-        self.service_id_passed_to_service_builder = a_string()
-        self.location_id_passed_to_location_builder = a_string()
-        self.service = ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).build()
-        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
-    
-    def test_can_parse_service_id(self):
-        service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
-        service_at_location = parse_service_at_location(self.headers, service_at_location_data)
-        self.assertEqual(service_at_location.service_id, self.service_id_passed_to_service_builder)
-    
-    def test_can_parse_location_id(self):
-        service_at_location_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
-        service_at_location = parse_service_at_location(self.headers, service_at_location_data)
-        self.assertEqual(service_at_location.location_id, self.location_id_passed_to_location_builder)
 
 
 class OpenReferralAddressesParserTests(TestCase):
