@@ -1,9 +1,7 @@
 import unittest
 import string
 from django.test import TestCase
-from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvServiceBuilder, OpenReferralCsvLocationBuilder,
-                                                    OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
-from ..location import parse_location
+from bc211.open_referral_csv_import.tests.helpers import OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder
 from ..service_at_location import parse_service_at_location
 from ..address import parse_address
 from bc211.open_referral_csv_import import parser
@@ -16,20 +14,16 @@ from bc211.parser import remove_double_escaped_html_markup
 from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 
 
-# TODO refactor these tests in later commit
-# class OpenReferralLocationParserTests(TestCase):
-    # def test_can_parse_latitude(self):
-    #     the_latitude = a_latitude_as_a_string()
-    #     location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).build()
-    #     location = parse_location(self.headers, location_data)
-    #     self.assertEqual(location.spatial_location.latitude, float(the_latitude))
+class OpenReferralLocationParserTests(TestCase):
+    def test_can_parse_latitude(self):
+        the_latitude = a_latitude_as_a_string()
+        parsed_latitude = parser.parse_coordinate_if_defined('latitude', the_latitude)
+        self.assertEqual(parsed_latitude, float(the_latitude))
 
-    # def test_can_parse_longitude(self):
-    #     the_longitude = a_longitude_as_a_string()
-    #     location_data = OpenReferralCsvLocationBuilder(self.organization).with_longitude(the_longitude).build()
-    #     location = parse_location(self.headers, location_data)
-    #     self.assertEqual(location.spatial_location.longitude, float(the_longitude))
-
+    def test_can_parse_longitude(self):
+        the_longitude = a_longitude_as_a_string()
+        parsed_longitude = parser.parse_coordinate_if_defined('longitude', the_longitude)
+        self.assertEqual(parsed_longitude, float(the_longitude))
 
 
 class OpenReferralServicesAtLocationParserTests(TestCase):
