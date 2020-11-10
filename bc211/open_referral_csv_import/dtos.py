@@ -2,16 +2,6 @@ from .validate import required_string, optional_string, optional_object, require
 from bc211.dtos import SpatialLocation
 
 
-class Location:
-    def __init__(self, **kwargs):
-        self.id = required_string('id', kwargs)
-        self.organization_id = required_string('organization_id', kwargs)
-        self.name = required_string('name', kwargs)
-        self.alternate_name = optional_string('alternate_name', kwargs)
-        self.description = optional_string('description', kwargs)
-        self.spatial_location = optional_object(SpatialLocation, 'spatial_location', kwargs)
-
-
 class SpatialLocation:
     def __init__(self, **kwargs):
         self.latitude = required_float('latitude', kwargs)

@@ -146,14 +146,6 @@ class OpenReferralCsvLocationBuilder:
     def build(self):
         not_used_transportation = ''
         return [self.location_id, self.organization_id, self.name, self.alternate_name, self.description, not_used_transportation, self.latitude, self.longitude]
-    
-    def build_dto(self):
-        return dtos.Location(id=self.location_id,
-                            organization_id=self.organization_id,
-                            name=self.name,
-                            alternate_name=self.alternate_name,
-                            description=self.description,
-                            spatial_location=dtos.SpatialLocation(latitude=self.latitude, longitude=self.longitude))
 
 
 class OpenReferralCsvServiceAtLocationBuilder:
