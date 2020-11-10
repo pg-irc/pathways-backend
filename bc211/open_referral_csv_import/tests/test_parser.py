@@ -16,53 +16,19 @@ from bc211.parser import remove_double_escaped_html_markup
 from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 
 
-class OpenReferralLocationParserTests(TestCase):
-    def setUp(self):
-        self.headers = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation',
-                        'latitude', 'longitude']
-        self.organization_id_passed_to_organization_builder = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
+# TODO refactor these tests in later commit
+# class OpenReferralLocationParserTests(TestCase):
+    # def test_can_parse_latitude(self):
+    #     the_latitude = a_latitude_as_a_string()
+    #     location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).build()
+    #     location = parse_location(self.headers, location_data)
+    #     self.assertEqual(location.spatial_location.latitude, float(the_latitude))
 
-    def test_can_parse_id(self):
-        the_id = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.id, the_id)
-    
-    def test_can_parse_organization_id(self):
-        location_data = OpenReferralCsvLocationBuilder(self.organization).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.organization_id, self.organization_id_passed_to_organization_builder)
-    
-    def test_can_parse_name(self):
-        the_name = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.name, the_name)
-    
-    def test_can_parse_alternate_name(self):
-        the_alternate_name = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.alternate_name, the_alternate_name)
-    
-    def test_can_parse_description(self):
-        the_description = a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.description, the_description)
-
-    def test_can_parse_latitude(self):
-        the_latitude = a_latitude_as_a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.spatial_location.latitude, float(the_latitude))
-
-    def test_can_parse_longitude(self):
-        the_longitude = a_longitude_as_a_string()
-        location_data = OpenReferralCsvLocationBuilder(self.organization).with_longitude(the_longitude).build()
-        location = parse_location(self.headers, location_data)
-        self.assertEqual(location.spatial_location.longitude, float(the_longitude))
+    # def test_can_parse_longitude(self):
+    #     the_longitude = a_longitude_as_a_string()
+    #     location_data = OpenReferralCsvLocationBuilder(self.organization).with_longitude(the_longitude).build()
+    #     location = parse_location(self.headers, location_data)
+    #     self.assertEqual(location.spatial_location.longitude, float(the_longitude))
 
 
 
