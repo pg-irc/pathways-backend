@@ -2,7 +2,7 @@ import unittest
 import string
 from django.test import TestCase
 from bc211.open_referral_csv_import.organization import import_organizations_file, import_organization
-from ..service import import_services_file, save_service
+from bc211.open_referral_csv_import.service import import_services_file, save_service, parse_service
 from ..location import import_locations_file, save_location
 from ..service_at_location import import_services_at_location_file, save_service_at_location
 from ..address import import_addresses_file, save_address, save_location_address
@@ -73,49 +73,56 @@ class OpenReferralServiceImporterTests(TestCase):
     
     def test_can_import_id(self): 
         the_id = a_string()
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).with_id(the_id).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_id(the_id).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].id, the_id)
 
     def test_can_import_organization_id(self):
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].organization_id, self.organization_id_passed_to_organization_builder)
     
     def test_can_import_name(self):
         the_name = a_string()
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).with_name(the_name).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_name(the_name).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].name, the_name)
     
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).with_alternate_name(the_alternate_name).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_alternate_name(the_alternate_name).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).with_description(the_description).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_description(the_description).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].description, the_description)
     
     def test_can_import_website(self):
         the_website = a_website_address()
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).with_url(the_website).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_url(the_website).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].website, the_website)
 
     def test_can_import_email(self):
         the_email = an_email_address()
-        service_dto = OpenReferralCsvServiceBuilder(self.organization).with_email(the_email).build_dto()
-        save_service(service_dto)
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_email(the_email).build()
+        parsed_service = parse_service(service_data)
+        save_service(parsed_service)
         services = Service.objects.all()
         self.assertEqual(services[0].email, the_email)
 
