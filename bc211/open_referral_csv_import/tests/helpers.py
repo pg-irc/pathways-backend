@@ -38,10 +38,10 @@ class OpenReferralCsvOrganizationBuilder:
         return self
         
     def build(self):
-        not_used_tax_status = a_string()
-        not_used_tax_id = a_string()
-        not_used_year_incorporated = a_string()
-        not_used_legal_status = a_string()
+        not_used_tax_status = ''
+        not_used_tax_id = ''
+        not_used_year_incorporated = ''
+        not_used_legal_status = ''
         return [self.organization_id, self.name, self.alternate_name, self.description, self.email, self.url,
                 not_used_tax_status, not_used_tax_id, not_used_year_incorporated, not_used_legal_status]
 
@@ -85,15 +85,15 @@ class OpenReferralCsvServiceBuilder:
         return self
     
     def build(self):
-        not_used_program_id = a_string()
-        not_used_status = a_string()
-        not_used_intepretation_services = a_string()
-        not_used_application_process = a_string()
-        not_used_wait_time = a_string()
-        not_used_fees = a_string()
-        not_used_accreditations = a_string()
-        not_used_licenses = a_string()
-        not_used_taxonomy_ids = a_string()
+        not_used_program_id = ''
+        not_used_status = ''
+        not_used_intepretation_services = ''
+        not_used_application_process = ''
+        not_used_wait_time = ''
+        not_used_fees = ''
+        not_used_accreditations = ''
+        not_used_licenses = ''
+        not_used_taxonomy_ids = ''
         return [self.service_id, self.organization_id, not_used_program_id, self.name, self.alternate_name, self.description, self.url, self.email,
                 not_used_status, not_used_intepretation_services, not_used_application_process, not_used_wait_time,
                 not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids]
@@ -147,7 +147,7 @@ class OpenReferralCsvLocationBuilder:
         return self
 
     def build(self):
-        not_used_transportation = a_string()
+        not_used_transportation = ''
         return [self.location_id, self.organization_id, self.name, self.alternate_name, self.description, not_used_transportation, self.latitude, self.longitude]
     
     def build_dto(self):
@@ -173,8 +173,8 @@ class OpenReferralCsvServiceAtLocationBuilder:
         return self
     
     def build(self):
-        not_used_id = a_string()
-        not_used_description = a_string()
+        not_used_id = ''
+        not_used_description = ''
         return [not_used_id, self.service_id, self.location_id, not_used_description]
 
     def build_dto(self):
