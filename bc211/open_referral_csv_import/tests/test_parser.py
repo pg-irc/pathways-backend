@@ -17,56 +17,6 @@ from bc211.parser import remove_double_escaped_html_markup
 from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 
 
-class OpenReferralServiceParserTests(TestCase):
-    def setUp(self):
-        self.headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description', 'url', 'email',
-                        'status', 'interpretation_services', 'application_process', 'wait_time', 'fees', 'accreditations',
-                        'licenses', 'taxonomy_ids']
-        self.organization_id_passed_to_organization_builder = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
-
-    def test_can_parse_id(self):
-        the_id = a_string()
-        service_data = OpenReferralCsvServiceBuilder(self.organization).with_id(the_id).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual(service.id, the_id)
-    
-    def test_can_parse_organization_id(self):
-        service_data = OpenReferralCsvServiceBuilder(self.organization).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual(service.organization_id, self.organization_id_passed_to_organization_builder)
-    
-    def test_can_parse_name(self):
-        the_name = a_string()
-        service_data = OpenReferralCsvServiceBuilder(self.organization).with_name(the_name).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual = (service.name, the_name)
-
-    def test_can_parse_alternate_name(self):
-        the_alternate_name = a_string()
-        service_data = OpenReferralCsvServiceBuilder(self.organization).with_alternate_name(the_alternate_name).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual(service.alternate_name, the_alternate_name)
-
-    def test_can_parse_description(self):
-        the_description = a_string()
-        service_data = OpenReferralCsvServiceBuilder(self.organization).with_description(the_description).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual(service.description, the_description)
-
-    def test_can_parse_website(self):
-        the_website = a_website_address()
-        service_data = OpenReferralCsvServiceBuilder(self.organization).with_url(the_website).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual(service.website, the_website)
-
-    def test_can_parse_email(self):
-        the_email = an_email_address()
-        service_data = OpenReferralCsvServiceBuilder(self.organization).with_email(the_email).build()
-        service = parse_service(self.headers, service_data)
-        self.assertEqual(service.email, the_email)
-
-
 class OpenReferralLocationParserTests(TestCase):
     def setUp(self):
         self.headers = ['id', 'organization_id', 'name', 'alternate_name', 'description', 'transportation',
