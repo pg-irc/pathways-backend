@@ -89,8 +89,10 @@ def send_push_notifications(users, localized_notifications, url):
 
 
 def print_progress(index, max_index):
-    last_fraction = math.floor(20 * (index - 1)/max)
-    current_fraction = math.floor(20 * index/max)
+    if max_index < 1:
+        return
+    last_fraction = math.floor(20 * (index - 1)/max_index)
+    current_fraction = math.floor(20 * index/max_index)
     if (last_fraction < current_fraction):
         print(f'{5*current_fraction}% done')
 
