@@ -49,4 +49,5 @@ def build_service_active_record(row):
     active_record.description = parser.parse_description(row[5])
     active_record.website = parser.parse_website_with_prefix('website', row[6])
     active_record.email = parser.parse_email(row[7])
+    active_record.last_verified_date = parser.parse_last_verified_date(row[16])
     return active_record

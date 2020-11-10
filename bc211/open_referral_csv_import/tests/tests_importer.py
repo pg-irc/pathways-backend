@@ -18,7 +18,9 @@ from human_services.services.models import Service
 from human_services.locations.models import Location, ServiceAtLocation
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
+from django.db import models
 from django.contrib.gis.geos import Point
+from datetime import date
 
 
 class OpenReferralOrganizationImporterTests(TestCase):
@@ -118,6 +120,13 @@ class OpenReferralServiceImporterTests(TestCase):
         import_service(service_data)
         services = Service.objects.all()
         self.assertEqual(services[0].email, the_email)
+    
+    def test_can_import_last_verified_date(self):
+        the_date = date.today().strftime("%d-%m-%Y")
+        service_data = OpenReferralCsvServiceBuilder(self.organization).with_last_verified_on(the_date).build()
+        import_service(service_data)
+        services = Service.objects.all()
+        self.assertEqual(date.strftime(services[0].last_verified_date, "%d-%m-%Y"), the_date)
 
 
 class OpenReferralLocationImporterTests(TestCase):

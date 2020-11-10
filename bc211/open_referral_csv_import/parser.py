@@ -1,6 +1,7 @@
 from bc211.parser import remove_double_escaped_html_markup
 from urllib import parse as urlparse
 from .exceptions import MissingRequiredFieldCsvParseException
+from datetime import datetime
 
 
 def parse_organization_id(value):
@@ -31,6 +32,13 @@ def parse_description(value):
 def parse_email(value):
     email = parse_optional_field('email', value)
     return remove_double_escaped_html_markup(email)
+
+
+def parse_last_verified_date(value):
+    last_verified_date = parse_optional_field('last_verified_date', value)
+    if last_verified_date is None or value == '':
+        return None
+    return datetime.strptime(last_verified_date, '%d-%m-%Y')
 
 
 def parse_required_field(field, value):
