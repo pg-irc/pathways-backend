@@ -4,6 +4,8 @@ from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import import dtos
 from human_services.services.models import Service
 from bc211.is_inactive import is_inactive
+from bc211.open_referral_csv_import import headers_match_expected_format
+from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -15,6 +17,8 @@ def import_services_file(root_folder):
         with open(path, 'r') as file: 
             reader = csv.reader(file)
             headers = reader.__next__()
+            if not headers_match_expected_format(headers, expected_headers):
+                raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
             for row in reader:
                 if not row:
                     return
@@ -24,12 +28,17 @@ def import_services_file(root_folder):
             raise
 
 
+expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description',
+                'url', 'email', 'status', 'interpretation_services', 'application_process',
+                'wait_time', 'fees', 'accreditations', 'licenses', 'taxonomy_ids', 'last_verified_on-x']
+
+
 def import_service(row):
     active_record = build_service_active_record(row)
     if is_inactive(active_record):
         return
     active_record.save()
-    
+
 
 def build_service_active_record(row):
     active_record = Service()

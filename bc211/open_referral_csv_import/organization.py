@@ -17,8 +17,8 @@ def import_organizations_file(root_folder):
         with open(path, 'r') as file: 
             reader = csv.reader(file)
             headers = reader.__next__()
-            if not file_satisfies_open_referral_standard(headers, open_referral_standard_header):
-                raise InvalidFileCsvImportException('"{0}": does not meet open referral standards.'.format(field))
+            if not headers_match_expected_format(headers, expected_headers):
+                raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
             for row in reader:
                 if not row:
                     return
@@ -28,8 +28,8 @@ def import_organizations_file(root_folder):
             raise
 
 
-open_referral_standard_header = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
-                            'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
+expected_headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
+                'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
 
 
 def file_satisfies_open_referral_standard(headers, open_referral_headers):
