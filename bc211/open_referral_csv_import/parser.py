@@ -8,6 +8,11 @@ def parse_organization_id(value):
     return remove_double_escaped_html_markup(organization_id)
 
 
+def parse_service_id(value):
+    service_id = parse_required_field('service_id', value)
+    return remove_double_escaped_html_markup(service_id)
+
+
 def parse_name(value):
     name = parse_required_field('name', value)
     return remove_double_escaped_html_markup(name)

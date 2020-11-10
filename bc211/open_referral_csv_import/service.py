@@ -1,6 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix
+from .parser import parse_required_field, parse_optional_field, parse_website_with_prefix, parse_service_id
 from bc211.open_referral_csv_import import dtos
 from human_services.services.models import Service
 from bc211.is_inactive import is_inactive
@@ -27,7 +27,7 @@ def import_services_file(root_folder):
 
 def parse_service(row):
     service = {}
-    service['id'] = parse_required_field('id', row[0])
+    service['id'] = parse_service_id(row[0])
     service['organization_id'] = parse_required_field('organization_id', row[1])
     service['name'] = parse_required_field('name', row[3])
     service['alternate_name'] = parse_optional_field('alternate_name', row[4])
