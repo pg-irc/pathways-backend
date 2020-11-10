@@ -4,6 +4,8 @@ from bc211.open_referral_csv_import import parser
 from human_services.locations.models import Location
 from bc211.is_inactive import is_inactive
 from django.contrib.gis.geos import Point
+from bc211.open_referral_csv_import import headers_match_expected_format
+from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -15,6 +17,8 @@ def import_locations_file(root_folder):
         with open(path, 'r') as file: 
             reader = csv.reader(file)
             headers = reader.__next__()
+            if not headers_match_expected_format(headers, expected_headers):
+                raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
             for row in reader:
                 if not row:
                     return
@@ -22,6 +26,10 @@ def import_locations_file(root_folder):
     except FileNotFoundError as error:
             LOGGER.error('Missing locations.csv file.')
             raise
+
+
+expected_headers = ['id', 'organization_id', 'name', 'alternate_name', 'description',
+                'transportation', 'latitude', 'longitude']
 
 
 def import_location(row):
