@@ -1,6 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field, parse_optional_field, parse_coordinate_if_defined
+from .parser import parse_required_field, parse_optional_field, parse_coordinate_if_defined, parse_location_id
 from human_services.locations.models import Location
 from bc211.is_inactive import is_inactive
 from django.contrib.gis.geos import Point
@@ -27,7 +27,7 @@ def import_locations_file(root_folder):
 
 def parse_location(row):
     location = {}
-    location['id'] = parse_required_field('id', row[0])
+    location['id'] = parse_location_id(row[0])
     location['organization_id'] = parse_required_field('organization_id', row[1])
     location['name'] = parse_required_field('name', row[2])
     location['alternate_name'] = parse_optional_field('alternate_name', row[3])
