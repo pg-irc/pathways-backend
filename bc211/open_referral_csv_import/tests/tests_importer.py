@@ -3,7 +3,7 @@ import string
 from django.test import TestCase
 from bc211.open_referral_csv_import.organization import import_organizations_file, import_organization
 from bc211.open_referral_csv_import.service import import_services_file, import_service
-from bc211.open_referral_csv_import.location import import_locations_file, save_location, parse_location
+from bc211.open_referral_csv_import.location import import_locations_file, import_location
 from ..service_at_location import import_services_at_location_file, save_service_at_location
 from ..address import import_addresses_file, save_address, save_location_address
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
@@ -138,39 +138,34 @@ class OpenReferralLocationImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build()
-        parsed_location = parse_location(location_data)
-        save_location(parsed_location)
+        import_location(location_data)
         locations = Location.objects.all()
         self.assertEqual(locations[0].id, the_id)
     
     def test_can_import_organization_id(self):
         location_data = OpenReferralCsvLocationBuilder(self.organization).build()
-        parsed_location = parse_location(location_data)
-        save_location(parsed_location)
+        import_location(location_data)
         locations = Location.objects.all()
         self.assertEqual(locations[0].organization_id, self.organization_id_passed_to_organization_builder)
     
     def test_can_import_name(self):
         the_name = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build()
-        parsed_location = parse_location(location_data)
-        save_location(parsed_location)
+        import_location(location_data)
         locations = Location.objects.all()
         self.assertEqual(locations[0].name, the_name)
 
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build()
-        parsed_location = parse_location(location_data)
-        save_location(parsed_location)
+        import_location(location_data)
         locations = Location.objects.all()
         self.assertEqual(locations[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build()
-        parsed_location = parse_location(location_data)
-        save_location(parsed_location)
+        import_location(location_data)
         locations = Location.objects.all()
         self.assertEqual(locations[0].description, the_description)
     
@@ -178,11 +173,10 @@ class OpenReferralLocationImporterTests(TestCase):
         the_latitude = a_latitude_as_a_string()
         the_longitude = a_longitude_as_a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).with_longitude(the_longitude).build()
-        parsed_location = parse_location(location_data)
-        save_location(parsed_location)
+        import_location(location_data)
         locations = Location.objects.all()
-        self.assertEqual(locations[0].point.x, parsed_location['longitude'])
-        self.assertEqual(locations[0].point.y, parsed_location['latitude'])
+        self.assertEqual(locations[0].point.x, float(the_longitude))
+        self.assertEqual(locations[0].point.y, float(the_latitude))
 
 
 class OpenReferralServiceAtLocationImporterTests(TestCase):

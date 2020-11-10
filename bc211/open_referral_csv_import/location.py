@@ -18,40 +18,32 @@ def import_locations_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                location = parse_location(row)
-                save_location(location)
+                import_location(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing locations.csv file.')
             raise
 
 
-def parse_location(row):
-    location = {}
-    location['id'] = parser.parse_location_id(row[0])
-    location['organization_id'] = parser.parse_organization_id(row[1])
-    location['name'] = parser.parse_name(row[2])
-    location['alternate_name'] = parser.parse_alternate_name(row[3])
-    location['description'] = parser.parse_description(row[4])
-    location['latitude'] = parser.parse_coordinate_if_defined('latitude', row[6])
-    location['longitude'] = parser.parse_coordinate_if_defined('longitude', row[7])
-    return location
-
-
-def save_location(location):
-    # if is_inactive(location):
-    #     return
-    active_record = build_location_active_record(location)
+def import_location(row):
+    active_record = build_location_active_record(row)
+    if is_inactive(active_record):
+        return
     active_record.save()
 
 
-def build_location_active_record(location):
+def build_location_active_record(row):
     active_record = Location()
-    active_record.id = location['id']
-    active_record.organization_id = location['organization_id']
-    active_record.name = location['name']
-    active_record.alternate_name = location['alternate_name']
-    active_record.description = location['description']
-    # has_location = location['spatial_location'] is not None
-    # if has_location:
-    active_record.point = Point(location['longitude'], location['latitude'])
+    active_record.id = parser.parse_location_id(row[0])
+    active_record.organization_id = parser.parse_organization_id(row[1])
+    active_record.name = parser.parse_name(row[2])
+    active_record.alternate_name = parser.parse_alternate_name(row[3])
+    active_record.description = parser.parse_description(row[4])
+    latitude = parser.parse_coordinate_if_defined('latitude', row[6])
+    longitude = parser.parse_coordinate_if_defined('longitude', row[7])
+    if has_location(latitude, longitude):
+        active_record.point = Point(longitude, latitude)
     return active_record
+
+
+def has_location(latitude, longitude):
+    return latitude and longitude is not None
