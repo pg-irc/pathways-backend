@@ -166,10 +166,6 @@ class OpenReferralCsvServiceAtLocationBuilder:
         not_used_description = ''
         return [not_used_id, self.service_id, self.location_id, not_used_description]
 
-    def build_dto(self):
-        return dtos.ServiceAtLocation(service_id=self.service_id,
-                                    location_id=self.location_id)
-
 
 class OpenReferralCsvAddressBuilder:
     def __init__(self, location):

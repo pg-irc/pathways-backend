@@ -1,17 +1,4 @@
 from .validate import required_string, optional_string, optional_object, required_float, required_country_code
-from bc211.dtos import SpatialLocation
-
-
-class SpatialLocation:
-    def __init__(self, **kwargs):
-        self.latitude = required_float('latitude', kwargs)
-        self.longitude = required_float('longitude', kwargs)
-
-
-class ServiceAtLocation:
-    def __init__(self, **kwargs):
-        self.service_id = required_string('service_id', kwargs)
-        self.location_id = required_string('location_id', kwargs)
 
 
 class Address:

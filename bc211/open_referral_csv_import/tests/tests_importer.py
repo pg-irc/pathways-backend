@@ -4,7 +4,7 @@ from django.test import TestCase
 from bc211.open_referral_csv_import.organization import import_organizations_file, import_organization
 from bc211.open_referral_csv_import.service import import_services_file, import_service
 from bc211.open_referral_csv_import.location import import_locations_file, import_location
-from ..service_at_location import import_services_at_location_file, save_service_at_location
+from bc211.open_referral_csv_import.service_at_location import import_services_at_location_file, save_service_at_location, parse_service_at_location
 from ..address import import_addresses_file, save_address, save_location_address
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
@@ -191,14 +191,16 @@ class OpenReferralServiceAtLocationImporterTests(TestCase):
         self.location.save()
     
     def test_can_import_service_id(self):
-        service_at_location_dto = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build_dto()
-        save_service_at_location(service_at_location_dto)
+        service_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
+        parsed_service_at_location = parse_service_at_location(service_data)
+        save_service_at_location(parsed_service_at_location)
         services_at_location = ServiceAtLocation.objects.all()
         self.assertEqual(services_at_location[0].service_id, self.service_id_passed_to_service_builder)
     
     def test_can_import_location_id(self):
-        service_at_location_dto = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build_dto()
-        save_service_at_location(service_at_location_dto)
+        service_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
+        parsed_service_at_location = parse_service_at_location(service_data)
+        save_service_at_location(parsed_service_at_location)
         services_at_location = ServiceAtLocation.objects.all()
         self.assertEqual(services_at_location[0].location_id, self.location_id_passed_to_location_builder)
 

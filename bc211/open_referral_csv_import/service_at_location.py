@@ -28,8 +28,7 @@ def parse_service_at_location(row):
     service_at_location = {}
     service_at_location['service_id'] = parse_required_field('service_id', row[1])
     service_at_location['location_id'] = parse_required_field('location_id', row[2])
-    return dtos.ServiceAtLocation(service_id=service_at_location['service_id'],
-                                location_id=service_at_location['location_id'])
+    return service_at_location
 
 
 def save_service_at_location(service_at_location):
@@ -38,6 +37,6 @@ def save_service_at_location(service_at_location):
 
 def build_service_at_location(service_at_location):
     active_record = ServiceAtLocation()
-    active_record.service_id = service_at_location.service_id
-    active_record.location_id = service_at_location.location_id
+    active_record.service_id = service_at_location['service_id']
+    active_record.location_id = service_at_location['location_id']
     return active_record
