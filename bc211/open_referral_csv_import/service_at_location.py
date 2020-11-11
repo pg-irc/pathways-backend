@@ -16,26 +16,19 @@ def import_services_at_location_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                service_at_location = parse_service_at_location(row)
-                save_service_at_location(service_at_location)
+                import_service_at_location(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing services_at_location.csv file.')
             raise
 
 
-def parse_service_at_location(row):
-    service_at_location = {}
-    service_at_location['service_id'] = parser.parse_service_id(row[1])
-    service_at_location['location_id'] = parser.parse_location_id(row[2])
-    return service_at_location
-
-
-def save_service_at_location(service_at_location):
-    active_record = build_service_at_location(service_at_location)
+def import_service_at_location(row):
+    active_record = build_service_at_location_active_record(row)
     active_record.save()
+    
 
-def build_service_at_location(service_at_location):
+def build_service_at_location_active_record(row):
     active_record = ServiceAtLocation()
-    active_record.service_id = service_at_location['service_id']
-    active_record.location_id = service_at_location['location_id']
+    active_record.service_id = parser.parse_service_id(row[1])
+    active_record.location_id = parser.parse_location_id(row[2])
     return active_record
