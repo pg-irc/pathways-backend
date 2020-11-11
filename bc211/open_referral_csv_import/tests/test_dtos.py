@@ -1,17 +1,7 @@
 import unittest
 from django.test import TestCase
 from ..exceptions import MissingRequiredFieldCsvParseException, InvalidTypeCsvParseException, InvalidFloatCsvParseException
-from ..dtos import SpatialLocation, ServiceAtLocation, Address
-
-
-class ServiceAtLocationDtoTests(TestCase):
-    def test_throws_on_missing_service_id(self):
-        with self.assertRaises(MissingRequiredFieldCsvParseException):
-            ServiceAtLocation(location_id='location_id')
-
-    def test_throws_on_missing_location_id(self):
-        with self.assertRaises(MissingRequiredFieldCsvParseException):
-            ServiceAtLocation(service_id='service_id')
+from ..dtos import Address
 
 
 class AddressDtoTests(TestCase):
