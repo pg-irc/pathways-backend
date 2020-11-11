@@ -1,7 +1,6 @@
 import os
 import logging
-from .parser import parse_required_field
-from bc211.open_referral_csv_import import dtos
+from bc211.open_referral_csv_import import parser
 from human_services.locations.models import ServiceAtLocation
 
 LOGGER = logging.getLogger(__name__)
@@ -26,8 +25,8 @@ def import_services_at_location_file(root_folder):
 
 def parse_service_at_location(row):
     service_at_location = {}
-    service_at_location['service_id'] = parse_required_field('service_id', row[1])
-    service_at_location['location_id'] = parse_required_field('location_id', row[2])
+    service_at_location['service_id'] = parser.parse_service_id(row[1])
+    service_at_location['location_id'] = parser.parse_location_id(row[2])
     return service_at_location
 
 
