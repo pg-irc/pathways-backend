@@ -217,3 +217,28 @@ class OpenReferralCsvAddressBuilder:
         return [not_used_id, self.address_type, self.location_id, self.attention, self.address,
                 not_used_address_2, not_used_address_3, not_used_address_4, self.city, not_used_region,
                 self.state_province, self.postal_code, self.country]
+
+
+class OpenReferralCsvPhoneBuilder:
+    def __init__(self):
+        self.phone_type = a_string()
+    
+    def with_phone_type(self, phone_type):
+        self.phone_type = phone_type
+        return self
+
+    def build(self):
+        not_used_id = ''
+        location_id = ''
+        not_used_service_id = ''
+        not_used_organization_id = ''
+        not_used_contact_id = ''
+        not_used_service_at_location_id = ''
+        number = ''
+        not_used_extension = ''
+        not_used_language = ''
+        not_used_description = ''
+        not_used_department = ''
+        return [not_used_id, location_id, not_used_service_id, not_used_organization_id, not_used_contact_id,
+                not_used_service_at_location_id, number, not_used_extension, self.phone_type, not_used_language,
+                not_used_description, not_used_department]

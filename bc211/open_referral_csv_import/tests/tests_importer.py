@@ -5,8 +5,10 @@ from bc211.open_referral_csv_import.service import import_services_file, import_
 from bc211.open_referral_csv_import.location import import_locations_file, import_location
 from bc211.open_referral_csv_import.service_at_location import import_services_at_location_file, import_service_at_location
 from bc211.open_referral_csv_import.address import import_addresses_file, import_address_and_location_address
+from bc211.open_referral_csv_import.phones import import_phone
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
-                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
+                        OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder,
+                        OpenReferralCsvPhoneBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)
 from human_services.organizations.models import Organization
@@ -17,6 +19,7 @@ from human_services.services.models import Service
 from human_services.locations.models import Location, ServiceAtLocation
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
+from human_services.phone_at_location.models import PhoneNumberType
 from django.db import models
 from django.contrib.gis.geos import Point
 from datetime import date
@@ -281,3 +284,12 @@ class OpenReferralLocationAddressImporterTests(TestCase):
         location_addresses = LocationAddress.objects.all()
         the_address_type_instance = AddressType.objects.get(pk=the_address_type)
         self.assertEqual(location_addresses[0].address_type, the_address_type_instance)
+
+
+class OpenReferralPhoneNumberTypeImporterTests(TestCase):
+    def test_can_import_phone_number_type(self):
+        the_phone_type = a_string()
+        phone_data = OpenReferralCsvPhoneBuilder().with_phone_type(the_phone_type).build()
+        import_phone(phone_data)
+        phone_number_types = PhoneNumberType.objects.all()
+        self.assertEqual(phone_number_types[0].id, the_phone_type)
