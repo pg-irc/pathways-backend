@@ -2,7 +2,6 @@ import unittest
 import string
 from django.test import TestCase
 from bc211.open_referral_csv_import.tests.helpers import OpenReferralCsvAddressBuilder
-from ..address import parse_address
 from bc211.open_referral_csv_import import parser
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)

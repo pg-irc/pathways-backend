@@ -1,6 +1,5 @@
 import os
 import logging
-from .parser import parse_required_field, parse_optional_field
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress, Location
 from bc211.open_referral_csv_import import parser
@@ -18,25 +17,17 @@ def import_addresses_file(root_folder):
             for row in reader:
                 if not row:
                     return
-                address_dto = parse_address(row)
-                address_active_record = save_address(address_dto)
-                save_location_address(address_active_record, address_dto)
+                import_address_and_location_address(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing addresses.csv file.')
             raise
 
 
-def parse_address(row):
-    address = {}
-    address['type'] = parser.parse_required_type(row[1])
-    address['location_id'] = parser.parse_location_id(row[2])
-    address['attention'] = parser.parse_attention(row[3])
-    address['address'] = parser.parse_address(row[4])
-    address['city'] = parser.parse_city(row[8])
-    address['state_province'] = parser.parse_state_province(row[10])
-    address['postal_code'] = parser.parse_postal_code(row[11])
-    address['country'] = parser.parse_country(row[12])
-    return address
+def import_address_and_location_address(row):
+    address_active_record = build_address_active_record(row)
+    address_active_record.save()
+    location_address_active_record = build_location_address_active_record(address_active_record, row)
+    location_address_active_record.save()
 
 
 def save_address(address):
@@ -45,18 +36,20 @@ def save_address(address):
     return active_record
 
 
-def build_address_active_record(address):
+def build_address_active_record(row):
     active_record = Address()
-    active_record.city = address['city']
-    active_record.country = address['country']
-    active_record.attention = address['attention']
-    active_record.address = address['address']
-    active_record.state_province = address['state_province']
-    active_record.postal_code = address['postal_code']
+    active_record.city = parser.parse_city(row[8])
+    active_record.country = parser.parse_country(row[12])
+    active_record.attention = parser.parse_attention(row[3])
+    active_record.address = parser.parse_address(row[4])
+    active_record.state_province = parser.parse_state_province(row[10])
+    active_record.postal_code = parser.parse_postal_code(row[11])
     return active_record
 
 
-def save_location_address(address_active_record, address_dto):
-    location = Location.objects.get(pk=address_dto['location_id'])
-    address_type = AddressType.objects.get(pk=address_dto['type'])
-    LocationAddress(address=address_active_record, location=location, address_type=address_type).save()
+def build_location_address_active_record(address_active_record, row):
+    address_type = parser.parse_required_type(row[1])
+    location_id = parser.parse_location_id(row[2])
+    location_instance = Location.objects.get(pk=location_id)
+    address_type_instance = AddressType.objects.get(pk=address_type)
+    return LocationAddress(address=address_active_record, location=location_instance, address_type=address_type_instance)
