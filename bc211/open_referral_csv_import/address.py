@@ -34,7 +34,7 @@ def parse_address(row):
     address['address'] = parser.parse_address(row[4])
     address['city'] = parser.parse_city(row[8])
     address['state_province'] = parser.parse_state_province(row[10])
-    address['postal_code'] = parser.parse_optional_field('postal_code', row[11])
+    address['postal_code'] = parser.parse_postal_code(row[11])
     address['country'] = parser.parse_required_field('country', row[12])
     return address
 

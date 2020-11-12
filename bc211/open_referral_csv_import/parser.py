@@ -71,6 +71,11 @@ def parse_state_province(value):
     return remove_double_escaped_html_markup(state_province)
 
 
+def parse_postal_code(value):
+    postal_code = parse_optional_field('postal_code', value)
+    return remove_double_escaped_html_markup(postal_code)
+
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
