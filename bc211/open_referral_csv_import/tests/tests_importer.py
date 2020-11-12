@@ -6,7 +6,7 @@ from bc211.open_referral_csv_import.service import import_services_file, import_
 from bc211.open_referral_csv_import.location import import_locations_file, import_location
 from bc211.open_referral_csv_import.service_at_location import import_services_at_location_file, import_service_at_location
 from bc211.open_referral_csv_import.address import import_addresses_file, import_address_and_location_address
-from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
+from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string)

@@ -1,6 +1,6 @@
 from bc211.parser import remove_double_escaped_html_markup
 from urllib import parse as urlparse
-from .exceptions import MissingRequiredFieldCsvParseException
+from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 from datetime import datetime
 
 
