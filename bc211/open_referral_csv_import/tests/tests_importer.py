@@ -5,7 +5,7 @@ from bc211.open_referral_csv_import.organization import import_organizations_fil
 from bc211.open_referral_csv_import.service import import_services_file, import_service
 from bc211.open_referral_csv_import.location import import_locations_file, import_location
 from bc211.open_referral_csv_import.service_at_location import import_services_at_location_file, import_service_at_location
-from ..address import import_addresses_file, save_address, save_location_address
+from bc211.open_referral_csv_import.address import import_addresses_file, save_address, save_location_address, parse_address
 from .helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
@@ -213,43 +213,49 @@ class OpenReferralAddressImporterTests(TestCase):
     
     def test_can_import_city(self):
         the_city = a_string()
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build_dto()
-        save_address(address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build()
+        parsed_address = parse_address(address_data)
+        save_address(parsed_address)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].city, the_city)
 
     def test_can_import_country(self):
         the_country = a_string(2, string.ascii_uppercase)
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_country(the_country).build_dto()
-        save_address(address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_country(the_country).build()
+        parsed_address = parse_address(address_data)
+        save_address(parsed_address)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].country, the_country)
     
     def test_can_import_attention(self):
         the_attention = a_string()
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_attention(the_attention).build_dto()
-        save_address(address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_attention(the_attention).build()
+        parsed_address = parse_address(address_data)
+        save_address(parsed_address)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].attention, the_attention)
     
     def test_can_import_address(self):
         the_address = a_string()
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_address(the_address).build_dto()
-        save_address(address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_address(the_address).build()
+        parsed_address = parse_address(address_data)
+        save_address(parsed_address)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].address, the_address)
     
     def test_can_import_state_province(self):
         the_state_province = a_string()
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_state_province(the_state_province).build_dto()
-        save_address(address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_state_province(the_state_province).build()
+        parsed_address = parse_address(address_data)
+        save_address(parsed_address)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].state_province, the_state_province)
 
     def test_can_import_postal_code(self):
         the_postal_code = a_string()
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_postal_code(the_postal_code).build_dto()
-        save_address(address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_postal_code(the_postal_code).build()
+        parsed_address = parse_address(address_data)
+        save_address(parsed_address)
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].postal_code, the_postal_code)
 
@@ -262,25 +268,28 @@ class OpenReferralLocationAddressImporterTests(TestCase):
         self.location.save()
     
     def test_can_import_address_id(self):
-        address_dto = OpenReferralCsvAddressBuilder(self.location).build_dto()
-        address = save_address(address_dto)
-        save_location_address(address, address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).build()
+        parsed_address = parse_address(address_data)
+        saved_address = save_address(parsed_address)
+        save_location_address(saved_address, parsed_address)
         location_addresses = LocationAddress.objects.all()
         addresses = Address.objects.all()
         self.assertEqual(location_addresses[0].address_id, addresses[0].id)
 
     def test_can_import_location_id(self):
-        address_dto = OpenReferralCsvAddressBuilder(self.location).build_dto()
-        address = save_address(address_dto)
-        save_location_address(address, address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).build()
+        parsed_address = parse_address(address_data)
+        saved_address = save_address(parsed_address)
+        save_location_address(saved_address, parsed_address)
         location_addresses = LocationAddress.objects.all()
         self.assertEqual(location_addresses[0].location_id, self.location_id_passed_to_location_builder)
     
     def test_can_import_address_type(self):
         the_address_type = 'postal_address'
-        address_dto = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_address_type).build_dto()
-        address = save_address(address_dto)
-        save_location_address(address, address_dto)
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_address_type).build()
+        parsed_address = parse_address(address_data)
+        saved_address = save_address(parsed_address)
+        save_location_address(saved_address, parsed_address)
         location_addresses = LocationAddress.objects.all()
         the_address_type_instance = AddressType.objects.get(pk=the_address_type)
         self.assertEqual(location_addresses[0].address_type, the_address_type_instance)

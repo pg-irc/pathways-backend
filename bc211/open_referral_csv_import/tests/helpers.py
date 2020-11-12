@@ -1,6 +1,5 @@
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                 a_latitude_as_a_string, a_longitude_as_a_string, a_date)
-from bc211.open_referral_csv_import import dtos
 import string
 from datetime import date
 
@@ -218,9 +217,3 @@ class OpenReferralCsvAddressBuilder:
         return [not_used_id, self.address_type, self.location_id, self.attention, self.address,
                 not_used_address_2, not_used_address_3, not_used_address_4, self.city, not_used_region,
                 self.state_province, self.postal_code, self.country]
-
-    def build_dto(self):
-        return dtos.Address(type=self.address_type, location_id=self.location_id,
-                    attention=self.attention, address=self.address, city=self.city,
-                    state_province=self.state_province, postal_code=self.postal_code,
-                    country=self.country)
