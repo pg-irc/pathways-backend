@@ -29,7 +29,7 @@ def import_addresses_file(root_folder):
 def parse_address(row):
     address = {}
     address['type'] = parser.parse_required_type(row[1])
-    address['location_id'] = parser.parse_required_field('location_id', row[2])
+    address['location_id'] = parser.parse_location_id(row[2])
     address['attention'] = parser.parse_attention(row[3])
     address['address'] = parser.parse_address(row[4])
     address['city'] = parser.parse_city(row[8])
