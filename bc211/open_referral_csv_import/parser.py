@@ -46,6 +46,11 @@ def parse_last_verified_date(value):
     return datetime.strptime(last_verified_date, '%d-%m-%Y')
 
 
+def parse_required_type(value):
+    required_type = parse_required_field('type', value)
+    return remove_double_escaped_html_markup(required_type)
+
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
