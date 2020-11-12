@@ -1,10 +1,10 @@
 import string
 from django.test import TestCase
-from bc211.open_referral_csv_import.organization import import_organizations_file, import_organization
-from bc211.open_referral_csv_import.service import import_services_file, import_service
-from bc211.open_referral_csv_import.location import import_locations_file, import_location
-from bc211.open_referral_csv_import.service_at_location import import_services_at_location_file, import_service_at_location
-from bc211.open_referral_csv_import.address import import_addresses_file, import_address_and_location_address
+from bc211.open_referral_csv_import.organization import import_organization
+from bc211.open_referral_csv_import.service import import_service
+from bc211.open_referral_csv_import.location import import_location
+from bc211.open_referral_csv_import.service_at_location import import_service_at_location
+from bc211.open_referral_csv_import.address import import_address_and_location_address
 from bc211.open_referral_csv_import.phones import import_phone
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder,
