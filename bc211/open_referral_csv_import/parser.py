@@ -51,6 +51,10 @@ def parse_required_type(value):
     return remove_double_escaped_html_markup(required_type)
 
 
+def parse_attention(value):
+    attention = parse_optional_field('attention', value)
+    return remove_double_escaped_html_markup(attention)
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
