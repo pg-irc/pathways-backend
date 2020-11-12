@@ -1,4 +1,3 @@
-import unittest
 import string
 from django.test import TestCase
 from bc211.open_referral_csv_import.organization import import_organizations_file, import_organization
