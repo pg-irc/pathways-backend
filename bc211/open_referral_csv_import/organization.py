@@ -1,6 +1,5 @@
 import os
 import logging
-from bc211.open_referral_csv_import import dtos
 from django.utils import translation
 from human_services.organizations.models import Organization
 from bc211.open_referral_csv_import import parser
