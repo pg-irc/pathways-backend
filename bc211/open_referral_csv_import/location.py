@@ -46,8 +46,8 @@ def build_location_active_record(row):
     active_record.name = parser.parse_name(row[2])
     active_record.alternate_name = parser.parse_alternate_name(row[3])
     active_record.description = parser.parse_description(row[4])
-    latitude = parser.parse_coordinate_if_defined('latitude', row[6])
-    longitude = parser.parse_coordinate_if_defined('longitude', row[7])
+    latitude = parser.parse_coordinate_if_defined(row[6])
+    longitude = parser.parse_coordinate_if_defined(row[7])
     if has_location(latitude, longitude):
         active_record.point = Point(longitude, latitude)
     return active_record

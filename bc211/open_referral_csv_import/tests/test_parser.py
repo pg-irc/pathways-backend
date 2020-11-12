@@ -14,12 +14,12 @@ from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvPar
 class OpenReferralLocationParserTests(TestCase):
     def test_can_parse_latitude(self):
         the_latitude = a_latitude_as_a_string()
-        parsed_latitude = parser.parse_coordinate_if_defined('latitude', the_latitude)
+        parsed_latitude = parser.parse_coordinate_if_defined(the_latitude)
         self.assertEqual(parsed_latitude, float(the_latitude))
 
     def test_can_parse_longitude(self):
         the_longitude = a_longitude_as_a_string()
-        parsed_longitude = parser.parse_coordinate_if_defined('longitude', the_longitude)
+        parsed_longitude = parser.parse_coordinate_if_defined(the_longitude)
         self.assertEqual(parsed_longitude, float(the_longitude))
 
 
@@ -39,25 +39,25 @@ class ParserHelperTests(TestCase):
             parser.parse_required_field('id', None)
 
     def test_returns_none_if_optional_field_is_missing(self):
-        parsed_id = parser.parse_optional_field('id', None)
+        parsed_id = parser.parse_optional_field(None)
         self.assertEqual(parsed_id, None)
 
     def test_website_without_prefix_parsed_as_http(self):
         the_website = 'www.example.org'
-        parsed_website = parser.parse_website_with_prefix('website', the_website)
+        parsed_website = parser.parse_website_with_prefix(the_website)
         self.assertEqual(parsed_website, 'http://www.example.org')
 
     def test_website_with_http_prefix_parsed_as_http(self):
         the_website = 'http://www.example.org'
-        parsed_website = parser.parse_website_with_prefix('website', the_website)
+        parsed_website = parser.parse_website_with_prefix(the_website)
         self.assertEqual(parsed_website, 'http://www.example.org')
 
     def test_website_with_https_prefix_parsed_as_https(self):
         the_website = 'https://www.example.org'
-        parsed_website = parser.parse_website_with_prefix('website', the_website)
+        parsed_website = parser.parse_website_with_prefix(the_website)
         self.assertEqual(parsed_website, 'https://www.example.org')
     
     def test_returns_none_if_coordinate_is_empty(self):
         empty_latitude = ''
-        foo = parser.parse_coordinate_if_defined('latitude', empty_latitude)
+        foo = parser.parse_coordinate_if_defined(empty_latitude)
         self.assertEqual(foo, None)
