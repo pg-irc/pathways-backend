@@ -4,6 +4,8 @@ from bc211.open_referral_csv_import.service import import_services_file
 from bc211.open_referral_csv_import.location import import_locations_file
 from bc211.open_referral_csv_import.services_at_location import import_services_at_location_file
 from bc211.open_referral_csv_import.address import import_addresses_file
+from bc211.open_referral_csv_import.phone import import_phones_file
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,5 +18,6 @@ def import_open_referral_files(root_folder):
         import_locations_file(root_folder)
         import_services_at_location_file(root_folder)
         import_addresses_file(root_folder)
+        import_phones_file(root_folder)
     except Exception as error:
         LOGGER.error(error)
