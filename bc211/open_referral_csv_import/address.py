@@ -3,6 +3,7 @@ import logging
 from .parser import parse_required_field, parse_optional_field
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress, Location
+from bc211.open_referral_csv_import import parser
 
 LOGGER = logging.getLogger(__name__)
 
@@ -27,14 +28,14 @@ def import_addresses_file(root_folder):
 
 def parse_address(row):
     address = {}
-    address['type'] = parse_required_field('type', row[1])
-    address['location_id'] = parse_required_field('location_id', row[2])
-    address['attention'] = parse_optional_field('attention', row[3])
-    address['address'] = parse_optional_field('address', row[4])
-    address['city'] = parse_required_field('city', row[8])
-    address['state_province'] = parse_optional_field('state_province', row[10])
-    address['postal_code'] = parse_optional_field('postal_code', row[11])
-    address['country'] = parse_required_field('country', row[12])
+    address['type'] = parser.parse_required_type(row[1])
+    address['location_id'] = parser.parse_required_field('location_id', row[2])
+    address['attention'] = parser.parse_optional_field('attention', row[3])
+    address['address'] = parser.parse_optional_field('address', row[4])
+    address['city'] = parser.parse_required_field('city', row[8])
+    address['state_province'] = parser.parse_optional_field('state_province', row[10])
+    address['postal_code'] = parser.parse_optional_field('postal_code', row[11])
+    address['country'] = parser.parse_required_field('country', row[12])
     return address
 
 
