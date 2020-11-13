@@ -87,6 +87,11 @@ def parse_phone_number(value):
     return clean_one_phone_number(phone_number_without_markup)
 
 
+def parse_taxonomy_id(value):
+    taxonomy_id = parse_required_field('taxonomy_id', value)
+    return remove_double_escaped_html_markup(taxonomy_id)
+
+
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
         raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
