@@ -10,7 +10,7 @@ from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganiz
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder,
                         OpenReferralCsvPhoneBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                                    a_latitude_as_a_string, a_longitude_as_a_string)
+                                                    a_latitude_as_a_string, a_longitude_as_a_string, a_phone_number)
 from human_services.organizations.models import Organization
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
@@ -19,7 +19,7 @@ from human_services.services.models import Service
 from human_services.locations.models import Location, ServiceAtLocation
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
-from human_services.phone_at_location.models import PhoneNumberType
+from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from django.db import models
 from django.contrib.gis.geos import Point
 from datetime import date
@@ -287,9 +287,46 @@ class OpenReferralLocationAddressImporterTests(TestCase):
 
 
 class OpenReferralPhoneNumberTypeImporterTests(TestCase):
+    def setUp(self):
+        organization = OrganizationBuilder().build()
+        organization.save()
+        self.location_id_passed_to_location_builder = a_string()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
+        self.location.save()
+
     def test_can_import_phone_number_type(self):
         the_phone_type = a_string()
-        phone_data = OpenReferralCsvPhoneBuilder().with_phone_type(the_phone_type).build()
+        phone_data = OpenReferralCsvPhoneBuilder(self.location).with_phone_type(the_phone_type).build()
         import_phone(phone_data)
         phone_number_types = PhoneNumberType.objects.all()
         self.assertEqual(phone_number_types[0].id, the_phone_type)
+
+
+class OpenReferralPhoneAtLocationImporterTests(TestCase):
+    def setUp(self):
+        organization = OrganizationBuilder().build()
+        organization.save()
+        self.location_id_passed_to_location_builder = a_string()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
+        self.location.save()
+
+    def test_can_import_location_id(self):
+        phone_data = OpenReferralCsvPhoneBuilder(self.location).build()
+        import_phone(phone_data)
+        phones_at_location = PhoneAtLocation.objects.all()
+        self.assertEqual(phones_at_location[0].location_id, self.location_id_passed_to_location_builder)
+
+    def test_can_import_phone_number_type(self):
+        the_phone_type = a_string()
+        phone_data = OpenReferralCsvPhoneBuilder(self.location).with_phone_type(the_phone_type).build()
+        import_phone(phone_data)
+        phones_at_location = PhoneAtLocation.objects.all()
+        the_phone_number_type_instance = PhoneNumberType.objects.get(pk=the_phone_type)
+        self.assertEqual(phones_at_location[0].phone_number_type, the_phone_number_type_instance)
+
+    def test_can_import_phone_number(self):
+        the_phone_number = a_phone_number()
+        phone_data = OpenReferralCsvPhoneBuilder(self.location).with_number(the_phone_number).build()
+        import_phone(phone_data)
+        phones_at_location = PhoneAtLocation.objects.all()
+        self.assertEqual(phones_at_location[0].phone_number, the_phone_number)

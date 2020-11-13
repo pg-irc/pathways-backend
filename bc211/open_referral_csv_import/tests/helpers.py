@@ -1,5 +1,5 @@
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                                a_latitude_as_a_string, a_longitude_as_a_string, a_date)
+                                                a_latitude_as_a_string, a_longitude_as_a_string, a_date, a_phone_number)
 import string
 from datetime import date
 
@@ -220,25 +220,33 @@ class OpenReferralCsvAddressBuilder:
 
 
 class OpenReferralCsvPhoneBuilder:
-    def __init__(self):
+    def __init__(self, location):
+        self.location_id = location.id
+        self.number = a_phone_number()
         self.phone_type = a_string()
     
+    def with_location_id(self, location_id):
+        self.location_id = location_id
+        return self
+
+    def with_number(self, number):
+        self.number = number
+        return self
+
     def with_phone_type(self, phone_type):
         self.phone_type = phone_type
         return self
 
     def build(self):
         not_used_id = ''
-        location_id = ''
         not_used_service_id = ''
         not_used_organization_id = ''
         not_used_contact_id = ''
         not_used_service_at_location_id = ''
-        number = ''
         not_used_extension = ''
         not_used_language = ''
         not_used_description = ''
         not_used_department = ''
-        return [not_used_id, location_id, not_used_service_id, not_used_organization_id, not_used_contact_id,
-                not_used_service_at_location_id, number, not_used_extension, self.phone_type, not_used_language,
+        return [not_used_id, self.location_id, not_used_service_id, not_used_organization_id, not_used_contact_id,
+                not_used_service_at_location_id, self.number, not_used_extension, self.phone_type, not_used_language,
                 not_used_description, not_used_department]

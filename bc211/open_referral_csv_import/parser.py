@@ -1,7 +1,7 @@
-from bc211.parser import remove_double_escaped_html_markup
 from urllib import parse as urlparse
-from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 from datetime import datetime
+from bc211.parser import remove_double_escaped_html_markup, clean_one_phone_number
+from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 
 
 def parse_organization_id(value):
@@ -79,6 +79,12 @@ def parse_postal_code(value):
 def parse_country(value):
     country = parse_required_field('country', value)
     return remove_double_escaped_html_markup(country)
+
+
+def parse_phone_number(value):
+    phone_number = parse_required_field('number', value)
+    phone_number_without_markup = remove_double_escaped_html_markup(phone_number)
+    return clean_one_phone_number(phone_number_without_markup)
 
 
 def parse_required_field(field, value):
