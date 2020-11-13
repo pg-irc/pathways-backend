@@ -6,9 +6,10 @@ from bc211.open_referral_csv_import.location import import_location
 from bc211.open_referral_csv_import.service_at_location import import_service_at_location
 from bc211.open_referral_csv_import.address import import_address_and_location_address
 from bc211.open_referral_csv_import.phones import import_phone
+from bc211.open_referral_csv_import.taxonomy import import_taxonomy
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder,
-                        OpenReferralCsvPhoneBuilder)
+                        OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string, a_phone_number)
 from human_services.organizations.models import Organization
@@ -20,6 +21,7 @@ from human_services.locations.models import Location, ServiceAtLocation
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
+from taxonomies.models import TaxonomyTerm
 from django.db import models
 from django.contrib.gis.geos import Point
 from datetime import date
@@ -330,3 +332,19 @@ class OpenReferralPhoneAtLocationImporterTests(TestCase):
         import_phone(phone_data)
         phones_at_location = PhoneAtLocation.objects.all()
         self.assertEqual(phones_at_location[0].phone_number, the_phone_number)
+
+
+class OpenReferralTaxonomyImporterTests(TestCase):
+    def test_can_import_taxonomy_id(self):
+        the_taxonomy_id = a_string()
+        taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_taxonomy_id(the_taxonomy_id).build()
+        import_taxonomy(taxonomy_data)
+        taxonomy_terms = TaxonomyTerm.objects.all()
+        self.assertEqual(taxonomy_terms[0].taxonomy_id, the_taxonomy_id)
+    
+    def test_can_import_name(self):
+        the_name = a_string()
+        taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_name(the_name).build()
+        import_taxonomy(taxonomy_data)
+        taxonomy_terms = TaxonomyTerm.objects.all()
+        self.assertEqual(taxonomy_terms[0].name, the_name)
