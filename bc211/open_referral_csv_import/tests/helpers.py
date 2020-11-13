@@ -250,3 +250,23 @@ class OpenReferralCsvPhoneBuilder:
         return [not_used_id, self.location_id, not_used_service_id, not_used_organization_id, not_used_contact_id,
                 not_used_service_at_location_id, self.number, not_used_extension, self.phone_type, not_used_language,
                 not_used_description, not_used_department]
+
+
+class OpenReferralCsvTaxonomyBuilder:
+    def __init__(self):
+        self.taxonomy_id = a_string()
+        self.name = a_string()
+    
+    def with_taxonomy_id(self, taxonomy_id):
+        self.taxonomy_id = taxonomy_id
+        return self
+    
+    def with_name(self, name):
+        self.name = name
+        return self
+
+    def build(self):
+        not_used_parent_id = ''
+        not_used_parent_name = ''
+        not_used_vocabulary = ''
+        return [self.taxonomy_id, self.name, not_used_parent_id, not_used_parent_name, not_used_vocabulary]
