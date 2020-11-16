@@ -2,6 +2,9 @@ import os
 import logging
 from bc211.open_referral_csv_import import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from bc211.open_referral_csv_import import parser
+from human_services.services.models import Service
+from taxonomies.models import TaxonomyTerm
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,3 +24,16 @@ def import_services_taxonomy_file(root_folder):
 
 
 expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
+
+
+def import_service_taxonomy(row):
+    service_id = parser.parse_service_id(row[1])
+    taxonomy_id = parser.parse_taxonomy_id(row[2])
+    save_service_taxonomy_term(service_id, taxonomy_id)
+
+
+def save_service_taxonomy_term(service_id, taxonomy_id):
+    service_active_record = Service.objects.get(id=service_id)
+    taxonomy_term = TaxonomyTerm.objects.get(taxonomy_id=taxonomy_id)
+    service_active_record.taxonomy_terms.add(taxonomy_term)
+    service_active_record.save()
