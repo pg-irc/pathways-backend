@@ -100,7 +100,7 @@ def parse_required_field(field, value):
 
 def parse_optional_field(value):
     if csv_value_is_empty(value):
-        return None
+        return ''
     return value
 
 
