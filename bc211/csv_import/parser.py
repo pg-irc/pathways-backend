@@ -176,16 +176,22 @@ phone_header_map = {
 
 def parse_taxonomy_fields(header, value, taxonomy_terms, vocabulary):
     if header in ['TaxonomyTerm', 'TaxonomyTerms', 'TaxonomyTermsNotDeactivated', 'TaxonomyCodes']:
-        vocabulary = compute_vocabulary_name(vocabulary, header)
+        vocabulary = compute_vocabulary_name(vocabulary, header, value)
         taxonomy_terms += parse_taxonomy_terms(value, vocabulary)
 
 
-def compute_vocabulary_name(vocabulary, header):
+def compute_vocabulary_name(vocabulary, header, value):
     if vocabulary:
         return vocabulary
     if header == 'TaxonomyCodes':
         return 'AIRS'
+    if is_bc211_why(value):
+        return 'bc211-why'
     return 'bc211-what'
+
+
+def is_bc211_why(value):
+    return value.islower()
 
 
 def parse_taxonomy_terms(value, vocabulary):

@@ -385,7 +385,7 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_taxonomy_term_with_space(self):
         the_term = 'Fire Services; Fire Stations'
@@ -401,7 +401,7 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_third_taxonomy_term_column(self):
         the_term = a_string()
@@ -409,7 +409,7 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_airs_taxonomy_term_column(self):
         the_term = a_string()
@@ -485,7 +485,10 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
 
     def test_all_lower_case_term_is_part_of_taxonomy_called_bc211_why(self):
-        pass
+        the_term = a_string(from_character_string=string.ascii_lowercase)
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_all_first_letter_capitalized_is_part_of_taxonomy_called_bc211_who(self):
         pass
