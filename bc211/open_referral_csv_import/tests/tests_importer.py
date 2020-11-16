@@ -76,8 +76,7 @@ class OpenReferralOrganizationImporterTests(TestCase):
 class OpenReferralServiceImporterTests(TestCase):
     def setUp(self):
         self.organization_id_passed_to_organization_builder = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
-        self.organization.save()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).create()
     
     def test_can_import_id(self): 
         the_id = a_string()
@@ -138,8 +137,7 @@ class OpenReferralServiceImporterTests(TestCase):
 class OpenReferralLocationImporterTests(TestCase):
     def setUp(self):
         self.organization_id_passed_to_organization_builder = a_string()
-        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).build()
-        self.organization.save()
+        self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).create()
     
     def test_can_import_id(self):
         the_id = a_string()
@@ -187,14 +185,11 @@ class OpenReferralLocationImporterTests(TestCase):
 
 class OpenReferralServiceAtLocationImporterTests(TestCase):
     def setUp(self):
-        organization = OrganizationBuilder().build()
-        organization.save()
+        organization = OrganizationBuilder().create()
         self.service_id_passed_to_service_builder = a_string()
         self.location_id_passed_to_location_builder = a_string()
-        self.service = ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).build()
-        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
-        self.service.save()
-        self.location.save()
+        self.service = ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).create()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).create()
     
     def test_can_import_service_id(self):
         service_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
@@ -211,11 +206,9 @@ class OpenReferralServiceAtLocationImporterTests(TestCase):
 
 class OpenReferralAddressImporterTests(TestCase):
     def setUp(self):
-        organization = OrganizationBuilder().build()
-        organization.save()
+        organization = OrganizationBuilder().create()
         self.location_id_passed_to_location_builder = a_string()
-        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
-        self.location.save()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).create()
     
     def test_can_import_city(self):
         the_city = a_string()
@@ -292,11 +285,9 @@ class OpenReferralLocationAddressImporterTests(TestCase):
 
 class OpenReferralPhoneNumberTypeImporterTests(TestCase):
     def setUp(self):
-        organization = OrganizationBuilder().build()
-        organization.save()
+        organization = OrganizationBuilder().create()
         self.location_id_passed_to_location_builder = a_string()
-        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
-        self.location.save()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).create()
 
     def test_can_import_phone_number_type(self):
         the_phone_type = a_string()
@@ -308,11 +299,9 @@ class OpenReferralPhoneNumberTypeImporterTests(TestCase):
 
 class OpenReferralPhoneAtLocationImporterTests(TestCase):
     def setUp(self):
-        organization = OrganizationBuilder().build()
-        organization.save()
+        organization = OrganizationBuilder().create()
         self.location_id_passed_to_location_builder = a_string()
-        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).build()
-        self.location.save()
+        self.location = LocationBuilder(organization).with_id(self.location_id_passed_to_location_builder).create()
 
     def test_can_import_location_id(self):
         phone_data = OpenReferralCsvPhoneBuilder(self.location).build()
