@@ -48,10 +48,11 @@ def build_location_active_record(row):
     active_record.description = parser.parse_description(row[4])
     latitude = parser.parse_coordinate_if_defined(row[6])
     longitude = parser.parse_coordinate_if_defined(row[7])
-    if has_location(latitude, longitude):
-        active_record.point = Point(longitude, latitude)
+    if not has_coordinates(latitude, longitude):
+        LOGGER.warning('Location with id "%s" does not have LatLong defined', active_record.id)
+    active_record.point = Point(longitude, latitude)
     return active_record
 
 
-def has_location(latitude, longitude):
+def has_coordinates(latitude, longitude):
     return latitude and longitude is not None
