@@ -3,7 +3,7 @@ import os
 import logging
 from bc211.open_referral_csv_import import parser
 from human_services.locations.models import ServiceAtLocation
-from bc211.open_referral_csv_import import headers_match_expected_format
+from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)

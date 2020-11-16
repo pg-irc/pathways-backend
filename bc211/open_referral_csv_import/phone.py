@@ -1,7 +1,7 @@
 import csv
 import os
 import logging
-from bc211.open_referral_csv_import import headers_match_expected_format
+from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from bc211.open_referral_csv_import import parser

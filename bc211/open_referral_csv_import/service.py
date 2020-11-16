@@ -4,7 +4,7 @@ import logging
 from bc211.open_referral_csv_import import parser
 from human_services.services.models import Service
 from bc211.is_inactive import is_inactive
-from bc211.open_referral_csv_import import headers_match_expected_format
+from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)
