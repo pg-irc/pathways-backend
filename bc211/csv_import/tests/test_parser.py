@@ -491,10 +491,12 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_all_first_letter_capitalized_is_part_of_taxonomy_called_bc211_who(self):
-        pass
-
-    def test_terms_containing_numbers_and_dots_are_part_of_airs(self):
-        pass
+        head = a_string(length=1, from_character_string=string.ascii_uppercase)
+        tail = a_string(from_character_string=string.ascii_lowercase)
+        the_term = head + tail
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-who')
 
     def test_set_parent_name_to_empty_string(self):
         the_term = a_string()

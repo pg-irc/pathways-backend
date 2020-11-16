@@ -187,11 +187,19 @@ def compute_vocabulary_name(vocabulary, header, value):
         return 'AIRS'
     if is_bc211_why(value):
         return 'bc211-why'
+    if is_bc211_who(value):
+        return 'bc211-who'
     return 'bc211-what'
 
 
 def is_bc211_why(value):
     return value.islower()
+
+
+def is_bc211_who(value):
+    head = value[0]
+    tail = value[1:-1]
+    return head.isupper() and tail.islower()
 
 
 def parse_taxonomy_terms(value, vocabulary):
