@@ -7,9 +7,10 @@ from bc211.open_referral_csv_import.service_at_location import import_service_at
 from bc211.open_referral_csv_import.address import import_address_and_location_address
 from bc211.open_referral_csv_import.phones import import_phone
 from bc211.open_referral_csv_import.taxonomy import import_taxonomy
+from bc211.open_referral_csv_import.service_taxonomy import import_service_taxonomy
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder,
-                        OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder)
+                        OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder, OpenReferralCsvServiceTaxonomyBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
                                                     a_latitude_as_a_string, a_longitude_as_a_string, a_phone_number)
 from human_services.organizations.models import Organization
@@ -21,6 +22,7 @@ from human_services.locations.models import Location, ServiceAtLocation
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
+from taxonomies.tests.helpers import TaxonomyTermBuilder
 from taxonomies.models import TaxonomyTerm
 from django.db import models
 from django.contrib.gis.geos import Point
@@ -348,3 +350,37 @@ class OpenReferralTaxonomyImporterTests(TestCase):
         import_taxonomy(taxonomy_data)
         taxonomy_terms = TaxonomyTerm.objects.all()
         self.assertEqual(taxonomy_terms[0].name, the_name)
+
+
+class OpenReferralServiceTaxonomyImporterTests(TestCase):
+    def setUp(self):
+        organization = OrganizationBuilder().create()
+        self.taxonomy_id_passed_to_taxonomy_term_builder = a_string()
+        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(self.taxonomy_id_passed_to_taxonomy_term_builder).create()
+        self.service_id_passed_to_service_builder = a_string()
+        ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).create()
+
+    def test_can_import_taxonomy_term_into_service_record(self):
+        service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id_passed_to_service_builder)
+                            .with_taxonomy_id(self.taxonomy_id_passed_to_taxonomy_term_builder).build())
+        import_service_taxonomy(service_taxonomy_data)
+        service_instance = Service.objects.get(pk=self.service_id_passed_to_service_builder)
+        service_instance_taxonomy_terms = service_instance.taxonomy_terms.all()
+        self.assertEqual(service_instance_taxonomy_terms[0], self.taxonomy_term)
+
+    def test_can_import_multiple_taxonomy_terms_into_service_record(self):
+        second_taxonomy_id = a_string()
+        second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(second_taxonomy_id).create()
+
+        first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id_passed_to_service_builder)
+                                    .with_taxonomy_id(self.taxonomy_id_passed_to_taxonomy_term_builder).build())
+        second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder()
+                                    .with_service_id(self.service_id_passed_to_service_builder).with_taxonomy_id(second_taxonomy_id).build())
+        
+        import_service_taxonomy(first_service_taxonomy_data)
+        import_service_taxonomy(second_service_taxonomy_data)
+
+        service_instance = Service.objects.get(pk=self.service_id_passed_to_service_builder)
+        service_instance_taxonomy_terms = service_instance.taxonomy_terms.all()
+        self.assertEqual(service_instance_taxonomy_terms[0], self.taxonomy_term)
+        self.assertEqual(service_instance_taxonomy_terms[1], second_taxonomy_term)

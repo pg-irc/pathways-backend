@@ -270,3 +270,22 @@ class OpenReferralCsvTaxonomyBuilder:
         not_used_parent_name = ''
         not_used_vocabulary = ''
         return [self.taxonomy_id, self.name, not_used_parent_id, not_used_parent_name, not_used_vocabulary]
+
+
+class OpenReferralCsvServiceTaxonomyBuilder:
+    def __init__(self):
+        self.service_id = a_string()
+        self.taxonomy_id = a_string()
+    
+    def with_service_id(self, service_id):
+        self.service_id = service_id
+        return self
+
+    def with_taxonomy_id(self, taxonomy_id):
+        self.taxonomy_id = taxonomy_id
+        return self
+
+    def build(self):
+        not_used_id = ''
+        not_used_taxonomy_detail = ''
+        return [not_used_id, self.service_id, self.taxonomy_id, not_used_taxonomy_detail]
