@@ -38,9 +38,9 @@ class ParserHelperTests(TestCase):
         with self.assertRaises(MissingRequiredFieldCsvParseException):
             parser.parse_required_field('id', None)
 
-    def test_returns_none_if_optional_field_is_missing(self):
+    def test_returns_empty_string_if_optional_field_is_missing(self):
         parsed_id = parser.parse_optional_field(None)
-        self.assertEqual(parsed_id, None)
+        self.assertEqual(parsed_id, '')
 
     def test_website_without_prefix_parsed_as_http(self):
         the_website = 'www.example.org'
