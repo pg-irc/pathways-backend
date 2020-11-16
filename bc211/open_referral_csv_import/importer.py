@@ -2,7 +2,7 @@ import logging
 from bc211.open_referral_csv_import.organization import import_organizations_file
 from bc211.open_referral_csv_import.service import import_services_file
 from bc211.open_referral_csv_import.location import import_locations_file
-from bc211.open_referral_csv_import.services_at_location import import_services_at_location_file
+from bc211.open_referral_csv_import.service_at_location import import_services_at_location_file
 from bc211.open_referral_csv_import.address import import_addresses_file
 from bc211.open_referral_csv_import.phone import import_phones_file
 from bc211.open_referral_csv_import.taxonomy import import_taxonomy_file

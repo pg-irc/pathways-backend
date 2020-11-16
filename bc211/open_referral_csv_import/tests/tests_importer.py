@@ -5,7 +5,7 @@ from bc211.open_referral_csv_import.service import import_service
 from bc211.open_referral_csv_import.location import import_location
 from bc211.open_referral_csv_import.service_at_location import import_service_at_location
 from bc211.open_referral_csv_import.address import import_address_and_location_address
-from bc211.open_referral_csv_import.phones import import_phone
+from bc211.open_referral_csv_import.phone import import_phone
 from bc211.open_referral_csv_import.taxonomy import import_taxonomy
 from bc211.open_referral_csv_import.service_taxonomy import import_service_taxonomy
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
