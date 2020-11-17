@@ -43,7 +43,7 @@ def parse_last_verified_date(value):
     last_verified_date = parse_optional_field(value)
     if last_verified_date is None or value == '':
         return None
-    return datetime.strptime(last_verified_date, '%d-%m-%Y')
+    return datetime.strptime(last_verified_date, '%Y-%m-%d')
 
 
 def parse_required_type(value):

@@ -127,11 +127,11 @@ class OpenReferralServiceImporterTests(TestCase):
         self.assertEqual(services[0].email, the_email)
     
     def test_can_import_last_verified_date(self):
-        the_date = date.today().strftime("%d-%m-%Y")
+        the_date = date.today().strftime("%Y-%m-%d")
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_last_verified_on(the_date).build()
         import_service(service_data)
         services = Service.objects.all()
-        self.assertEqual(date.strftime(services[0].last_verified_date, "%d-%m-%Y"), the_date)
+        self.assertEqual(date.strftime(services[0].last_verified_date, "%Y-%m-%d"), the_date)
 
 
 class OpenReferralLocationImporterTests(TestCase):

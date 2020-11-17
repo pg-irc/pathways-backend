@@ -55,7 +55,7 @@ class OpenReferralCsvServiceBuilder:
         self.description = a_string()
         self.url = a_website_address()
         self.email = an_email_address()
-        self.last_verified_on = date.today().strftime("%d-%m-%Y")
+        self.last_verified_on = date.today().strftime("%Y-%m-%d")
     
     def with_id(self, service_id):
         self.service_id = service_id
