@@ -435,6 +435,24 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[2]['name'], 'TA-3003.0750')
         self.assertEqual(parsed_data.taxonomy_terms[3]['name'], 'YB-9504.1500')
 
+    def test_split_taxonomy_terms_on_semicolon(self):
+        the_term = 'one ; two ; three'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyCodes', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 3)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'one')
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'two')
+        self.assertEqual(parsed_data.taxonomy_terms[2]['name'], 'three')
+
+    def test_do_not_split_taxonomy_terms_on_space(self):
+        pass
+
+    def test_do_not_split_taxonomy_terms_on_slash(self):
+        pass
+
+    def test_change_terms_to_lower_case(self):
+        pass
+
     def test_strip_trailing_semicolon(self):
         the_term = a_string()
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term + ';').build())
