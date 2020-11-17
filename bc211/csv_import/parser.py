@@ -205,9 +205,11 @@ def is_bc211_who(value):
 def parse_taxonomy_terms(value, vocabulary):
     if vocabulary == 'AIRS':
         names = re.split(r'[;\* ]', value)
+        names = [name.strip() for name in names]
     else:
         names = re.split(r'[;\-\*]', value)
-    names = [name.strip() for name in names]
+        names = [name.strip() for name in names]
+        names = [name.replace(' ', '-') for name in names]
     return [build_taxonomy_object(i, vocabulary) for i in names if i]
 
 

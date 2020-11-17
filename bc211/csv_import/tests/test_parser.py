@@ -392,8 +392,8 @@ class ParseTaxonomyTests(TestCase):
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 2)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'Fire Services')
-        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'Fire Stations')
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'Fire-Services')
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'Fire-Stations')
 
     def test_parse_second_taxonomy_term_column(self):
         the_term = a_string()
@@ -445,7 +445,11 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[2]['name'], 'three')
 
     def test_do_not_split_taxonomy_terms_on_space(self):
-        pass
+        the_term = 'one two three'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'one-two-three')
 
     def test_do_not_split_taxonomy_terms_on_slash(self):
         pass
