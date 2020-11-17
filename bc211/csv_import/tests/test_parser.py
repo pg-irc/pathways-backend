@@ -452,7 +452,11 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'one-two-three')
 
     def test_do_not_split_taxonomy_terms_on_slash(self):
-        pass
+        the_term = 'one/two/three'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'one-two-three')
 
     def test_change_terms_to_lower_case(self):
         pass
