@@ -3,7 +3,7 @@ import os
 import logging
 from bc211.open_referral_csv_import import parser
 from human_services.services.models import Service
-from bc211.is_inactive import is_inactive
+from bc211.open_referral_csv_import.is_inactive import is_inactive
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
@@ -34,9 +34,10 @@ expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_na
 
 
 def import_service(row):
-    active_record = build_service_active_record(row)
-    if is_inactive(active_record):
+    description = parser.parse_description(row[5])
+    if is_inactive(description):
         return
+    active_record = build_service_active_record(row)
     active_record.save()
 
 
