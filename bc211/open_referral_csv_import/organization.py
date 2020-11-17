@@ -4,7 +4,7 @@ import logging
 from django.utils import translation
 from human_services.organizations.models import Organization
 from bc211.open_referral_csv_import import parser
-from bc211.is_inactive import is_inactive
+from bc211.open_referral_csv_import.is_inactive import is_inactive
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 
@@ -35,9 +35,10 @@ expected_headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url
 
 def import_organization(row):
     translation.activate('en')
-    active_record = build_active_record(row)
-    if is_inactive(active_record):
+    description = parser.parse_description(row[3])
+    if is_inactive(description):
         return
+    active_record = build_active_record(row)
     active_record.save()
 
 
