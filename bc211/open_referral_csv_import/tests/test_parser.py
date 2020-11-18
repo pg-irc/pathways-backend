@@ -56,8 +56,13 @@ class ParserHelperTests(TestCase):
         the_website = 'https://www.example.org'
         parsed_website = parser.parse_website_with_prefix(the_website)
         self.assertEqual(parsed_website, 'https://www.example.org')
-    
+
     def test_returns_none_if_coordinate_is_empty(self):
         empty_latitude = ''
         foo = parser.parse_coordinate_if_defined(empty_latitude)
         self.assertEqual(foo, None)
+
+    def test_invalid_email_returns_None(self):
+        the_email = 'vancouver@ami.ca?'
+        parsed_email = parser.parse_email(a_string(), the_email)
+        self.assertEqual(parsed_email, None)
