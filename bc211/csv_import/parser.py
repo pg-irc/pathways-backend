@@ -208,11 +208,20 @@ def parse_taxonomy_terms(value, vocabulary):
         names = [name.strip() for name in names]
     else:
         names = re.split(r'[;\*]', value)
-        names = [name.split('-')[-1] for name in names]
-        names = [name.strip().lower() for name in names]
-        names = [name.replace(' ', '-') for name in names]
-        names = [name.replace('/', '-') for name in names]
+        names = [clean_taxonomy_term(name) for name in names]
     return [build_taxonomy_object(i, vocabulary) for i in names if i]
+
+
+def clean_taxonomy_term(term):
+    term = get_leaf_node_from_hierarchical_taxonomy_term(term)
+    return term.strip().lower().replace(' ', '-').replace('/', '-')
+
+
+def get_leaf_node_from_hierarchical_taxonomy_term(term):
+    # bc211 CSV data contains taxonomy terms like "Basic Needs - Food - Emergency Food - Food Banks"
+    # where each subsequent element is a narrower than the previous. In these cases, we use just
+    # the last term, in this case "food-banks"
+    return term.split('-')[-1]
 
 
 def build_taxonomy_object(name, vocabulary):
