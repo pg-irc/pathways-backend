@@ -392,8 +392,8 @@ class ParseTaxonomyTests(TestCase):
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 2)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'Fire-Services')
-        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'Fire-Stations')
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'fire-services')
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'fire-stations')
 
     def test_parse_second_taxonomy_term_column(self):
         the_term = a_string()
@@ -474,7 +474,11 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'leaf2')
 
     def test_change_terms_to_lower_case(self):
-        pass
+        the_term = 'One TWO three'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'one-two-three')
 
     def test_strip_trailing_semicolon(self):
         the_term = a_string()
