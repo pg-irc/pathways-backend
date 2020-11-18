@@ -39,7 +39,7 @@ def parse_description(value):
     return remove_double_escaped_html_markup(description)
 
 
-def parse_email(record_id, value):
+def parse_email(active_record_id, value):
     email = parse_optional_field(value)
     if csv_value_is_empty(email):
         return None 
@@ -48,7 +48,7 @@ def parse_email(record_id, value):
         validators.validate_email(cleaned_email)
         return cleaned_email
     except ValidationError:
-        LOGGER.warn('The record with the id: "%s" has an invalid email.', record_id)
+        LOGGER.warn('The record with the id: "%s" has an invalid email.', active_record_id)
         return None
    
 
@@ -117,11 +117,21 @@ def parse_optional_field(value):
     return value
 
 
-def parse_website_with_prefix(value):
+def parse_website_with_prefix(active_record_id, value):
+    validate_url = validators.URLValidator()
     website = parse_optional_field(value)
-    return None if csv_value_is_empty(value) else website_with_http_prefix(website)
+    if csv_value_is_empty(website):
+        return None
+    website_with_http_prefix = add_http_prefix_to_website(website)
+    try:
+        validate_url(website_with_http_prefix)
+        return website_with_http_prefix
+    except ValidationError:
+        LOGGER.warn('The record with the id: "%s" has an invalid URL.', active_record_id)
+        return None
 
-def website_with_http_prefix(website):
+
+def add_http_prefix_to_website(website):
     parts = urlparse.urlparse(website, 'http')
     whole_with_extra_slash = urlparse.urlunparse(parts)
     return whole_with_extra_slash.replace('///', '//')

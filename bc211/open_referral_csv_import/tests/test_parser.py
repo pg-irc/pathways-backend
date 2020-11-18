@@ -44,17 +44,17 @@ class ParserHelperTests(TestCase):
 
     def test_website_without_prefix_parsed_as_http(self):
         the_website = 'www.example.org'
-        parsed_website = parser.parse_website_with_prefix(the_website)
+        parsed_website = parser.parse_website_with_prefix(a_string(), the_website)
         self.assertEqual(parsed_website, 'http://www.example.org')
 
     def test_website_with_http_prefix_parsed_as_http(self):
         the_website = 'http://www.example.org'
-        parsed_website = parser.parse_website_with_prefix(the_website)
+        parsed_website = parser.parse_website_with_prefix(a_string(), the_website)
         self.assertEqual(parsed_website, 'http://www.example.org')
 
     def test_website_with_https_prefix_parsed_as_https(self):
         the_website = 'https://www.example.org'
-        parsed_website = parser.parse_website_with_prefix(the_website)
+        parsed_website = parser.parse_website_with_prefix(a_string(), the_website)
         self.assertEqual(parsed_website, 'https://www.example.org')
 
     def test_returns_none_if_coordinate_is_empty(self):
@@ -66,3 +66,8 @@ class ParserHelperTests(TestCase):
         the_email = 'vancouver@ami.ca?'
         parsed_email = parser.parse_email(a_string(), the_email)
         self.assertEqual(parsed_email, None)
+
+    def test_invalid_website_returns_None(self):
+        the_website = 'httpL//(none)'
+        parsed_website = parser.parse_website_with_prefix(a_string(), the_website)
+        self.assertEqual(parsed_website, None)
