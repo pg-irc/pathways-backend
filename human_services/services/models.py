@@ -19,7 +19,7 @@ class Service(ValidateOnSaveMixin, TranslatableModel):
                                     alternate_name=models.CharField(blank=True, max_length=200),
                                     description=models.TextField(blank=True, null=True))
     email = OptionalCharField(max_length=200, validators=[validators.EmailValidator()])
-    website = OptionalCharField(max_length=200, validators=[validators.URLValidator()])
+    website = OptionalCharField(max_length=255, validators=[validators.URLValidator()])
     last_verified_date = models.DateField(blank=True, null=True)
     class Meta:
         ordering = ['id']
