@@ -1,7 +1,12 @@
+import logging
 from urllib import parse as urlparse
 from datetime import datetime
 from bc211.parser import remove_double_escaped_html_markup, clean_one_phone_number
 from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
+from django.core import validators
+from django.core.exceptions import ValidationError
+
+LOGGER = logging.getLogger(__name__)
 
 
 def parse_organization_id(value):
@@ -34,10 +39,18 @@ def parse_description(value):
     return remove_double_escaped_html_markup(description)
 
 
-def parse_email(value):
+def parse_email(record_id, value):
     email = parse_optional_field(value)
-    return remove_double_escaped_html_markup(email)
-
+    if csv_value_is_empty(email):
+        return None 
+    cleaned_email = remove_double_escaped_html_markup(email)
+    try:
+        validators.validate_email(cleaned_email)
+        return cleaned_email
+    except ValidationError:
+        LOGGER.warn('The record with the id: "%s" has an invalid email.', record_id)
+        return None
+   
 
 def parse_last_verified_date(value):
     last_verified_date = parse_optional_field(value)
@@ -107,7 +120,6 @@ def parse_optional_field(value):
 def parse_website_with_prefix(value):
     website = parse_optional_field(value)
     return None if csv_value_is_empty(value) else website_with_http_prefix(website)
-
 
 def website_with_http_prefix(website):
     parts = urlparse.urlparse(website, 'http')

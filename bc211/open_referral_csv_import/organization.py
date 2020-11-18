@@ -48,6 +48,6 @@ def build_active_record(row):
     active_record.name = parser.parse_name(row[1])
     active_record.alternate_name = parser.parse_alternate_name(row[2])
     active_record.description = parser.parse_description(row[3])
-    active_record.email = parser.parse_email(row[4])
+    active_record.email = parser.parse_email(active_record.id, row[4])
     active_record.website = parser.parse_website_with_prefix(row[5])
     return active_record
