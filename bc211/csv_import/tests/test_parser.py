@@ -458,6 +458,21 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'one-two-three')
 
+    def test_use_the_leaf_node_of_hierarchical_taxonomy_terms(self):
+        the_term = 'root - node1 - node 2 - leaf'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'leaf')
+
+    def test_handle_two_hierarchical_terms(self):
+        the_term = 'root - node1 - leaf1 ; root - node 2 - leaf2'
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.taxonomy_terms), 2)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], 'leaf1')
+        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], 'leaf2')
+
     def test_change_terms_to_lower_case(self):
         pass
 
@@ -474,18 +489,6 @@ class ParseTaxonomyTests(TestCase):
         data = (Bc211CsvDataBuilder().
                 as_service().
                 with_field('TaxonomyTerm', the_first_term + '; ' + the_second_term + '; ').
-                build())
-        parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.taxonomy_terms), 2)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
-        self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
-
-    def test_split_on_minus(self):
-        the_first_term = a_string()
-        the_second_term = a_string()
-        data = (Bc211CsvDataBuilder().
-                as_service().
-                with_field('TaxonomyTerm', the_first_term + ' - ' + the_second_term + ';').
                 build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 2)

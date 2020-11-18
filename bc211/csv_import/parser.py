@@ -207,7 +207,8 @@ def parse_taxonomy_terms(value, vocabulary):
         names = re.split(r'[;\* ]', value)
         names = [name.strip() for name in names]
     else:
-        names = re.split(r'[;\-\*]', value)
+        names = re.split(r'[;\*]', value)
+        names = [name.split('-')[-1] for name in names]
         names = [name.strip() for name in names]
         names = [name.replace(' ', '-') for name in names]
         names = [name.replace('/', '-') for name in names]
