@@ -193,10 +193,14 @@ def compute_vocabulary_name(vocabulary, header, value):
 
 
 def is_bc211_why(value):
+    if not value:
+        return False
     return value.islower()
 
 
 def is_bc211_who(value):
+    if not value:
+        return False
     head = value[0]
     tail = value[1:-1]
     return head.isupper() and tail.islower()
