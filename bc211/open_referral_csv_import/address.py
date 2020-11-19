@@ -39,12 +39,6 @@ def import_address_and_location_address(row):
     location_address_active_record.save()
 
 
-def save_address(address):
-    active_record = build_address_active_record(address)
-    active_record.save()
-    return active_record
-
-
 def build_address_active_record(row):
     active_record = Address()
     active_record.city = parser.parse_city(row[8])

@@ -11,7 +11,7 @@ from bc211.parser import remove_double_escaped_html_markup
 from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
 
 
-class OpenReferralLocationParserTests(TestCase):
+class LocationParserTests(TestCase):
     def test_can_parse_latitude(self):
         the_latitude = a_latitude_as_a_string()
         parsed_latitude = parser.parse_coordinate_if_defined(the_latitude)
