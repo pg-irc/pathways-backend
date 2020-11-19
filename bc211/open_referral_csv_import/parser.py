@@ -44,9 +44,13 @@ def parse_email(active_record_id, value):
     if csv_value_is_empty(email):
         return None 
     cleaned_email = remove_double_escaped_html_markup(email)
+    return validated_email_or_none(active_record_id, cleaned_email)
+
+
+def validated_email_or_none(active_record_id, email):
     try:
-        validators.validate_email(cleaned_email)
-        return cleaned_email
+        validators.validate_email(email)
+        return email
     except ValidationError:
         LOGGER.warn('The record with the id: "%s" has an invalid email.', active_record_id)
         return None
@@ -118,14 +122,18 @@ def parse_optional_field(value):
 
 
 def parse_website_with_prefix(active_record_id, value):
-    validate_url = validators.URLValidator()
     website = parse_optional_field(value)
     if csv_value_is_empty(website):
         return None
     website_with_http_prefix = add_http_prefix_to_website(website)
+    return validated_website_or_none(active_record_id, website_with_http_prefix)
+
+
+def validated_website_or_none(active_record_id, website):
+    validate_url = validators.URLValidator()
     try:
-        validate_url(website_with_http_prefix)
-        return website_with_http_prefix
+        validate_url(website)
+        return website
     except ValidationError:
         LOGGER.warn('The record with the id: "%s" has an invalid URL.', active_record_id)
         return None
