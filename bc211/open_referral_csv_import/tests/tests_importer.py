@@ -29,7 +29,7 @@ from django.contrib.gis.geos import Point
 from datetime import date
 
 
-class OpenReferralOrganizationImporterTests(TestCase):
+class OrganizationImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
@@ -73,7 +73,7 @@ class OpenReferralOrganizationImporterTests(TestCase):
         self.assertEqual(organizations[0].website, the_website)
 
 
-class OpenReferralServiceImporterTests(TestCase):
+class ServiceImporterTests(TestCase):
     def setUp(self):
         self.organization_id_passed_to_organization_builder = a_string()
         self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).create()
@@ -134,7 +134,7 @@ class OpenReferralServiceImporterTests(TestCase):
         self.assertEqual(date.strftime(services[0].last_verified_date, "%Y-%m-%d"), the_date)
 
 
-class OpenReferralLocationImporterTests(TestCase):
+class LocationImporterTests(TestCase):
     def setUp(self):
         self.organization_id_passed_to_organization_builder = a_string()
         self.organization = OrganizationBuilder().with_id(self.organization_id_passed_to_organization_builder).create()
@@ -183,7 +183,7 @@ class OpenReferralLocationImporterTests(TestCase):
         self.assertEqual(locations[0].point.y, float(the_latitude))
 
 
-class OpenReferralServiceAtLocationImporterTests(TestCase):
+class ServiceAtLocationImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().create()
         self.service_id_passed_to_service_builder = a_string()
@@ -253,7 +253,7 @@ class OpenReferralAddressImporterTests(TestCase):
         self.assertEqual(addresses[0].postal_code, the_postal_code)
 
 
-class OpenReferralLocationAddressImporterTests(TestCase):
+class LocationAddressImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().build()
         organization.save()
@@ -283,7 +283,7 @@ class OpenReferralLocationAddressImporterTests(TestCase):
         self.assertEqual(location_addresses[0].address_type, the_address_type_instance)
 
 
-class OpenReferralPhoneNumberTypeImporterTests(TestCase):
+class PhoneNumberTypeImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().create()
         self.location_id_passed_to_location_builder = a_string()
@@ -325,7 +325,7 @@ class OpenReferralPhoneAtLocationImporterTests(TestCase):
         self.assertEqual(phones_at_location[0].phone_number, the_phone_number)
 
 
-class OpenReferralTaxonomyImporterTests(TestCase):
+class TaxonomyImporterTests(TestCase):
     def test_can_import_taxonomy_id(self):
         the_taxonomy_id = a_string()
         taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_taxonomy_id(the_taxonomy_id).build()
@@ -341,7 +341,7 @@ class OpenReferralTaxonomyImporterTests(TestCase):
         self.assertEqual(taxonomy_terms[0].name, the_name)
 
 
-class OpenReferralServiceTaxonomyImporterTests(TestCase):
+class ServiceTaxonomyImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().create()
         self.taxonomy_id_passed_to_taxonomy_term_builder = a_string()
