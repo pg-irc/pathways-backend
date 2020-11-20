@@ -42,7 +42,8 @@ def import_address_and_location_address(row):
 def build_address_active_record(row):
     active_record = Address()
     active_record.attention = parser.parse_attention(row[3])
-    active_record.address = parser.parse_address(row[4])
+    addresses = [row[4], row[5], row[6], row[7]]
+    active_record.address = parser.parse_addresses(addresses)
     active_record.city = parser.parse_city(row[8])
     active_record.state_province = parser.parse_state_province(row[10])
     active_record.postal_code = parser.parse_postal_code(row[11])

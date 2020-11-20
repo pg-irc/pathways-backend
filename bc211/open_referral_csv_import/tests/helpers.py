@@ -172,9 +172,9 @@ class OpenReferralCsvAddressBuilder:
         self.location_id = location.id
         self.attention = a_string()
         self.address_1 = a_string()
-        self.address_2 = a_string()
-        self.address_3 = a_string()
-        self.address_4 = a_string()
+        self.address_2 = ''
+        self.address_3 = ''
+        self.address_4 = ''
         self.city = a_string()
         self.state_province = a_string()
         self.postal_code = a_string()

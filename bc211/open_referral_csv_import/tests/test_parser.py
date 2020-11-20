@@ -23,6 +23,25 @@ class LocationParserTests(TestCase):
         self.assertEqual(parsed_coordinate, None)
 
 
+class AddressParserTests(TestCase):
+    def test_can_parse_addresses_when_all_address_fields_are_not_empty(self):
+        address_1 = a_string()
+        address_2 = a_string()
+        address_3 = a_string()
+        address_4 = a_string()
+        addresses = [address_1, address_2, address_3, address_4]
+        parsed_addresses = parser.parse_addresses(addresses)
+        self.assertEqual(f'{address_1}\n{address_2}\n{address_3}\n{address_4}', parsed_addresses)
+
+    def test_can_parse_addresses_when_all_some_fields_are_empty(self):
+        address_1 = a_string()
+        address_2 = a_string()
+        address_3 = ''
+        address_4 = ''
+        addresses = [address_1, address_2, address_3, address_4]
+        parsed_addresses = parser.parse_addresses(addresses)
+        self.assertEqual(f'{address_1}\n{address_2}', parsed_addresses)
+
 class ParserHelperTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_field(self):
         the_name = '&amp;lt;b&amp;gt;abc'
