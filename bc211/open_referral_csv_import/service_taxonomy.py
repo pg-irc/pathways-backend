@@ -19,6 +19,10 @@ def import_services_taxonomy_file(root_folder):
             headers = reader.__next__()
             if not headers_match_expected_format(headers, expected_headers):
                 raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+            for row in reader:
+                if not row:
+                    return
+                import_service_taxonomy(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing services_taxonomy.csv file.')
             raise
