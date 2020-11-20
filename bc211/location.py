@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 def update_locations(locations, organization_id, city_latlong_map, counters):
     for location in locations:
-        if is_inactive(location):
+        if is_inactive(location.description):
             continue
         existing = get_existing_location_or_none(location)
         if not existing:

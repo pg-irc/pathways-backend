@@ -37,7 +37,7 @@ def update_services_for_location(location_id, services, counters):
 
 
 def save_service_if_needed(service, counters):
-    if is_inactive(service):
+    if is_inactive(service.description):
         return
     existing = get_existing_service_or_none(service)
     if not existing:

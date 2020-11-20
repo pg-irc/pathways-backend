@@ -1,5 +1,5 @@
 from django.test import TestCase
-from bc211.open_referral_csv_import.is_inactive import is_inactive
+from bc211.is_inactive import is_inactive
 
 class IsInactiveTests(TestCase):
     def test_can_detect_BC211_convention_for_making_records_inactive_when_DEL_is_uppercase(self):
