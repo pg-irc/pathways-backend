@@ -22,7 +22,7 @@ def import_locations_file(root_folder):
                 raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
             for row in reader:
                 if not row:
-                    return
+                    continue
                 import_location(row)
     except FileNotFoundError as error:
             LOGGER.error('Missing locations.csv file.')
