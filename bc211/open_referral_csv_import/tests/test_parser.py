@@ -12,15 +12,15 @@ from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvPar
 
 
 class LocationParserTests(TestCase):
-    def test_can_parse_latitude(self):
+    def test_can_parse_coordinate(self):
         the_latitude = a_latitude_as_a_string()
         parsed_latitude = parser.parse_coordinate_if_defined(the_latitude)
         self.assertEqual(parsed_latitude, float(the_latitude))
 
-    def test_can_parse_longitude(self):
-        the_longitude = a_longitude_as_a_string()
-        parsed_longitude = parser.parse_coordinate_if_defined(the_longitude)
-        self.assertEqual(parsed_longitude, float(the_longitude))
+    def test_returns_none_if_coordinate_is_empty(self):
+        empty_latitude = ''
+        parsed_coordinate = parser.parse_coordinate_if_defined(empty_latitude)
+        self.assertEqual(parsed_coordinate, None)
 
 
 class ParserHelperTests(TestCase):
@@ -56,11 +56,6 @@ class ParserHelperTests(TestCase):
         the_website = 'https://www.example.org'
         parsed_website = parser.parse_website_with_prefix(a_string(), the_website)
         self.assertEqual(parsed_website, 'https://www.example.org')
-
-    def test_returns_none_if_coordinate_is_empty(self):
-        empty_latitude = ''
-        foo = parser.parse_coordinate_if_defined(empty_latitude)
-        self.assertEqual(foo, None)
 
     def test_invalid_email_returns_None(self):
         the_email = 'vancouver@ami.ca?'
