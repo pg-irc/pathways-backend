@@ -13,12 +13,12 @@ def update_entire_organization(organization, city_latlong_map, counters):
     locations = list(organization.locations)
     update_locations(locations, organization.id, city_latlong_map, counters)
     for location in locations:
-        if not is_inactive(location):
+        if not is_inactive(location.description):
             update_services_for_location(location.id, location.services, counters)
 
 
 def update_organization(organization, counters):
-    if is_inactive(organization):
+    if is_inactive(organization.description):
         return
     translation.activate('en')
     existing = get_existing_organization_or_none(organization)
