@@ -33,7 +33,7 @@ class AddressParserTests(TestCase):
         parsed_addresses = parser.parse_addresses(addresses)
         self.assertEqual(f'{address_1}\n{address_2}\n{address_3}\n{address_4}', parsed_addresses)
 
-    def test_can_parse_addresses_when_all_some_fields_are_empty(self):
+    def test_can_parse_addresses_when_some_fields_are_empty(self):
         address_1 = a_string()
         address_2 = a_string()
         address_3 = ''
