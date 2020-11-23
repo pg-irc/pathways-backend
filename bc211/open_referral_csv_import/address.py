@@ -57,9 +57,16 @@ def build_location_address_active_record(address_active_record, row):
     address_type = parser.parse_required_type(row[1])
     location_id = parser.parse_location_id(row[2])
     try:
-        location_active_record = Location.objects.get(pk=location_id)
-        address_type_active_record = AddressType.objects.get(pk=address_type)
+        location_active_record = get_active_record_or_none(location_id, Location)
+        address_type_active_record = get_active_record_or_none(address_type, AddressType)
     except ObjectDoesNotExist as error:
-        LOGGER.warn('{}'.format(error.__str__()))
         return
     return LocationAddress(address=address_active_record, location=location_active_record, address_type=address_type_active_record)
+
+
+def get_active_record_or_none(active_record_id, model):
+    try:
+        return model.objects.get(pk=active_record_id)
+    except ObjectDoesNotExist as error:
+        LOGGER.warn('Record with id {} does not exist. {}'.format(active_record_id, error))
+        raise
