@@ -5,6 +5,7 @@ from bc211.open_referral_csv_import import parser
 from human_services.locations.models import ServiceAtLocation
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,7 +33,10 @@ expected_headers = ['id', 'service_id', 'location_id', 'description']
 
 def import_service_at_location(row):
     active_record = build_service_at_location_active_record(row)
-    active_record.save()
+    try:
+        active_record.save()
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
 
 
 def build_service_at_location_active_record(row):
