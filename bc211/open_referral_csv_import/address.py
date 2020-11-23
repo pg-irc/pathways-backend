@@ -6,6 +6,7 @@ from human_services.locations.models import LocationAddress, Location
 from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from django.core.exceptions import ObjectDoesNotExist
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,7 +37,8 @@ def import_address_and_location_address(row):
     address_active_record = build_address_active_record(row)
     address_active_record.save()
     location_address_active_record = build_location_address_active_record(address_active_record, row)
-    location_address_active_record.save()
+    if location_address_active_record:
+        location_address_active_record.save()
 
 
 def build_address_active_record(row):
@@ -54,6 +56,10 @@ def build_address_active_record(row):
 def build_location_address_active_record(address_active_record, row):
     address_type = parser.parse_required_type(row[1])
     location_id = parser.parse_location_id(row[2])
-    location_active_record = Location.objects.get(pk=location_id)
-    address_type_active_record = AddressType.objects.get(pk=address_type)
+    try:
+        location_active_record = Location.objects.get(pk=location_id)
+        address_type_active_record = AddressType.objects.get(pk=address_type)
+    except ObjectDoesNotExist as error:
+        LOGGER.warn('{}'.format(error.__str__()))
+        return
     return LocationAddress(address=address_active_record, location=location_active_record, address_type=address_type_active_record)
