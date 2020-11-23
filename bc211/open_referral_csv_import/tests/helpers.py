@@ -144,7 +144,8 @@ class OpenReferralCsvLocationBuilder:
 
     def build(self):
         not_used_transportation = ''
-        return [self.location_id, self.organization_id, self.name, self.alternate_name, self.description, not_used_transportation, self.latitude, self.longitude]
+        return [self.location_id, self.organization_id, self.name, self.alternate_name,
+                self.description, not_used_transportation, self.latitude, self.longitude]
 
 
 class OpenReferralCsvServiceAtLocationBuilder:
