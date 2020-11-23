@@ -7,12 +7,13 @@ from bc211.is_inactive import is_inactive
 from django.contrib.gis.geos import Point
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
 
 def import_locations_file(root_folder):
-    filename = 'locations.csv'
+    filename = 'location.csv'
     path = os.path.join(root_folder, filename)
     try:
         with open(path, 'r') as file: 
@@ -25,7 +26,7 @@ def import_locations_file(root_folder):
                     continue
                 import_location(row)
     except FileNotFoundError as error:
-            LOGGER.error('Missing locations.csv file.')
+            LOGGER.error('Missing location.csv file.')
             raise
 
 
@@ -38,8 +39,10 @@ def import_location(row):
     if is_inactive(description):
         return
     active_record = build_location_active_record(row)
-    active_record.save()
-
+    try:
+        active_record.save()
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
 
 def build_location_active_record(row):
     active_record = Location()
