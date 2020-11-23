@@ -42,6 +42,7 @@ class AddressParserTests(TestCase):
         parsed_addresses = parser.parse_addresses(addresses)
         self.assertEqual(f'{address_1}\n{address_2}', parsed_addresses)
 
+
 class ParserHelperTests(TestCase):
     def test_removes_doubly_escaped_bold_markup_from_field(self):
         the_name = '&amp;lt;b&amp;gt;abc'
@@ -85,3 +86,18 @@ class ParserHelperTests(TestCase):
         the_website = 'httpL//(none)'
         parsed_website = parser.parse_website_with_prefix(a_string(), the_website)
         self.assertEqual(parsed_website, None)
+
+    def test_sets_canada_to_two_letter_country_code(self):
+        country = 'Canada'
+        parsed_country = parser.two_letter_country_code_or_none(country)
+        self.assertEqual(parsed_country, 'CA')
+
+    def test_sets_united_states_to_two_letter_country_code(self):
+        country = 'United States'
+        parsed_country = parser.two_letter_country_code_or_none(country)
+        self.assertEqual(parsed_country, 'US')
+
+    def test_sets_country_to_none_when_country_is_invalid(self):
+        country = 'All countries'
+        parsed_country = parser.two_letter_country_code_or_none(country)
+        self.assertEqual(parsed_country, None)
