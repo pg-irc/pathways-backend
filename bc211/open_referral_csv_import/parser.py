@@ -101,7 +101,20 @@ def parse_postal_code(value):
 
 def parse_country(value):
     country = parse_required_field('country', value)
-    return remove_double_escaped_html_markup(country)
+    cleaned_country = remove_double_escaped_html_markup(country)
+    return two_letter_country_code_or_none(cleaned_country)
+
+
+def two_letter_country_code_or_none(country):
+    if country == 'Canada':
+        return 'CA'
+    if country == 'United States':
+        return 'US'
+    if country is None:
+        return None
+    if len(country) > 2:
+        return None
+    return country
 
 
 def parse_phone_number(value):
