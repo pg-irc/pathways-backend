@@ -210,6 +210,13 @@ class OpenReferralAddressImporterTests(TestCase):
         self.location_id = a_string()
         self.location = LocationBuilder(organization).with_id(self.location_id).create()
     
+    def test_can_import_id(self):
+        the_id = a_string()
+        address_data = OpenReferralCsvAddressBuilder(self.location).with_address_id(the_id).build()
+        import_address_and_location_address(address_data)
+        addresses = Address.objects.all()
+        self.assertEqual(addresses[0].id, the_id)
+
     def test_can_import_city(self):
         the_city = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build()

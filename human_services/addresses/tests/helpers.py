@@ -6,6 +6,7 @@ from common.testhelpers.random_test_values import a_string
 
 class AddressBuilder:
     def __init__(self):
+        self.id = a_string()
         self.address = a_string()
         self.city = a_string()
         self.country = a_string(2, string.ascii_uppercase)
@@ -17,6 +18,7 @@ class AddressBuilder:
 
     def build(self):
         result = models.Address()
+        result.id = self.id
         result.address = self.address
         result.city = self.city
         result.country = self.country
@@ -34,8 +36,12 @@ class AddressBuilder:
                             state_province=self.state_province,
                             postal_code=self.postal_code)
 
-    def with_location_id(self, id):
-        self.location_id = id
+    def with_id(self, address_id):
+        self.id = address_id
+        return self
+
+    def with_location_id(self, location_id):
+        self.location_id = location_id
         return self
 
     def with_address_type(self, type):

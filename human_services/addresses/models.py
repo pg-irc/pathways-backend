@@ -1,9 +1,13 @@
 from django.db import models
+from django.core import validators
 from common.models import (ValidateOnSaveMixin, OptionalCharField,
                            OptionalTextField, RequiredCharField)
 
 
 class Address(ValidateOnSaveMixin, models.Model):
+    id = RequiredCharField(primary_key=True,
+                        max_length=200,
+                        validators=[validators.validate_slug])
     attention = OptionalCharField(max_length=200)
     address = OptionalTextField()
     city = RequiredCharField(max_length=200)
