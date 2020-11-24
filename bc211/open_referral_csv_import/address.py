@@ -35,23 +35,27 @@ expected_headers = ['id', 'type', 'location_id', 'attention', 'address_1', 'addr
 
 def import_address_and_location_address(row):
     address_active_record = build_address_active_record(row)
-    address_active_record.save()
+    if address_active_record:
+        address_active_record.save()
     location_address_active_record = build_location_address_active_record(address_active_record, row)
     if location_address_active_record:
         location_address_active_record.save()
 
 
 def build_address_active_record(row):
-    active_record = Address()
-    active_record.id = parser.parse_address_id(row[0])
-    active_record.attention = parser.parse_attention(row[3])
-    addresses = [row[4], row[5], row[6], row[7]]
-    active_record.address = parser.parse_addresses(addresses)
-    active_record.city = parser.parse_city(row[8])
-    active_record.state_province = parser.parse_state_province(row[10])
-    active_record.postal_code = parser.parse_postal_code(row[11])
-    active_record.country = parser.parse_country(row[12])
-    return active_record
+    try:
+        active_record = Address()
+        active_record.id = parser.parse_address_id(row[0])
+        active_record.attention = parser.parse_attention(row[3])
+        addresses = [row[4], row[5], row[6], row[7]]
+        active_record.address = parser.parse_addresses(addresses)
+        active_record.city = parser.parse_city(row[8])
+        active_record.state_province = parser.parse_state_province(row[10])
+        active_record.postal_code = parser.parse_postal_code(row[11])
+        active_record.country = parser.parse_country(row[12])
+        return active_record
+    except Exception:
+        return 
 
 
 def build_location_address_active_record(address_active_record, row):
