@@ -8,6 +8,11 @@ class MissingRequiredFieldCsvParseException(CsvParseException):
         CsvParseException.__init__(self, *args, **kwargs)
 
 
+class InvalidFieldCsvParseException(CsvParseException):
+    def __init__(self, *args, **kwargs):
+        CsvParseException.__init__(self, *args, **kwargs)
+
+
 class CsvImportException(Exception):
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)

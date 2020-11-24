@@ -8,7 +8,7 @@ from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
 from human_services.locations.tests.helpers import LocationBuilder
 from bc211.parser import remove_double_escaped_html_markup
-from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
+from bc211.open_referral_csv_import import exceptions
 
 
 class LocationParserTests(TestCase):
@@ -55,7 +55,7 @@ class ParserHelperTests(TestCase):
         self.assertEqual(html_markup, 'abc')
 
     def test_throws_when_required_field_is_missing(self):
-        with self.assertRaises(MissingRequiredFieldCsvParseException):
+        with self.assertRaises(exceptions.MissingRequiredFieldCsvParseException):
             parser.parse_required_field('id', None)
 
     def test_returns_empty_string_if_optional_field_is_missing(self):
@@ -97,7 +97,6 @@ class ParserHelperTests(TestCase):
         parsed_country = parser.two_letter_country_code_or_none(country)
         self.assertEqual(parsed_country, 'US')
 
-    def test_sets_country_to_none_when_country_is_invalid(self):
-        country = 'All countries'
-        parsed_country = parser.two_letter_country_code_or_none(country)
-        self.assertEqual(parsed_country, None)
+    def test_raises_exception_when_country_is_invalid(self):
+        with self.assertRaises(exceptions.InvalidFieldCsvParseException):
+           parsed_country = parser.two_letter_country_code_or_none('All countries')
