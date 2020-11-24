@@ -1,6 +1,7 @@
 import logging
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
+from bc211.parser import compute_address_id
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ def create_address_for_location(location, address_dto, counters):
 
 def create_address(address_dto, counters):
     active_record, created = Address.objects.get_or_create(
+        id=compute_address_id(address_dto),
         address=address_dto.address_lines,
         city=address_dto.city,
         country=address_dto.country,

@@ -1,6 +1,7 @@
 import itertools
 import logging
 import re
+import hashlib
 import html
 from html.parser import HTMLParser
 from urllib import parse as urlparse
@@ -430,3 +431,27 @@ class HTMLRemover(HTMLParser):
 
     def error(self, message):
         raise RuntimeError(message)
+
+# TODO Once csv_import is merged, use the function from there logic is similar.
+def compute_address_id(address_dto):
+    return compute_hash(
+        dto_value_or_empty_string(address_dto.address_lines),
+        dto_value_or_empty_string(address_dto.city),
+        dto_value_or_empty_string(address_dto.state_province),
+        dto_value_or_empty_string(address_dto.postal_code),
+        dto_value_or_empty_string(address_dto.country),
+        )
+
+
+def compute_hash(*args):
+    hasher = hashlib.sha1()
+    for arg in args:
+        hasher.update(arg.encode('utf-8'))
+    return hasher.hexdigest()
+
+
+def dto_value_or_empty_string(value):
+    if not value:
+        return ''
+    return value
+        
