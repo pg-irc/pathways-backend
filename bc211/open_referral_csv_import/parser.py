@@ -2,7 +2,7 @@ import logging
 from urllib import parse as urlparse
 from datetime import datetime
 from bc211.parser import remove_double_escaped_html_markup, clean_one_phone_number
-from bc211.open_referral_csv_import.exceptions import MissingRequiredFieldCsvParseException
+from bc211.open_referral_csv_import import exceptions
 from django.core import validators
 from django.core.exceptions import ValidationError
 
@@ -113,10 +113,8 @@ def two_letter_country_code_or_none(country):
         return 'CA'
     if country == 'United States':
         return 'US'
-    if country is None:
-        return None
     if len(country) > 2:
-        return None
+        raise exceptions.InvalidFieldCsvParseException('Country field with value: {} is invdalid'.format(country))
     return country
 
 
@@ -133,7 +131,7 @@ def parse_taxonomy_id(value):
 
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
-        raise MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
+        raise exceptions.MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
     return value
 
 
