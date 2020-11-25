@@ -22,7 +22,7 @@ def import_services_file(root_folder, collector):
             if not headers_match_expected_format(headers, expected_headers):
                 raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
             for row in reader:
-                if not row or has_inactive_data(row, collector):
+                if not row or service_has_inactive_data(row, collector):
                     continue
                 import_service(row, collector)
     except FileNotFoundError as error:
@@ -35,7 +35,7 @@ expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_na
                 'wait_time', 'fees', 'accreditations', 'licenses', 'taxonomy_ids', 'last_verified_on-x']
 
 
-def has_inactive_data(row, collector):
+def service_has_inactive_data(row, collector):
     service_id = parser.parse_service_id(row[0])
     organization_id = parser.parse_organization_id(row[1])
     description = parser.parse_description(row[5])
@@ -46,6 +46,7 @@ def has_inactive_data(row, collector):
     if has_inactive_organization_id(organization_id, collector):
         return True
     return False
+
 
 def import_service(row, collector):
     try:
