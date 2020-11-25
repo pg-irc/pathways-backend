@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_services_file(root_folder):
+def import_services_file(root_folder, collector):
     filename = 'services.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -23,7 +23,7 @@ def import_services_file(root_folder):
             for row in reader:
                 if not row:
                     continue
-                import_service(row)
+                import_service(row, collector)
     except FileNotFoundError as error:
             LOGGER.error('Missing services.csv file.')
             raise
@@ -34,10 +34,11 @@ expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_na
                 'wait_time', 'fees', 'accreditations', 'licenses', 'taxonomy_ids', 'last_verified_on-x']
 
 
-def import_service(row):
+def import_service(row, collector):
     service_id = parser.parse_service_id(row[0])
     description = parser.parse_description(row[5])
     if is_inactive(description):
+        collector.add_inactive_service_id(service_id)
         return
     active_record = build_service_active_record(row)
     try:
