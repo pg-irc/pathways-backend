@@ -11,7 +11,7 @@ from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportExcept
 LOGGER = logging.getLogger(__name__)
 
 
-def import_organizations_file(root_folder):
+def import_organizations_file(root_folder, collector):
     filename = 'organizations.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -23,7 +23,7 @@ def import_organizations_file(root_folder):
             for row in reader:
                 if not row:
                     continue
-                import_organization(row)
+                import_organization(row, collector)
     except FileNotFoundError as error:
             LOGGER.error('Missing organizations.csv file.')
             raise
@@ -33,10 +33,12 @@ expected_headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url
                 'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
 
 
-def import_organization(row):
+def import_organization(row, collector):
     translation.activate('en')
+    organization_id = parser.parse_organization_id(row[0])
     description = parser.parse_description(row[3])
     if is_inactive(description):
+        collector.add_inactive_organization_id(organization_id)
         return
     active_record = build_active_record(row)
     active_record.save()
