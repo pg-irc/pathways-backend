@@ -7,7 +7,7 @@ from bc211.is_inactive import is_inactive
 from django.contrib.gis.geos import Point
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
-from bc211.open_referral_csv_import.has_inactive_organization_id import has_inactive_organization_id
+from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_organization_id
 from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)

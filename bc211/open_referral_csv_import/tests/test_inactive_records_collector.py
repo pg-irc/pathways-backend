@@ -4,7 +4,9 @@ from bc211.open_referral_csv_import.inactive_records_collector import InactiveRe
 from bc211.open_referral_csv_import.organization import organization_has_inactive_data
 from bc211.open_referral_csv_import.service import service_has_inactive_data
 from bc211.open_referral_csv_import.location import location_has_inactive_data
-from bc211.open_referral_csv_import.has_inactive_organization_id import has_inactive_organization_id
+from bc211.open_referral_csv_import.inactive_foreign_key import (has_inactive_organization_id,
+                                                            has_inactive_service_id,
+                                                            has_inactive_location_id)
 from bc211.open_referral_csv_import.tests import helpers
 from human_services.organizations.tests.helpers import OrganizationBuilder
 
@@ -50,3 +52,16 @@ class TestInactiveRecordsCollector(TestCase):
         self.collector.add_inactive_organization_id(a_string())
         self.assertTrue(has_inactive_organization_id(organization_id, self.collector))
         
+    def test_returns_true_when_service_id_is_in_inactive_services_list(self):
+        service_id = a_string()
+        self.collector.add_inactive_service_id(a_string())
+        self.collector.add_inactive_service_id(a_string())
+        self.collector.add_inactive_service_id(service_id)
+        self.assertTrue(has_inactive_service_id(service_id, self.collector))
+    
+    def test_returns_true_when_location_id_is_in_inactive_locations_list(self):
+        location_id = a_string()
+        self.collector.add_inactive_location_id(a_string())
+        self.collector.add_inactive_location_id(a_string())
+        self.collector.add_inactive_location_id(location_id)
+        self.assertTrue(has_inactive_location_id(location_id, self.collector))
