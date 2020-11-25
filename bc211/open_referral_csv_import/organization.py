@@ -40,16 +40,16 @@ def import_organization(row, collector):
     if is_inactive(description):
         collector.add_inactive_organization_id(organization_id)
         return
-    active_record = build_active_record(row)
+    active_record = build_active_record(row, organization_id, description)
     active_record.save()
 
 
-def build_active_record(row):
+def build_active_record(row, organization_id, description):
     active_record = Organization()
-    active_record.id = parser.parse_organization_id(row[0])
+    active_record.id = organization_id
     active_record.name = parser.parse_name(row[1])
     active_record.alternate_name = parser.parse_alternate_name(row[2])
-    active_record.description = parser.parse_description(row[3])
+    active_record.description = description
     active_record.email = parser.parse_email(active_record.id, row[4])
     active_record.website = parser.parse_website_with_prefix(active_record.id, row[5])
     return active_record

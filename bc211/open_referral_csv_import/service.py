@@ -37,23 +37,24 @@ expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_na
 def import_service(row, collector):
     service_id = parser.parse_service_id(row[0])
     description = parser.parse_description(row[5])
+
     if is_inactive(description):
         collector.add_inactive_service_id(service_id)
         return
-    active_record = build_service_active_record(row)
+    active_record = build_service_active_record(row, service_id, description)
     try:
         active_record.save()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
 
-def build_service_active_record(row):
+def build_service_active_record(row, service_id, description):
     active_record = Service()
-    active_record.id = parser.parse_service_id(row[0])
+    active_record.id = service_id(row[0])
     active_record.organization_id = parser.parse_organization_id(row[1])
     active_record.name = parser.parse_name(row[3])
     active_record.alternate_name = parser.parse_alternate_name(row[4])
-    active_record.description = parser.parse_description(row[5])
+    active_record.description = description
     active_record.website = parser.parse_website_with_prefix(active_record.id, row[6])
     active_record.email = parser.parse_email(active_record.id, row[7])
     active_record.last_verified_date = parser.parse_last_verified_date(row[16])
