@@ -43,7 +43,6 @@ class TestInactiveRecordsCollector(TestCase):
                                 .build())
         location_has_inactive_data(inactive_location_data, self.collector)
         self.assertEqual(self.collector.inactive_locations_ids[0], the_id)
-
         
     def test_returns_true_when_organization_id_is_in_inactive_organizations_list(self):
         organization_id = a_string()
