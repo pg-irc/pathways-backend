@@ -88,7 +88,7 @@ def parse_address(value):
 
 
 def parse_city(value):
-    city = parse_required_field('city', value)
+    city = parse_optional_field(value)
     return remove_double_escaped_html_markup(city)
 
 
