@@ -34,38 +34,33 @@ expected_headers = ['id', 'type', 'location_id', 'attention', 'address_1', 'addr
 
 
 def import_address_and_location_address(row):
-    address_active_record = build_address_active_record(row)
-    if address_active_record:
+    try:
+        address_active_record = build_address_active_record(row)
         address_active_record.save()
-    location_address_active_record = build_location_address_active_record(address_active_record, row)
-    if location_address_active_record:
+        location_address_active_record = build_location_address_active_record(address_active_record, row)
         location_address_active_record.save()
+    except Exception as error:
+        LOGGER.warn('{}'.format(error.__str__()))
 
 
 def build_address_active_record(row):
-    try:
-        active_record = Address()
-        active_record.id = parser.parse_address_id(row[0])
-        active_record.attention = parser.parse_attention(row[3])
-        addresses = [row[4], row[5], row[6], row[7]]
-        active_record.address = parser.parse_addresses(addresses)
-        active_record.city = parser.parse_city(row[8])
-        active_record.state_province = parser.parse_state_province(row[10])
-        active_record.postal_code = parser.parse_postal_code(row[11])
-        active_record.country = parser.parse_country(row[12])
-        return active_record
-    except Exception:
-        return 
+    active_record = Address()
+    active_record.id = parser.parse_address_id(row[0])
+    active_record.attention = parser.parse_attention(row[3])
+    addresses = [row[4], row[5], row[6], row[7]]
+    active_record.address = parser.parse_addresses(addresses)
+    active_record.city = parser.parse_city(row[8])
+    active_record.state_province = parser.parse_state_province(row[10])
+    active_record.postal_code = parser.parse_postal_code(row[11])
+    active_record.country = parser.parse_country(row[12])
+    return active_record
 
 
 def build_location_address_active_record(address_active_record, row):
     address_type = parser.parse_required_type(row[1])
     location_id = parser.parse_location_id(row[2])
-    try:
-        location_active_record = get_active_record_or_none(location_id, Location)
-        address_type_active_record = get_active_record_or_none(address_type, AddressType)
-    except ObjectDoesNotExist as error:
-        return
+    location_active_record = get_active_record_or_none(location_id, Location)
+    address_type_active_record = get_active_record_or_none(address_type, AddressType)
     return LocationAddress(address=address_active_record, location=location_active_record, address_type=address_type_active_record)
 
 
