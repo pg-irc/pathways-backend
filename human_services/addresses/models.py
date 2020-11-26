@@ -10,7 +10,7 @@ class Address(ValidateOnSaveMixin, models.Model):
                         validators=[validators.validate_slug])
     attention = OptionalCharField(max_length=200)
     address = OptionalTextField()
-    city = RequiredCharField(max_length=200)
+    city = OptionalCharField(max_length=200)
     state_province = OptionalCharField(max_length=200)
     postal_code = OptionalCharField(max_length=200)
     country = RequiredCharField(max_length=2)
