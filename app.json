@@ -25,10 +25,6 @@
     },
     "MAILGUN_SENDER_DOMAIN": {
       "required": true
-    },
-    "BUILD_WITH_GEO_LIBRARIES": {
-      "required": true,
-      "value": "1"
     }
   },
   "formation": {
@@ -41,7 +37,7 @@
   ],
   "buildpacks": [
     {
-      "url": "https://github.com/cyberdelia/heroku-geo-buildpack"
+      "url": "https://github.com/heroku/heroku-geo-buildpack.git"
     },
     {
       "url": "heroku/python"
