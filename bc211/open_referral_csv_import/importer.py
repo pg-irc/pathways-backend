@@ -9,8 +9,6 @@ from bc211.open_referral_csv_import.phone import import_phones_file
 from bc211.open_referral_csv_import.taxonomy import import_taxonomy_file
 from bc211.open_referral_csv_import.service_taxonomy import import_services_taxonomy_file
 
-LOGGER = logging.getLogger(__name__)
-
 # TODO add spatial location to locations where missing when addresses file is imported
 
 def import_open_referral_files(root_folder):
