@@ -22,7 +22,7 @@ def import_taxonomy_file(root_folder):
                 if not row:
                     continue
                 import_taxonomy(row)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing taxonomy.csv file.')
             raise
 

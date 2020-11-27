@@ -114,7 +114,7 @@ def two_letter_country_code_or_none(country):
     if country == 'United States':
         return 'US'
     if len(country) > 2:
-        raise exceptions.InvalidFieldCsvParseException('Country field with value: {} is invdalid'.format(country))
+        raise exceptions.InvalidFieldCsvParseException('Country field with value: {} is invalid'.format(country))
     return country
 
 

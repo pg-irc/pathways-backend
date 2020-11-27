@@ -25,7 +25,7 @@ def import_services_file(root_folder, collector):
                 if not row or service_has_inactive_data(row, collector):
                     continue
                 import_service(row, collector)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing services.csv file.')
             raise
 

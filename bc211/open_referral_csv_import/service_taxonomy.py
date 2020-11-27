@@ -23,7 +23,7 @@ def import_services_taxonomy_file(root_folder):
                 if not row:
                     continue
                 import_service_taxonomy(row)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing services_taxonomy.csv file.')
             raise
 

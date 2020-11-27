@@ -25,7 +25,7 @@ def import_addresses_file(root_folder, collector):
                 if not row:
                     continue
                 import_address_and_location_address(row, collector)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing addresses.csv file.')
             raise
 
@@ -40,8 +40,8 @@ def import_address_and_location_address(row, collector):
         address_active_record.save()
         location_address_active_record = build_location_address_active_record(address_active_record, row, collector)
         location_address_active_record.save()
-    except Exception as error:
-        LOGGER.warn('{}'.format(error.__str__()))
+    except Exception:
+        pass
 
 
 def build_address_active_record(row):

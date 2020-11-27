@@ -24,7 +24,7 @@ def import_services_at_location_file(root_folder, collector):
                 if not row or service_at_location_has_invalid_data(row, collector):
                     continue
                 import_service_at_location(row)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing services_at_location.csv file.')
             raise
 
