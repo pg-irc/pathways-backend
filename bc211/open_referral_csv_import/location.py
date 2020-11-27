@@ -26,7 +26,7 @@ def import_locations_file(root_folder, collector):
                 if not row or location_has_inactive_data(row, collector):
                     continue
                 import_location(row)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing location.csv file.')
             raise
 

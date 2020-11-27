@@ -25,7 +25,7 @@ def import_organizations_file(root_folder, collector):
                 if not row or organization_has_inactive_data(row, collector):
                     continue
                 import_organization(row, collector)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing organizations.csv file.')
             raise
 

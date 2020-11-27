@@ -22,7 +22,7 @@ def import_phones_file(root_folder):
                 if not row:
                     continue
                 import_phone(row)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
             LOGGER.error('Missing phones.csv file.')
             raise
 
