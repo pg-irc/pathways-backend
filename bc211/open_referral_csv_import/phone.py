@@ -5,11 +5,12 @@ from bc211.open_referral_csv_import.headers_match_expected_format import headers
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from bc211.open_referral_csv_import import parser
+from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 
 LOGGER = logging.getLogger(__name__)
 
 
-def import_phones_file(root_folder):
+def import_phones_file(root_folder, collector):
     filename = 'phones.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -21,7 +22,7 @@ def import_phones_file(root_folder):
             for row in reader:
                 if not row:
                     continue
-                import_phone(row)
+                import_phone(row, collector)
     except FileNotFoundError:
             LOGGER.error('Missing phones.csv file.')
             raise
@@ -31,11 +32,14 @@ expected_headers = ['id', 'location_id', 'service_id', 'organization_id', 'conta
                   'number', 'extension', 'type', 'language', 'description', 'department']
 
 
-def import_phone(row):
-    phone_number_type_active_record = build_phone_number_type_active_record(row)
-    phone_number_type_active_record.save()
-    phone_at_location_active_record = build_phone_at_location_active_record(row)
-    phone_at_location_active_record.save()
+def import_phone(row, collector):
+    try:
+        phone_number_type_active_record = build_phone_number_type_active_record(row)
+        phone_number_type_active_record.save()
+        phone_at_location_active_record = build_phone_at_location_active_record(row, collector)
+        phone_at_location_active_record.save()
+    except Exception:
+        pass
 
 
 def build_phone_number_type_active_record(row):
@@ -44,9 +48,12 @@ def build_phone_number_type_active_record(row):
     return active_record
 
 
-def build_phone_at_location_active_record(row):
+def build_phone_at_location_active_record(row, collector):
+    location_id = parser.parse_location_id(row[1])
+    if has_inactive_location_id(location_id, collector):
+        return
     active_record = PhoneAtLocation()
-    active_record.location_id = parser.parse_location_id(row[1])
+    active_record.location_id = location_id
     active_record.phone_number = parser.parse_phone_number(row[6])
     phone_type = parser.parse_required_type(row[8])
     active_record.phone_number_type = PhoneNumberType.objects.get(pk=phone_type)
