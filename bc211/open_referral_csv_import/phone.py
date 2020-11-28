@@ -38,7 +38,8 @@ def import_phone(row, collector):
         phone_number_type_active_record.save()
         phone_at_location_active_record = build_phone_at_location_active_record(row, collector)
         phone_at_location_active_record.save()
-    except Exception:
+    except Exception as error:
+        LOGGER.warn('{}'.format(error.__str__()))
         pass
 
 
