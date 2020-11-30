@@ -7,6 +7,7 @@ from bc211.open_referral_csv_import import parser
 from human_services.services.models import Service
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_service_id
 from taxonomies.models import TaxonomyTerm
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,8 +40,11 @@ def import_service_taxonomy(row):
         taxonomy_id = parser.parse_taxonomy_id(row[2])
         active_record = build_service_taxonomy_active_record(service_id, taxonomy_id)
         active_record.save()
-    except Exception:
-        pass
+    except ObjectDoesNotExist as error:
+        LOGGER.warn('{}'.format(error.__str__()))
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
+        
 
 
 def build_service_taxonomy_active_record(service_id, taxonomy_id):

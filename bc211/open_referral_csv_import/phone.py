@@ -6,6 +6,8 @@ from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportExcept
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
+from bc211.open_referral_csv_import.exceptions import CsvParseException
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,9 +40,12 @@ def import_phone(row, collector):
         phone_number_type_active_record.save()
         phone_at_location_active_record = build_phone_at_location_active_record(row, collector)
         phone_at_location_active_record.save()
-    except Exception as error:
-        LOGGER.warn('{}'.format(error.__str__()))
+    except CsvParseException:
         pass
+    except ObjectDoesNotExist as error:
+        LOGGER.warn('{}'.format(error.__str__()))
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
 
 
 def build_phone_number_type_active_record(row):

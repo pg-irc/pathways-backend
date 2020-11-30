@@ -5,6 +5,7 @@ from bc211.open_referral_csv_import.headers_match_expected_format import headers
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import import parser
 from taxonomies.models import TaxonomyTerm
+from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,8 +32,11 @@ expected_headers = ['id', 'name', 'parent_id', 'parent_name', 'vocabulary']
 
 
 def import_taxonomy(row):
-    active_record = build_taxonomy_active_record(row)
-    active_record.save()
+    try:
+        active_record = build_taxonomy_active_record(row)
+        active_record.save()
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
 
 
 def build_taxonomy_active_record(row):
