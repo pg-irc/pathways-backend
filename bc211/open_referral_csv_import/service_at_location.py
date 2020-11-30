@@ -40,8 +40,8 @@ def service_at_location_has_invalid_data(row, collector):
 
 
 def import_service_at_location(row):
-    active_record = build_service_at_location_active_record(row)
     try:
+        active_record = build_service_at_location_active_record(row)
         active_record.save()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))

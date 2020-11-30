@@ -7,7 +7,8 @@ from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
-from django.core.exceptions import ObjectDoesNotExist
+from bc211.open_referral_csv_import.exceptions import CsvParseException
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +41,12 @@ def import_address_and_location_address(row, collector):
         address_active_record.save()
         location_address_active_record = build_location_address_active_record(address_active_record, row, collector)
         location_address_active_record.save()
-    except Exception:
+    except CsvParseException:
+        pass
+    except ObjectDoesNotExist:
+        pass
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
         pass
 
 
