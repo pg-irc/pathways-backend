@@ -32,12 +32,16 @@ expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
 
 
 def import_service_taxonomy(row):
-    service_id = parser.parse_service_id(row[1])
-    taxonomy_id = parser.parse_taxonomy_id(row[2])
-    save_service_taxonomy_term(service_id, taxonomy_id)
+    try:
+        service_id = parser.parse_service_id(row[1])
+        taxonomy_id = parser.parse_taxonomy_id(row[2])
+        active_record = build_service_taxonomy_active_record(service_id, taxonomy_id)
+        active_record.save()
+    except Exception:
+        pass
 
 
-def save_service_taxonomy_term(service_id, taxonomy_id):
+def build_service_taxonomy_active_record(service_id, taxonomy_id):
     service_active_record = Service.objects.get(id=service_id)
     taxonomy_term = TaxonomyTerm.objects.get(taxonomy_id=taxonomy_id)
     service_active_record.taxonomy_terms.add(taxonomy_term)
