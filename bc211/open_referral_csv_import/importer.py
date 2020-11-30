@@ -20,4 +20,4 @@ def import_open_referral_files(root_folder):
     import_addresses_file(root_folder, collector)
     import_phones_file(root_folder, collector)
     import_taxonomy_file(root_folder)
-    import_services_taxonomy_file(root_folder)
+    import_services_taxonomy_file(root_folder, collector)
