@@ -144,34 +144,34 @@ class LocationImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_id(the_id).build()
-        import_location(location_data)
+        import_location(location_data, ImportCounters())
         locations = Location.objects.all()
         self.assertEqual(locations[0].id, the_id)
     
     def test_can_import_organization_id(self):
         location_data = OpenReferralCsvLocationBuilder(self.organization).build()
-        import_location(location_data)
+        import_location(location_data, ImportCounters())
         locations = Location.objects.all()
         self.assertEqual(locations[0].organization_id, self.organization_id)
     
     def test_can_import_name(self):
         the_name = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_name(the_name).build()
-        import_location(location_data)
+        import_location(location_data, ImportCounters())
         locations = Location.objects.all()
         self.assertEqual(locations[0].name, the_name)
 
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_alternate_name(the_alternate_name).build()
-        import_location(location_data)
+        import_location(location_data, ImportCounters())
         locations = Location.objects.all()
         self.assertEqual(locations[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_description(the_description).build()
-        import_location(location_data)
+        import_location(location_data, ImportCounters())
         locations = Location.objects.all()
         self.assertEqual(locations[0].description, the_description)
     
@@ -179,7 +179,7 @@ class LocationImporterTests(TestCase):
         the_latitude = a_latitude_as_a_string()
         the_longitude = a_longitude_as_a_string()
         location_data = OpenReferralCsvLocationBuilder(self.organization).with_latitude(the_latitude).with_longitude(the_longitude).build()
-        import_location(location_data)
+        import_location(location_data, ImportCounters())
         locations = Location.objects.all()
         self.assertEqual(locations[0].point.x, float(the_longitude))
         self.assertEqual(locations[0].point.y, float(the_latitude))
