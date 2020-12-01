@@ -349,14 +349,14 @@ class TaxonomyImporterTests(TestCase):
     def test_can_import_taxonomy_id(self):
         the_taxonomy_id = a_string()
         taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_taxonomy_id(the_taxonomy_id).build()
-        import_taxonomy(taxonomy_data)
+        import_taxonomy(taxonomy_data, ImportCounters())
         taxonomy_terms = TaxonomyTerm.objects.all()
         self.assertEqual(taxonomy_terms[0].taxonomy_id, the_taxonomy_id)
     
     def test_can_import_name(self):
         the_name = a_string()
         taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_name(the_name).build()
-        import_taxonomy(taxonomy_data)
+        import_taxonomy(taxonomy_data, ImportCounters())
         taxonomy_terms = TaxonomyTerm.objects.all()
         self.assertEqual(taxonomy_terms[0].name, the_name)
 
