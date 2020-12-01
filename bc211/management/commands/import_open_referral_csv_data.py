@@ -22,3 +22,17 @@ class Command(BaseCommand):
         collector = InactiveRecordsCollector()
         counters = ImportCounters()
         import_open_referral_files(root_folder, collector, counters)
+        self.print_status_message(counters)
+
+    def print_status_message(self, counters):
+        message = f'{counters.organizations_created} organizations created. '
+        message += f'{counters.locations_created} locations created. '
+        message += f'{counters.services_created} services created. '
+        message += f'{counters.service_at_location_count} services_at_location created. '
+        message += f'{counters.taxonomy_term_count} taxonomy terms created. '
+        message += f'{counters.address_count} addresses created. '
+        message += f'{counters.location_address_count} location addresses created. '
+        message += f'{counters.phone_at_location_count} phone numbers created '
+        message += f'and {counters.phone_number_types_count} phone number types created. '
+
+        self.stdout.write(self.style.SUCCESS(message))
