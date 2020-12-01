@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_taxonomy_file(root_folder):
+def import_taxonomy_file(root_folder, counters):
     filename = 'taxonomy.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -22,7 +22,7 @@ def import_taxonomy_file(root_folder):
             for row in reader:
                 if not row:
                     continue
-                import_taxonomy(row)
+                import_taxonomy(row, counters)
     except FileNotFoundError:
             LOGGER.error('Missing taxonomy.csv file.')
             raise
@@ -31,10 +31,11 @@ def import_taxonomy_file(root_folder):
 expected_headers = ['id', 'name', 'parent_id', 'parent_name', 'vocabulary']
 
 
-def import_taxonomy(row):
+def import_taxonomy(row, counters):
     try:
         active_record = build_taxonomy_active_record(row)
         active_record.save()
+        counters.count_taxonomy_term()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
