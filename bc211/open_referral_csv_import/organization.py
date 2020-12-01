@@ -24,14 +24,14 @@ def read_file(path, collector, counters):
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
             raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-        read_row(reader, collector, counters)
+        read_and_import_rows(reader, collector, counters)
 
 
 expected_headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
                 'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
 
 
-def read_row(reader, collector, counters):
+def read_and_import_rows(reader, collector, counters):
     for row in reader:
         if not row or organization_has_inactive_data(row, collector):
             continue
