@@ -16,6 +16,6 @@ def import_open_referral_files(root_folder, collector, counters):
     import_locations_file(root_folder, collector, counters)
     import_services_at_location_file(root_folder, collector)
     import_addresses_file(root_folder, collector, counters)
-    import_phones_file(root_folder, collector)
+    import_phones_file(root_folder, collector, counters)
     import_taxonomy_file(root_folder)
     import_services_taxonomy_file(root_folder, collector)
