@@ -15,20 +15,29 @@ LOGGER = logging.getLogger(__name__)
 def import_services_file(root_folder, collector, counters):
     filename = 'services.csv'
     path = os.path.join(root_folder, filename)
+    read_file(path, collector, counters)
+    
+
+def read_file(path, collector, counters):
     with open(path, 'r') as file: 
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
             raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-        for row in reader:
-            if not row or service_has_inactive_data(row, collector):
-                continue
-            import_service(row, collector, counters)
+        read_and_import_rows(reader, collector, counters)
+        
 
 
 expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description',
                 'url', 'email', 'status', 'interpretation_services', 'application_process',
                 'wait_time', 'fees', 'accreditations', 'licenses', 'taxonomy_ids', 'last_verified_on-x']
+
+
+def read_and_import_rows(reader, collector, counters):
+    for row in reader:
+        if not row or service_has_inactive_data(row, collector):
+            continue
+        import_service(row, collector, counters)
 
 
 def service_has_inactive_data(row, collector):
