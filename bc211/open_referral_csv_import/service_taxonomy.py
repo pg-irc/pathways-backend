@@ -40,15 +40,30 @@ def import_service_taxonomy(row):
         taxonomy_id = parser.parse_taxonomy_id(row[2])
         active_record = build_service_taxonomy_active_record(service_id, taxonomy_id)
         active_record.save()
-    except ObjectDoesNotExist as error:
-        LOGGER.warn('{}'.format(error.__str__()))
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
+    except ObjectDoesNotExist as error:
+        pass
         
-
-
+        
 def build_service_taxonomy_active_record(service_id, taxonomy_id):
-    service_active_record = Service.objects.get(id=service_id)
-    taxonomy_term = TaxonomyTerm.objects.get(taxonomy_id=taxonomy_id)
+    service_active_record = get_service_active_record_or_raise(service_id)
+    taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
     service_active_record.taxonomy_terms.add(taxonomy_term)
     return service_active_record
+
+
+def get_service_active_record_or_raise(service_id):
+    try:
+        return Service.objects.get(pk=service_id)
+    except ObjectDoesNotExist as error:
+        LOGGER.warn('Service record with id "{}" does not exist. {}'.format(service_id, error))
+        raise
+
+
+def get_taxonomy_term_active_record_or_raise(taxonomy_id):
+    try:
+        return TaxonomyTerm.objects.get(taxonomy_id=taxonomy_id)
+    except ObjectDoesNotExist as error:
+        LOGGER.warn('Taxonomy record with id "{}" does not exist. {}'.format(service_id, error))
+        raise
