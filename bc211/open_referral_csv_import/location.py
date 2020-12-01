@@ -60,19 +60,26 @@ def import_location(row, counters):
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
+
 def build_location_active_record(row):
+    location_id = parser.parse_location_id(row[0])
     active_record = Location()
-    active_record.id = parser.parse_location_id(row[0])
+    active_record.id = location_id
     active_record.organization_id = parser.parse_organization_id(row[1])
     active_record.name = parser.parse_name(row[2])
     active_record.alternate_name = parser.parse_alternate_name(row[3])
     active_record.description = parser.parse_description(row[4])
     latitude = parser.parse_coordinate_if_defined(row[6])
     longitude = parser.parse_coordinate_if_defined(row[7])
-    if not has_coordinates(latitude, longitude):
-        LOGGER.warning('Location with id "%s" does not have LatLong defined', active_record.id)
-    active_record.point = Point(longitude, latitude)
+    active_record.point = set_coordinates_or_none(location_id, latitude, longitude)
     return active_record
+
+
+def set_coordinates_or_none(location_id, latitude, longitude):
+    if not has_coordinates(latitude, longitude):
+        LOGGER.warning('Location with id "%s" does not have LatLong defined', location_id)
+        return None
+    return Point(longitude, latitude)
 
 
 def has_coordinates(latitude, longitude):
