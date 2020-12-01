@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_services_file(root_folder, collector):
+def import_services_file(root_folder, collector, counters):
     filename = 'services.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -24,7 +24,7 @@ def import_services_file(root_folder, collector):
             for row in reader:
                 if not row or service_has_inactive_data(row, collector):
                     continue
-                import_service(row, collector)
+                import_service(row, collector, counters)
     except FileNotFoundError:
             LOGGER.error('Missing services.csv file.')
             raise
@@ -48,10 +48,11 @@ def service_has_inactive_data(row, collector):
     return False
 
 
-def import_service(row, collector):
+def import_service(row, collector, counters):
     try:
         active_record = build_service_active_record(row)
         active_record.save()
+        counters.count_service()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
