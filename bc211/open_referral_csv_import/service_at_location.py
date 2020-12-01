@@ -11,21 +11,29 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_services_at_location_file(root_folder, collector, counter):
+def import_services_at_location_file(root_folder, collector, counters):
     filename = 'services_at_location.csv'
     path = os.path.join(root_folder, filename)
+    read_file(path, collector, counters)
+
+
+def read_file(path, collector, counters):
     with open(path, 'r') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
             raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-        for row in reader:
-            if not row or service_at_location_has_invalid_data(row, collector):
-                continue
-            import_service_at_location(row)
+        read_and_import_rows(reader, collector, counters)
 
 
 expected_headers = ['id', 'service_id', 'location_id', 'description']
+
+
+def read_and_import_rows(reader, collector, counters):
+    for row in reader:
+        if not row or service_at_location_has_invalid_data(row, collector):
+            continue
+        import_service_at_location(row, counters)
 
 
 def service_at_location_has_invalid_data(row, collector):
@@ -35,11 +43,11 @@ def service_at_location_has_invalid_data(row, collector):
             has_inactive_location_id(location_id, collector))
 
 
-def import_service_at_location(row, counter):
+def import_service_at_location(row, counters):
     try:
         active_record = build_service_at_location_active_record(row)
         active_record.save()
-        counter.count_service_at_location()
+        counters.count_service_at_location()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
