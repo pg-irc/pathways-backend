@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_locations_file(root_folder, collector):
+def import_locations_file(root_folder, collector, counters):
     filename = 'location.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -25,7 +25,7 @@ def import_locations_file(root_folder, collector):
             for row in reader:
                 if not row or location_has_inactive_data(row, collector):
                     continue
-                import_location(row)
+                import_location(row, counters)
     except FileNotFoundError:
             LOGGER.error('Missing location.csv file.')
             raise
@@ -48,10 +48,11 @@ def location_has_inactive_data(row, collector):
     return False
 
 
-def import_location(row):
+def import_location(row, counters):
     try:
         active_record = build_location_active_record(row)
         active_record.save()
+        counters.count_locations_created()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
