@@ -215,35 +215,35 @@ class OpenReferralAddressImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_id(the_id).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].id, the_id)
 
     def test_can_import_city(self):
         the_city = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].city, the_city)
 
     def test_can_import_country(self):
         the_country = a_string(2, string.ascii_uppercase)
         address_data = OpenReferralCsvAddressBuilder(self.location).with_country(the_country).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].country, the_country)
     
     def test_can_import_attention(self):
         the_attention = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_attention(the_attention).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].attention, the_attention)
     
     def test_can_import_address(self):
         the_address_1 = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_1(the_address_1).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].address, the_address_1)
 
@@ -254,21 +254,21 @@ class OpenReferralAddressImporterTests(TestCase):
                         .with_address_1(the_address_1)
                         .with_address_2(the_address_2)
                         .build())
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].address, f'{the_address_1}\n{the_address_2}')
     
     def test_can_import_state_province(self):
         the_state_province = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_state_province(the_state_province).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].state_province, the_state_province)
 
     def test_can_import_postal_code(self):
         the_postal_code = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_postal_code(the_postal_code).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].postal_code, the_postal_code)
 
@@ -283,21 +283,21 @@ class LocationAddressImporterTests(TestCase):
     
     def test_can_import_address_id(self):
         address_data = OpenReferralCsvAddressBuilder(self.location).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         location_addresses = LocationAddress.objects.all()
         addresses = Address.objects.all()
         self.assertEqual(location_addresses[0].address_id, addresses[0].id)
 
     def test_can_import_location_id(self):
         address_data = OpenReferralCsvAddressBuilder(self.location).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         location_addresses = LocationAddress.objects.all()
         self.assertEqual(location_addresses[0].location_id, self.location_id)
     
     def test_can_import_address_type(self):
         the_address_type = 'postal_address'
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_address_type).build()
-        import_address_and_location_address(address_data, InactiveRecordsCollector())
+        import_address_and_location_address(address_data, InactiveRecordsCollector(), ImportCounters())
         location_addresses = LocationAddress.objects.all()
         the_address_type_instance = AddressType.objects.get(pk=the_address_type)
         self.assertEqual(location_addresses[0].address_type, the_address_type_instance)

@@ -13,7 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_addresses_file(root_folder, collector):
+def import_addresses_file(root_folder, collector, counters):
     filename = 'addresses.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -25,7 +25,7 @@ def import_addresses_file(root_folder, collector):
             for row in reader:
                 if not row:
                     continue
-                import_address_and_location_address(row, collector)
+                import_address_and_location_address(row, collector, counters)
     except FileNotFoundError:
             LOGGER.error('Missing addresses.csv file.')
             raise
@@ -35,10 +35,11 @@ expected_headers = ['id', 'type', 'location_id', 'attention', 'address_1', 'addr
                 'address_4', 'city', 'region', 'state_province', 'postal_code', 'country']
 
 
-def import_address_and_location_address(row, collector):
+def import_address_and_location_address(row, collector, counters):
     try:
         address_active_record = build_address_active_record(row)
         address_active_record.save()
+        counters.count_address()
         location_address_active_record = build_location_address_active_record(address_active_record, row, collector)
         location_address_active_record.save()
     except ValidationError as error:
