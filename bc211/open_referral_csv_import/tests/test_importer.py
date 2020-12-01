@@ -371,32 +371,32 @@ class TaxonomyImporterTests(TestCase):
 class ServiceTaxonomyImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().create()
-        self.taxonomy_id_passed_to_taxonomy_term_builder = a_string()
-        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(self.taxonomy_id_passed_to_taxonomy_term_builder).create()
-        self.service_id_passed_to_service_builder = a_string()
-        ServiceBuilder(organization).with_id(self.service_id_passed_to_service_builder).create()
+        self.taxonomy_id = a_string()
+        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(self.taxonomy_id).create()
+        self.service_id = a_string()
+        ServiceBuilder(organization).with_id(self.service_id).create()
 
     def test_can_import_taxonomy_term_into_service_record(self):
-        service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id_passed_to_service_builder)
-                            .with_taxonomy_id(self.taxonomy_id_passed_to_taxonomy_term_builder).build())
+        service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id)
+                            .with_taxonomy_id(self.taxonomy_id).build())
         import_service_taxonomy(service_taxonomy_data)
-        service_instance = Service.objects.get(pk=self.service_id_passed_to_service_builder)
-        service_instance_taxonomy_terms = service_instance.taxonomy_terms.all()
-        self.assertEqual(service_instance_taxonomy_terms[0], self.taxonomy_term)
+        service_active_record = Service.objects.get(pk=self.service_id)
+        service_active_record_taxonomy_terms = service_active_record.taxonomy_terms.all()
+        self.assertEqual(service_active_record_taxonomy_terms[0], self.taxonomy_term)
 
     def test_can_import_multiple_taxonomy_terms_into_service_record(self):
         second_taxonomy_id = a_string()
         second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(second_taxonomy_id).create()
 
-        first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id_passed_to_service_builder)
-                                    .with_taxonomy_id(self.taxonomy_id_passed_to_taxonomy_term_builder).build())
+        first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id)
+                                    .with_taxonomy_id(self.taxonomy_id).build())
         second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder()
-                                    .with_service_id(self.service_id_passed_to_service_builder).with_taxonomy_id(second_taxonomy_id).build())
+                                    .with_service_id(self.service_id).with_taxonomy_id(second_taxonomy_id).build())
         
         import_service_taxonomy(first_service_taxonomy_data)
         import_service_taxonomy(second_service_taxonomy_data)
 
-        service_instance = Service.objects.get(pk=self.service_id_passed_to_service_builder)
-        service_instance_taxonomy_terms = service_instance.taxonomy_terms.all()
-        self.assertEqual(service_instance_taxonomy_terms[0], self.taxonomy_term)
-        self.assertEqual(service_instance_taxonomy_terms[1], second_taxonomy_term)
+        service_active_record = Service.objects.get(pk=self.service_id)
+        service_active_record_taxonomy_terms = service_active_record.taxonomy_terms.all()
+        self.assertEqual(service_active_record_taxonomy_terms[0], self.taxonomy_term)
+        self.assertEqual(service_active_record_taxonomy_terms[1], second_taxonomy_term)
