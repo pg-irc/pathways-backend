@@ -41,12 +41,11 @@ def import_address_and_location_address(row, collector):
         address_active_record.save()
         location_address_active_record = build_location_address_active_record(address_active_record, row, collector)
         location_address_active_record.save()
+    except ValidationError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
     except CsvParseException:
         pass
     except ObjectDoesNotExist:
-        pass
-    except ValidationError as error:
-        LOGGER.warn('{}'.format(error.__str__()))
         pass
 
 
@@ -68,12 +67,12 @@ def build_location_address_active_record(address_active_record, row, collector):
     location_id = parser.parse_location_id(row[2])
     if has_inactive_location_id(location_id, collector):
         return
-    location_active_record = get_active_record_or_none(location_id, Location)
-    address_type_active_record = get_active_record_or_none(address_type, AddressType)
+    location_active_record = get_active_record_or_raise(location_id, Location)
+    address_type_active_record = get_active_record_or_raise(address_type, AddressType)
     return LocationAddress(address=address_active_record, location=location_active_record, address_type=address_type_active_record)
 
 
-def get_active_record_or_none(active_record_id, model):
+def get_active_record_or_raise(active_record_id, model):
     try:
         return model.objects.get(pk=active_record_id)
     except ObjectDoesNotExist as error:
