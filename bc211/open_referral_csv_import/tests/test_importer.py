@@ -195,13 +195,13 @@ class ServiceAtLocationImporterTests(TestCase):
     
     def test_can_import_service_id(self):
         service_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
-        import_service_at_location(service_data)
+        import_service_at_location(service_data, ImportCounters())
         services_at_location = ServiceAtLocation.objects.all()
         self.assertEqual(services_at_location[0].service_id, self.service_id)
     
     def test_can_import_location_id(self):
         service_data = OpenReferralCsvServiceAtLocationBuilder(self.service, self.location).build()
-        import_service_at_location(service_data)
+        import_service_at_location(service_data, ImportCounters())
         services_at_location = ServiceAtLocation.objects.all()
         self.assertEqual(services_at_location[0].location_id, self.location_id)
 

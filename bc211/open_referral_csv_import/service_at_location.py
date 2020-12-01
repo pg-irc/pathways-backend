@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_services_at_location_file(root_folder, collector):
+def import_services_at_location_file(root_folder, collector, counter):
     filename = 'services_at_location.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -39,10 +39,11 @@ def service_at_location_has_invalid_data(row, collector):
             has_inactive_location_id(location_id, collector))
 
 
-def import_service_at_location(row):
+def import_service_at_location(row, counter):
     try:
         active_record = build_service_at_location_active_record(row)
         active_record.save()
+        counter.count_service_at_location()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
