@@ -14,7 +14,7 @@ from django.db import IntegrityError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_phones_file(root_folder, collector):
+def import_phones_file(root_folder, collector, counters):
     filename = 'phones.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -26,7 +26,7 @@ def import_phones_file(root_folder, collector):
             for row in reader:
                 if not row:
                     continue
-                import_phone(row, collector)
+                import_phone(row, collector, counters)
     except FileNotFoundError:
             LOGGER.error('Missing phones.csv file.')
             raise
@@ -36,15 +36,17 @@ expected_headers = ['id', 'location_id', 'service_id', 'organization_id', 'conta
                   'number', 'extension', 'type', 'language', 'description', 'department']
 
 
-def import_phone(row, collector):
+def import_phone(row, collector, counters):
     try:
         location_id = parser.parse_location_id(row[1])
         phone_number_type_active_record = build_phone_number_type_active_record(row)
         phone_number_type_active_record.save()
+        counters.count_phone_number_types()
         if has_inactive_location_id(location_id, collector):
             return
         phone_at_location_active_record = build_phone_at_location_active_record(row)
         phone_at_location_active_record.save()
+        counters.count_phone_at_location()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
     except IntegrityError as error:

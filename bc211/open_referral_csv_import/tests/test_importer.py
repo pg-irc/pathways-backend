@@ -312,7 +312,7 @@ class PhoneNumberTypeImporterTests(TestCase):
     def test_can_import_phone_number_type(self):
         the_phone_type = a_string()
         phone_data = OpenReferralCsvPhoneBuilder(self.location).with_phone_type(the_phone_type).build()
-        import_phone(phone_data, InactiveRecordsCollector())
+        import_phone(phone_data, InactiveRecordsCollector(), ImportCounters())
         phone_number_types = PhoneNumberType.objects.all()
         self.assertEqual(phone_number_types[0].id, the_phone_type)
 
@@ -325,14 +325,14 @@ class OpenReferralPhoneAtLocationImporterTests(TestCase):
 
     def test_can_import_location_id(self):
         phone_data = OpenReferralCsvPhoneBuilder(self.location).build()
-        import_phone(phone_data, InactiveRecordsCollector())
+        import_phone(phone_data, InactiveRecordsCollector(), ImportCounters())
         phones_at_location = PhoneAtLocation.objects.all()
         self.assertEqual(phones_at_location[0].location_id, self.location_id)
 
     def test_can_import_phone_number_type(self):
         the_phone_type = a_string()
         phone_data = OpenReferralCsvPhoneBuilder(self.location).with_phone_type(the_phone_type).build()
-        import_phone(phone_data, InactiveRecordsCollector())
+        import_phone(phone_data, InactiveRecordsCollector(), ImportCounters())
         phones_at_location = PhoneAtLocation.objects.all()
         the_phone_number_type_instance = PhoneNumberType.objects.get(pk=the_phone_type)
         self.assertEqual(phones_at_location[0].phone_number_type, the_phone_number_type_instance)
@@ -340,7 +340,7 @@ class OpenReferralPhoneAtLocationImporterTests(TestCase):
     def test_can_import_phone_number(self):
         the_phone_number = a_phone_number()
         phone_data = OpenReferralCsvPhoneBuilder(self.location).with_number(the_phone_number).build()
-        import_phone(phone_data, InactiveRecordsCollector())
+        import_phone(phone_data, InactiveRecordsCollector(), ImportCounters())
         phones_at_location = PhoneAtLocation.objects.all()
         self.assertEqual(phones_at_location[0].phone_number, the_phone_number)
 
