@@ -15,19 +15,27 @@ LOGGER = logging.getLogger(__name__)
 def import_services_taxonomy_file(root_folder, collector):
     filename = 'services_taxonomy.csv'
     path = os.path.join(root_folder, filename)
+    read_file(path, collector)
+    
+
+def read_file(path, collector):
     with open(path, 'r') as file: 
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
             raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-        for row in reader:
-            service_id = parser.parse_service_id(row[1])
-            if not row or has_inactive_service_id(service_id, collector):
-                continue
-            import_service_taxonomy(row)
+        read_and_import_rows(reader, collector)
 
 
 expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
+
+
+def read_and_import_rows(reader, collector):
+    for row in reader:
+        service_id = parser.parse_service_id(row[1])
+        if not row or has_inactive_service_id(service_id, collector):
+            continue
+        import_service_taxonomy(row)
 
 
 def import_service_taxonomy(row):
