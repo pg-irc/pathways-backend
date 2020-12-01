@@ -31,48 +31,45 @@ from datetime import date
 
 
 class OrganizationImporterTests(TestCase):
-    def setUp(self):
-        self.collector = InactiveRecordsCollector()
-
     def test_can_import_id(self):
         the_id = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
-        import_organization(organization_data, self.collector)
+        import_organization(organization_data, InactiveRecordsCollector())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].id, the_id)
     
     def test_can_import_name(self):
         the_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
-        import_organization(organization_data, self.collector)
+        import_organization(organization_data, InactiveRecordsCollector())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].name, the_name)
 
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_alternate_name(the_alternate_name).build()
-        import_organization(organization_data, self.collector)
+        import_organization(organization_data, InactiveRecordsCollector())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_description(the_description).build()
-        import_organization(organization_data, self.collector)
+        import_organization(organization_data, InactiveRecordsCollector())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].description, the_description)
 
     def test_can_import_email(self):
         the_email = an_email_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
-        import_organization(organization_data, self.collector)
+        import_organization(organization_data, InactiveRecordsCollector())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].email, the_email)
 
     def test_can_import_website(self):
         the_website = a_website_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
-        import_organization(organization_data, self.collector)
+        import_organization(organization_data, InactiveRecordsCollector())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].website, the_website)
 
@@ -81,60 +78,59 @@ class ServiceImporterTests(TestCase):
     def setUp(self):
         self.organization_id = a_string()
         self.organization = OrganizationBuilder().with_id(self.organization_id).create()
-        self.collector = InactiveRecordsCollector()
     
     def test_can_import_id(self): 
         the_id = a_string()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_id(the_id).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].id, the_id)
 
     def test_can_import_organization_id(self):
         service_data = OpenReferralCsvServiceBuilder(self.organization).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].organization_id, self.organization_id)
     
     def test_can_import_name(self):
         the_name = a_string()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_name(the_name).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].name, the_name)
     
     def test_can_import_alternate_name(self):
         the_alternate_name = a_string()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_alternate_name(the_alternate_name).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].alternate_name, the_alternate_name)
 
     def test_can_import_description(self):
         the_description = a_string()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_description(the_description).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].description, the_description)
     
     def test_can_import_website(self):
         the_website = a_website_address()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_url(the_website).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].website, the_website)
 
     def test_can_import_email(self):
         the_email = an_email_address()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_email(the_email).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(services[0].email, the_email)
     
     def test_can_import_last_verified_date(self):
         the_date = '2020-01-25'
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_last_verified_on(the_date).build()
-        import_service(service_data, self.collector)
+        import_service(service_data, InactiveRecordsCollector())
         services = Service.objects.all()
         self.assertEqual(date.strftime(services[0].last_verified_date, "%Y-%m-%d"), the_date)
 
@@ -211,7 +207,6 @@ class ServiceAtLocationImporterTests(TestCase):
 
 class OpenReferralAddressImporterTests(TestCase):
     def setUp(self):
-        self.collector = InactiveRecordsCollector()
         organization = OrganizationBuilder().create()
         self.location_id = a_string()
         self.location = LocationBuilder(organization).with_id(self.location_id).create()
@@ -219,35 +214,35 @@ class OpenReferralAddressImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_id(the_id).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].id, the_id)
 
     def test_can_import_city(self):
         the_city = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_city(the_city).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].city, the_city)
 
     def test_can_import_country(self):
         the_country = a_string(2, string.ascii_uppercase)
         address_data = OpenReferralCsvAddressBuilder(self.location).with_country(the_country).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].country, the_country)
     
     def test_can_import_attention(self):
         the_attention = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_attention(the_attention).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].attention, the_attention)
     
     def test_can_import_address(self):
         the_address_1 = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_1(the_address_1).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].address, the_address_1)
 
@@ -258,28 +253,27 @@ class OpenReferralAddressImporterTests(TestCase):
                         .with_address_1(the_address_1)
                         .with_address_2(the_address_2)
                         .build())
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].address, f'{the_address_1}\n{the_address_2}')
     
     def test_can_import_state_province(self):
         the_state_province = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_state_province(the_state_province).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].state_province, the_state_province)
 
     def test_can_import_postal_code(self):
         the_postal_code = a_string()
         address_data = OpenReferralCsvAddressBuilder(self.location).with_postal_code(the_postal_code).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         addresses = Address.objects.all()
         self.assertEqual(addresses[0].postal_code, the_postal_code)
 
 
 class LocationAddressImporterTests(TestCase):
     def setUp(self):
-        self.collector = InactiveRecordsCollector()
         organization = OrganizationBuilder().build()
         organization.save()
         self.location_id = a_string()
@@ -288,21 +282,21 @@ class LocationAddressImporterTests(TestCase):
     
     def test_can_import_address_id(self):
         address_data = OpenReferralCsvAddressBuilder(self.location).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         location_addresses = LocationAddress.objects.all()
         addresses = Address.objects.all()
         self.assertEqual(location_addresses[0].address_id, addresses[0].id)
 
     def test_can_import_location_id(self):
         address_data = OpenReferralCsvAddressBuilder(self.location).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         location_addresses = LocationAddress.objects.all()
         self.assertEqual(location_addresses[0].location_id, self.location_id)
     
     def test_can_import_address_type(self):
         the_address_type = 'postal_address'
         address_data = OpenReferralCsvAddressBuilder(self.location).with_address_type(the_address_type).build()
-        import_address_and_location_address(address_data, self.collector)
+        import_address_and_location_address(address_data, InactiveRecordsCollector())
         location_addresses = LocationAddress.objects.all()
         the_address_type_instance = AddressType.objects.get(pk=the_address_type)
         self.assertEqual(location_addresses[0].address_type, the_address_type_instance)
@@ -311,14 +305,13 @@ class LocationAddressImporterTests(TestCase):
 class PhoneNumberTypeImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().create()
-        self.collector = InactiveRecordsCollector()
         self.location_id = a_string()
         self.location = LocationBuilder(organization).with_id(self.location_id).create()
 
     def test_can_import_phone_number_type(self):
         the_phone_type = a_string()
         phone_data = OpenReferralCsvPhoneBuilder(self.location).with_phone_type(the_phone_type).build()
-        import_phone(phone_data, self.collector)
+        import_phone(phone_data, InactiveRecordsCollector())
         phone_number_types = PhoneNumberType.objects.all()
         self.assertEqual(phone_number_types[0].id, the_phone_type)
 
@@ -326,20 +319,19 @@ class PhoneNumberTypeImporterTests(TestCase):
 class OpenReferralPhoneAtLocationImporterTests(TestCase):
     def setUp(self):
         organization = OrganizationBuilder().create()
-        self.collector = InactiveRecordsCollector()
         self.location_id = a_string()
         self.location = LocationBuilder(organization).with_id(self.location_id).create()
 
     def test_can_import_location_id(self):
         phone_data = OpenReferralCsvPhoneBuilder(self.location).build()
-        import_phone(phone_data, self.collector)
+        import_phone(phone_data, InactiveRecordsCollector())
         phones_at_location = PhoneAtLocation.objects.all()
         self.assertEqual(phones_at_location[0].location_id, self.location_id)
 
     def test_can_import_phone_number_type(self):
         the_phone_type = a_string()
         phone_data = OpenReferralCsvPhoneBuilder(self.location).with_phone_type(the_phone_type).build()
-        import_phone(phone_data, self.collector)
+        import_phone(phone_data, InactiveRecordsCollector())
         phones_at_location = PhoneAtLocation.objects.all()
         the_phone_number_type_instance = PhoneNumberType.objects.get(pk=the_phone_type)
         self.assertEqual(phones_at_location[0].phone_number_type, the_phone_number_type_instance)
@@ -347,7 +339,7 @@ class OpenReferralPhoneAtLocationImporterTests(TestCase):
     def test_can_import_phone_number(self):
         the_phone_number = a_phone_number()
         phone_data = OpenReferralCsvPhoneBuilder(self.location).with_number(the_phone_number).build()
-        import_phone(phone_data, self.collector)
+        import_phone(phone_data, InactiveRecordsCollector())
         phones_at_location = PhoneAtLocation.objects.all()
         self.assertEqual(phones_at_location[0].phone_number, the_phone_number)
 
