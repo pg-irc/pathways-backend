@@ -3,6 +3,7 @@ class ImportCounters:
         self.organizations_created = 0
         self.locations_created = 0
         self.services_created = 0
+        self.service_at_location_count = 0
         self.taxonomy_term_count = 0
         self.address_count = 0
         self.phone_number_types_count = 0
@@ -16,6 +17,9 @@ class ImportCounters:
 
     def count_service(self):
         self.services_created += 1
+
+    def count_service_at_location(self):
+        self.service_at_location_count += 1
 
     def count_taxonomy_term(self):
         self.taxonomy_term_count += 1
