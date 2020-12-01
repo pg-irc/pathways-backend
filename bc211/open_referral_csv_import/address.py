@@ -42,6 +42,7 @@ def import_address_and_location_address(row, collector, counters):
         counters.count_address()
         location_address_active_record = build_location_address_active_record(address_active_record, row, collector)
         location_address_active_record.save()
+        counters.count_location_address()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
     except CsvParseException:

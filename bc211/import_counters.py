@@ -6,6 +6,7 @@ class ImportCounters:
         self.service_at_location_count = 0
         self.taxonomy_term_count = 0
         self.address_count = 0
+        self.location_address_count = 0
         self.phone_number_types_count = 0
         self.phone_at_location_count = 0
 
@@ -26,6 +27,9 @@ class ImportCounters:
 
     def count_address(self):
         self.address_count += 1
+
+    def count_location_address(self):
+        self.location_address_count += 1
 
     def count_phone_number_types(self):
         self.phone_number_types_count += 1
