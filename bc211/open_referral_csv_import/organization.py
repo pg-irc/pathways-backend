@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 LOGGER = logging.getLogger(__name__)
 
 
-def import_organizations_file(root_folder, collector):
+def import_organizations_file(root_folder, collector, counters):
     filename = 'organizations.csv'
     path = os.path.join(root_folder, filename)
     try:
@@ -24,7 +24,7 @@ def import_organizations_file(root_folder, collector):
             for row in reader:
                 if not row or organization_has_inactive_data(row, collector):
                     continue
-                import_organization(row, collector)
+                import_organization(row, collector, counters)
     except FileNotFoundError:
             LOGGER.error('Missing organizations.csv file.')
             raise
@@ -44,11 +44,12 @@ def organization_has_inactive_data(row, collector):
     return False
 
 
-def import_organization(row, collector):
+def import_organization(row, collector, counters):
     translation.activate('en')
     try:
         active_record = build_active_record(row)
         active_record.save()
+        counters.count_organization_created()
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
 
