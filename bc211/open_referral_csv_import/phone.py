@@ -8,6 +8,8 @@ from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 from bc211.open_referral_csv_import.exceptions import CsvParseException
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db import IntegrityError
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,16 +38,21 @@ expected_headers = ['id', 'location_id', 'service_id', 'organization_id', 'conta
 
 def import_phone(row, collector):
     try:
+        location_id = parser.parse_location_id(row[1])
         phone_number_type_active_record = build_phone_number_type_active_record(row)
         phone_number_type_active_record.save()
-        phone_at_location_active_record = build_phone_at_location_active_record(row, collector)
+        if has_inactive_location_id(location_id, collector):
+            return
+        phone_at_location_active_record = build_phone_at_location_active_record(row)
         phone_at_location_active_record.save()
-    except CsvParseException:
-        pass
-    except ObjectDoesNotExist as error:
-        LOGGER.warn('{}'.format(error.__str__()))
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
+    except IntegrityError as error:
+        LOGGER.warn('{}'.format(error.__str__()))
+    except ObjectDoesNotExist as error:
+        pass
+    except CsvParseException:
+        pass
 
 
 def build_phone_number_type_active_record(row):
@@ -54,12 +61,9 @@ def build_phone_number_type_active_record(row):
     return active_record
 
 
-def build_phone_at_location_active_record(row, collector):
-    location_id = parser.parse_location_id(row[1])
-    if has_inactive_location_id(location_id, collector):
-        return
+def build_phone_at_location_active_record(row):
     active_record = PhoneAtLocation()
-    active_record.location_id = location_id
+    active_record.location_id = location_id = parser.parse_location_id(row[1])
     active_record.phone_number = parser.parse_phone_number(row[6])
     phone_type = parser.parse_required_type(row[8])
     active_record.phone_number_type = PhoneNumberType.objects.get(pk=phone_type)
