@@ -15,19 +15,27 @@ LOGGER = logging.getLogger(__name__)
 def import_organizations_file(root_folder, collector, counters):
     filename = 'organizations.csv'
     path = os.path.join(root_folder, filename)
+    read_file(path, collector, counters)
+
+
+def read_file(path, collector, counters):
     with open(path, 'r') as file: 
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
             raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-        for row in reader:
-            if not row or organization_has_inactive_data(row, collector):
-                continue
-            import_organization(row, collector, counters)
+        read_row(reader, collector, counters)
 
 
 expected_headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url',
                 'tax_status', 'tax_id', 'year_incorporated', 'legal_status']
+
+
+def read_row(reader, collector, counters):
+    for row in reader:
+        if not row or organization_has_inactive_data(row, collector):
+            continue
+        import_organization(row, collector, counters)
 
 
 def organization_has_inactive_data(row, collector):
