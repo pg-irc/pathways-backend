@@ -13,19 +13,15 @@ LOGGER = logging.getLogger(__name__)
 def import_taxonomy_file(root_folder, counters):
     filename = 'taxonomy.csv'
     path = os.path.join(root_folder, filename)
-    try:
-        with open(path, 'r') as file: 
-            reader = csv.reader(file)
-            headers = reader.__next__()
-            if not headers_match_expected_format(headers, expected_headers):
-                raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-            for row in reader:
-                if not row:
-                    continue
-                import_taxonomy(row, counters)
-    except FileNotFoundError:
-            LOGGER.error('Missing taxonomy.csv file.')
-            raise
+    with open(path, 'r') as file: 
+        reader = csv.reader(file)
+        headers = reader.__next__()
+        if not headers_match_expected_format(headers, expected_headers):
+            raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+        for row in reader:
+            if not row:
+                continue
+            import_taxonomy(row, counters)
 
 
 expected_headers = ['id', 'name', 'parent_id', 'parent_name', 'vocabulary']

@@ -15,20 +15,16 @@ LOGGER = logging.getLogger(__name__)
 def import_services_taxonomy_file(root_folder, collector):
     filename = 'services_taxonomy.csv'
     path = os.path.join(root_folder, filename)
-    try:
-        with open(path, 'r') as file: 
-            reader = csv.reader(file)
-            headers = reader.__next__()
-            if not headers_match_expected_format(headers, expected_headers):
-                raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-            for row in reader:
-                service_id = parser.parse_service_id(row[1])
-                if not row or has_inactive_service_id(service_id, collector):
-                    continue
-                import_service_taxonomy(row)
-    except FileNotFoundError:
-            LOGGER.error('Missing services_taxonomy.csv file.')
-            raise
+    with open(path, 'r') as file: 
+        reader = csv.reader(file)
+        headers = reader.__next__()
+        if not headers_match_expected_format(headers, expected_headers):
+            raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+        for row in reader:
+            service_id = parser.parse_service_id(row[1])
+            if not row or has_inactive_service_id(service_id, collector):
+                continue
+            import_service_taxonomy(row)
 
 
 expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
