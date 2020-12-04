@@ -372,7 +372,7 @@ class ServiceTaxonomyImporterTests(TestCase):
     def test_can_import_one_taxonomy_term_into_service_record(self):
         service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id)
                             .with_taxonomy_id(self.taxonomy_id).build())
-        import_service_taxonomy(service_taxonomy_data, None, None, [])
+        import_service_taxonomy(service_taxonomy_data, None, [])
         service_active_record = Service.objects.get(pk=self.service_id)
         service_active_record_taxonomy_terms = service_active_record.taxonomy_terms.all()
         self.assertEqual(service_active_record_taxonomy_terms[0], self.taxonomy_term)
