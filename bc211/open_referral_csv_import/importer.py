@@ -7,10 +7,11 @@ from bc211.open_referral_csv_import.address import import_addresses_file
 from bc211.open_referral_csv_import.phone import import_phones_file
 from bc211.open_referral_csv_import.taxonomy import import_taxonomy_file
 from bc211.open_referral_csv_import.service_taxonomy import import_services_taxonomy_file
+from bc211.open_referral_csv_import.import_missing_coordinates import import_missing_coordinates
 
 # TODO add spatial location to locations where missing when addresses file is imported
 
-def import_open_referral_files(root_folder, collector, counters):
+def import_open_referral_files(root_folder, collector, counters, city_latlong_map):
     import_organizations_file(root_folder, collector, counters)
     import_services_file(root_folder, collector, counters)
     import_locations_file(root_folder, collector, counters)
@@ -19,3 +20,5 @@ def import_open_referral_files(root_folder, collector, counters):
     import_phones_file(root_folder, collector, counters)
     import_taxonomy_file(root_folder, counters)
     import_services_taxonomy_file(root_folder, collector)
+    if city_latlong_map:
+        import_missing_coordinates(city_latlong_map)

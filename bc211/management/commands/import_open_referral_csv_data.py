@@ -1,8 +1,9 @@
 import argparse
 from django.core.management.base import BaseCommand
+from bc211.importer import parse_csv
+from bc211.import_counters import ImportCounters
 from bc211.open_referral_csv_import.importer import import_open_referral_files
 from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
-from bc211.import_counters import ImportCounters
 
 # invoke as follows:
 # python manage.py import_open_referral_csv_data path/to/open/referral/files
@@ -15,13 +16,22 @@ class Command(BaseCommand):
         parser.add_argument('path',
                             metavar='path',
                             help='Path to directory containing open referral CSV BC-211 data')
+        parser.add_argument('--cityLatLongs',
+                            metavar='cityLatLongs',
+                            help='Path to CSV file containing city to latlong dictionary')
 
     def handle(self, *args, **options):
         root_folder = options['path']
+
+        if options['cityLatLongs']:
+            city_latlong_map = parse_csv(options['cityLatLongs'])
+        else:
+            city_latlong_map = {}
+
         self.stdout.write('Importing open referral CSV data from {}'.format(root_folder))
         collector = InactiveRecordsCollector()
         counters = ImportCounters()
-        import_open_referral_files(root_folder, collector, counters)
+        import_open_referral_files(root_folder, collector, counters, city_latlong_map)
         self.print_status_message(counters)
 
     def print_status_message(self, counters):
