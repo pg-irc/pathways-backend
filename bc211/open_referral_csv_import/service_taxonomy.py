@@ -31,28 +31,43 @@ expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
 
 
 def read_and_import_rows(reader, collector):
+    last_service_id = None
+    last_service_active_record = None
+
+    last_service_taxonomy_list = []
+
     for row in reader:
         service_id = parser.parse_service_id(row[1])
         if not row or has_inactive_service_id(service_id, collector):
             continue
-        import_service_taxonomy(row)
+        import_service_taxonomy(row, last_service_id, last_service_active_record, last_service_taxonomy_list)
 
 
-def import_service_taxonomy(row):
+def import_service_taxonomy(row, last_service_id, last_service_active_record, last_service_taxonomy_list):
     try:
-        service_id = parser.parse_service_id(row[1])
+        current_service_id = parser.parse_service_id(row[1])
         taxonomy_id = parser.parse_taxonomy_id(row[2])
-        active_record = build_service_taxonomy_active_record(service_id, taxonomy_id)
-        active_record.save()
+        taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
+        current_active_record = None
+
+        if last_service_id is current_service_id:
+            last_service_active_record.taxonomy_term.add(taxonomy_term)
+            last_service_taxonomy_list.append(last_service_active_record)
+        else:
+            if last_service_taxonomy_list:
+                Service.objects.bulk_update(last_service_taxonomy_list)
+            last_service_taxonomy_list.clear()
+            current_active_record = build_service_taxonomy_active_record(current_service_id, taxonomy_term)
+            last_service_id = current_service_id
+            last_service_active_record = current_active_record 
     except ValidationError as error:
         LOGGER.warn('{}'.format(error.__str__()))
     except ObjectDoesNotExist as error:
         pass
         
         
-def build_service_taxonomy_active_record(service_id, taxonomy_id):
+def build_service_taxonomy_active_record(service_id, taxonomy_term):
     service_active_record = get_service_active_record_or_raise(service_id)
-    taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
     service_active_record.taxonomy_terms.add(taxonomy_term)
     return service_active_record
 

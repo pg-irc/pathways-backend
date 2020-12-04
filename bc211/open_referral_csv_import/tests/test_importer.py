@@ -9,7 +9,7 @@ from bc211.open_referral_csv_import.service_at_location import import_service_at
 from bc211.open_referral_csv_import.address import import_address_and_location_address
 from bc211.open_referral_csv_import.phone import import_phone
 from bc211.open_referral_csv_import.taxonomy import import_taxonomy
-from bc211.open_referral_csv_import.service_taxonomy import import_service_taxonomy
+from bc211.open_referral_csv_import.service_taxonomy import import_service_taxonomy, read_and_import_rows
 from bc211.open_referral_csv_import.tests.helpers import (OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
                         OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder, OpenReferralCsvAddressBuilder,
                         OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder, OpenReferralCsvServiceTaxonomyBuilder)
@@ -363,33 +363,48 @@ class TaxonomyImporterTests(TestCase):
 
 class ServiceTaxonomyImporterTests(TestCase):
     def setUp(self):
-        organization = OrganizationBuilder().create()
+        self.organization = OrganizationBuilder().create()
         self.taxonomy_id = a_string()
         self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(self.taxonomy_id).create()
         self.service_id = a_string()
-        ServiceBuilder(organization).with_id(self.service_id).create()
+        ServiceBuilder(self.organization).with_id(self.service_id).create()
 
-    def test_can_import_taxonomy_term_into_service_record(self):
+    def test_can_import_one_taxonomy_term_into_service_record(self):
         service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id)
                             .with_taxonomy_id(self.taxonomy_id).build())
-        import_service_taxonomy(service_taxonomy_data)
+        import_service_taxonomy(service_taxonomy_data, None, None, [])
         service_active_record = Service.objects.get(pk=self.service_id)
         service_active_record_taxonomy_terms = service_active_record.taxonomy_terms.all()
         self.assertEqual(service_active_record_taxonomy_terms[0], self.taxonomy_term)
 
-    def test_can_import_multiple_taxonomy_terms_into_service_record(self):
+    def test_can_import_multiple_taxonomy_terms_into_the_same_service_record(self):
         second_taxonomy_id = a_string()
         second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(second_taxonomy_id).create()
-
         first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id)
                                     .with_taxonomy_id(self.taxonomy_id).build())
         second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder()
                                     .with_service_id(self.service_id).with_taxonomy_id(second_taxonomy_id).build())
-        
-        import_service_taxonomy(first_service_taxonomy_data)
-        import_service_taxonomy(second_service_taxonomy_data)
-
+        csv_data = [first_service_taxonomy_data, second_service_taxonomy_data]
+        read_and_import_rows(csv_data, InactiveRecordsCollector())
         service_active_record = Service.objects.get(pk=self.service_id)
-        service_active_record_taxonomy_terms = service_active_record.taxonomy_terms.all()
-        self.assertEqual(service_active_record_taxonomy_terms[0], self.taxonomy_term)
-        self.assertEqual(service_active_record_taxonomy_terms[1], second_taxonomy_term)
+        service_taxonomy_terms = service_active_record.taxonomy_terms.all()
+        self.assertEqual(service_taxonomy_terms[0], self.taxonomy_term)
+        self.assertEqual(service_taxonomy_terms[1], second_taxonomy_term)
+
+    def test_does_not_import_a_second_taxonomy_term_when_the_service_id_is_different(self):
+        second_service_id = a_string()
+        ServiceBuilder(self.organization).with_id(second_service_id).create()
+        second_taxonomy_id = a_string()
+        second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(second_taxonomy_id).create()
+        first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().with_service_id(self.service_id)
+                                    .with_taxonomy_id(self.taxonomy_id).build())
+        second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder()
+                                    .with_service_id(second_service_id).with_taxonomy_id(second_taxonomy_id).build())
+        csv_data = [first_service_taxonomy_data, second_service_taxonomy_data]
+        read_and_import_rows(csv_data, InactiveRecordsCollector())
+        first_service = Service.objects.get(pk=self.service_id)
+        first_service_taxonomy_terms = first_service.taxonomy_terms.all()
+        self.assertEqual(len(first_service_taxonomy_terms), 1)
+        self.assertEqual(first_service_taxonomy_terms[0], self.taxonomy_term)
+        
+    
