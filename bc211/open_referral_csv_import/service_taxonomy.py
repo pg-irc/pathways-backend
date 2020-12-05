@@ -31,19 +31,19 @@ expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
 
 
 def read_and_import_rows(reader, collector):
-    last_service_active_record = None
+    last_service = None
     service_taxonomies_update_list = []
 
     for row in reader:
         service_id = parser.parse_service_id(row[1])
         if not row or has_inactive_service_id(service_id, collector):
             continue
-        import_service_taxonomy(row, last_service_active_record, service_taxonomies_update_list)
+        import_service_taxonomy(row, last_service, service_taxonomies_update_list)
 
 
-def import_service_taxonomy(row, last_service_active_record, service_taxonomies_update_list):
+def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
     try:
-        last_service_id = last_service_active_record.id if last_service_active_record else None
+        last_service_id = last_service.id if last_service else None
         current_active_record = None
         current_service_id = parser.parse_service_id(row[1])
         taxonomy_id = parser.parse_taxonomy_id(row[2])
@@ -52,7 +52,7 @@ def import_service_taxonomy(row, last_service_active_record, service_taxonomies_
         if current_service_id is last_service_id:
             add_service_taxonomy_update_to_list(
                 taxonomy_term,
-                last_service_active_record,
+                last_service,
                 service_taxonomies_update_list
             )
         else:
@@ -60,7 +60,7 @@ def import_service_taxonomy(row, last_service_active_record, service_taxonomies_
             set_last_service_to_current_active_record(
                 current_service_id,
                 taxonomy_term,
-                last_service_active_record
+                last_service
             )
             service_taxonomies_update_list.clear()
     except ValidationError as error:
@@ -69,9 +69,9 @@ def import_service_taxonomy(row, last_service_active_record, service_taxonomies_
         pass
 
 
-def add_service_taxonomy_update_to_list(taxonomy_term, last_service_active_record, service_taxonomies_update_list):
-    last_service_active_record.taxonomy_term.add(taxonomy_term)
-    service_taxonomies_update_list.append(last_service_active_record)
+def add_service_taxonomy_update_to_list(taxonomy_term, last_service, service_taxonomies_update_list):
+    last_service.taxonomy_term.add(taxonomy_term)
+    service_taxonomies_update_list.append(last_service)
 
 
 def bulk_update_service_taxonomies_update_list(service_taxonomies_update_list):
@@ -79,12 +79,12 @@ def bulk_update_service_taxonomies_update_list(service_taxonomies_update_list):
         Service.objects.bulk_update(service_taxonomies_update_list)
 
 
-def set_last_service_to_current_active_record(current_service_id, taxonomy_term, last_service_active_record):
+def set_last_service_to_current_active_record(current_service_id, taxonomy_term, last_service):
     current_active_record = build_service_taxonomy_active_record(
         current_service_id,
         taxonomy_term
     )
-    last_service_active_record = current_active_record 
+    last_service = current_active_record 
 
 
 def build_service_taxonomy_active_record(service_id, taxonomy_term):
