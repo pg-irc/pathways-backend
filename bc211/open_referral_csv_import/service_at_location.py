@@ -49,7 +49,7 @@ def import_service_at_location(row, counters):
         active_record.save()
         counters.count_service_at_location()
     except ValidationError as error:
-        LOGGER.warn('{}'.format(error.__str__()))
+        LOGGER.warning('{}'.format(error.__str__()))
 
 
 def build_service_at_location_active_record(row):

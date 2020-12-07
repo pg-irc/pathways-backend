@@ -48,7 +48,7 @@ def import_address_and_location_address(row, collector, counters):
         location_address_active_record.save()
         counters.count_location_address()
     except ValidationError as error:
-        LOGGER.warn('{}'.format(error.__str__()))
+        LOGGER.warning('{}'.format(error.__str__()))
     except CsvParseException:
         pass
     except ObjectDoesNotExist:
@@ -82,5 +82,5 @@ def get_active_record_or_raise(active_record_id, model):
     try:
         return model.objects.get(pk=active_record_id)
     except ObjectDoesNotExist as error:
-        LOGGER.warn('Record with id {} does not exist. {}'.format(active_record_id, error))
+        LOGGER.warning('Record with id {} does not exist. {}'.format(active_record_id, error))
         raise

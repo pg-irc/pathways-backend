@@ -64,7 +64,7 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
             )
             service_taxonomies_update_list.clear()
     except ValidationError as error:
-        LOGGER.warn('{}'.format(error.__str__()))
+        LOGGER.warning('{}'.format(error.__str__()))
     except ObjectDoesNotExist as error:
         pass
 
@@ -97,7 +97,7 @@ def get_service_active_record_or_raise(service_id):
     try:
         return Service.objects.get(pk=service_id)
     except ObjectDoesNotExist as error:
-        LOGGER.warn('Service record with id "{}" does not exist. {}'.format(service_id, error))
+        LOGGER.warning('Service record with id "{}" does not exist. {}'.format(service_id, error))
         raise
 
 
@@ -105,5 +105,5 @@ def get_taxonomy_term_active_record_or_raise(taxonomy_id):
     try:
         return TaxonomyTerm.objects.get(taxonomy_id=taxonomy_id)
     except ObjectDoesNotExist as error:
-        LOGGER.warn('Taxonomy record with id "{}" does not exist. {}'.format(service_id, error))
+        LOGGER.warning('Taxonomy record with id "{}" does not exist. {}'.format(service_id, error))
         raise

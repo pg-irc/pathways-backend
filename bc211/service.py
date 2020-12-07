@@ -48,7 +48,7 @@ def save_service_if_needed(service, counters):
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     else:
-        LOGGER.warn('duplicate service "%s" "%s"', service.id, service.name)
+        LOGGER.warning('duplicate service "%s" "%s"', service.id, service.name)
 
 
 def get_existing_service_or_none(service):

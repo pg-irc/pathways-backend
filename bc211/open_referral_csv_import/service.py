@@ -59,7 +59,7 @@ def import_service(row, collector, counters):
         active_record.save()
         counters.count_service()
     except ValidationError as error:
-        LOGGER.warn('{}'.format(error.__str__()))
+        LOGGER.warning('{}'.format(error.__str__()))
 
 
 def build_service_active_record(row):
