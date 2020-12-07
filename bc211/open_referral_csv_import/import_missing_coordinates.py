@@ -19,4 +19,4 @@ def set_latlong_from_city(active_record, city_latlong_map):
         active_record.location.point = replacement_point
         active_record.location.save()
     else:
-        LOGGER.warn(f'City "{active_record.address.city}" does not have a latlong associated with it.')
+        LOGGER.warning(f'City "{active_record.address.city}" does not have a latlong associated with it.')

@@ -55,7 +55,7 @@ def validated_email_or_none(active_record_id, email):
         validators.validate_email(email)
         return email
     except ValidationError:
-        LOGGER.warn('The record with the id: "%s" has an invalid email.', active_record_id)
+        LOGGER.warning('The record with the id: "%s" has an invalid email.', active_record_id)
         return None
    
 
@@ -155,7 +155,7 @@ def validated_website_or_none(active_record_id, website):
         validate_url(website)
         return website
     except ValidationError:
-        LOGGER.warn('The record with the id: "%s" has an invalid URL.', active_record_id)
+        LOGGER.warning('The record with the id: "%s" has an invalid URL.', active_record_id)
         return None
 
 

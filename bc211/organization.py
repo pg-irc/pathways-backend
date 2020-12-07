@@ -28,7 +28,7 @@ def update_organization(organization, counters):
         counters.count_organization_created()
         LOGGER.debug('created "%s" "%s"', organization.id, organization.name)
     else:
-        LOGGER.warn('duplicate organization "%s" "%s"', organization.id, organization.name)
+        LOGGER.warning('duplicate organization "%s" "%s"', organization.id, organization.name)
 
 
 def get_existing_organization_or_none(organization):
