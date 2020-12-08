@@ -1,15 +1,14 @@
 import logging
-from django.contrib.gis.geos import Point
-from human_services.locations.models import Location, ServiceAtLocation, LocationAddress
+from human_services.locations.models import LocationAddress
 
 LOGGER = logging.getLogger(__name__)
 
 
 def import_missing_coordinates(city_latlong_map):
-    location_addresses_with_city_and_missing_point = (
+    records_without_latlong = (
         LocationAddress.objects.filter(location__point__isnull=True, address__city__isnull=False)
     )
-    for active_record in location_addresses_with_city_and_missing_point:
+    for active_record in records_without_latlong:
         set_latlong_from_city(active_record, city_latlong_map)
 
 
@@ -19,4 +18,5 @@ def set_latlong_from_city(active_record, city_latlong_map):
         active_record.location.point = replacement_point
         active_record.location.save()
     else:
-        LOGGER.warning(f'City "{active_record.address.city}" does not have a latlong associated with it.')
+        LOGGER.warning('City "%s" does not have a latlong associated with it.',
+                        active_record.address.city)
