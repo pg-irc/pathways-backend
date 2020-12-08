@@ -1,10 +1,10 @@
 import logging
 from urllib import parse as urlparse
 from datetime import datetime
-from bc211.parser import remove_double_escaped_html_markup, clean_one_phone_number
-from bc211.open_referral_csv_import import exceptions
 from django.core import validators
 from django.core.exceptions import ValidationError
+from bc211.parser import remove_double_escaped_html_markup, clean_one_phone_number
+from bc211.open_referral_csv_import import exceptions
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ def parse_description(value):
 def parse_email(active_record_id, value):
     email = parse_optional_field(value)
     if csv_value_is_empty(email):
-        return None 
+        return None
     cleaned_email = remove_double_escaped_html_markup(email)
     return validated_email_or_none(active_record_id, cleaned_email)
 
@@ -57,7 +57,7 @@ def validated_email_or_none(active_record_id, email):
     except ValidationError:
         LOGGER.warning('The record with the id: "%s" has an invalid email.', active_record_id)
         return None
-   
+
 
 def parse_last_verified_date(value):
     last_verified_date = parse_optional_field(value)
@@ -114,7 +114,9 @@ def two_letter_country_code_or_none(country):
     if country == 'United States':
         return 'US'
     if len(country) > 2:
-        raise exceptions.InvalidFieldCsvParseException('Country field with value: {} is invalid'.format(country))
+        raise exceptions.InvalidFieldCsvParseException(
+            'Country field with value: {} is invalid'.format(country)
+        )
     return country
 
 
@@ -131,7 +133,9 @@ def parse_taxonomy_id(value):
 
 def parse_required_field(field, value):
     if csv_value_is_empty(value):
-        raise exceptions.MissingRequiredFieldCsvParseException('Missing required field: "{0}"'.format(field))
+        raise exceptions.MissingRequiredFieldCsvParseException(
+            'Missing required field: "{0}"'.format(field)
+        )
     return value
 
 

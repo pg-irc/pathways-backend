@@ -1,13 +1,14 @@
 import csv
 import os
 import logging
+from django.core.exceptions import ValidationError
 from bc211.open_referral_csv_import import parser
-from human_services.services.models import Service
 from bc211.is_inactive import is_inactive
-from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
+from bc211.open_referral_csv_import.headers_match_expected_format import (
+    headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_organization_id
-from django.core.exceptions import ValidationError
+from human_services.services.models import Service
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,28 +17,31 @@ def import_services_file(root_folder, collector, counters):
     filename = 'services.csv'
     path = os.path.join(root_folder, filename)
     read_file(path, collector, counters)
-    
+
 
 def read_file(path, collector, counters):
     with open(path, 'r') as file: 
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
-            raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+            raise InvalidFileCsvImportException(
+                'The headers in "{0}": does not match open referral standards.'.format(path)
+            )
         read_and_import_rows(reader, collector, counters)
-        
 
 
-expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 'description',
-                'url', 'email', 'status', 'interpretation_services', 'application_process',
-                'wait_time', 'fees', 'accreditations', 'licenses', 'taxonomy_ids', 'last_verified_on-x']
+
+expected_headers = ['id', 'organization_id', 'program_id', 'name', 'alternate_name', 
+                'description', 'url', 'email', 'status', 'interpretation_services',
+                'application_process', 'wait_time', 'fees', 'accreditations',
+                'licenses', 'taxonomy_ids', 'last_verified_on-x']
 
 
 def read_and_import_rows(reader, collector, counters):
     for row in reader:
         if not row or service_has_inactive_data(row, collector):
             continue
-        import_service(row, collector, counters)
+        import_service(row, counters)
 
 
 def service_has_inactive_data(row, collector):
@@ -53,13 +57,13 @@ def service_has_inactive_data(row, collector):
     return False
 
 
-def import_service(row, collector, counters):
+def import_service(row, counters):
     try:
         active_record = build_service_active_record(row)
         active_record.save()
         counters.count_service()
     except ValidationError as error:
-        LOGGER.warning('{}'.format(error.__str__()))
+        LOGGER.warning('%s', error.__str__())
 
 
 def build_service_active_record(row):
