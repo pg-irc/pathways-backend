@@ -8,4 +8,4 @@ def is_inactive(description):
 
 def description_starts_with_inactive_record_convention(description):
     stripped_description = description.strip()
-    return re.search(r'^[D-d-E-e-L-l]{3}[0-9\s]', stripped_description)
+    return re.search(r'^DEL[0-9\s]', stripped_description, flags=re.IGNORECASE)
