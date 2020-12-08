@@ -1,14 +1,15 @@
 import csv
 import os
 import logging
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress, Location
 from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
+from bc211.open_referral_csv_import.headers_match_expected_format import (
+    headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 from bc211.open_referral_csv_import.exceptions import CsvParseException
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,7 +25,9 @@ def read_file(path, collector, counters):
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
-            raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+            raise InvalidFileCsvImportException(
+                'The headers in "{0}": does not match open referral standards.'.format(path)
+            )
         read_and_import_rows(reader, collector, counters)
 
 
@@ -44,7 +47,11 @@ def import_address_and_location_address(row, collector, counters):
         address_active_record = build_address_active_record(row)
         address_active_record.save()
         counters.count_address()
-        location_address_active_record = build_location_address_active_record(address_active_record, row, collector)
+        location_address_active_record = build_location_address_active_record(
+            address_active_record,
+            row,
+            collector
+        )
         location_address_active_record.save()
         counters.count_location_address()
     except ValidationError as error:
@@ -75,7 +82,11 @@ def build_location_address_active_record(address_active_record, row, collector):
         return
     location_active_record = get_active_record_or_raise(location_id, Location)
     address_type_active_record = get_active_record_or_raise(address_type, AddressType)
-    return LocationAddress(address=address_active_record, location=location_active_record, address_type=address_type_active_record)
+    return LocationAddress(
+            address=address_active_record,
+            location=location_active_record,
+            address_type=address_type_active_record
+    )
 
 
 def get_active_record_or_raise(active_record_id, model):
