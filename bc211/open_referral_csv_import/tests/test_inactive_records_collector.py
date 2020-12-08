@@ -25,7 +25,7 @@ class TestInactiveRecordsCollector(TestCase):
                                     .build())
         organization_has_inactive_data(inactive_organization_data, self.collector)
         self.assertEqual(self.collector.inactive_organizations_ids[0], the_id)
-    
+
     def test_can_add_inactive_service_id(self):
         the_id = a_string()
         inactive_service_data = (helpers.OpenReferralCsvServiceBuilder(self.organization)
@@ -43,21 +43,21 @@ class TestInactiveRecordsCollector(TestCase):
                                 .build())
         location_has_inactive_data(inactive_location_data, self.collector)
         self.assertEqual(self.collector.inactive_locations_ids[0], the_id)
-        
+
     def test_returns_true_when_organization_id_is_in_inactive_organizations_list(self):
         organization_id = a_string()
         self.collector.add_inactive_organization_id(a_string())
         self.collector.add_inactive_organization_id(organization_id)
         self.collector.add_inactive_organization_id(a_string())
         self.assertTrue(has_inactive_organization_id(organization_id, self.collector))
-        
+
     def test_returns_true_when_service_id_is_in_inactive_services_list(self):
         service_id = a_string()
         self.collector.add_inactive_service_id(a_string())
         self.collector.add_inactive_service_id(a_string())
         self.collector.add_inactive_service_id(service_id)
         self.assertTrue(has_inactive_service_id(service_id, self.collector))
-    
+
     def test_returns_true_when_location_id_is_in_inactive_locations_list(self):
         location_id = a_string()
         self.collector.add_inactive_location_id(a_string())

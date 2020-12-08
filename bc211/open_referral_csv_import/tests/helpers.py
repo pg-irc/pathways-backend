@@ -1,7 +1,7 @@
-from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                                a_latitude_as_a_string, a_longitude_as_a_string, a_date, a_phone_number)
-import string
 from datetime import date
+import string
+from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
+                                a_latitude_as_a_string, a_longitude_as_a_string, a_phone_number)
 
 
 class OpenReferralCsvOrganizationBuilder:
@@ -12,7 +12,7 @@ class OpenReferralCsvOrganizationBuilder:
         self.description = a_string()
         self.email = an_email_address()
         self.url = a_website_address()
-    
+
     def with_id(self, organization_id):
         self.organization_id = organization_id
         return self
@@ -24,7 +24,7 @@ class OpenReferralCsvOrganizationBuilder:
     def with_alternate_name(self, alternate_name):
         self.alternate_name = alternate_name
         return self
-    
+
     def with_description(self, description):
         self.description = description
         return self
@@ -36,14 +36,15 @@ class OpenReferralCsvOrganizationBuilder:
     def with_url(self, url):
         self.url = url
         return self
-    
+
     def build(self):
         not_used_tax_status = ''
         not_used_tax_id = ''
         not_used_year_incorporated = ''
         not_used_legal_status = ''
-        return [self.organization_id, self.name, self.alternate_name, self.description, self.email, self.url,
-                not_used_tax_status, not_used_tax_id, not_used_year_incorporated, not_used_legal_status]
+        return [self.organization_id, self.name, self.alternate_name, self.description, 
+            self.email, self.url, not_used_tax_status, not_used_tax_id, 
+            not_used_year_incorporated, not_used_legal_status]
 
 
 class OpenReferralCsvServiceBuilder:
@@ -56,7 +57,7 @@ class OpenReferralCsvServiceBuilder:
         self.url = a_website_address()
         self.email = an_email_address()
         self.last_verified_on = date.today().strftime("%Y-%m-%d")
-    
+
     def with_id(self, service_id):
         self.service_id = service_id
         return self
@@ -68,11 +69,11 @@ class OpenReferralCsvServiceBuilder:
     def with_name(self, name):
         self.name = name
         return self
-    
+
     def with_alternate_name(self, alternate_name):
         self.alternate_name = alternate_name
         return self
-    
+
     def with_description(self, description):
         self.description = description
         return self
@@ -84,11 +85,11 @@ class OpenReferralCsvServiceBuilder:
     def with_email(self, email):
         self.email = email
         return self
-    
-    def with_last_verified_on(self, date):
-        self.last_verified_on = date
+
+    def with_last_verified_on(self, last_verified_on):
+        self.last_verified_on = last_verified_on
         return self
-    
+
     def build(self):
         not_used_program_id = ''
         not_used_status = ''
@@ -99,10 +100,12 @@ class OpenReferralCsvServiceBuilder:
         not_used_accreditations = ''
         not_used_licenses = ''
         not_used_taxonomy_ids = ''
-        return [self.service_id, self.organization_id, not_used_program_id, self.name, self.alternate_name, self.description, self.url, self.email,
-                not_used_status, not_used_intepretation_services, not_used_application_process, not_used_wait_time,
-                not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids, self.last_verified_on]
-                
+        return [self.service_id, self.organization_id, not_used_program_id, self.name,
+            self.alternate_name, self.description, self.url, self.email, not_used_status,
+            not_used_intepretation_services, not_used_application_process, not_used_wait_time,
+            not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids,
+            self.last_verified_on]
+  
 
 class OpenReferralCsvLocationBuilder:
     def __init__(self, organization):
@@ -113,7 +116,7 @@ class OpenReferralCsvLocationBuilder:
         self.description = a_string()
         self.latitude = a_latitude_as_a_string()
         self.longitude = a_longitude_as_a_string()
-    
+
     def with_id(self, location_id):
         self.location_id = location_id
         return self
@@ -121,7 +124,7 @@ class OpenReferralCsvLocationBuilder:
     def with_organization_id(self, organization_id):
         self.organization_id = organization_id
         return self
-    
+
     def with_name(self, name):
         self.name = name
         return self
@@ -129,15 +132,15 @@ class OpenReferralCsvLocationBuilder:
     def with_alternate_name(self, alternate_name):
         self.alternate_name = alternate_name
         return self
-    
+
     def with_description(self, description):
         self.description = description
         return self
-    
+
     def with_latitude(self, latitude):
         self.latitude = latitude
         return self
-    
+
     def with_longitude(self, longitude):
         self.longitude = longitude
         return self
@@ -152,15 +155,15 @@ class OpenReferralCsvServiceAtLocationBuilder:
     def __init__(self, service, location):
         self.service_id = service.id
         self.location_id = location.id
-    
+
     def with_service_id(self, service_id):
         self.service_id = service_id
         return self
-    
+
     def with_location_id(self, location_id):
         self.location_id = location_id
         return self
-    
+
     def build(self):
         not_used_id = ''
         not_used_description = ''
@@ -196,7 +199,7 @@ class OpenReferralCsvAddressBuilder:
     def with_attention(self, attention):
         self.attention = attention
         return self
-    
+
     def with_address_1(self, address_1):
         self.address_1 = address_1
         return self
@@ -204,7 +207,7 @@ class OpenReferralCsvAddressBuilder:
     def with_address_2(self, address_2):
         self.address_2 = address_2
         return self
-    
+
     def with_address_3(self, address_3):
         self.address_3 = address_3
         return self
@@ -212,7 +215,7 @@ class OpenReferralCsvAddressBuilder:
     def with_address_4(self, address_4):
         self.address_4 = address_4
         return self
-    
+
     def with_city(self, city):
         self.city = city
         return self
@@ -224,16 +227,16 @@ class OpenReferralCsvAddressBuilder:
     def with_postal_code(self, postal_code):
         self.postal_code = postal_code
         return self
-    
+
     def with_country(self, country):
         self.country = country
         return self
 
     def build(self):
         not_used_region = ''
-        return [self.address_id, self.address_type, self.location_id, self.attention, self.address_1,
-                self.address_2, self.address_3, self.address_4, self.city, not_used_region,
-                self.state_province, self.postal_code, self.country]
+        return [self.address_id, self.address_type, self.location_id, self.attention,
+            self.address_1, self.address_2, self.address_3, self.address_4,
+            self.city, not_used_region, self.state_province, self.postal_code, self.country]
 
 
 class OpenReferralCsvPhoneBuilder:
@@ -241,7 +244,7 @@ class OpenReferralCsvPhoneBuilder:
         self.location_id = location.id
         self.number = a_phone_number()
         self.phone_type = a_string()
-    
+
     def with_location_id(self, location_id):
         self.location_id = location_id
         return self
@@ -264,20 +267,21 @@ class OpenReferralCsvPhoneBuilder:
         not_used_language = ''
         not_used_description = ''
         not_used_department = ''
-        return [not_used_id, self.location_id, not_used_service_id, not_used_organization_id, not_used_contact_id,
-                not_used_service_at_location_id, self.number, not_used_extension, self.phone_type, not_used_language,
-                not_used_description, not_used_department]
+        return [not_used_id, self.location_id, not_used_service_id, not_used_organization_id,
+            not_used_contact_id, not_used_service_at_location_id, self.number,
+            not_used_extension, self.phone_type, not_used_language, not_used_description,
+            not_used_department]
 
 
 class OpenReferralCsvTaxonomyBuilder:
     def __init__(self):
         self.taxonomy_id = a_string()
         self.name = a_string()
-    
+
     def with_taxonomy_id(self, taxonomy_id):
         self.taxonomy_id = taxonomy_id
         return self
-    
+
     def with_name(self, name):
         self.name = name
         return self
@@ -286,14 +290,15 @@ class OpenReferralCsvTaxonomyBuilder:
         not_used_parent_id = ''
         not_used_parent_name = ''
         not_used_vocabulary = ''
-        return [self.taxonomy_id, self.name, not_used_parent_id, not_used_parent_name, not_used_vocabulary]
+        return [self.taxonomy_id, self.name, not_used_parent_id, not_used_parent_name,
+            not_used_vocabulary]
 
 
 class OpenReferralCsvServiceTaxonomyBuilder:
     def __init__(self):
         self.service_id = a_string()
         self.taxonomy_id = a_string()
-    
+
     def with_service_id(self, service_id):
         self.service_id = service_id
         return self

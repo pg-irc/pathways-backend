@@ -1,11 +1,12 @@
 import csv
 import os
 import logging
-from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
+from django.core.exceptions import ValidationError
+from bc211.open_referral_csv_import.headers_match_expected_format import (
+    headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import import parser
 from taxonomies.models import TaxonomyTerm
-from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,11 +19,13 @@ def import_taxonomy_file(root_folder, counters):
 
 def read_file(path, counters):
     with open(path, 'r') as file: 
-            reader = csv.reader(file)
-            headers = reader.__next__()
-            if not headers_match_expected_format(headers, expected_headers):
-                raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
-            read_and_import_rows(reader, counters)
+        reader = csv.reader(file)
+        headers = reader.__next__()
+        if not headers_match_expected_format(headers, expected_headers):
+            raise InvalidFileCsvImportException(
+                'The headers in "{0}": does not match open referral standards.'.format(path)
+            )
+        read_and_import_rows(reader, counters)
 
 
 expected_headers = ['id', 'name', 'parent_id', 'parent_name', 'vocabulary']
@@ -41,7 +44,7 @@ def import_taxonomy(row, counters):
         active_record.save()
         counters.count_taxonomy_term()
     except ValidationError as error:
-        LOGGER.warning('{}'.format(error.__str__()))
+        LOGGER.warning('%s', error.__str__())
 
 
 def build_taxonomy_active_record(row):

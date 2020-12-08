@@ -1,4 +1,3 @@
-import argparse
 from django.core.management.base import BaseCommand
 from bc211.importer import parse_csv
 from bc211.import_counters import ImportCounters

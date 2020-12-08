@@ -9,6 +9,6 @@ class InactiveRecordsCollector:
 
     def add_inactive_service_id(self, service_id):
         self.inactive_services_ids.append(service_id)
-    
+
     def add_inactive_location_id(self, location_id):
         self.inactive_locations_ids.append(location_id)

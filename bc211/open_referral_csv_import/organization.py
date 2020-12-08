@@ -2,12 +2,13 @@ import csv
 import os
 import logging
 from django.utils import translation
+from django.core.exceptions import ValidationError
 from human_services.organizations.models import Organization
 from bc211.is_inactive import is_inactive
 from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
+from bc211.open_referral_csv_import.headers_match_expected_format import (
+    headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
-from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +24,9 @@ def read_file(path, collector, counters):
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
-            raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+            raise InvalidFileCsvImportException(
+                'The headers in "{0}": does not match open referral standards.'.format(path)
+            )
         read_and_import_rows(reader, collector, counters)
 
 
@@ -35,7 +38,7 @@ def read_and_import_rows(reader, collector, counters):
     for row in reader:
         if not row or organization_has_inactive_data(row, collector):
             continue
-        import_organization(row, collector, counters)
+        import_organization(row, counters)
 
 
 def organization_has_inactive_data(row, collector):
@@ -48,14 +51,14 @@ def organization_has_inactive_data(row, collector):
     return False
 
 
-def import_organization(row, collector, counters):
+def import_organization(row, counters):
     translation.activate('en')
     try:
         active_record = build_active_record(row)
         active_record.save()
         counters.count_organization_created()
     except ValidationError as error:
-        LOGGER.warning('{}'.format(error.__str__()))
+        LOGGER.warning('%s', error.__str__())
 
 
 def build_active_record(row):

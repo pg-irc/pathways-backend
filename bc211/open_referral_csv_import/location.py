@@ -1,14 +1,15 @@
 import csv
 import os
 import logging
-from bc211.open_referral_csv_import import parser
-from human_services.locations.models import Location
-from bc211.is_inactive import is_inactive
 from django.contrib.gis.geos import Point
-from bc211.open_referral_csv_import.headers_match_expected_format import headers_match_expected_format
+from django.core.exceptions import ValidationError
+from human_services.locations.models import Location
+from bc211.open_referral_csv_import import parser
+from bc211.is_inactive import is_inactive
+from bc211.open_referral_csv_import.headers_match_expected_format import (
+    headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_organization_id
-from django.core.exceptions import ValidationError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,16 +18,18 @@ def import_locations_file(root_folder, collector, counters):
     filename = 'location.csv'
     path = os.path.join(root_folder, filename)
     read_file(path, collector, counters)
-    
+
 
 def read_file(path, collector, counters):
-    with open(path, 'r') as file: 
+    with open(path, 'r') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
-            raise InvalidFileCsvImportException('The headers in "{0}": does not match open referral standards.'.format(field))
+            raise InvalidFileCsvImportException(
+                'The headers in "{0}": does not match open referral standards.'.format(path)
+            )
         read_and_import_row(reader, collector, counters)
-        
+
 
 expected_headers = ['id', 'organization_id', 'name', 'alternate_name', 'description',
                 'transportation', 'latitude', 'longitude']
@@ -58,7 +61,7 @@ def import_location(row, counters):
         active_record.save()
         counters.count_locations_created()
     except ValidationError as error:
-        LOGGER.warning('{}'.format(error.__str__()))
+        LOGGER.warning('%s', error.__str__())
 
 
 def build_location_active_record(row):

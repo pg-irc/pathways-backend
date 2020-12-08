@@ -1,14 +1,8 @@
-import string
 from django.test import TestCase
-from bc211.open_referral_csv_import.tests.helpers import OpenReferralCsvAddressBuilder
 from bc211.open_referral_csv_import import parser
-from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                                    a_latitude_as_a_string, a_longitude_as_a_string)
-from human_services.organizations.tests.helpers import OrganizationBuilder
-from human_services.services.tests.helpers import ServiceBuilder
-from human_services.locations.tests.helpers import LocationBuilder
 from bc211.parser import remove_double_escaped_html_markup
 from bc211.open_referral_csv_import import exceptions
+from common.testhelpers.random_test_values import a_string, a_latitude_as_a_string
 
 
 class LocationParserTests(TestCase):
@@ -99,4 +93,4 @@ class ParserHelperTests(TestCase):
 
     def test_raises_exception_when_country_is_invalid(self):
         with self.assertRaises(exceptions.InvalidFieldCsvParseException):
-           parsed_country = parser.two_letter_country_code_or_none('All countries')
+            parser.two_letter_country_code_or_none('All countries')
