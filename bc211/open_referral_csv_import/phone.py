@@ -66,7 +66,7 @@ def import_phone(row, collector, counters):
 
 def build_phone_number_type_active_record(row):
     active_record = PhoneNumberType()
-    active_record.id = parser.parse_required_type(row[8])
+    active_record.id = parser.parse_required_field_with_double_escaped_html('phone_type', row[8])
     return active_record
 
 
@@ -77,6 +77,6 @@ def build_phone_at_location_active_record(row):
         row[1]
     )
     active_record.phone_number = parser.parse_phone_number(row[6])
-    phone_type = parser.parse_required_type(row[8])
+    phone_type = parser.parse_required_field_with_double_escaped_html('phone_type', row[8])
     active_record.phone_number_type = PhoneNumberType.objects.get(pk=phone_type)
     return active_record
