@@ -8,7 +8,6 @@ from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
-from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 from bc211.open_referral_csv_import.exceptions import CsvParseException
 
 LOGGER = logging.getLogger(__name__)
@@ -78,7 +77,7 @@ def build_address_active_record(row):
 def build_location_address_active_record(address_active_record, row, collector):
     address_type = parser.parse_required_type(row[1])
     location_id = parser.parse_location_id(row[2])
-    if has_inactive_location_id(location_id, collector):
+    if collector.has_inactive_location_id(location_id):
         return
     location_active_record = get_active_record_or_raise(location_id, Location)
     address_type_active_record = get_active_record_or_raise(address_type, AddressType)

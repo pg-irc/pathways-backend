@@ -43,3 +43,6 @@ class InactiveRecordsCollector:
 
     def has_inactive_service_id(self, service_id):
         return service_id in self.inactive_services_ids
+
+    def has_inactive_location_id(self, location_id):
+        return location_id in self.inactive_locations_ids

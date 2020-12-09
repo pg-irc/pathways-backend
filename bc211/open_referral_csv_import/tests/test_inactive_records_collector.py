@@ -1,7 +1,6 @@
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_string, an_integer
 from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
-from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 from human_services.organizations.tests.helpers import OrganizationBuilder
 
 
@@ -49,4 +48,4 @@ class TestInactiveRecordsCollector(TestCase):
         self.collector.add_inactive_location_id(a_string())
         self.collector.add_inactive_location_id(a_string())
         self.collector.add_inactive_location_id(location_id)
-        self.assertTrue(has_inactive_location_id(location_id, self.collector))
+        self.assertTrue(self.collector.has_inactive_location_id(location_id))
