@@ -1,3 +1,6 @@
+from bc211.is_inactive import is_inactive
+
+
 class InactiveRecordsCollector:
     def __init__(self):
         self.inactive_organizations_ids = []
@@ -12,3 +15,9 @@ class InactiveRecordsCollector:
 
     def add_inactive_location_id(self, location_id):
         self.inactive_locations_ids.append(location_id)
+
+    def organization_has_inactive_data(self, organization_id, description):
+        if is_inactive(description):
+            self.add_inactive_organization_id(organization_id)
+            return True
+        return False
