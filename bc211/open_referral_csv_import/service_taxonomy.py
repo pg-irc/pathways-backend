@@ -55,13 +55,7 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
         taxonomy_id = parser.parse_required_field_with_double_escaped_html('taxonomy_id', row[2])
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
 
-        if current_service_id == last_service_id:
-            add_service_taxonomy_update_to_list(
-                taxonomy_term,
-                last_service,
-                service_taxonomies_update_list
-            )
-        else:
+        if current_service_id != last_service_id:
             bulk_update_service_taxonomies_update_list(service_taxonomies_update_list)
             set_last_service_to_current_active_record(
                 current_service_id,
@@ -69,6 +63,12 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
                 last_service
             )
             service_taxonomies_update_list.clear()
+        else:
+            add_service_taxonomy_update_to_list(
+                taxonomy_term,
+                last_service,
+                service_taxonomies_update_list
+            )
     except ValidationError as error:
         LOGGER.warning('%s', error.__str__())
     except ObjectDoesNotExist as error:
