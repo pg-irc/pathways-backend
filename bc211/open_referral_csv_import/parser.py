@@ -9,9 +9,9 @@ from bc211.open_referral_csv_import import exceptions
 LOGGER = logging.getLogger(__name__)
 
 
-def parse_organization_id(value):
-    organization_id = parse_required_field('organization_id', value)
-    return remove_double_escaped_html_markup(organization_id)
+def parse_required_field_with_double_escaped_html(field, value):
+    required_value = parse_required_field(field, value)
+    return remove_double_escaped_html_markup(required_value)
 
 
 def parse_service_id(value):

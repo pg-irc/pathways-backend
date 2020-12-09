@@ -45,7 +45,10 @@ def read_and_import_rows(reader, collector, counters):
 def import_service(row, collector, counters):
     try:
         service_id = parser.parse_service_id(row[0])
-        organization_id = parser.parse_organization_id(row[1])
+        organization_id = parser.parse_required_field_with_double_escaped_html(
+            'organization_id',
+            row[1]
+        )
         description = parser.parse_description(row[5])
         if collector.service_has_inactive_data(organization_id, service_id, description):
             return
