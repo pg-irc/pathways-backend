@@ -44,7 +44,7 @@ def read_and_import_rows(reader, collector, counters):
 
 def import_service(row, collector, counters):
     try:
-        service_id = parser.parse_service_id(row[0])
+        service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[0])
         organization_id = parser.parse_required_field_with_double_escaped_html(
             'organization_id',
             row[1]
