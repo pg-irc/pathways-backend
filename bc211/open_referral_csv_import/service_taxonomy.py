@@ -37,7 +37,7 @@ def read_and_import_rows(reader, collector):
     service_taxonomies_update_list = []
 
     for row in reader:
-        service_id = parser.parse_service_id(row[1])
+        service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
         if not row or collector.has_inactive_service_id(service_id):
             continue
         import_service_taxonomy(row, last_service, service_taxonomies_update_list)
@@ -46,7 +46,10 @@ def read_and_import_rows(reader, collector):
 def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
     try:
         last_service_id = last_service.id if last_service else None
-        current_service_id = parser.parse_service_id(row[1])
+        current_service_id = parser.parse_required_field_with_double_escaped_html(
+            'service_id',
+            row[1]
+        )
         taxonomy_id = parser.parse_taxonomy_id(row[2])
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
 

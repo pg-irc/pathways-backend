@@ -39,7 +39,7 @@ def read_and_import_rows(reader, collector, counters):
 
 
 def service_at_location_has_invalid_data(row, collector):
-    service_id = parser.parse_service_id(row[1])
+    service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
     location_id = parser.parse_location_id(row[2])
     return (collector.has_inactive_service_id(service_id) or
             collector.has_inactive_location_id(location_id))
@@ -56,6 +56,9 @@ def import_service_at_location(row, counters):
 
 def build_service_at_location_active_record(row):
     active_record = ServiceAtLocation()
-    active_record.service_id = parser.parse_service_id(row[1])
+    active_record.service_id = parser.parse_required_field_with_double_escaped_html(
+        'service_id',
+        row[1]
+    )
     active_record.location_id = parser.parse_location_id(row[2])
     return active_record
