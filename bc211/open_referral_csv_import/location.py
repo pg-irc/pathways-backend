@@ -42,7 +42,7 @@ def read_and_import_row(reader, collector, counters):
 
 def import_location(row, collector, counters):
     try:
-        location_id = parser.parse_location_id(row[0])
+        location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[0])
         organization_id = parser.parse_required_field_with_double_escaped_html(
             'organization_id',
             row[1]
@@ -58,7 +58,7 @@ def import_location(row, collector, counters):
 
 
 def build_location_active_record(row, location_id, organization_id, description):
-    location_id = parser.parse_location_id(row[0])
+    location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[0])
     active_record = Location()
     active_record.id = location_id
     active_record.organization_id = organization_id
