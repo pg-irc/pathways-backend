@@ -60,7 +60,7 @@ def import_organization(row, collector, counters):
 def build_active_record(row, organization_id, description):
     active_record = Organization()
     active_record.id = organization_id
-    active_record.name = parser.parse_name(row[1])
+    active_record.name = parser.parse_required_field_with_double_escaped_html('name', row[1])
     active_record.alternate_name = parser.parse_alternate_name(row[2])
     active_record.description = description
     active_record.email = parser.parse_email(active_record.id, row[4])

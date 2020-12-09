@@ -50,6 +50,6 @@ def import_taxonomy(row, counters):
 def build_taxonomy_active_record(row):
     active_record = TaxonomyTerm()
     active_record.taxonomy_id = parser.parse_taxonomy_id(row[0])
-    active_record.name = parser.parse_name(row[1])
+    active_record.name = parser.parse_required_field_with_double_escaped_html('name', row[1])
     return active_record
     
