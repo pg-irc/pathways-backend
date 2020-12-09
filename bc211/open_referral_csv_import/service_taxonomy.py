@@ -6,7 +6,6 @@ from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_service_id
 from human_services.services.models import Service
 from taxonomies.models import TaxonomyTerm
 
@@ -39,7 +38,7 @@ def read_and_import_rows(reader, collector):
 
     for row in reader:
         service_id = parser.parse_service_id(row[1])
-        if not row or has_inactive_service_id(service_id, collector):
+        if not row or collector.has_inactive_service_id(service_id):
             continue
         import_service_taxonomy(row, last_service, service_taxonomies_update_list)
 

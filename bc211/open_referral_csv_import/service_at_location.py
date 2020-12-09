@@ -6,8 +6,7 @@ from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
-from bc211.open_referral_csv_import.inactive_foreign_key import (
-    has_inactive_service_id, has_inactive_location_id)
+from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 from human_services.locations.models import ServiceAtLocation
 
 LOGGER = logging.getLogger(__name__)
@@ -43,7 +42,7 @@ def read_and_import_rows(reader, collector, counters):
 def service_at_location_has_invalid_data(row, collector):
     service_id = parser.parse_service_id(row[1])
     location_id = parser.parse_location_id(row[2])
-    return (has_inactive_service_id(service_id, collector) or
+    return (collector.has_inactive_service_id(service_id) or
             has_inactive_location_id(location_id, collector))
 
 
