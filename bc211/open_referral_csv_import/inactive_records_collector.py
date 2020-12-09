@@ -40,3 +40,6 @@ class InactiveRecordsCollector:
 
     def has_inactive_organization_id(self, organization_id):
         return organization_id in self.inactive_organizations_ids
+
+    def has_inactive_service_id(self, service_id):
+        return service_id in self.inactive_services_ids
