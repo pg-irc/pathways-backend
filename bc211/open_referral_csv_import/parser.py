@@ -44,14 +44,11 @@ def parse_last_verified_date(value):
 
 
 def parse_addresses(addresses_from_csv):
-    addresses = [parse_address(address) for address in addresses_from_csv]
+    addresses = [
+        parse_optional_field_with_double_escaped_html(address) for address in addresses_from_csv
+    ]
     non_empty_addresses = [address for address in addresses if address]
     return '\n'.join(non_empty_addresses)
-
-
-def parse_address(value):
-    address = parse_optional_field(value)
-    return remove_double_escaped_html_markup(address)
 
 
 def parse_city(value):
