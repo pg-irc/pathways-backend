@@ -37,14 +37,14 @@ class OrganizationImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_id(the_id).build()
-        import_organization(organization_data, ImportCounters())
+        import_organization(organization_data, InactiveRecordsCollector(), ImportCounters())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].id, the_id)
 
     def test_can_import_name(self):
         the_name = a_string()
         organization_data = OpenReferralCsvOrganizationBuilder().with_name(the_name).build()
-        import_organization(organization_data, ImportCounters())
+        import_organization(organization_data, InactiveRecordsCollector(), ImportCounters())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].name, the_name)
 
@@ -53,7 +53,7 @@ class OrganizationImporterTests(TestCase):
         organization_data = (OpenReferralCsvOrganizationBuilder().
                                 with_alternate_name(the_alternate_name).
                                 build())
-        import_organization(organization_data, ImportCounters())
+        import_organization(organization_data, InactiveRecordsCollector(), ImportCounters())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].alternate_name, the_alternate_name)
 
@@ -62,21 +62,21 @@ class OrganizationImporterTests(TestCase):
         organization_data = (OpenReferralCsvOrganizationBuilder().
                                 with_description(the_description).
                                 build())
-        import_organization(organization_data, ImportCounters())
+        import_organization(organization_data, InactiveRecordsCollector(), ImportCounters())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].description, the_description)
 
     def test_can_import_email(self):
         the_email = an_email_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_email(the_email).build()
-        import_organization(organization_data, ImportCounters())
+        import_organization(organization_data, InactiveRecordsCollector(), ImportCounters())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].email, the_email)
 
     def test_can_import_website(self):
         the_website = a_website_address()
         organization_data = OpenReferralCsvOrganizationBuilder().with_url(the_website).build()
-        import_organization(organization_data, ImportCounters())
+        import_organization(organization_data, InactiveRecordsCollector(), ImportCounters())
         organizations = Organization.objects.all()
         self.assertEqual(organizations[0].website, the_website)
 

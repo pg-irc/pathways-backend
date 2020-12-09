@@ -4,7 +4,6 @@ import logging
 from django.utils import translation
 from django.core.exceptions import ValidationError
 from human_services.organizations.models import Organization
-from bc211.is_inactive import is_inactive
 from bc211.open_referral_csv_import import parser
 from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
@@ -36,37 +35,31 @@ expected_headers = ['id', 'name', 'alternate_name', 'description', 'email', 'url
 
 def read_and_import_rows(reader, collector, counters):
     for row in reader:
-        if not row or organization_has_inactive_data(row, collector):
+        if not row:
             continue
-        import_organization(row, counters)
+        import_organization(row, collector, counters)
 
 
-def organization_has_inactive_data(row, collector):
-    organization_id = parser.parse_organization_id(row[0])
-    description = parser.parse_description(row[3])
-
-    if is_inactive(description):
-        collector.add_inactive_organization_id(organization_id)
-        return True
-    return False
-
-
-def import_organization(row, counters):
-    translation.activate('en')
+def import_organization(row, collector, counters):
     try:
-        active_record = build_active_record(row)
+        translation.activate('en')
+        organization_id = parser.parse_organization_id(row[0])
+        description = parser.parse_description(row[3])
+        if collector.organization_has_inactive_data(organization_id, description):
+            return
+        active_record = build_active_record(row, organization_id, description)
         active_record.save()
         counters.count_organization_created()
     except ValidationError as error:
         LOGGER.warning('%s', error.__str__())
 
 
-def build_active_record(row):
+def build_active_record(row, organization_id, description):
     active_record = Organization()
-    active_record.id = parser.parse_organization_id(row[0])
+    active_record.id = organization_id
     active_record.name = parser.parse_name(row[1])
     active_record.alternate_name = parser.parse_alternate_name(row[2])
-    active_record.description = parser.parse_description(row[3])
+    active_record.description = description
     active_record.email = parser.parse_email(active_record.id, row[4])
     active_record.website = parser.parse_website_with_prefix(active_record.id, row[5])
     return active_record
