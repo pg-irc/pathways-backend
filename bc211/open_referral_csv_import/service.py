@@ -49,7 +49,7 @@ def import_service(row, collector, counters):
             'organization_id',
             row[1]
         )
-        description = parser.parse_description(row[5])
+        description = parser.parse_optional_field_with_double_escaped_html(row[5])
         if collector.service_has_inactive_data(organization_id, service_id, description):
             return
         active_record = build_service_active_record(row, service_id, organization_id, description)

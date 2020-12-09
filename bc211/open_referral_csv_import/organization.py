@@ -47,7 +47,7 @@ def import_organization(row, collector, counters):
             'organization_id',
             row[0]
         )
-        description = parser.parse_description(row[3])
+        description = parser.parse_optional_field_with_double_escaped_html(row[3])
         if collector.organization_has_inactive_data(organization_id, description):
             return
         active_record = build_active_record(row, organization_id, description)
