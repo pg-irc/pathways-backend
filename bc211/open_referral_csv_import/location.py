@@ -5,7 +5,6 @@ from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from human_services.locations.models import Location
 from bc211.open_referral_csv_import import parser
-from bc211.is_inactive import is_inactive
 from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
@@ -36,41 +35,33 @@ expected_headers = ['id', 'organization_id', 'name', 'alternate_name', 'descript
 
 def read_and_import_row(reader, collector, counters):
     for row in reader:
-        if not row or location_has_inactive_data(row, collector):
+        if not row:
             continue
-        import_location(row, counters)
+        import_location(row, collector, counters)
 
 
-def location_has_inactive_data(row, collector):
-    location_id = parser.parse_location_id(row[0])
-    organization_id = parser.parse_organization_id(row[1])
-    description = parser.parse_description(row[4])
-
-    if is_inactive(description):
-        collector.add_inactive_location_id(location_id)
-        return True
-    if collector.has_inactive_organization_id(organization_id, collector):
-        return True
-    return False
-
-
-def import_location(row, counters):
+def import_location(row, collector, counters):
     try:
-        active_record = build_location_active_record(row)
+        location_id = parser.parse_location_id(row[0])
+        organization_id = parser.parse_organization_id(row[1])
+        description = parser.parse_description(row[4])
+        if collector.location_has_inactive_data(organization_id, location_id, description):
+            return
+        active_record = build_location_active_record(row, location_id, organization_id, description)
         active_record.save()
         counters.count_locations_created()
     except ValidationError as error:
         LOGGER.warning('%s', error.__str__())
 
 
-def build_location_active_record(row):
+def build_location_active_record(row, location_id, organization_id, description):
     location_id = parser.parse_location_id(row[0])
     active_record = Location()
     active_record.id = location_id
-    active_record.organization_id = parser.parse_organization_id(row[1])
+    active_record.organization_id = organization_id
     active_record.name = parser.parse_name(row[2])
     active_record.alternate_name = parser.parse_alternate_name(row[3])
-    active_record.description = parser.parse_description(row[4])
+    active_record.description = description
     latitude = parser.parse_coordinate_if_defined(row[6])
     longitude = parser.parse_coordinate_if_defined(row[7])
     active_record.point = set_coordinates_or_none(location_id, latitude, longitude)
