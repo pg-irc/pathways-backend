@@ -37,8 +37,10 @@ def read_and_import_rows(reader, collector):
     service_taxonomies_update_list = []
 
     for row in reader:
+        if not row:
+            continue
         service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
-        if not row or collector.has_inactive_service_id(service_id):
+        if collector.has_inactive_service_id(service_id):
             continue
         import_service_taxonomy(row, last_service, service_taxonomies_update_list)
 
@@ -53,7 +55,7 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
         taxonomy_id = parser.parse_required_field_with_double_escaped_html('taxonomy_id', row[2])
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
 
-        if current_service_id is last_service_id:
+        if current_service_id == last_service_id:
             add_service_taxonomy_update_to_list(
                 taxonomy_term,
                 last_service,
@@ -68,7 +70,7 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
             )
             service_taxonomies_update_list.clear()
     except ValidationError as error:
-        LOGGER.warning('{}'.format(error.__str__()))
+        LOGGER.warning('%s', error.__str__())
     except ObjectDoesNotExist as error:
         pass
 
