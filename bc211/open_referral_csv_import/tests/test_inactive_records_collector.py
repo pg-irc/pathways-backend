@@ -3,7 +3,7 @@ from common.testhelpers.random_test_values import a_string, an_integer
 from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
 from human_services.organizations.tests.helpers import OrganizationBuilder
 
-
+#  TODO are there even inactive locations? verify
 class TestInactiveRecordsCollector(TestCase):
     def setUp(self):
         self.collector = InactiveRecordsCollector()
