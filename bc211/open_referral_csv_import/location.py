@@ -43,7 +43,10 @@ def read_and_import_row(reader, collector, counters):
 def import_location(row, collector, counters):
     try:
         location_id = parser.parse_location_id(row[0])
-        organization_id = parser.parse_organization_id(row[1])
+        organization_id = parser.parse_required_field_with_double_escaped_html(
+            'organization_id',
+            row[1]
+        )
         description = parser.parse_description(row[4])
         if collector.location_has_inactive_data(organization_id, location_id, description):
             return

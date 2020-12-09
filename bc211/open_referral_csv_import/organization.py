@@ -43,7 +43,10 @@ def read_and_import_rows(reader, collector, counters):
 def import_organization(row, collector, counters):
     try:
         translation.activate('en')
-        organization_id = parser.parse_organization_id(row[0])
+        organization_id = parser.parse_required_field_with_double_escaped_html(
+            'organization_id',
+            row[0]
+        )
         description = parser.parse_description(row[3])
         if collector.organization_has_inactive_data(organization_id, description):
             return
