@@ -19,11 +19,6 @@ def parse_optional_field_with_double_escaped_html(value):
     return remove_double_escaped_html_markup(optional_value)
 
 
-def parse_description(value):
-    description = parse_optional_field(value)
-    return remove_double_escaped_html_markup(description)
-
-
 def parse_email(active_record_id, value):
     email = parse_optional_field(value)
     if csv_value_is_empty(email):

@@ -47,7 +47,7 @@ def import_location(row, collector, counters):
             'organization_id',
             row[1]
         )
-        description = parser.parse_description(row[4])
+        description = parser.parse_optional_field_with_double_escaped_html(row[4])
         if collector.location_has_inactive_data(organization_id, location_id, description):
             return
         active_record = build_location_active_record(row, location_id, organization_id, description)
