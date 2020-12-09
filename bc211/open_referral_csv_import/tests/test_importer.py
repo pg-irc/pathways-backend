@@ -89,20 +89,20 @@ class ServiceImporterTests(TestCase):
     def test_can_import_id(self):
         the_id = a_string()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_id(the_id).build()
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].id, the_id)
 
     def test_can_import_organization_id(self):
         service_data = OpenReferralCsvServiceBuilder(self.organization).build()
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].organization_id, self.organization_id)
 
     def test_can_import_name(self):
         the_name = a_string()
         service_data = OpenReferralCsvServiceBuilder(self.organization).with_name(the_name).build()
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].name, the_name)
 
@@ -111,7 +111,7 @@ class ServiceImporterTests(TestCase):
         service_data = (OpenReferralCsvServiceBuilder(self.organization).
                         with_alternate_name(the_alternate_name).
                         build())
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].alternate_name, the_alternate_name)
 
@@ -120,7 +120,7 @@ class ServiceImporterTests(TestCase):
         service_data = (OpenReferralCsvServiceBuilder(self.organization).
                         with_description(the_description).
                         build())
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].description, the_description)
 
@@ -129,7 +129,7 @@ class ServiceImporterTests(TestCase):
         service_data = (OpenReferralCsvServiceBuilder(self.organization).
                         with_url(the_website).
                         build())
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].website, the_website)
 
@@ -138,7 +138,7 @@ class ServiceImporterTests(TestCase):
         service_data = (OpenReferralCsvServiceBuilder(self.organization).
                         with_email(the_email).
                         build())
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(services[0].email, the_email)
 
@@ -147,7 +147,7 @@ class ServiceImporterTests(TestCase):
         service_data = (OpenReferralCsvServiceBuilder(self.organization).
                         with_last_verified_on(the_date).
                         build())
-        import_service(service_data, ImportCounters())
+        import_service(service_data, InactiveRecordsCollector(), ImportCounters())
         services = Service.objects.all()
         self.assertEqual(date.strftime(services[0].last_verified_date, "%Y-%m-%d"), the_date)
 

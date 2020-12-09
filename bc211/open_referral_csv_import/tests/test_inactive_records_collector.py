@@ -1,9 +1,8 @@
 from django.test import TestCase
 from common.testhelpers.random_test_values import a_string, an_integer
 from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
-from bc211.open_referral_csv_import.service import service_has_inactive_data
 from bc211.open_referral_csv_import.location import location_has_inactive_data
-from bc211.open_referral_csv_import.inactive_foreign_key import (has_inactive_organization_id,
+from bc211.open_referral_csv_import.inactive_foreign_key import (
                                                             has_inactive_service_id,
                                                             has_inactive_location_id)
 from bc211.open_referral_csv_import.tests import helpers
@@ -14,7 +13,8 @@ class TestInactiveRecordsCollector(TestCase):
     def setUp(self):
         self.collector = InactiveRecordsCollector()
         self.the_description = 'DEL' + str(an_integer(min=10, max=99))
-        self.organization = OrganizationBuilder().create()
+        self.organization_id = a_string()
+        self.organization = OrganizationBuilder().with_id(self.organization_id).create()
 
     def test_can_add_inactive_organization_id(self):
         the_id = a_string()
@@ -23,11 +23,7 @@ class TestInactiveRecordsCollector(TestCase):
 
     def test_can_add_inactive_service_id(self):
         the_id = a_string()
-        inactive_service_data = (helpers.OpenReferralCsvServiceBuilder(self.organization)
-                                .with_id(the_id)
-                                .with_description(self.the_description)
-                                .build())
-        service_has_inactive_data(inactive_service_data, self.collector)
+        self.collector.service_has_inactive_data(self.organization_id, the_id, self.the_description)
         self.assertEqual(self.collector.inactive_services_ids[0], the_id)
 
     def test_can_add_inactive_location_id(self):
@@ -44,7 +40,7 @@ class TestInactiveRecordsCollector(TestCase):
         self.collector.add_inactive_organization_id(a_string())
         self.collector.add_inactive_organization_id(organization_id)
         self.collector.add_inactive_organization_id(a_string())
-        self.assertTrue(has_inactive_organization_id(organization_id, self.collector))
+        self.assertTrue(self.collector.has_inactive_organization_id(organization_id))
 
     def test_returns_true_when_service_id_is_in_inactive_services_list(self):
         service_id = a_string()

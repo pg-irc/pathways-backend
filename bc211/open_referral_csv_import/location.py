@@ -9,7 +9,6 @@ from bc211.is_inactive import is_inactive
 from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
-from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_organization_id
 
 LOGGER = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ def location_has_inactive_data(row, collector):
     if is_inactive(description):
         collector.add_inactive_location_id(location_id)
         return True
-    if has_inactive_organization_id(organization_id, collector):
+    if collector.has_inactive_organization_id(organization_id, collector):
         return True
     return False
 
