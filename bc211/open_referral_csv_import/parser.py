@@ -14,10 +14,6 @@ def parse_required_field_with_double_escaped_html(field, value):
     return remove_double_escaped_html_markup(required_value)
 
 
-def parse_location_id(value):
-    location_id = parse_required_field('location_id', value)
-    return remove_double_escaped_html_markup(location_id)
-
 def parse_address_id(value):
     address_id = parse_required_field('address_id', value)
     return remove_double_escaped_html_markup(address_id)

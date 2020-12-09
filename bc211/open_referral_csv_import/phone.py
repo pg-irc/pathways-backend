@@ -45,7 +45,7 @@ def read_and_import_rows(reader, collector, counters):
 
 def import_phone(row, collector, counters):
     try:
-        location_id = parser.parse_location_id(row[1])
+        location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[1])
         phone_number_type_active_record = build_phone_number_type_active_record(row)
         phone_number_type_active_record.save()
         counters.count_phone_number_types()
@@ -72,7 +72,10 @@ def build_phone_number_type_active_record(row):
 
 def build_phone_at_location_active_record(row):
     active_record = PhoneAtLocation()
-    active_record.location_id = parser.parse_location_id(row[1])
+    active_record.location_id = parser.parse_required_field_with_double_escaped_html(
+        'location_id',
+        row[1]
+    )
     active_record.phone_number = parser.parse_phone_number(row[6])
     phone_type = parser.parse_required_type(row[8])
     active_record.phone_number_type = PhoneNumberType.objects.get(pk=phone_type)

@@ -80,7 +80,7 @@ def import_location_address(row, address, collector, counters):
 
 def build_location_address_active_record(row, address, collector):
     address_type = parser.parse_required_type(row[1])
-    location_id = parser.parse_location_id(row[2])
+    location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[2])
     if collector.has_inactive_location_id(location_id):
         return
     location_active_record = get_active_record_or_raise(location_id, Location)
