@@ -7,7 +7,6 @@ from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
 from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
 from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.inactive_foreign_key import has_inactive_location_id
 from bc211.open_referral_csv_import.exceptions import CsvParseException
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 
@@ -50,7 +49,7 @@ def import_phone(row, collector, counters):
         phone_number_type_active_record = build_phone_number_type_active_record(row)
         phone_number_type_active_record.save()
         counters.count_phone_number_types()
-        if has_inactive_location_id(location_id, collector):
+        if collector.has_inactive_location_id(location_id):
             return
         phone_at_location_active_record = build_phone_at_location_active_record(row)
         phone_at_location_active_record.save()
