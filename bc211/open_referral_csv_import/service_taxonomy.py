@@ -38,6 +38,8 @@ def read_and_import_rows(reader, collector):
 
     for row in reader:
         if not row:
+            bulk_update_service_taxonomies_update_list(service_taxonomies_update_list)
+            service_taxonomies_update_list.clear()
             continue
         service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
         if collector.has_inactive_service_id(service_id):
