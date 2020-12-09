@@ -64,7 +64,7 @@ def build_service_active_record(row, service_id, organization_id, description):
     active_record.id = service_id
     active_record.organization_id = organization_id
     active_record.name = parser.parse_required_field_with_double_escaped_html('name', row[3])
-    active_record.alternate_name = parser.parse_alternate_name(row[4])
+    active_record.alternate_name = parser.parse_optional_field_with_double_escaped_html(row[4])
     active_record.description = description
     active_record.website = parser.parse_website_with_prefix(active_record.id, row[6])
     active_record.email = parser.parse_email(active_record.id, row[7])
