@@ -60,9 +60,9 @@ def build_address_active_record(row):
     active_record.attention = parser.parse_optional_field_with_double_escaped_html(row[3])
     addresses = [row[4], row[5], row[6], row[7]]
     active_record.address = parser.parse_addresses(addresses)
-    active_record.city = parser.parse_city(row[8])
-    active_record.state_province = parser.parse_state_province(row[10])
-    active_record.postal_code = parser.parse_postal_code(row[11])
+    active_record.city = parser.parse_optional_field_with_double_escaped_html(row[8])
+    active_record.state_province = parser.parse_optional_field_with_double_escaped_html(row[10])
+    active_record.postal_code = parser.parse_optional_field_with_double_escaped_html(row[11])
     active_record.country = parser.parse_country(row[12])
     return active_record
 

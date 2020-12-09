@@ -51,21 +51,6 @@ def parse_addresses(addresses_from_csv):
     return '\n'.join(non_empty_addresses)
 
 
-def parse_city(value):
-    city = parse_optional_field(value)
-    return remove_double_escaped_html_markup(city)
-
-
-def parse_state_province(value):
-    state_province = parse_optional_field(value)
-    return remove_double_escaped_html_markup(state_province)
-
-
-def parse_postal_code(value):
-    postal_code = parse_optional_field(value)
-    return remove_double_escaped_html_markup(postal_code)
-
-
 def parse_country(value):
     country = parse_required_field('country', value)
     cleaned_country = remove_double_escaped_html_markup(country)
