@@ -14,9 +14,9 @@ def parse_required_field_with_double_escaped_html(field, value):
     return remove_double_escaped_html_markup(required_value)
 
 
-def parse_alternate_name(value):
-    alternate_name = parse_optional_field(value)
-    return remove_double_escaped_html_markup(alternate_name)
+def parse_optional_field_with_double_escaped_html(value):
+    optional_value = parse_optional_field(value)
+    return remove_double_escaped_html_markup(optional_value)
 
 
 def parse_description(value):
