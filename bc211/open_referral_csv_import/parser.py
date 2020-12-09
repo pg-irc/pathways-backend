@@ -43,11 +43,6 @@ def parse_last_verified_date(value):
     return datetime.strptime(last_verified_date, '%Y-%m-%d')
 
 
-def parse_required_type(value):
-    required_type = parse_required_field('type', value)
-    return remove_double_escaped_html_markup(required_type)
-
-
 def parse_attention(value):
     attention = parse_optional_field(value)
     return remove_double_escaped_html_markup(attention)
