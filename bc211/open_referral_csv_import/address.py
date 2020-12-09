@@ -20,7 +20,7 @@ def import_addresses_file(root_folder, collector, counters):
 
 
 def read_file(path, collector, counters):
-    with open(path, 'r') as file: 
+    with open(path, 'r') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
@@ -38,26 +38,19 @@ def read_and_import_rows(reader, collector, counters):
     for row in reader:
         if not row:
             continue
-        import_address_and_location_address(row, collector, counters)
+        address_active_record = import_address(row, counters)
+        import_location_address(row, address_active_record, collector, counters)
 
 
-def import_address_and_location_address(row, collector, counters):
+def import_address(row, counters):
     try:
         address_active_record = build_address_active_record(row)
         address_active_record.save()
         counters.count_address()
-        location_address_active_record = build_location_address_active_record(
-            address_active_record,
-            row,
-            collector
-        )
-        location_address_active_record.save()
-        counters.count_location_address()
+        return address_active_record
     except ValidationError as error:
-        LOGGER.warning('{}'.format(error.__str__()))
+        LOGGER.warning('%s', error.__str__())
     except CsvParseException:
-        pass
-    except ObjectDoesNotExist:
         pass
 
 
@@ -74,7 +67,18 @@ def build_address_active_record(row):
     return active_record
 
 
-def build_location_address_active_record(address_active_record, row, collector):
+def import_location_address(row, address, collector, counters):
+    try:
+        active_record = build_location_address_active_record(row, address, collector)
+        active_record.save()
+        counters.count_location_address()
+    except ValidationError as error:
+        LOGGER.warning('{}'.format(error.__str__()))
+    except ObjectDoesNotExist:
+        pass
+
+
+def build_location_address_active_record(row, address, collector):
     address_type = parser.parse_required_type(row[1])
     location_id = parser.parse_location_id(row[2])
     if collector.has_inactive_location_id(location_id):
@@ -82,7 +86,7 @@ def build_location_address_active_record(address_active_record, row, collector):
     location_active_record = get_active_record_or_raise(location_id, Location)
     address_type_active_record = get_active_record_or_raise(address_type, AddressType)
     return LocationAddress(
-            address=address_active_record,
+            address=address,
             location=location_active_record,
             address_type=address_type_active_record
     )
