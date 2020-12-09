@@ -61,7 +61,7 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
             last_service = active_record
             service_taxonomies_update_list.clear()
         else:
-            last_service.taxonomy_term.add(taxonomy_term)
+            last_service.taxonomy_terms.add(taxonomy_term)
             service_taxonomies_update_list.append(last_service)
     except ValidationError as error:
         LOGGER.warning('%s', error.__str__())
