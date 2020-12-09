@@ -50,7 +50,7 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
             'service_id',
             row[1]
         )
-        taxonomy_id = parser.parse_taxonomy_id(row[2])
+        taxonomy_id = parser.parse_required_field_with_double_escaped_html('taxonomy_id', row[2])
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
 
         if current_service_id is last_service_id:
