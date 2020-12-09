@@ -62,7 +62,7 @@ def build_location_active_record(row, location_id, organization_id, description)
     active_record = Location()
     active_record.id = location_id
     active_record.organization_id = organization_id
-    active_record.name = parser.parse_name(row[2])
+    active_record.name = parser.parse_required_field_with_double_escaped_html('name', row[2])
     active_record.alternate_name = parser.parse_alternate_name(row[3])
     active_record.description = description
     latitude = parser.parse_coordinate_if_defined(row[6])
