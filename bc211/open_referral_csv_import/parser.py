@@ -43,11 +43,6 @@ def parse_last_verified_date(value):
     return datetime.strptime(last_verified_date, '%Y-%m-%d')
 
 
-def parse_attention(value):
-    attention = parse_optional_field(value)
-    return remove_double_escaped_html_markup(attention)
-
-
 def parse_addresses(addresses_from_csv):
     addresses = [parse_address(address) for address in addresses_from_csv]
     non_empty_addresses = [address for address in addresses if address]

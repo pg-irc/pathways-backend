@@ -57,7 +57,7 @@ def import_address(row, counters):
 def build_address_active_record(row):
     active_record = Address()
     active_record.id = parser.parse_required_field_with_double_escaped_html('address_id', row[0])
-    active_record.attention = parser.parse_attention(row[3])
+    active_record.attention = parser.parse_optional_field_with_double_escaped_html(row[3])
     addresses = [row[4], row[5], row[6], row[7]]
     active_record.address = parser.parse_addresses(addresses)
     active_record.city = parser.parse_city(row[8])
