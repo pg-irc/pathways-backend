@@ -1,9 +1,10 @@
 import logging
 import string
 from django.test import TestCase
-from common.testhelpers.random_test_values import a_latitude, a_longitude, a_phone_number, a_string, a_website_address, an_email_address, an_integer
-from bc211.csv_import.tests.helpers import Bc211CsvDataBuilder
-from bc211.csv_import.parser import CsvMissingIdParseException, compute_hash, parse, phone_header_with_index_one
+from common.testhelpers.random_test_values import (a_latitude, a_longitude, a_phone_number, a_string,
+                                                   a_website_address, an_email_address, an_integer)
+from bc211.convert_icarol_csv.tests.helpers import Bc211CsvDataBuilder
+from bc211.convert_icarol_csv.parser import CsvMissingIdParseException, compute_hash, parse, phone_header_with_index_one
 
 logging.disable(logging.ERROR)
 

@@ -1,5 +1,5 @@
 import csv
-from bc211.csv_import.parser import compute_hash
+from bc211.convert_icarol_csv.parser import compute_hash
 
 organization_columns = ['id', 'name', 'alternate_name', 'description', 'email', 'url', 'tax_status', 'tax_id',
                         'year_incorporated', 'legal_status']
