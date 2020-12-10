@@ -34,20 +34,20 @@ expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
 
 def read_and_import_rows(reader, collector):
     last_service = None
-    service_taxonomies_update_list = []
+    taxonomy_updates_for_service = []
 
     for row in reader:
         if not row:
-            bulk_update_service_taxonomies_update_list(service_taxonomies_update_list)
-            service_taxonomies_update_list.clear()
+            bulk_update_taxonomy_updates_for_service(taxonomy_updates_for_service)
+            taxonomy_updates_for_service.clear()
             continue
         service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
         if collector.has_inactive_service_id(service_id):
             continue
-        import_service_taxonomy(row, last_service, service_taxonomies_update_list)
+        import_service_taxonomy(row, last_service, taxonomy_updates_for_service)
 
 
-def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
+def import_service_taxonomy(row, last_service, taxonomy_updates_for_service):
     try:
         last_service_id = last_service.id if last_service else None
         current_service_id = parser.parse_required_field_with_double_escaped_html(
@@ -58,22 +58,22 @@ def import_service_taxonomy(row, last_service, service_taxonomies_update_list):
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
 
         if current_service_id != last_service_id:
-            bulk_update_service_taxonomies_update_list(service_taxonomies_update_list)
+            bulk_update_taxonomy_updates_for_service(taxonomy_updates_for_service)
             active_record = build_service_taxonomy_active_record(current_service_id, taxonomy_term)
             last_service = active_record
-            service_taxonomies_update_list.clear()
+            taxonomy_updates_for_service.clear()
         else:
             last_service.taxonomy_terms.add(taxonomy_term)
-            service_taxonomies_update_list.append(last_service)
+            taxonomy_updates_for_service.append(last_service)
     except ValidationError as error:
         LOGGER.warning('%s', error.__str__())
     except ObjectDoesNotExist as error:
         pass
 
 
-def bulk_update_service_taxonomies_update_list(service_taxonomies_update_list):
-    if service_taxonomies_update_list:
-        Service.objects.bulk_update(service_taxonomies_update_list)
+def bulk_update_taxonomy_updates_for_service(taxonomy_updates_for_service):
+    if taxonomy_updates_for_service:
+        Service.objects.bulk_update(taxonomy_updates_for_service)
 
 
 def build_service_taxonomy_active_record(service_id, taxonomy_term):
