@@ -33,12 +33,12 @@ expected_headers = ['id', 'service_id', 'location_id', 'description']
 
 def read_and_import_rows(reader, collector, counters):
     for row in reader:
-        if not row or service_at_location_has_invalid_data(row, collector):
+        if not row or service_at_location_has_inactive_data(row, collector):
             continue
         import_service_at_location(row, counters)
 
 
-def service_at_location_has_invalid_data(row, collector):
+def service_at_location_has_inactive_data(row, collector):
     service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
     location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[2])
     return (collector.has_inactive_service_id(service_id) or
