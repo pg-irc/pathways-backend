@@ -1,6 +1,16 @@
 from django.db import models
 from common.models import RequiredCharField
-from push_notifications.validation import validate_token, validate_api_key
+from push_notifications.validation import validate_token
+from django.core.exceptions import ValidationError
+
+
+def validate_api_key(value):
+    if not PathwaysApiKey.objects.filter(pk=value).exists():
+        raise ValidationError('Invalid API key')
+
+
+class PathwaysApiKey(models.Model):
+    id = RequiredCharField(primary_key=True, max_length=200)
 
 
 class PushNotificationToken(models.Model):
