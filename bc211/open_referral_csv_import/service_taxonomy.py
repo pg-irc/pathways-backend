@@ -34,7 +34,6 @@ expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
 
 def read_and_import_rows(reader, collector):
     service = None
-
     for row in reader:
         if not row:
             continue
@@ -47,15 +46,11 @@ def read_and_import_rows(reader, collector):
 def import_service_taxonomy(row, service):
     try:
         last_service_id = service.id if service else None
-        current_service_id = parser.parse_required_field_with_double_escaped_html(
-            'service_id',
-            row[1]
-        )
+        service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
         taxonomy_id = parser.parse_required_field_with_double_escaped_html('taxonomy_id', row[2])
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
-
-        if current_service_id != last_service_id:
-            active_record = build_service_taxonomy_active_record(current_service_id, taxonomy_term)
+        if service_id != last_service_id:
+            active_record = build_service_taxonomy_active_record(service_id, taxonomy_term)
             return active_record
         service.taxonomy_terms.add(taxonomy_term)
         return None
