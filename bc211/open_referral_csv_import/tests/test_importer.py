@@ -429,7 +429,7 @@ class ServiceTaxonomyImporterTests(TestCase):
                                     with_service_id(self.service_id).
                                     with_taxonomy_id(self.taxonomy_id).
                                     build())
-        import_service_taxonomy(service_taxonomy_data, None, [])
+        import_service_taxonomy(service_taxonomy_data, None)
         service = Service.objects.get(pk=self.service_id)
         service_taxonomy_terms = service.taxonomy_terms.all()
         self.assertEqual(service_taxonomy_terms[0], self.taxonomy_term)

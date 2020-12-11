@@ -34,20 +34,17 @@ expected_headers = ['id', 'service_id', 'taxonomy_id', 'taxonomy_detail']
 
 def read_and_import_rows(reader, collector):
     service = None
-    taxonomy_updates_for_service = []
 
     for row in reader:
         if not row:
-            bulk_update_taxonomy_updates_for_service(taxonomy_updates_for_service)
-            taxonomy_updates_for_service.clear()
             continue
         service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[1])
         if collector.has_inactive_service_id(service_id):
             continue
-        service = import_service_taxonomy(row, service, taxonomy_updates_for_service)
+        service = import_service_taxonomy(row, service)
 
 
-def import_service_taxonomy(row, service, taxonomy_updates_for_service):
+def import_service_taxonomy(row, service):
     try:
         last_service_id = service.id if service else None
         current_service_id = parser.parse_required_field_with_double_escaped_html(
@@ -58,23 +55,14 @@ def import_service_taxonomy(row, service, taxonomy_updates_for_service):
         taxonomy_term = get_taxonomy_term_active_record_or_raise(taxonomy_id)
 
         if current_service_id != last_service_id:
-            bulk_update_taxonomy_updates_for_service(taxonomy_updates_for_service)
-            taxonomy_updates_for_service.clear()
             active_record = build_service_taxonomy_active_record(current_service_id, taxonomy_term)
             return active_record
-
         service.taxonomy_terms.add(taxonomy_term)
-        taxonomy_updates_for_service.append(service)
         return None
     except ValidationError as error:
         LOGGER.warning('%s', error.__str__())
     except ObjectDoesNotExist as error:
         pass
-
-
-def bulk_update_taxonomy_updates_for_service(taxonomy_updates_for_service):
-    if taxonomy_updates_for_service:
-        Service.objects.bulk_update(taxonomy_updates_for_service)
 
 
 def build_service_taxonomy_active_record(service_id, taxonomy_term):
