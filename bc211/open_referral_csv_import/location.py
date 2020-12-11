@@ -79,4 +79,5 @@ def set_coordinates_or_none(location_id, latitude, longitude):
 
 
 def has_coordinates(latitude, longitude):
-    return latitude and longitude is not None
+    return latitude and longitude
+    
