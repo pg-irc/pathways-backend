@@ -31,10 +31,8 @@ class InactiveRecordsCollector:
         return False
 
     def location_has_inactive_data(self, organization_id, location_id, description):
-        if is_inactive(description):
+        if is_inactive(description) or self.has_inactive_organization_id(organization_id):
             self.add_inactive_location_id(location_id)
-            return True
-        if self.has_inactive_organization_id(organization_id):
             return True
         return False
 

@@ -69,7 +69,10 @@ def build_address_active_record(row):
 
 def import_location_address(row, address, collector, counters):
     try:
-        active_record = build_location_address_active_record(row, address, collector)
+        location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[2])
+        if collector.has_inactive_location_id(location_id):
+            return
+        active_record = build_location_address_active_record(row, address, location_id)
         active_record.save()
         counters.count_location_address()
     except ValidationError as error:
@@ -78,11 +81,8 @@ def import_location_address(row, address, collector, counters):
         pass
 
 
-def build_location_address_active_record(row, address, collector):
+def build_location_address_active_record(row, address, location_id):
     address_type = parser.parse_required_field_with_double_escaped_html('address_type', row[1])
-    location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[2])
-    if collector.has_inactive_location_id(location_id):
-        return
     location_active_record = get_active_record_or_raise(location_id, Location)
     address_type_active_record = get_active_record_or_raise(address_type, AddressType)
     return LocationAddress(
