@@ -73,7 +73,7 @@ def build_location_active_record(row, location_id, organization_id, description)
 
 def set_coordinates_or_none(location_id, latitude, longitude):
     if not has_coordinates(latitude, longitude):
-        LOGGER.warning('Location with id "%s" does not have LatLong defined', location_id)
+        LOGGER.debug('Location with id "%s" does not have LatLong defined', location_id)
         return None
     return Point(longitude, latitude)
 
