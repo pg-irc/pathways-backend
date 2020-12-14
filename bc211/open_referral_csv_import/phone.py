@@ -1,7 +1,7 @@
 import csv
 import os
 import logging
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from bc211.open_referral_csv_import.headers_match_expected_format import (
     headers_match_expected_format)
@@ -57,9 +57,8 @@ def import_phone(row, collector, counters):
         LOGGER.warning('%s', error.__str__())
     except IntegrityError as error:
         LOGGER.warning('%s', error.__str__())
-    except ObjectDoesNotExist as error:
-        pass
-    except CsvParseException:
+        # Phone types are missing in many csv rows
+    except CsvParseException as error:
         pass
 
 
