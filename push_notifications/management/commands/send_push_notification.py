@@ -1,4 +1,4 @@
-import csv
+import math
 import re
 import logging
 from django.core.management.base import BaseCommand, CommandError
@@ -78,12 +78,23 @@ def validate_localized_notifications(notifications):
 
 
 def send_push_notifications(users, localized_notifications, url):
-    for user in users:
+    for i in range(0, len(users)):
+        user = users[i]
         token = user['token']
         locale = user['locale']
         message = localized_notifications[locale]
         extra = build_extra_data(url)
         send_push_message(token, message, extra)
+        print_progress(i, len(users))
+
+
+def print_progress(index, max_index):
+    if max_index < 1:
+        return
+    last_fraction = math.floor(20 * (index - 1)/max_index)
+    current_fraction = math.floor(20 * index/max_index)
+    if (last_fraction < current_fraction):
+        print(f'{5*current_fraction}% done')
 
 
 def build_extra_data(url):
