@@ -4,14 +4,14 @@ import xml.etree.ElementTree as etree
 from datetime import datetime
 from common.testhelpers.random_test_values import a_string, a_phone_number
 
-from bc211.import_xml import parser, dtos
-from bc211.import_xml.exceptions import MissingRequiredFieldXmlParseException
-from bc211.import_xml.parser import parse_agency
+from bc211.import_icarol_xml import parser, dtos
+from bc211.import_icarol_xml.exceptions import MissingRequiredFieldXmlParseException
+from bc211.import_icarol_xml.parser import parse_agency
 
 logging.disable(logging.ERROR)
 
-REAL_211_DATA_SET = 'bc211/import_xml/tests/data/BC211_data_one_agency.xml'
-MULTI_AGENCY__211_DATA_SET = 'bc211/import_xml/tests/data/BC211_data_excerpt.xml'
+REAL_211_DATA_SET = 'bc211/import_icarol_xml/tests/data/BC211_data_one_agency.xml'
+MULTI_AGENCY__211_DATA_SET = 'bc211/import_icarol_xml/tests/data/BC211_data_excerpt.xml'
 MINIMAL_211_DATA_SET = '''
 <Source>
     <Agency>

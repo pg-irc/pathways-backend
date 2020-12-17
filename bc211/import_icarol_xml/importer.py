@@ -1,10 +1,10 @@
 import logging
 import csv
 from bc211.is_inactive import is_inactive
-from bc211.import_xml.parser import parse_agency
-from bc211.import_xml.organization import update_entire_organization
+from bc211.import_icarol_xml.parser import parse_agency
+from bc211.import_icarol_xml.organization import update_entire_organization
 from django.contrib.gis.geos import Point
-from bc211.import_xml.exceptions import XmlParseException
+from bc211.import_icarol_xml.exceptions import XmlParseException
 
 LOGGER = logging.getLogger(__name__)
 

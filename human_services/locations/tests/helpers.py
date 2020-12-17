@@ -1,4 +1,4 @@
-from bc211.import_xml import dtos
+from bc211.import_icarol_xml import dtos
 from common.testhelpers.random_test_values import a_string, a_point
 from django.contrib.gis.geos import Point
 from human_services.locations.models import Location

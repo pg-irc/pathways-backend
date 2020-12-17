@@ -1,4 +1,4 @@
-from bc211.import_xml import validate
+from bc211.import_icarol_xml import validate
 
 class Organization:
     def __init__(self, **kwargs):

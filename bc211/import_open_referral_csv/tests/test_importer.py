@@ -2,7 +2,7 @@ import string
 from datetime import date
 from django.test import TestCase
 from bc211.import_open_referral_csv.inactive_records_collector import InactiveRecordsCollector
-from bc211.import_xml.import_counters import ImportCounters
+from bc211.import_icarol_xml.import_counters import ImportCounters
 from bc211.import_open_referral_csv.organization import import_organization
 from bc211.import_open_referral_csv.service import import_service
 from bc211.import_open_referral_csv.location import import_location

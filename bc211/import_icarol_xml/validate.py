@@ -1,4 +1,4 @@
-from bc211.import_xml import exceptions
+from bc211.import_icarol_xml import exceptions
 from django.utils.text import slugify
 
 def required_string(field, values):

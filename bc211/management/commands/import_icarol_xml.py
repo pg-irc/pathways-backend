@@ -1,11 +1,11 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.import_xml.importer import parse_csv, update_all_organizations
-from bc211.import_xml.import_counters import ImportCounters
+from bc211.import_icarol_xml.importer import parse_csv, update_all_organizations
+from bc211.import_icarol_xml.import_counters import ImportCounters
 import xml.etree.ElementTree as etree
 
 # invoke as follows:
-# python manage.py import_xml path/to/bc211.xml
+# python manage.py import_icarol_xml path/to/bc211.xml
 
 
 class Command(BaseCommand):

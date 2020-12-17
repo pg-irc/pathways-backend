@@ -1,7 +1,7 @@
 import logging
 from human_services.addresses.models import Address, AddressType
 from human_services.locations.models import LocationAddress
-from bc211.import_xml.parser import compute_address_id
+from bc211.import_icarol_xml.parser import compute_address_id
 
 LOGGER = logging.getLogger(__name__)
 

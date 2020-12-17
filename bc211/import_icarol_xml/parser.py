@@ -6,8 +6,8 @@ import html
 from html.parser import HTMLParser
 from urllib import parse as urlparse
 from datetime import datetime
-from bc211.import_xml import dtos
-from bc211.import_xml.exceptions import MissingRequiredFieldXmlParseException
+from bc211.import_icarol_xml import dtos
+from bc211.import_icarol_xml.exceptions import MissingRequiredFieldXmlParseException
 
 
 LOGGER = logging.getLogger(__name__)

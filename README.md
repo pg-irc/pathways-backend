@@ -148,7 +148,7 @@ You should now be able to access the server at http://127.0.0.1:8000/v1/. The Dj
 Import BC-211 data
 
 ```
-python manage.py import_xml ~/path/to/AIRSXML_2252_Export_20170109050136__211.xml
+python manage.py import_icarol_xml ~/path/to/AIRSXML_2252_Export_20170109050136__211.xml
 
 ```
 

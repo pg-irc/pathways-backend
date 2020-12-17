@@ -1,10 +1,10 @@
 from django.db import connection
 from django.test import TestCase
 from django.utils import translation
-from bc211.import_xml import dtos
-from bc211.import_xml.importer import update_entire_organization, update_all_organizations
-from bc211.import_xml.location import update_locations
-from bc211.import_xml.import_counters import ImportCounters
+from bc211.import_icarol_xml import dtos
+from bc211.import_icarol_xml.importer import update_entire_organization, update_all_organizations
+from bc211.import_icarol_xml.location import update_locations
+from bc211.import_icarol_xml.import_counters import ImportCounters
 from human_services.addresses.models import Address, AddressType
 from human_services.addresses.tests.helpers import AddressBuilder
 from human_services.organizations.tests.helpers import OrganizationBuilder
@@ -26,12 +26,12 @@ translation.activate('en')
 class UpdateOrganizationTests(TestCase):
 
     def test_can_create_an_organization(self):
-        BASELINE = 'bc211/import_xml/tests/data/BC211_data_excerpt.xml'
+        BASELINE = 'bc211/import_icarol_xml/tests/data/BC211_data_excerpt.xml'
         nodes = etree.iterparse(BASELINE, events=('end',))
         update_all_organizations(nodes, {}, ImportCounters())
 
         counters = ImportCounters()
-        FILE_WITH_MISSING_ORG = 'bc211/import_xml/tests/data/BC211_data_excerpt_with_one_more_organization.xml'
+        FILE_WITH_MISSING_ORG = 'bc211/import_icarol_xml/tests/data/BC211_data_excerpt_with_one_more_organization.xml'
         nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
         update_all_organizations(nodes, {}, counters)
 

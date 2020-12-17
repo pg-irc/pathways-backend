@@ -3,8 +3,8 @@ from django.core.management.base import CommandError
 from django.test import TestCase
 from six import StringIO
 
-ONE_AGENCY_FIXTURE = 'bc211/import_xml/tests/data/BC211_data_one_agency.xml'
-MULTI_AGENCY_FIXTURE = 'bc211/import_xml/tests/data/BC211_data_excerpt.xml'
+ONE_AGENCY_FIXTURE = 'bc211/import_icarol_xml/tests/data/BC211_data_one_agency.xml'
+MULTI_AGENCY_FIXTURE = 'bc211/import_icarol_xml/tests/data/BC211_data_excerpt.xml'
 
 
 class TestImportBc211Data(TestCase):
