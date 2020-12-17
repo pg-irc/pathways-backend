@@ -3,7 +3,7 @@ from newcomers_guide.generate_fixtures import set_taxonomy_term_references_on_co
 from newcomers_guide.read_data import read_topic_data, read_taxonomy_data
 from newcomers_guide.parse_data import parse_topic_files, parse_taxonomy_files
 from newcomers_guide.save_topics import save_topics
-from bc211.import_counters import ImportCounters
+from bc211.import_icarol_xml.import_counters import ImportCounters
 
 
 # invoke as follows:

@@ -1,5 +1,5 @@
 import string
-from bc211 import dtos
+from bc211.import_icarol_xml import dtos
 from human_services.addresses import models
 from common.testhelpers.random_test_values import a_string
 

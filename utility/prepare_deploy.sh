@@ -146,7 +146,7 @@ checkForSuccess "reset database"
 checkForSuccess "migrate database"
 
 echo "importing BC-211 data ..."
-./manage.py import_bc211_data $BC211Path --cityLatLongs $CityLatLongs
+./manage.py import_icarol_xml $BC211Path --cityLatLongs $CityLatLongs
 checkForSuccess "import BC211 data into the database"
 
 ./manage.py import_newcomers_guide $NewcomersGuidePath
