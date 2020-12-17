@@ -5,7 +5,7 @@ from bc211.import_xml.import_counters import ImportCounters
 import xml.etree.ElementTree as etree
 
 # invoke as follows:
-# python manage.py import_bc211_data path/to/bc211.xml
+# python manage.py import_xml path/to/bc211.xml
 
 
 class Command(BaseCommand):
