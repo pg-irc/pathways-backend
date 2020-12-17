@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Source xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SourceEntity="BC 211 RecordOwner = 2252 - Vancouver, BC" xsi:noNamespaceSchemaLocation="http://www.iCarol.com/schemas/AIRS_XSD_3_0.xml" OriginTimestamp="2017-01-09T05:01:43.820119-05:00" SoftwareVendor="iCarol" SoftwareVersion="3.5.0.0" TaxonomyVersion="2017-01-07T23:05:42.15" SchemaVersion="3.0">
+  <Agency RecordOwner="2252" LegalStatus="None or unknown" ExcludeFromWebsite="false" ExcludeFromDirectory="false">
+    <Key>9487364</Key>
+    <Name>Langley Child Development Centre</Name>
+    <AgencyDescription>Provides inclusive, family-centred early intervention services for children with special needs, from birth to 19 years of age. The &amp;lt;b&amp;gt;Infant Development Program&amp;lt;/b&amp;gt; offers home visits to families with young children from birth to age three who have delays or are at risk for delays. The &amp;lt;b&amp;gt;Supported Child Development Program&amp;lt;/b&amp;gt; supports children and youth in their neighbourhood child care settings. The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child Development Program&amp;lt;/b&amp;gt; utilizes cultural teachings to engage children of Aboriginal heritage who have or are at risk for delays. The &amp;lt;b&amp;gt;Child and Youth Program&amp;lt;/b&amp;gt; provides recreational activities, after-school life skills, and summer day camps for school-aged children. A resource library and educational opportunities are available for parents, caregivers, and professionals. All programs provide social and networking opportunities for parents.</AgencyDescription>
+    <AKA>
+      <Name>Langley Children's Society</Name>
+      <Confidential>false</Confidential>
+      <Description />
+    </AKA>
+    <AgencyLocation>
+      <Name />
+      <SiteDescription />
+      <PhysicalAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+    </AgencyLocation>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-534-1155</PhoneNumber>
+      <Type>Phone1</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>After Hours</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Business Line</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Hotline</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber />
+      <Type>Out of area</Type>
+    </Phone>
+    <Phone TollFree="false" Confidential="false">
+      <PhoneNumber>604-534-1814</PhoneNumber>
+      <Type>Fax</Type>
+    </Phone>
+    <URL>
+      <Address>www.langleycdc.com</Address>
+      <Note />
+    </URL>
+    <Email>
+      <Address>info@langleycdc.com</Address>
+    </Email>
+    <IRSStatus />
+    <Site LegalStatus="None or unknown">
+      <Key>9487364</Key>
+      <Name>Langley Child Development Centre</Name>
+      <SiteDescription>Provides inclusive, family-centred early intervention services for children with special needs, from birth to 19 years of age. The &amp;lt;b&amp;gt;Infant Development Program&amp;lt;/b&amp;gt; offers home visits to families with young children from birth to age three who have delays or are at risk for delays. The &amp;lt;b&amp;gt;Supported Child Development Program&amp;lt;/b&amp;gt; supports children and youth in their neighbourhood child care settings. The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child Development Program&amp;lt;/b&amp;gt; utilizes cultural teachings to engage children of Aboriginal heritage who have or are at risk for delays. The &amp;lt;b&amp;gt;Child and Youth Program&amp;lt;/b&amp;gt; provides recreational activities, after-school life skills, and summer day camps for school-aged children. A resource library and educational opportunities are available for parents, caregivers, and professionals. All programs provide social and networking opportunities for parents.</SiteDescription>
+      <AKA>
+        <Name>Langley Children's Society</Name>
+        <Confidential>false</Confidential>
+        <Description />
+      </AKA>
+      <PhysicalAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </PhysicalAddress>
+      <MailingAddress Confidential="false">
+        <Line1>203-5171 221A Street</Line1>
+        <City>Langley</City>
+        <State>BC</State>
+        <ZipCode>V2Y 0A2</ZipCode>
+        <Country>CA</Country>
+      </MailingAddress>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-534-1155</PhoneNumber>
+        <Type>Phone1</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>After Hours</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Business Line</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Hotline</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber />
+        <Type>Out of area</Type>
+      </Phone>
+      <Phone TollFree="false" Confidential="false">
+        <PhoneNumber>604-534-1814</PhoneNumber>
+        <Type>Fax</Type>
+      </Phone>
+      <URL>
+        <Address>www.langleycdc.com</Address>
+        <Note />
+      </URL>
+      <Email>
+        <Address>info@langleycdc.com</Address>
+      </Email>
+      <SiteService>
+        <Name>Langley Child Development Centre</Name>
+        <Key>9487364</Key>
+        <AKA>
+          <Name>Langley Children's Society</Name>
+          <Confidential>false</Confidential>
+          <Description />
+        </AKA>
+        <Description>Provides inclusive, family-centred early intervention services for children with special needs, from birth to 19 years of age. The &amp;lt;b&amp;gt;Infant Development Program&amp;lt;/b&amp;gt; offers home visits to families with young children from birth to age three who have delays or are at risk for delays. The &amp;lt;b&amp;gt;Supported Child Development Program&amp;lt;/b&amp;gt; supports children and youth in their neighbourhood child care settings. The &amp;lt;b&amp;gt;Aboriginal Infant and Supported Child Development Program&amp;lt;/b&amp;gt; utilizes cultural teachings to engage children of Aboriginal heritage who have or are at risk for delays. The &amp;lt;b&amp;gt;Child and Youth Program&amp;lt;/b&amp;gt; provides recreational activities, after-school life skills, and summer day camps for school-aged children. A resource library and educational opportunities are available for parents, caregivers, and professionals. All programs provide social and networking opportunities for parents.</Description>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-534-1155</PhoneNumber>
+          <Type>Phone1</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>After Hours</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Business Line</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Hotline</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber />
+          <Type>Out of area</Type>
+        </Phone>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>604-534-1814</PhoneNumber>
+          <Type>Fax</Type>
+        </Phone>
+        <TimeOpen />
+        <Seasonal>
+          <Description />
+          <StartDate />
+          <EndDate />
+        </Seasonal>
+        <Taxonomy>
+          <Code>TJ-4400.8100</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>PL-6400.1500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>LR-1700</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>HD-1800.6500</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CAMPS (residential)',why:'disability',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INFANT DEVELOPMENT PROGRAMS'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'LIBRARIES',why:'disability'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'RECREATION',why:'disability',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'CONSULTING',why:'day care',why:'disability',why:'children',who:'Service Providers'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'developmental delay',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'disability',who:'Children'}</Code>
+        </Taxonomy>
+        <Taxonomy>
+          <Code>{what:'INTERVENTION',why:'disability',who:'Youth'}</Code>
+        </Taxonomy>
+        <GeographicAreaServed>
+          <City>Langley</City>
+          <State>BC</State>
+          <Country>Canada</Country>
+        </GeographicAreaServed>
+        <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-02-01" DateLastVerified="2016-04-14" DateOfLastAction="2016-05-03">
+          <Contact Type="Resource Specialist">
+            <Title>Office Manager</Title>
+            <Name>Karla Fortin</Name>
+            <Email>
+              <Address>kfortin@langleycdc.com</Address>
+            </Email>
+            <Phone TollFree="false" Confidential="false">
+              <PhoneNumber>Local 114</PhoneNumber>
+            </Phone>
+          </Contact>
+        </ResourceInfo>
+        <URL>
+          <Address>www.langleycdc.com</Address>
+          <Note />
+        </URL>
+        <Email>
+          <Address>info@langleycdc.com</Address>
+        </Email>
+      </SiteService>
+      <SpatialLocation>
+        <Datum>49.087284, -122.607918</Datum>
+        <Latitude>49.087284</Latitude>
+        <Longitude>-122.607918</Longitude>
+      </SpatialLocation>
+    </Site>
+    <ResourceInfo AvailableForDirectory="true" AvailableForReferral="true" AvailableForResearch="true" DateAdded="1982-02-01" DateLastVerified="2016-04-14" DateOfLastAction="2016-05-03">
+      <Contact Type="Resource Specialist">
+        <Title>Office Manager</Title>
+        <Name>Karla Fortin</Name>
+        <Email>
+          <Address>kfortin@langleycdc.com</Address>
+        </Email>
+        <Phone TollFree="false" Confidential="false">
+          <PhoneNumber>Local 114</PhoneNumber>
+        </Phone>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'CAMPS (residential)',why:'disability',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INFANT DEVELOPMENT PROGRAMS'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'LIBRARIES',why:'disability'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'RECREATION',why:'disability',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'CONSULTING',why:'day care',why:'disability',why:'children',who:'Service Providers'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'developmental delay',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'disability',who:'Children'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+      <Contact Type="Main Contact">
+        <Title>what:'INTERVENTION',why:'disability',who:'Youth'</Title>
+        <Name>Facet string for BC211</Name>
+      </Contact>
+    </ResourceInfo>
+    <SpatialLocation>
+      <Datum>49.087284, -122.607918</Datum>
+      <Latitude>49.087284</Latitude>
+      <Longitude>-122.607918</Longitude>
+    </SpatialLocation>
+    <GeographicAreaServed>
+      <City>Langley</City>
+      <State>BC</State>
+      <Country>Canada</Country>
+    </GeographicAreaServed>
+  </Agency>
+</Source>
+

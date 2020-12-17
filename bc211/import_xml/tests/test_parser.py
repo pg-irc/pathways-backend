@@ -10,8 +10,8 @@ from bc211.import_xml.parser import parse_agency
 
 logging.disable(logging.ERROR)
 
-REAL_211_DATA_SET = 'bc211/data/BC211_data_one_agency.xml'
-MULTI_AGENCY__211_DATA_SET = 'bc211/data/BC211_data_excerpt.xml'
+REAL_211_DATA_SET = 'bc211/import_xml/tests/data/BC211_data_one_agency.xml'
+MULTI_AGENCY__211_DATA_SET = 'bc211/import_xml/tests/data/BC211_data_excerpt.xml'
 MINIMAL_211_DATA_SET = '''
 <Source>
     <Agency>

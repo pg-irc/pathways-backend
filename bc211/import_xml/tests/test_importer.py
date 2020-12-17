@@ -21,10 +21,10 @@ from bc211.import_xml.parser import parse_agency
 
 logging.disable(logging.ERROR)
 
-ONE_AGENCY_FIXTURE = 'bc211/data/BC211_data_one_agency.xml'
-MULTI_AGENCY_FIXTURE = 'bc211/data/BC211_data_excerpt.xml'
-SHARED_SERVICE_FIXTURE = 'bc211/data/BC211_data_service_53489235_at_two_sites.xml'
-INVALID_AGENCIES_FIXTURE = 'bc211/data/BC211_data_with_invalid_agencies.xml'
+ONE_AGENCY_FIXTURE = 'bc211/import_xml/tests/data/BC211_data_one_agency.xml'
+MULTI_AGENCY_FIXTURE = 'bc211/import_xml/tests/data/BC211_data_excerpt.xml'
+SHARED_SERVICE_FIXTURE = 'bc211/import_xml/tests/data/BC211_data_service_53489235_at_two_sites.xml'
+INVALID_AGENCIES_FIXTURE = 'bc211/import_xml/tests/data/BC211_data_with_invalid_agencies.xml'
 
 
 def read_records_from_file(file):

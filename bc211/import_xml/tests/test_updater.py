@@ -26,12 +26,12 @@ translation.activate('en')
 class UpdateOrganizationTests(TestCase):
 
     def test_can_create_an_organization(self):
-        BASELINE = 'bc211/data/BC211_data_excerpt.xml'
+        BASELINE = 'bc211/import_xml/tests/data/BC211_data_excerpt.xml'
         nodes = etree.iterparse(BASELINE, events=('end',))
         update_all_organizations(nodes, {}, ImportCounters())
 
         counters = ImportCounters()
-        FILE_WITH_MISSING_ORG = 'bc211/data/BC211_data_excerpt_with_one_more_organization.xml'
+        FILE_WITH_MISSING_ORG = 'bc211/import_xml/tests/data/BC211_data_excerpt_with_one_more_organization.xml'
         nodes = etree.iterparse(FILE_WITH_MISSING_ORG, events=('end',))
         update_all_organizations(nodes, {}, counters)
 
