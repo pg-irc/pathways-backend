@@ -1,7 +1,7 @@
 import argparse
 from django.core.management.base import BaseCommand
-from bc211.csv_import.parser import parse
-from bc211.csv_import.csv_file_sink import CsvFileSink
+from bc211.convert_icarol_csv.parser import parse
+from bc211.convert_icarol_csv.csv_file_sink import CsvFileSink
 
 # invoke as follows:
 # python manage.py import_bc211_csv_data path/to/bc211.csv
