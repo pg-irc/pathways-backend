@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 def update_locations(locations, organization_id, city_latlong_map, counters):
     for location in locations:
-        if is_inactive(location):
+        if is_inactive(location.description):
             continue
         existing = get_existing_location_or_none(location)
         if not existing:
@@ -19,7 +19,7 @@ def update_locations(locations, organization_id, city_latlong_map, counters):
             counters.count_locations_created()
             LOGGER.debug('created "%s" "%s"', location.id, location.name)
         else:
-            LOGGER.warn('duplicate location "%s" "%s"', location.id, location.name)
+            LOGGER.warning('duplicate location "%s" "%s"', location.id, location.name)
 
 
 def get_existing_location_or_none(location):

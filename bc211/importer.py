@@ -22,7 +22,7 @@ def update_all_organizations(nodes, city_latlong_map, counts):
         if elem.tag == 'Agency':
             try:
                 agency = parse_agency(elem)
-                if is_inactive(agency):
+                if is_inactive(agency.description):
                     continue
                 last_organization = agency.id
                 update_entire_organization(agency, city_latlong_map, counts)

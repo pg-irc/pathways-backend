@@ -3,7 +3,7 @@ from bc211.importer import handle_parser_errors, update_entire_organization
 from bc211.service import update_services_for_location
 from bc211.location import update_locations
 from bc211.import_counters import ImportCounters
-from common.testhelpers.random_test_values import a_string
+from common.testhelpers.random_test_values import a_string, an_integer
 from django.contrib.gis.geos import Point
 from django.test import TestCase
 from human_services.locations.models import Location
@@ -112,8 +112,8 @@ class LocationWithMissingLatLongImportTests(TestCase):
 
 class InactiveDataImportTests(TestCase):
 
-    def test_do_not_import_inactive_organization_prefixed_with_DEL(self):
-        inactive_description = 'DEL ' + a_string()
+    def test_do_not_import_inactive_organization_prefixed_with_DEL_and_number(self):
+        inactive_description = 'DEL' + str(an_integer(min=10, max=99))
         inactive_organization = OrganizationBuilder().with_description(inactive_description).build_dto()
         active_organization = OrganizationBuilder().build_dto()
 
@@ -124,8 +124,8 @@ class InactiveDataImportTests(TestCase):
         self.assertEqual(len(all_records_from_database), 1)
         self.assertEqual(all_records_from_database[0].id, active_organization.id)
 
-    def test_do_not_import_inactive_organization_prefixed_with_tab_DEL(self):
-        inactive_description = '\tDEL ' + a_string()
+    def test_do_not_import_inactive_organization_prefixed_with_tab_DEL_and_number(self):
+        inactive_description = '\tDEL' + str(an_integer(min=10, max=99))
         inactive_organization = OrganizationBuilder().with_description(inactive_description).build_dto()
         active_organization = OrganizationBuilder().build_dto()
 
@@ -136,9 +136,9 @@ class InactiveDataImportTests(TestCase):
         self.assertEqual(len(all_records_from_database), 1)
         self.assertEqual(all_records_from_database[0].id, active_organization.id)
 
-    def test_do_not_import_inactive_location(self):
+    def test_do_not_import_inactive_location_and_number(self):
         organization = OrganizationBuilder().create()
-        inactive_description = 'DEL ' + a_string()
+        inactive_description = 'DEL' + str(an_integer(min=10, max=99))
         inactive_location = LocationBuilder(organization).with_description(inactive_description).build_dto()
         active_location = LocationBuilder(organization).build_dto()
 
@@ -151,7 +151,7 @@ class InactiveDataImportTests(TestCase):
     def test_do_not_import_inactive_service(self):
         organization = OrganizationBuilder().create()
         location = LocationBuilder(organization).create()
-        inactive_description = 'DEL ' + a_string()
+        inactive_description = 'DEL' + str(an_integer(min=10, max=99))
         inactive_service = (ServiceBuilder(organization).
                             with_location(location).
                             with_description(inactive_description).

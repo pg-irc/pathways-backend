@@ -18,14 +18,23 @@ class TestAddressModel(TestCase):
         AddressBuilder().with_address('').create()
         self.assertTrue(Address.objects.first().address is None)
 
+    def test_has_id_field(self):
+        address = AddressBuilder().build()
+        address_from_db = validate_save_and_reload(address)
+        self.assertEqual(address_from_db.id, address.id)
+
+    def test_id_cannot_be_empty(self):
+        with self.assertRaises(exceptions.ValidationError):
+            AddressBuilder().with_id('').create()
+
     def test_has_city_field(self):
         address = AddressBuilder().build()
         address_from_db = validate_save_and_reload(address)
         self.assertEqual(address_from_db.city, address.city)
 
-    def test_city_field_cannot_be_empty(self):
-        with self.assertRaises(exceptions.ValidationError):
-            AddressBuilder().with_city('').create()
+    def test_empy_city_field_saves_as_null(self):
+        address = AddressBuilder().with_city('').create()
+        self.assertTrue(Address.objects.first().city is None)
 
     def test_has_country_field(self):
         address = AddressBuilder().build()

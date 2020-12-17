@@ -1,8 +1,8 @@
 import string
 import random
-from . import private
-from django.contrib.gis.geos import Point
 from datetime import datetime
+from django.contrib.gis.geos import Point
+from . import private
 
 private.set_random_seed_at_load_time()
 
@@ -63,3 +63,7 @@ def a_date():
     rand_delta = random.randint(0, 1e9)
     now = datetime.timestamp(datetime.now())
     return datetime.fromtimestamp(now - rand_delta)
+
+
+def a_country_code():
+    return a_string(2, string.ascii_uppercase)
