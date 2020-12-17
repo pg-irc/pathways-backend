@@ -146,7 +146,9 @@ def parse_phone_number_fields(header, value, phone_numbers):
         phone_index = get_zero_based_phone_index(header)
         set_phone_array_length(phone_numbers, phone_index)
         phone_numbers[phone_index][output_phone_header] = value
-        if header == 'PhoneFax':
+        if header == 'Phone1Type' and value == '':
+            phone_numbers[phone_index]['type'] = 'Phone 1'
+        elif header == 'PhoneFax':
             phone_numbers[phone_index]['type'] = 'Fax'
 
 
