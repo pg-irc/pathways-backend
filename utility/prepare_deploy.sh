@@ -42,7 +42,7 @@ usage() {
     echo "Mandatory arguments:"
     echo
     echo "    --bc211Path"
-    echo "                The path to the BC211 data set in XML iCarol format."
+    echo "                The path to the BC211 data set in CSV iCarol format."
     echo
     echo "    --cityLatLongs"
     echo "                The path to the city and latlong dictionary in CSV format."
@@ -145,9 +145,14 @@ checkForSuccess "reset database"
 ./manage.py migrate
 checkForSuccess "migrate database"
 
-echo "importing BC-211 data ..."
-./manage.py import_icarol_xml $BC211Path --cityLatLongs $CityLatLongs
-checkForSuccess "import BC211 data into the database"
+echo "converting iCarol BC-211 CSV to open referral standard..."
+mkdir -p ./open_referral_csv_files
+./manage.py convert_icarol_csv $BC211Path ./open_referral_csv_files
+checkForSuccess "convert iCarol BC-211 data into open referral standard"
+
+echo "importing BC-211 open referral csv data into the database..."
+./manage.py import_open_referral_csv ./open_referral_csv_files --cityLatLongs $CityLatLongs
+checkForSuccess "import Bc-211 open referral data into the database"
 
 ./manage.py import_newcomers_guide $NewcomersGuidePath
 checkForSuccess "import newcomers guide data into the database"
