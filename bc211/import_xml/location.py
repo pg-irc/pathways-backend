@@ -1,8 +1,8 @@
 import logging
-from bc211.address import create_address_for_location
-from bc211.phone_number import create_phone_numbers_for_location
+from bc211.import_xml.address import create_address_for_location
+from bc211.import_xml.phone_number import create_phone_numbers_for_location
 from bc211.is_inactive import is_inactive
-from bc211 import dtos
+from bc211.import_xml import dtos
 from django.contrib.gis.geos import Point
 from human_services.locations.models import Location
 

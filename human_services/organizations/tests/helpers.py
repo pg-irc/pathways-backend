@@ -1,4 +1,4 @@
-from bc211 import dtos
+from bc211.import_xml import dtos
 from human_services.organizations import models
 from common.testhelpers.random_test_values import a_string, a_website_address, an_email_address
 

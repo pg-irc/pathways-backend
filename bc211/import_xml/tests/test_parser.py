@@ -4,9 +4,9 @@ import xml.etree.ElementTree as etree
 from datetime import datetime
 from common.testhelpers.random_test_values import a_string, a_phone_number
 
-from bc211 import parser, dtos
-from bc211.exceptions import MissingRequiredFieldXmlParseException
-from bc211.parser import parse_agency
+from bc211.import_xml import parser, dtos
+from bc211.import_xml.exceptions import MissingRequiredFieldXmlParseException
+from bc211.import_xml.parser import parse_agency
 
 logging.disable(logging.ERROR)
 

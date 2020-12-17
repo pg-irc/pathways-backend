@@ -2,7 +2,7 @@ import string
 from datetime import date
 from django.test import TestCase
 from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
-from bc211.import_counters import ImportCounters
+from bc211.import_xml.import_counters import ImportCounters
 from bc211.open_referral_csv_import.organization import import_organization
 from bc211.open_referral_csv_import.service import import_service
 from bc211.open_referral_csv_import.location import import_location
@@ -292,7 +292,7 @@ class AddressImporterTests(TestCase):
         import_address(address_data, ImportCounters())
         addresses = Address.objects.all()
         self.assertEqual(
-            addresses[0].address, 
+            addresses[0].address,
             f'{the_address_1}\n{the_address_2}\n{the_address_3}\n{the_address_4}'
         )
 

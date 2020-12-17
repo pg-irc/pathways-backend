@@ -3,7 +3,7 @@ from newcomers_guide.save_topics import save_topics
 from newcomers_guide.tests import helpers
 from search.models import Task
 from common.testhelpers.random_test_values import a_string
-from bc211.import_counters import ImportCounters
+from bc211.import_xml.import_counters import ImportCounters
 
 
 class TestSavingTasks(TestCase):

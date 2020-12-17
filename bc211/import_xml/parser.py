@@ -6,8 +6,8 @@ import html
 from html.parser import HTMLParser
 from urllib import parse as urlparse
 from datetime import datetime
-from bc211 import dtos
-from bc211.exceptions import MissingRequiredFieldXmlParseException
+from bc211.import_xml import dtos
+from bc211.import_xml.exceptions import MissingRequiredFieldXmlParseException
 
 
 LOGGER = logging.getLogger(__name__)
@@ -454,4 +454,3 @@ def dto_value_or_empty_string(value):
     if not value:
         return ''
     return value
-        

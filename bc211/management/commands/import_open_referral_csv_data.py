@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from bc211.importer import parse_csv
-from bc211.import_counters import ImportCounters
+from bc211.import_xml.importer import parse_csv
+from bc211.import_xml.import_counters import ImportCounters
 from bc211.open_referral_csv_import.importer import import_open_referral_files
 from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
 

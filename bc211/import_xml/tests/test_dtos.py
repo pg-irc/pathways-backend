@@ -1,5 +1,5 @@
 import unittest
-from bc211 import dtos, exceptions
+from bc211.import_xml import dtos, exceptions
 from common.testhelpers.random_test_values import a_string, a_phone_number
 
 

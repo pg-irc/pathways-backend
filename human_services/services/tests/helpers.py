@@ -1,4 +1,4 @@
-from bc211 import dtos
+from bc211.import_xml import dtos
 from human_services.services import models
 from human_services.locations.models import ServiceAtLocation
 from common.testhelpers.random_test_values import a_string, a_date

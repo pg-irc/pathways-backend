@@ -1,7 +1,7 @@
 import collections
 from django.utils import translation
 from search.models import Task
-from bc211.taxonomy import create_taxonomy_term_active_record
+from bc211.import_xml.taxonomy import create_taxonomy_term_active_record
 
 
 def save_topics(topics, counts):

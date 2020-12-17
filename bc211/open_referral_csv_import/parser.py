@@ -1,10 +1,10 @@
 import logging
 from urllib import parse as urlparse
 from datetime import datetime
+from bc211.import_xml.parser import remove_double_escaped_html_markup, clean_one_phone_number
+from bc211.open_referral_csv_import import exceptions
 from django.core import validators
 from django.core.exceptions import ValidationError
-from bc211.parser import remove_double_escaped_html_markup, clean_one_phone_number
-from bc211.open_referral_csv_import import exceptions
 
 LOGGER = logging.getLogger(__name__)
 

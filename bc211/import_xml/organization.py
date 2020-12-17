@@ -1,6 +1,6 @@
 import logging
 from bc211.is_inactive import is_inactive
-from bc211.location import update_locations
+from bc211.import_xml.location import update_locations
 from bc211.service import update_services_for_location
 from django.utils import translation
 from human_services.organizations.models import Organization

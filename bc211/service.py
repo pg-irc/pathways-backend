@@ -1,5 +1,5 @@
 import logging
-from bc211.taxonomy import save_service_taxonomy_terms
+from bc211.import_xml.taxonomy import save_service_taxonomy_terms
 from bc211.is_inactive import is_inactive
 from human_services.services.models import Service
 from search.models import TaskServiceSimilarityScore
