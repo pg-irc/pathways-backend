@@ -169,14 +169,15 @@ class ParseServicesTests(TestCase):
 
 
 class ParsePhoneNumbersTests(TestCase):
-    def test_default_phone_number_type_for_first_phone_number(self):
+    def test_default_phone_number_type(self):
+        n = an_integer(min=1, max=5)
         data = (Bc211CsvDataBuilder().
                 as_organization().
-                with_field('Phone1Number', a_phone_number()).
-                with_field('Phone1Type', '').
+                with_field(f'Phone{n}Number', a_phone_number()).
+                with_field(f'Phone{n}Type', '').
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(parsed_data.first_phone_number()['type'], 'Phone 1')
+        self.assertEqual(parsed_data.first_phone_number()['type'], f'Phone {n}')
 
     def test_can_parse_organization_phone_number(self):
         the_number = a_phone_number()
