@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.gis.geos import Point
-from bc211.open_referral_csv_import.import_missing_coordinates import import_missing_coordinates
+from bc211.import_open_referral_csv.import_missing_coordinates import import_missing_coordinates
 from common.testhelpers.random_test_values import a_string
 from human_services.addresses.models import AddressType
 from human_services.locations.models import Location, LocationAddress
@@ -37,7 +37,7 @@ class ImportMissingCoordinatesTests(TestCase):
                                 with_point(Point(-123.500, 49.500)).
                                 create())
         address = AddressBuilder().with_city('Vancouver').create()
-        LocationAddress(address=address, 
+        LocationAddress(address=address,
                         location=location_with_point,
                         address_type=self.physical_address_type).save()
 

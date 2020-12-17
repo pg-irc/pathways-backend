@@ -4,10 +4,10 @@ import logging
 from django.utils import translation
 from django.core.exceptions import ValidationError
 from human_services.organizations.models import Organization
-from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.headers_match_expected_format import (
+from bc211.import_open_referral_csv import parser
+from bc211.import_open_referral_csv.headers_match_expected_format import (
     headers_match_expected_format)
-from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from bc211.import_open_referral_csv.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def import_organizations_file(root_folder, collector, counters):
 
 
 def read_file(path, collector, counters):
-    with open(path, 'r') as file: 
+    with open(path, 'r') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):

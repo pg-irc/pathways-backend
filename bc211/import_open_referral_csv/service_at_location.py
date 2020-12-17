@@ -2,10 +2,10 @@ import csv
 import os
 import logging
 from django.core.exceptions import ValidationError
-from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.headers_match_expected_format import (
+from bc211.import_open_referral_csv import parser
+from bc211.import_open_referral_csv.headers_match_expected_format import (
     headers_match_expected_format)
-from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from bc211.import_open_referral_csv.exceptions import InvalidFileCsvImportException
 from human_services.locations.models import ServiceAtLocation
 
 LOGGER = logging.getLogger(__name__)

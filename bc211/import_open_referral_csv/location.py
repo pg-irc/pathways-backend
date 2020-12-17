@@ -4,10 +4,10 @@ import logging
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from human_services.locations.models import Location
-from bc211.open_referral_csv_import import parser
-from bc211.open_referral_csv_import.headers_match_expected_format import (
+from bc211.import_open_referral_csv import parser
+from bc211.import_open_referral_csv.headers_match_expected_format import (
     headers_match_expected_format)
-from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
+from bc211.import_open_referral_csv.exceptions import InvalidFileCsvImportException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -80,4 +80,3 @@ def set_coordinates_or_none(location_id, latitude, longitude):
 
 def has_coordinates(latitude, longitude):
     return latitude and longitude
-    

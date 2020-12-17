@@ -2,10 +2,10 @@ import csv
 import os
 import logging
 from django.core.exceptions import ValidationError
-from bc211.open_referral_csv_import.headers_match_expected_format import (
+from bc211.import_open_referral_csv.headers_match_expected_format import (
     headers_match_expected_format)
-from bc211.open_referral_csv_import.exceptions import InvalidFileCsvImportException
-from bc211.open_referral_csv_import import parser
+from bc211.import_open_referral_csv.exceptions import InvalidFileCsvImportException
+from bc211.import_open_referral_csv import parser
 from taxonomies.models import TaxonomyTerm
 
 LOGGER = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ def import_taxonomy_file(root_folder, counters):
 
 
 def read_file(path, counters):
-    with open(path, 'r') as file: 
+    with open(path, 'r') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
@@ -55,4 +55,3 @@ def build_taxonomy_active_record(row):
     )
     active_record.name = parser.parse_required_field_with_double_escaped_html('name', row[1])
     return active_record
-    

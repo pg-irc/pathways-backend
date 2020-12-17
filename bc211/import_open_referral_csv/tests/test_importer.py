@@ -1,17 +1,17 @@
 import string
 from datetime import date
 from django.test import TestCase
-from bc211.open_referral_csv_import.inactive_records_collector import InactiveRecordsCollector
+from bc211.import_open_referral_csv.inactive_records_collector import InactiveRecordsCollector
 from bc211.import_xml.import_counters import ImportCounters
-from bc211.open_referral_csv_import.organization import import_organization
-from bc211.open_referral_csv_import.service import import_service
-from bc211.open_referral_csv_import.location import import_location
-from bc211.open_referral_csv_import.service_at_location import import_service_at_location
-from bc211.open_referral_csv_import.address import import_address, import_location_address
-from bc211.open_referral_csv_import.phone import import_phone
-from bc211.open_referral_csv_import.taxonomy import import_taxonomy
-from bc211.open_referral_csv_import.service_taxonomy import(read_and_import_rows)
-from bc211.open_referral_csv_import.tests.helpers import (
+from bc211.import_open_referral_csv.organization import import_organization
+from bc211.import_open_referral_csv.service import import_service
+from bc211.import_open_referral_csv.location import import_location
+from bc211.import_open_referral_csv.service_at_location import import_service_at_location
+from bc211.import_open_referral_csv.address import import_address, import_location_address
+from bc211.import_open_referral_csv.phone import import_phone
+from bc211.import_open_referral_csv.taxonomy import import_taxonomy
+from bc211.import_open_referral_csv.service_taxonomy import(read_and_import_rows)
+from bc211.import_open_referral_csv.tests.helpers import (
     OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
     OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder,
     OpenReferralCsvAddressBuilder, OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder,
