@@ -29,6 +29,8 @@ source .venv/bin/activate
 Install the required python libraries for local development, including the English SpaCy data set for natural language processing
 
 ```
+python -m pip install --upgrade pip
+pip install wheel
 pip install -r requirements/local.txt
 python -m spacy download en
 ```
@@ -226,7 +228,6 @@ These steps are for creating a new Heroku instance from scratch:
 ### Populate the server
 
 - From bash, log into the server with
-
 ```
 heroku ps:exec -a *appname*
 ```
