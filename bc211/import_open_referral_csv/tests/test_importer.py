@@ -17,7 +17,7 @@ from bc211.import_open_referral_csv.tests.helpers import (
     OpenReferralCsvAddressBuilder, OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder,
     OpenReferralCsvServiceTaxonomyBuilder)
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                 a_latitude, a_longitude, a_phone_number, a_country_code)
+                                                   a_latitude, a_longitude, a_phone_number, a_country_code, an_integer)
 from human_services.organizations.models import Organization
 from human_services.organizations.tests.helpers import OrganizationBuilder
 from human_services.services.tests.helpers import ServiceBuilder
@@ -29,7 +29,6 @@ from human_services.locations.models import LocationAddress
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from taxonomies.models import TaxonomyTerm
-
 
 
 class OrganizationImporterTests(TestCase):
@@ -404,6 +403,13 @@ class TaxonomyImporterTests(TestCase):
         import_taxonomy(taxonomy_data, ImportCounters())
         taxonomy_terms = TaxonomyTerm.objects.all()
         self.assertEqual(taxonomy_terms[0].name, the_name)
+
+    def test_can_import_taxonomy_term_id(self):
+        the_id = an_integer()
+        taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_id(the_id).build()
+        import_taxonomy(taxonomy_data, ImportCounters())
+        taxonomy_terms = TaxonomyTerm.objects.all()
+        self.assertEqual(taxonomy_terms[0].id, the_id)
 
 
 class ServiceTaxonomyImporterTests(TestCase):

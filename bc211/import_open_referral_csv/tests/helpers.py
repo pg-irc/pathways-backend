@@ -1,7 +1,7 @@
 from datetime import date
 import string
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                a_latitude, a_longitude, a_phone_number)
+                                                   a_latitude, a_longitude, a_phone_number, an_integer)
 
 
 class OpenReferralCsvOrganizationBuilder:
@@ -275,9 +275,13 @@ class OpenReferralCsvPhoneBuilder:
 
 class OpenReferralCsvTaxonomyBuilder:
     def __init__(self):
-        self.the_id = a_string()
+        self.the_id = an_integer()
         self.name = a_string()
         self.vocabulary = a_string()
+
+    def with_id(self, the_id):
+        self.the_id = the_id
+        return self
 
     def with_vocabulary(self, vocabulary):
         self.vocabulary = vocabulary
