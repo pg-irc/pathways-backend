@@ -396,7 +396,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_taxonomy_term_with_space(self):
         the_term = 'Fire Services; Fire Stations'
@@ -412,7 +411,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_third_taxonomy_term_column(self):
         the_term = a_string()
@@ -420,7 +418,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_airs_taxonomy_term_column(self):
         the_term = a_string()
@@ -428,7 +425,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'AIRS')
 
     def test_can_pass_in_vocabulary_to_parser(self):
         the_vocabulary = a_string()
@@ -522,9 +518,21 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
         self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
 
-    def test_all_upper_case_term_is_part_of_taxonomy_called_bc211_what(self):
+    def test_all_upper_case_term_in_TaxonomyTerm_column_is_part_of_taxonomy_called_bc211_what(self):
+        the_term = a_string(from_character_string=string.ascii_uppercase)
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+
+    def test_all_upper_case_term_in_TaxonomyTerms_column_is_part_of_taxonomy_called_bc211_what(self):
         the_term = a_string(from_character_string=string.ascii_uppercase)
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+
+    def test_all_upper_case_term_in_TaxonomyTermsNotDeactivated_column_is_part_of_taxonomy_called_bc211_what(self):
+        the_term = a_string(from_character_string=string.ascii_uppercase)
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTermsNotDeactivated', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
 
@@ -541,6 +549,12 @@ class ParseTaxonomyTests(TestCase):
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-who')
+
+    def test_term_from_TaxonomyCodes_column_is_part_of_taxonomy_called_airs(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyCodes', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'AIRS')
 
     def test_set_parent_name_to_empty_string(self):
         the_term = a_string()
