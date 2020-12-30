@@ -275,12 +275,12 @@ class OpenReferralCsvPhoneBuilder:
 
 class OpenReferralCsvTaxonomyBuilder:
     def __init__(self):
-        self.the_id = an_integer()
+        self.taxonomy_term_id = a_string()
         self.name = a_string()
         self.vocabulary = a_string()
 
-    def with_id(self, the_id):
-        self.the_id = the_id
+    def with_taxonomy_term_id(self, taxonomy_term_id):
+        self.taxonomy_term_id = taxonomy_term_id
         return self
 
     def with_vocabulary(self, vocabulary):
@@ -294,24 +294,26 @@ class OpenReferralCsvTaxonomyBuilder:
     def build(self):
         not_used_parent_id = ''
         not_used_parent_name = ''
-        return [self.the_id, self.name, not_used_parent_id, not_used_parent_name,
+        # The OpenReferral standard here erroneously uses the term "taxonomy id" when "taxonomy term id" is
+        # the correct term, this id identifies a taxonomy term like "housing", not a taxonomy like "AIRS"
+        return [self.taxonomy_term_id, self.name, not_used_parent_id, not_used_parent_name,
                 self.vocabulary]
 
 
 class OpenReferralCsvServiceTaxonomyBuilder:
     def __init__(self):
         self.service_id = a_string()
-        self.taxonomy_id = a_string()
+        self.taxonomy_term_id = a_string()
 
     def with_service_id(self, service_id):
         self.service_id = service_id
         return self
 
-    def with_taxonomy_id(self, taxonomy_id):
-        self.taxonomy_id = taxonomy_id
+    def with_taxonomy_term_id(self, taxonomy_term_id):
+        self.taxonomy_term_id = taxonomy_term_id
         return self
 
     def build(self):
         not_used_id = ''
         not_used_taxonomy_detail = ''
-        return [not_used_id, self.service_id, self.taxonomy_id, not_used_taxonomy_detail]
+        return [not_used_id, self.service_id, self.taxonomy_term_id, not_used_taxonomy_detail]

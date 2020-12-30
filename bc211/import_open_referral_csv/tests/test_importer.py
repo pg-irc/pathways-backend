@@ -405,25 +405,25 @@ class TaxonomyImporterTests(TestCase):
         self.assertEqual(taxonomy_terms[0].name, the_name)
 
     def test_can_import_taxonomy_term_id(self):
-        the_id = an_integer()
-        taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_id(the_id).build()
+        the_id = a_string()
+        taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_taxonomy_term_id(the_id).build()
         import_taxonomy(taxonomy_data, ImportCounters())
         taxonomy_terms = TaxonomyTerm.objects.all()
-        self.assertEqual(taxonomy_terms[0].id, the_id)
+        self.assertEqual(taxonomy_terms[0].taxonomy_term_id, the_id)
 
 
 class ServiceTaxonomyImporterTests(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
         self.taxonomy_id = a_string()
-        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(self.taxonomy_id).create()
+        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_term_id(self.taxonomy_id).create()
         self.service_id = a_string()
         ServiceBuilder(self.organization).with_id(self.service_id).create()
 
     def test_can_import_one_taxonomy_term_into_service_record(self):
         service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                  with_service_id(self.service_id).
-                                 with_taxonomy_id(self.taxonomy_id).
+                                 with_taxonomy_term_id(self.taxonomy_id).
                                  build())
         csv_data = [service_taxonomy_data]
         read_and_import_rows(csv_data, InactiveRecordsCollector())
@@ -433,14 +433,14 @@ class ServiceTaxonomyImporterTests(TestCase):
 
     def test_can_import_multiple_taxonomy_terms_into_the_same_service_record(self):
         second_taxonomy_id = a_string()
-        second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_id(second_taxonomy_id).create()
+        second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_term_id(second_taxonomy_id).create()
         first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                        with_service_id(self.service_id).
-                                       with_taxonomy_id(self.taxonomy_id).
+                                       with_taxonomy_term_id(self.taxonomy_id).
                                        build())
         second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                         with_service_id(self.service_id).
-                                        with_taxonomy_id(second_taxonomy_id).
+                                        with_taxonomy_term_id(second_taxonomy_id).
                                         build())
         csv_data = [first_service_taxonomy_data, second_service_taxonomy_data]
         read_and_import_rows(csv_data, InactiveRecordsCollector())
@@ -453,14 +453,14 @@ class ServiceTaxonomyImporterTests(TestCase):
         second_service_id = a_string()
         ServiceBuilder(self.organization).with_id(second_service_id).create()
         second_taxonomy_id = a_string()
-        TaxonomyTermBuilder().with_taxonomy_id(second_taxonomy_id).create()
+        TaxonomyTermBuilder().with_taxonomy_term_id(second_taxonomy_id).create()
         first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                        with_service_id(self.service_id).
-                                       with_taxonomy_id(self.taxonomy_id).
+                                       with_taxonomy_term_id(self.taxonomy_id).
                                        build())
         second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                         with_service_id(second_service_id).
-                                        with_taxonomy_id(second_taxonomy_id).
+                                        with_taxonomy_term_id(second_taxonomy_id).
                                         build())
         csv_data = [first_service_taxonomy_data, second_service_taxonomy_data]
         read_and_import_rows(csv_data, InactiveRecordsCollector())

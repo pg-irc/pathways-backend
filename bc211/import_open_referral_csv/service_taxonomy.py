@@ -62,4 +62,4 @@ def build_service_taxonomy_active_record(service_id, taxonomy_term):
 
 
 def get_taxonomy_term_active_record_or_raise(taxonomy_id):
-    return TaxonomyTerm.objects.get(taxonomy_id=taxonomy_id)
+    return TaxonomyTerm.objects.get(taxonomy_term_id=taxonomy_id)

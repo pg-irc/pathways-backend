@@ -49,7 +49,7 @@ def import_taxonomy(row, counters):
 
 def build_taxonomy_active_record(row):
     active_record = TaxonomyTerm()
-    active_record.id = row[0]
+    active_record.taxonomy_term_id = row[0]
     active_record.name = row[1]
     active_record.taxonomy_id = row[4]
     return active_record
