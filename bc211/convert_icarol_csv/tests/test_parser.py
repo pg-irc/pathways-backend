@@ -894,6 +894,7 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
 
         self.assertEqual(len(parsed_data.locations), 2)
         self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertEqual(parsed_data.addresses[0]['id'], parsed_data.addresses[1]['id'])
         self.assertEqual(parsed_data.addresses[0]['location_id'], the_first_location_id)
         self.assertEqual(parsed_data.addresses[1]['location_id'], the_second_location_id)
     # Phone numbers uniquely identified by their phone number field

@@ -98,7 +98,7 @@ organization_header_map = {
 def parse_address_fields(header, value, addresses):
     output_address_header = address_header_map.get(get_normalized_address_header(header), None)
     is_physical_address_type = header.startswith('Physical')
-    if output_address_header:
+    if output_address_header and value:
         index = 1 if is_physical_address_type else 0
         addresses[index][output_address_header] = value
         addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
@@ -314,10 +314,11 @@ def write_to_sink(addresses, location_id, phone_numbers, unique_phone_ids, taxon
 
 
 def write_addresses_to_sink(addresses, location_id, sink):
-    for i, address in enumerate(addresses):
-        if not address:
+    for address in addresses:
+        all_fields_are_blank = not any(address.values())
+        if all_fields_are_blank:
             continue
-        address['id'] = str(uuid.uuid4())
+        address['id'] = compute_address_id(address)
         address['location_id'] = location_id
         sink.write_address(address)
 
