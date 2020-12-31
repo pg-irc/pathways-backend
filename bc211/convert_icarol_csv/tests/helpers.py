@@ -42,9 +42,15 @@ class Bc211CsvDataBuilder:
         self.data[-1]['ParentAgencyNum'] = str(an_integer(min=1))
         return self
 
+    def get_keys(self):
+        keys = [row.keys() for row in self.data]
+        flat_keys = [item for sublist in keys for item in sublist]
+        unique_keys = {key for key in flat_keys}
+        return list(unique_keys)
+
     def build(self):
         result = []
-        shuffled_keys = list(self.data[0].keys())
+        shuffled_keys = self.get_keys()
         random.shuffle(shuffled_keys)
         line = ''
         for key in shuffled_keys:
