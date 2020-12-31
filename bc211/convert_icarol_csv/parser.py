@@ -1,7 +1,6 @@
 import csv
 import re
 import hashlib
-import uuid
 import datetime
 
 
@@ -126,7 +125,7 @@ def parse_locations_fields(header, value, location):
         if output_location_header in ['latitude', 'longitude']:
             try:
                 value = float(value)
-            except:
+            except ValueError:
                 value = None
         location[output_location_header] = value
 

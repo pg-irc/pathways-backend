@@ -88,9 +88,9 @@ class TaxonomyEndToEndTest(TestCase):
         collector = InactiveRecordsCollector()
         counters = ImportCounters()
         import_organization(open_referral_csv_data, collector, counters)
-        result = Organization.objects.all()
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].id, the_organization_id)
+        result_from_db = Organization.objects.all()
+        self.assertEqual(len(result_from_db), 1)
+        self.assertEqual(result_from_db[0].id, the_organization_id)
 
         # import location
 
@@ -103,8 +103,8 @@ class TaxonomyEndToEndTest(TestCase):
             0, 0]
                 for r in parsed_data.locations]
         import_locations(open_referral_csv_data, collector, counters)
-        result = Location.objects.all()
-        self.assertEqual(len(result), 2)
+        result_from_db = Location.objects.all()
+        self.assertEqual(len(result_from_db), 2)
 
         # import service
 
@@ -121,10 +121,10 @@ class TaxonomyEndToEndTest(TestCase):
             '', '', '', '', '']
                 for r in parsed_data.services]
         import_services(open_referral_csv_data, collector, counters)
-        result = Service.objects.all()
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].id, the_service_id)
-        self.assertEqual(result[0].organization_id, the_organization_id)
+        result_from_db = Service.objects.all()
+        self.assertEqual(len(result_from_db), 1)
+        self.assertEqual(result_from_db[0].id, the_service_id)
+        self.assertEqual(result_from_db[0].organization_id, the_organization_id)
 
         # import addresses
 
@@ -141,15 +141,15 @@ class TaxonomyEndToEndTest(TestCase):
             r['country']]
                 for r in parsed_data.addresses]
         import_addresses(open_referral_csv_data, collector, counters)
-        result = Address.objects.all()
-        self.assertEqual(len(result), 2)
+        result_from_db = Address.objects.all()
+        self.assertEqual(len(result_from_db), 2)
 
-        if result[0].city == mailing_city:
-            mailing_address = result[0]
-            physical_address = result[1]
+        if result_from_db[0].city == mailing_city:
+            mailing_address = result_from_db[0]
+            physical_address = result_from_db[1]
         else:
-            physical_address = result[0]
-            mailing_address = result[1]
+            physical_address = result_from_db[0]
+            mailing_address = result_from_db[1]
 
         self.assertEqual(physical_address.address[0:20], physical_address_1[0:20])
         self.assertEqual(physical_address.city, physical_city)
@@ -165,16 +165,16 @@ class TaxonomyEndToEndTest(TestCase):
         # create and parse the bc211 csv data for a service with a taxonomy term
 
         bc211_csv_data = (Bc211CsvDataBuilder().
-                as_organization().
-                with_field('ResourceAgencyNum', the_organization_id).
-                with_field('PublicName', a_string()).
-                next_row().
-                as_service().
-                with_field('ResourceAgencyNum', the_service_id).
-                with_field('PublicName', a_string()).
-                with_field('ParentAgencyNum', the_organization_id).
-                with_field('TaxonomyTerm', bc211_what_taxonomy_term).
-                build())
+                          as_organization().
+                          with_field('ResourceAgencyNum', the_organization_id).
+                          with_field('PublicName', a_string()).
+                          next_row().
+                          as_service().
+                          with_field('ResourceAgencyNum', the_service_id).
+                          with_field('PublicName', a_string()).
+                          with_field('ParentAgencyNum', the_organization_id).
+                          with_field('TaxonomyTerm', bc211_what_taxonomy_term).
+                          build())
         parsed_data = parse(TestDataSink(), bc211_csv_data)
 
         self.assertEqual(len(parsed_data.organizations), 1)
@@ -206,9 +206,9 @@ class TaxonomyEndToEndTest(TestCase):
         collector = InactiveRecordsCollector()
         counters = ImportCounters()
         import_organization(open_referral_csv_data, collector, counters)
-        result = Organization.objects.all()
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].id, the_organization_id)
+        result_from_db = Organization.objects.all()
+        self.assertEqual(len(result_from_db), 1)
+        self.assertEqual(result_from_db[0].id, the_organization_id)
 
         # import service
 
@@ -225,10 +225,10 @@ class TaxonomyEndToEndTest(TestCase):
             '', '', '', '', '']
                 for r in parsed_data.services]
         import_services(open_referral_csv_data, collector, counters)
-        result = Service.objects.all()
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].id, the_service_id)
-        self.assertEqual(result[0].organization_id, the_organization_id)
+        result_from_db = Service.objects.all()
+        self.assertEqual(len(result_from_db), 1)
+        self.assertEqual(result_from_db[0].id, the_service_id)
+        self.assertEqual(result_from_db[0].organization_id, the_organization_id)
 
         # import taxonomy terms
 
@@ -239,11 +239,11 @@ class TaxonomyEndToEndTest(TestCase):
             '', r['vocabulary']]
                 for r in parsed_data.taxonomy_terms]
         import_taxonomy_terms(open_referral_csv_data, counters)
-        result = TaxonomyTerm.objects.all()
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].taxonomy_term_id, taxonomy_term_id)
-        self.assertEqual(result[0].name, bc211_what_taxonomy_term.lower())
-        self.assertEqual(result[0].taxonomy_id, 'bc211-what')
+        result_from_db = TaxonomyTerm.objects.all()
+        self.assertEqual(len(result_from_db), 1)
+        self.assertEqual(result_from_db[0].taxonomy_term_id, taxonomy_term_id)
+        self.assertEqual(result_from_db[0].name, bc211_what_taxonomy_term.lower())
+        self.assertEqual(result_from_db[0].taxonomy_id, 'bc211-what')
 
         # import service taxonomy terms
 
@@ -252,8 +252,8 @@ class TaxonomyEndToEndTest(TestCase):
             r['id'], r['service_id'], r['taxonomy_id'], '']
                 for r in parsed_data.services_taxonomy]
         import_service_taxonomy(open_referral_csv_data, collector)
-        result = Service.objects.all()[0].taxonomy_terms.all()
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].taxonomy_term_id, taxonomy_term_id)
-        self.assertEqual(result[0].taxonomy_id, 'bc211-what')
-        self.assertEqual(result[0].name, bc211_what_taxonomy_term.lower())
+        result_from_db = Service.objects.all()[0].taxonomy_terms.all()
+        self.assertEqual(len(result_from_db), 1)
+        self.assertEqual(result_from_db[0].taxonomy_term_id, taxonomy_term_id)
+        self.assertEqual(result_from_db[0].taxonomy_id, 'bc211-what')
+        self.assertEqual(result_from_db[0].name, bc211_what_taxonomy_term.lower())
