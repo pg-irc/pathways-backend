@@ -1,6 +1,7 @@
 from taxonomies import models
 from common.testhelpers.random_test_values import a_string
 
+
 class TaxonomyTermBuilder:
     def __init__(self):
         # taxonomy id identifies the taxonomy, e.g. AIRS or bc211-what

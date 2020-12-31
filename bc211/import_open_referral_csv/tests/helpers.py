@@ -294,10 +294,7 @@ class OpenReferralCsvTaxonomyBuilder:
     def build(self):
         not_used_parent_id = ''
         not_used_parent_name = ''
-        # The OpenReferral standard here erroneously uses the term "taxonomy id" when "taxonomy term id" is
-        # the correct term, this id identifies a taxonomy term like "housing", not a taxonomy like "AIRS"
-        return [self.taxonomy_term_id, self.name, not_used_parent_id, not_used_parent_name,
-                self.vocabulary]
+        return [self.taxonomy_term_id, self.name, not_used_parent_id, not_used_parent_name, self.vocabulary]
 
 
 class OpenReferralCsvServiceTaxonomyBuilder:
