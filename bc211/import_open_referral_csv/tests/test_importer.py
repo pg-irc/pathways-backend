@@ -29,9 +29,8 @@ from human_services.locations.models import LocationAddress
 from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
 from taxonomies.tests.helpers import TaxonomyTermBuilder
 from taxonomies.models import TaxonomyTerm
-from bc211.convert_icarol_csv.tests.helpers import Bc211CsvDataBuilder
+from bc211.convert_icarol_csv.tests.helpers import Bc211CsvDataBuilder, TestDataSink
 from bc211.convert_icarol_csv.parser import parse
-from bc211.convert_icarol_csv.tests.test_data_sink import TestDataSink
 
 
 class OrganizationImporterTests(TestCase):
