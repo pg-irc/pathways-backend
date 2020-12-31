@@ -1,48 +1,19 @@
-import string
 from django.test import TestCase
 from bc211.import_open_referral_csv.inactive_records_collector import InactiveRecordsCollector
 from bc211.import_icarol_xml.import_counters import ImportCounters
-from bc211.import_open_referral_csv.organization import import_organization
-from bc211.import_open_referral_csv.service import import_service
-from bc211.import_open_referral_csv.location import import_location
-from bc211.import_open_referral_csv.service_at_location import import_service_at_location
-from bc211.import_open_referral_csv.address import import_address, import_location_address
-from bc211.import_open_referral_csv.phone import import_phone
-from bc211.import_open_referral_csv.taxonomy import import_taxonomy
 from bc211.import_open_referral_csv.organization import read_and_import_rows as import_organization
 from bc211.import_open_referral_csv.service import read_and_import_rows as import_services
 from bc211.import_open_referral_csv.taxonomy import read_and_import_rows as import_taxonomy_terms
 from bc211.import_open_referral_csv.service_taxonomy import read_and_import_rows as import_service_taxonomy
-from bc211.import_open_referral_csv.tests.helpers import (
-    OpenReferralCsvOrganizationBuilder, OpenReferralCsvServiceBuilder,
-    OpenReferralCsvLocationBuilder, OpenReferralCsvServiceAtLocationBuilder,
-    OpenReferralCsvAddressBuilder, OpenReferralCsvPhoneBuilder, OpenReferralCsvTaxonomyBuilder,
-    OpenReferralCsvServiceTaxonomyBuilder)
-from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                                   a_latitude, a_longitude, a_phone_number, a_country_code)
 from human_services.organizations.models import Organization
-from human_services.organizations.tests.helpers import OrganizationBuilder
-from human_services.services.tests.helpers import ServiceBuilder
-from human_services.locations.tests.helpers import LocationBuilder
 from human_services.services.models import Service
-from human_services.locations.models import Location, ServiceAtLocation
-from human_services.addresses.models import Address, AddressType
-from human_services.locations.models import LocationAddress
-from human_services.phone_at_location.models import PhoneNumberType, PhoneAtLocation
-from taxonomies.tests.helpers import TaxonomyTermBuilder
 from taxonomies.models import TaxonomyTerm
 from bc211.convert_icarol_csv.tests.helpers import Bc211CsvDataBuilder, TestDataSink
 from bc211.convert_icarol_csv.parser import parse
+from common.testhelpers.random_test_values import a_string
 
 
 class TaxonomyEndToEndTest(TestCase):
-
-    def test_one_row(self):
-        bc211_what_taxonomy_term = a_string(from_character_string=string.ascii_uppercase)
-        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', bc211_what_taxonomy_term).build())
-        parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.taxonomy_terms), 1)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['name'], bc211_what_taxonomy_term.lower())
 
     def test_service_with_taxonomy_term(self):
         # all upper case taxonomy terms are by convention assigned the bc211-what taxonomy
