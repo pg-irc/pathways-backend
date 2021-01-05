@@ -1,5 +1,5 @@
 import logging
-from bc211.taxonomy import save_service_taxonomy_terms
+from bc211.import_icarol_xml.taxonomy import save_service_taxonomy_terms
 from bc211.is_inactive import is_inactive
 from human_services.services.models import Service
 from search.models import TaskServiceSimilarityScore
@@ -37,7 +37,7 @@ def update_services_for_location(location_id, services, counters):
 
 
 def save_service_if_needed(service, counters):
-    if is_inactive(service):
+    if is_inactive(service.description):
         return
     existing = get_existing_service_or_none(service)
     if not existing:
@@ -48,7 +48,7 @@ def save_service_if_needed(service, counters):
         save_service_at_location(service)
         save_service_taxonomy_terms(service.taxonomy_terms, active_record, counters)
     else:
-        LOGGER.warn('duplicate service "%s" "%s"', service.id, service.name)
+        LOGGER.warning('duplicate service "%s" "%s"', service.id, service.name)
 
 
 def get_existing_service_or_none(service):

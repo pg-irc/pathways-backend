@@ -18,6 +18,7 @@ class Location(ValidateOnSaveMixin, TranslatableModel):
     point = models.PointField(blank=True, null=True)
     translations = TranslatedFields(
         name=models.CharField(max_length=200),
+        alternate_name=models.CharField(blank=True, null=True, max_length=200),
         description=models.TextField(blank=True, null=True)
     )
 
@@ -50,6 +51,7 @@ class LocationAddress(ValidateOnSaveMixin, models.Model):
 
     class Meta:
         unique_together = ('location', 'address_type')
+
 
     def __str__(self):
         return '"{address}" for "{location}"'.format(

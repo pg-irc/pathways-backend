@@ -5,10 +5,11 @@ from common.models import ValidateOnSaveMixin, RequiredCharField, OptionalCharFi
 
 class Organization(ValidateOnSaveMixin, TranslatableModel):
     id = RequiredCharField(primary_key=True, max_length=200, validators=[validators.validate_slug])
-    website = OptionalCharField(max_length=200, validators=[validators.URLValidator()])
+    website = OptionalCharField(max_length=255, validators=[validators.URLValidator()])
     email = OptionalCharField(max_length=200, validators=[validators.EmailValidator()])
     translations = TranslatedFields(
         name=models.CharField(blank=False, max_length=200),
+        alternate_name=models.CharField(blank=True, null=True, max_length=200),
         description=models.TextField(blank=True, null=True)
     )
 

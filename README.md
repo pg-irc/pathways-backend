@@ -29,6 +29,8 @@ source .venv/bin/activate
 Install the required python libraries for local development, including the English SpaCy data set for natural language processing
 
 ```
+python -m pip install --upgrade pip
+pip install wheel
 pip install -r requirements/local.txt
 python -m spacy download en
 ```
@@ -146,7 +148,7 @@ You should now be able to access the server at http://127.0.0.1:8000/v1/. The Dj
 Import BC-211 data
 
 ```
-python manage.py import_bc211_data ~/path/to/AIRSXML_2252_Export_20170109050136__211.xml
+python manage.py import_icarol_xml ~/path/to/AIRSXML_2252_Export_20170109050136__211.xml
 
 ```
 
@@ -226,7 +228,6 @@ These steps are for creating a new Heroku instance from scratch:
 ### Populate the server
 
 - From bash, log into the server with
-
 ```
 heroku ps:exec -a *appname*
 ```
