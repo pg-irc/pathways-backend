@@ -285,7 +285,7 @@ def get_array_element_if_it_exists(array, index):
     return array[index] if index < len(array) else None
 
 
-def compute_address_id(address):
+def compute_address_id(address, location_id):
     return compute_hash(
         address.get('address_1', ''),
         address.get('address_2', ''),
@@ -295,6 +295,7 @@ def compute_address_id(address):
         address.get('state_province', ''),
         address.get('postal_code', ''),
         address.get('country', ''),
+        location_id,
         )
 
 
@@ -315,7 +316,7 @@ def write_addresses_to_sink(addresses, location_id, sink):
         all_fields_are_blank = not any(address.values())
         if all_fields_are_blank:
             continue
-        address['id'] = compute_address_id(address)
+        address['id'] = compute_address_id(address, location_id)
         address['location_id'] = location_id
         sink.write_address(address)
 
