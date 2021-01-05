@@ -245,7 +245,7 @@ def compute_hash(*args):
 
 
 def set_location_ids(location, addresses, phone_numbers, organization_or_service_id, parent_id):
-    location['id'] = compute_location_id(location, addresses, phone_numbers)
+    location['id'] = compute_location_id(location, phone_numbers)
     location['organization_id'] = pick_location_organization_id(organization_or_service_id, parent_id)
 
 
@@ -269,10 +269,8 @@ def write_location_to_sink(location, unique_location_ids, sink):
         unique_location_ids[location['id']] = 1
 
 
-def compute_location_id(location, addresses, phone_numbers):
-    return compute_hash(compute_address_id(get_array_element_if_it_exists(addresses, 0)),
-                        compute_address_id(get_array_element_if_it_exists(addresses, 1)),
-                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 0)),
+def compute_location_id(location, phone_numbers):
+    return compute_hash(compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 0)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 1)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 2)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 3)),

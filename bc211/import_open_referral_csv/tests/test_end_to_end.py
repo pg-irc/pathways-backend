@@ -60,8 +60,8 @@ class TaxonomyEndToEndTest(TestCase):
         self.assertEqual(parsed_data.services[0]['organization_id'], the_organization_id)
         self.assertEqual(parsed_data.services[0]['id'], the_service_id)
 
-        self.assertEqual(len(parsed_data.locations), 2) # deal with the 2
-        location_id = parsed_data.locations[1]['id']
+        self.assertEqual(len(parsed_data.locations), 1)
+        location_id = parsed_data.locations[0]['id']
 
         addresses = parsed_data.addresses
         self.assertEqual(len(addresses), 2)
