@@ -19,7 +19,7 @@ from human_services.locations.models import Location
 
 class TaxonomyEndToEndTest(TestCase):
 
-    def test_service_with_two_addresses(self):
+    def test_service_with_mailing_and_physical_address(self):
         the_organization_id = a_string()
         the_service_id = a_string()
         physical_address_1 = a_string()
@@ -155,6 +155,144 @@ class TaxonomyEndToEndTest(TestCase):
         self.assertEqual(physical_address.city, physical_city)
         self.assertEqual(mailing_address.address[0:20], mailing_address_1[0:20])
         self.assertEqual(mailing_address.city, mailing_city)
+
+    def test_two_services_with_the_same_address(self):
+        first_organization_id = a_string()
+        second_organization_id = a_string()
+        first_service_id = a_string()
+        second_service_id = a_string()
+        first_name = a_string()
+        second_name = a_string()
+        mailing_address_1 = a_string()
+        mailing_city = a_string()
+
+        # create and parse the bc211 csv data for two services with the same address information
+
+        bc211_csv_data = (Bc211CsvDataBuilder().
+                          as_organization().
+                          with_field('ResourceAgencyNum', first_organization_id).
+                          with_field('PublicName', first_name).
+                          next_row().
+                          as_organization().
+                          with_field('ResourceAgencyNum', second_organization_id).
+                          with_field('PublicName', second_name).
+                          next_row().
+                          as_service().
+                          with_field('ResourceAgencyNum', first_service_id).
+                          # Having the same name on the organization and service ensures that the organization and
+                          # service locations end up with the same properties, including the name, hence the same
+                          # hash, hence only one location record will be shared by both.
+                          with_field('PublicName', first_name).
+                          with_field('ParentAgencyNum', first_organization_id).
+                          with_field('MailingAddress1', mailing_address_1).
+                          with_field('MailingCity', mailing_city).
+                          with_field('MailingCountry', 'CA').
+                          next_row().
+                          as_service().
+                          with_field('ResourceAgencyNum', second_service_id).
+                          with_field('PublicName', second_name).
+                          with_field('ParentAgencyNum', second_organization_id).
+                          with_field('MailingAddress1', mailing_address_1).
+                          with_field('MailingCity', mailing_city).
+                          with_field('MailingCountry', 'CA').
+                          build())
+        parsed_data = parse(TestDataSink(), bc211_csv_data)
+
+        self.assertEqual(len(parsed_data.organizations), 2)
+        self.assertEqual(parsed_data.organizations[0]['id'], first_organization_id)
+        self.assertEqual(parsed_data.organizations[1]['id'], second_organization_id)
+
+        self.assertEqual(len(parsed_data.services), 2)
+        self.assertEqual(parsed_data.services[0]['id'], first_service_id)
+        self.assertEqual(parsed_data.services[1]['id'], second_service_id)
+        self.assertEqual(parsed_data.services[0]['organization_id'], first_organization_id)
+        self.assertEqual(parsed_data.services[1]['organization_id'], second_organization_id)
+
+        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(parsed_data.locations[0]['name'], first_name)
+        self.assertEqual(parsed_data.locations[1]['name'], second_name)
+        # the name for the location may come from the service or the organization, no need to
+        # nail this down currently since doing so would make the parser quite a lot more complex
+        # for no tangible benefit.
+
+        self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertNotEqual(parsed_data.addresses[0]['id'], parsed_data.addresses[1]['id'])
+        self.assertEqual(parsed_data.addresses[0]['address_1'], mailing_address_1)
+        self.assertEqual(parsed_data.addresses[1]['address_1'], mailing_address_1)
+        self.assertEqual(parsed_data.addresses[0]['location_id'], parsed_data.locations[0]['id'])
+        self.assertEqual(parsed_data.addresses[1]['location_id'], parsed_data.locations[1]['id'])
+
+        # import organization
+
+        open_referral_csv_data = [[
+            # id,name,alternate_name,
+            r['id'], r['name'], r['alternate_name'],
+            # description,email,url,
+            '', '', '',
+            # tax_status,tax_id,year_incorporated,legal_status
+            '', '', '', '']
+                for r in parsed_data.organizations]
+        collector = InactiveRecordsCollector()
+        counters = ImportCounters()
+        import_organization(open_referral_csv_data, collector, counters)
+        result_from_db = Organization.objects.all()
+        self.assertEqual(len(result_from_db), 2)
+        self.assertEqual({r.id for r in result_from_db}, {first_organization_id, second_organization_id})
+
+        # import location
+
+        open_referral_csv_data = [[
+            # id,organization_id,name,
+            r['id'], first_organization_id, r['name'],
+            # alternate_name,description,transportation,
+            '', '', '',
+            # latitude,longitude
+            0, 0]
+                for r in parsed_data.locations]
+        import_locations(open_referral_csv_data, collector, counters)
+        result_from_db = Location.objects.all()
+        self.assertEqual(len(result_from_db), 2)
+        self.assertEqual({r.name for r in result_from_db}, {first_name, second_name})
+
+        # import service
+
+        open_referral_csv_data = [[
+            # id,organization_id,program_id,
+            r['id'], r['organization_id'], '',
+            # name,alternate_name,description,
+            r['name'], r['alternate_name'], '',
+            # url,email,status,
+            r['url'], r['email'], '',
+            # interpretation_services,application_process,wait_time,
+            '', '', '',
+            # fees,accreditations,licenses, taxonomy_ids,last_verified_on-x
+            '', '', '', '', '']
+                for r in parsed_data.services]
+        import_services(open_referral_csv_data, collector, counters)
+        result_from_db = Service.objects.all()
+        self.assertEqual(len(result_from_db), 2)
+        self.assertEqual({r.id for r in result_from_db}, {first_service_id, second_service_id})
+        self.assertEqual({r.organization_id for r in result_from_db}, {first_organization_id, second_organization_id})
+
+        # import addresses
+
+        open_referral_csv_data = [[
+            # id,type,location_id,
+            r['id'], r['type'], r['location_id'],
+            # attention,address_1,address_2,
+            '', r['address_1'], '',
+            # address_3,address_4,city,
+            '', '', r['city'],
+            # region,state_province, postal_code,
+            '', '', '',
+            # country
+            r['country']]
+                for r in parsed_data.addresses]
+        import_addresses(open_referral_csv_data, collector, counters)
+        result_from_db = Address.objects.all()
+        self.assertEqual(len(result_from_db), 2)
+        self.assertEqual(result_from_db[0].address[0:20], mailing_address_1[0:20])
+        self.assertEqual(result_from_db[1].address[0:20], mailing_address_1[0:20])
 
     def test_service_with_taxonomy_term(self):
         # all upper case taxonomy terms are by convention assigned the bc211-what taxonomy
