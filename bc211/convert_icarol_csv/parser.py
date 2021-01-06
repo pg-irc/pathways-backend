@@ -47,12 +47,7 @@ def parse(sink, lines, vocabulary=None):
         else:
             organization_or_service['organization_id'] = parent_id
             sink.write_service(organization_or_service, location['id'])
-            service_id = organization_or_service['id']
-            sink.write_service_at_location({
-                'id': compute_hash(service_id, location['id']),
-                'service_id': service_id,
-                'location_id': location['id']
-                })
+            write_service_at_location_to_sink(organization_or_service['id'], location['id'], sink)
             compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
 
         write_to_sink(addresses, location['id'],
@@ -254,6 +249,13 @@ def compute_hash(*args):
 def set_location_ids(location, addresses, phone_numbers, organization_or_service_id, parent_id):
     location['id'] = compute_location_id(location, phone_numbers)
     location['organization_id'] = pick_location_organization_id(organization_or_service_id, parent_id)
+
+
+def write_service_at_location_to_sink(service_id, location_id, sink):
+    sink.write_service_at_location({
+        'id': compute_hash(service_id, location_id),
+        'service_id': service_id,
+        'location_id': location_id})
 
 
 def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
