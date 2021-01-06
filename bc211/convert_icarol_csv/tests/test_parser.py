@@ -576,15 +576,15 @@ class AreTwoLocationsConsideredDuplicateTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_public_names_id_are_duplicates(self):
+    def test_two_locations_with_different_public_names_id_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('PublicName', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 1)
+        self.assertEqual(len(parsed_data.locations), 2)
 
-    def test_two_locations_with_different_alternate_names_are_duplicates(self):
+    def test_two_locations_with_different_alternate_names_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('AlternateName', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 1)
+        self.assertEqual(len(parsed_data.locations), 2)
 
     def test_two_locations_with_different_descriptions_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('AgencyDescription', a_string()).build()
@@ -736,13 +736,15 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
 
-        the_location_id = parsed_data.first_location()['id']
+        self.assertEqual(len(parsed_data.locations), 3)
+        first_location_id = parsed_data.locations[1]['id']
+        second_location_id = parsed_data.locations[2]['id']
 
         self.assertEqual(len(parsed_data.services_at_location), 2)
         self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_first_service_id)
         self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_second_service_id)
-        self.assertEqual(parsed_data.services_at_location[0]['location_id'], the_location_id)
-        self.assertEqual(parsed_data.services_at_location[1]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.services_at_location[0]['location_id'], first_location_id)
+        self.assertEqual(parsed_data.services_at_location[1]['location_id'], second_location_id)
 
     def test_service_at_two_locations(self):
         the_organization_id = a_string()
@@ -762,6 +764,9 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 with_field('ResourceAgencyNum', the_service_id).
                 with_field('PublicName', the_service_name).
                 with_field('ParentAgencyNum', the_organization_id).
+                # for the locations to count as different, the lat/long has to be different
+                with_field('Latitude', a_latitude()).
+                with_field('AgencyDescription', a_string()).
                 with_field('MailingAddress1', the_address_line).
                 with_field('MailingCity', the_city_line).
                 with_field('MailingStateProvince', the_province).
@@ -770,14 +775,18 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 with_field('ResourceAgencyNum', the_service_id).
                 with_field('PublicName', the_service_name).
                 with_field('ParentAgencyNum', the_organization_id).
+                with_field('Latitude', a_latitude()).
+                with_field('AgencyDescription', a_string()).
                 with_field('MailingAddress1', a_string()).
                 with_field('MailingCity', a_string()).
                 with_field('MailingStateProvince', a_string()).
                 build())
 
         parsed_data = parse(TestDataSink(), data)
-        first_location_id = parsed_data.locations[0]['id']
-        second_location_id = parsed_data.locations[1]['id']
+        self.assertEqual(len(parsed_data.locations), 3)
+        # location at offset 0 is for the organization
+        first_location_id = parsed_data.locations[1]['id']
+        second_location_id = parsed_data.locations[2]['id']
 
         self.assertEqual(len(parsed_data.services_at_location), 2)
         self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_service_id)

@@ -140,6 +140,7 @@ location_header_map = {
     'ResourceAgencyNum': 'organization_id',
     'PublicName': 'name',
     'AlternateName': 'alternate_name',
+    'AgencyDescription': 'description',
     'Latitude': 'latitude',
     'Longitude': 'longitude',
 }
@@ -282,6 +283,9 @@ def compute_location_id(location, phone_numbers):
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 3)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 4)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 5)),
+                        location.get('name', ''),
+                        location.get('alternate_name', ''),
+                        # leave out description, so two locations with identical fields except description will be combined into one
                         str(location.get('latitude', '')),
                         str(location.get('longitude', ''))
                         )
@@ -301,6 +305,9 @@ def compute_address_id(address, location_id):
         address.get('state_province', ''),
         address.get('postal_code', ''),
         address.get('country', ''),
+        # In order for two address records to be generated for two locations with the same address,
+        # which they need to be so that each address record can refer to each of the two locations,
+        # the location id has to be included in the computation of the address id.
         location_id,
         )
 

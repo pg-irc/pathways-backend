@@ -61,7 +61,7 @@ class Bc211CsvDataBuilder:
             line = ''
             for key in shuffled_keys:
                 value = row.get(key, '')
-                line += value + ','
+                line += str(value) + ','
             result.append(line)
         return result
 
