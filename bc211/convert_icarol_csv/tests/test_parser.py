@@ -601,47 +601,47 @@ class AreTwoLocationsConsideredDuplicateTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 2)
 
-    def test_two_locations_with_different_address_line_1_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_1_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress1', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_address_line_2_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_2_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress2', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_address_line_3_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_3_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress3', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_address_line_4_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_4_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress4', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_mailing_city_are_not_duplicates(self):
+    def test_two_locations_with_different_mailing_city_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingCity', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_province_are_not_duplicates(self):
+    def test_two_locations_with_different_province_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingStateProvince', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_postal_code_are_not_duplicates(self):
+    def test_two_locations_with_different_postal_code_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingPostalCode', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_mailing_country_are_not_duplicates(self):
+    def test_two_locations_with_different_mailing_country_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingCountry', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_physical_address_are_not_duplicates(self):
+    def test_two_locations_with_different_physical_address_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('PhysicalAddress1', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)

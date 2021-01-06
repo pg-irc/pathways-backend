@@ -17,7 +17,7 @@ from common.testhelpers.random_test_values import a_string
 from human_services.locations.models import Location
 
 
-class TaxonomyEndToEndTest(TestCase):
+class EndToEndTest(TestCase):
 
     def test_service_with_mailing_and_physical_address(self):
         the_organization_id = a_string()
