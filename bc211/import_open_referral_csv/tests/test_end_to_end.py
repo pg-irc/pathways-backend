@@ -72,6 +72,7 @@ class EndToEndTest(TestCase):
             mailing_address = addresses[0]
             physical_address = addresses[1]
 
+        self.assertNotEqual(physical_address['id'], mailing_address['id'])
         self.assertEqual(physical_address['address_1'], physical_address_1)
         self.assertEqual(mailing_address['address_1'], mailing_address_1)
 

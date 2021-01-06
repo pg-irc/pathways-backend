@@ -1007,3 +1007,17 @@ class ParseAddressTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_address()['address_1'], the_postal_address_line)
         self.assertEqual(parsed_data.second_address()['address_1'], the_physical_address_line)
+
+    def test_can_have_same_address_as_physical_and_postal(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingAddress1', the_address_line).
+                with_field('PhysicalAddress1', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
+        self.assertEqual(parsed_data.second_address()['address_1'], the_address_line)
+        self.assertEqual(parsed_data.first_address()['location_id'], parsed_data.second_address()['location_id'])
+        self.assertNotEqual(parsed_data.first_address()['id'], parsed_data.second_address()['id'])

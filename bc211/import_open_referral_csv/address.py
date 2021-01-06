@@ -38,8 +38,15 @@ def read_and_import_rows(reader, collector, counters):
     for row in reader:
         if not row:
             continue
-        address_active_record = import_address(row, counters)
+        address_active_record = get_or_create_address(row, counters)
         import_location_address(row, address_active_record, collector, counters)
+
+
+def get_or_create_address(row, counters):
+    if Address.objects.filter(pk=row[0]).exists():
+        return Address.objects.get(pk=row[0])
+    else:
+        return import_address(row, counters)
 
 
 def import_address(row, counters):

@@ -307,6 +307,7 @@ def compute_address_id(address, location_id):
         address.get('state_province', ''),
         address.get('postal_code', ''),
         address.get('country', ''),
+        address.get('type', ''),
         # In order for two address records to be generated for two locations with the same address,
         # which they need to be so that each address record can refer to each of the two locations,
         # the location id has to be included in the computation of the address id.
