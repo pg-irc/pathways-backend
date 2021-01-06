@@ -47,6 +47,12 @@ def parse(sink, lines, vocabulary=None):
         else:
             organization_or_service['organization_id'] = parent_id
             sink.write_service(organization_or_service, location['id'])
+            service_id = organization_or_service['id']
+            sink.write_service_at_location({
+                'id': compute_hash(service_id, location['id']),
+                'service_id': service_id,
+                'location_id': location['id']
+                })
             compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
 
         write_to_sink(addresses, location['id'],

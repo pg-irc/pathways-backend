@@ -82,8 +82,9 @@ class TestDataSink:
 
     def write_service(self, service, location_id):
         self.services.append(service)
-        the_id = compute_hash(service['id'], location_id)
-        self.services_at_location.append({'id': the_id, 'service_id': service['id'], 'location_id': location_id})
+
+    def write_service_at_location(self, service_at_location):
+        self.services_at_location.append(service_at_location)
 
     def write_location(self, location):
         self.locations.append(location)
