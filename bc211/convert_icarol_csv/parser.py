@@ -59,9 +59,16 @@ def parse(sink, lines, vocabulary=None):
 
 def is_inactive(headers, values):
     value_map = {key: value for (key, value) in zip(headers, values)}
+
+    desciption = value_map.get('AgencyDescription', '').strip()
+    if re.search(r'^DEL[0-9\s]', desciption, flags=re.IGNORECASE):
+        return True
+
+    if value_map.get('AgencyStatus', None) == 'Inactive':
+        return True
+
     inactive_provinces = ['YT', 'WA', 'WI', 'TX', 'TN']
     return (
-            value_map.get('AgencyStatus', None) == 'Inactive' or
             value_map.get('MailingStateProvince', None) in inactive_provinces or
             value_map.get('PhysicalStateProvince', None) in inactive_provinces
             )
