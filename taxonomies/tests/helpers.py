@@ -25,7 +25,7 @@ class TaxonomyTermBuilder:
 
     def build(self):
         result = models.TaxonomyTerm()
-        result.taxonomy_term_id = self.taxonomy_term_id
+        result.id = self.taxonomy_term_id
         result.taxonomy_id = self.taxonomy_id
         result.name = self.name
         return result
