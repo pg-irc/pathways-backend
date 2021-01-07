@@ -80,9 +80,11 @@ class ParseOrganizationsTests(TestCase):
                 as_organization().with_field('AgencyDescription', 'DEL0 bla bla').next_row().
                 as_organization().with_field('AgencyDescription', 'del0 bla bla').next_row().
                 as_organization().with_field('AgencyDescription', '    DEL0 bla bla').
+                as_organization().with_field('AgencyDescription', 'this is active').
                 build())
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.organizations), 0)
+        self.assertEqual(len(parsed_data.organizations), 1)
+        self.assertEqual(parsed_data.organizations[0]['description'], 'this is active')
 
     def test_records_with_province_YT_are_not_converted(self):
         data = (Bc211CsvDataBuilder().
