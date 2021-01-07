@@ -1,7 +1,7 @@
 from datetime import date
 import string
 from common.testhelpers.random_test_values import (a_string, an_email_address, a_website_address,
-                                a_latitude, a_longitude, a_phone_number)
+                                                   a_latitude, a_longitude, a_phone_number, an_integer)
 
 
 class OpenReferralCsvOrganizationBuilder:
@@ -42,8 +42,8 @@ class OpenReferralCsvOrganizationBuilder:
         not_used_tax_id = ''
         not_used_year_incorporated = ''
         not_used_legal_status = ''
-        return [self.organization_id, self.name, self.alternate_name, self.description, 
-            self.email, self.url, not_used_tax_status, not_used_tax_id, 
+        return [self.organization_id, self.name, self.alternate_name, self.description,
+            self.email, self.url, not_used_tax_status, not_used_tax_id,
             not_used_year_incorporated, not_used_legal_status]
 
 
@@ -105,7 +105,7 @@ class OpenReferralCsvServiceBuilder:
             not_used_intepretation_services, not_used_application_process, not_used_wait_time,
             not_used_fees, not_used_accreditations, not_used_licenses, not_used_taxonomy_ids,
             self.last_verified_on]
-  
+
 
 class OpenReferralCsvLocationBuilder:
     def __init__(self, organization):
@@ -275,11 +275,16 @@ class OpenReferralCsvPhoneBuilder:
 
 class OpenReferralCsvTaxonomyBuilder:
     def __init__(self):
-        self.taxonomy_id = a_string()
+        self.taxonomy_term_id = a_string()
         self.name = a_string()
+        self.vocabulary = a_string()
 
-    def with_taxonomy_id(self, taxonomy_id):
-        self.taxonomy_id = taxonomy_id
+    def with_taxonomy_term_id(self, taxonomy_term_id):
+        self.taxonomy_term_id = taxonomy_term_id
+        return self
+
+    def with_vocabulary(self, vocabulary):
+        self.vocabulary = vocabulary
         return self
 
     def with_name(self, name):
@@ -289,25 +294,23 @@ class OpenReferralCsvTaxonomyBuilder:
     def build(self):
         not_used_parent_id = ''
         not_used_parent_name = ''
-        not_used_vocabulary = ''
-        return [self.taxonomy_id, self.name, not_used_parent_id, not_used_parent_name,
-            not_used_vocabulary]
+        return [self.taxonomy_term_id, self.name, not_used_parent_id, not_used_parent_name, self.vocabulary]
 
 
 class OpenReferralCsvServiceTaxonomyBuilder:
     def __init__(self):
         self.service_id = a_string()
-        self.taxonomy_id = a_string()
+        self.taxonomy_term_id = a_string()
 
     def with_service_id(self, service_id):
         self.service_id = service_id
         return self
 
-    def with_taxonomy_id(self, taxonomy_id):
-        self.taxonomy_id = taxonomy_id
+    def with_taxonomy_term_id(self, taxonomy_term_id):
+        self.taxonomy_term_id = taxonomy_term_id
         return self
 
     def build(self):
         not_used_id = ''
         not_used_taxonomy_detail = ''
-        return [not_used_id, self.service_id, self.taxonomy_id, not_used_taxonomy_detail]
+        return [not_used_id, self.service_id, self.taxonomy_term_id, not_used_taxonomy_detail]

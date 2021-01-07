@@ -1,7 +1,6 @@
 import csv
 import re
 import hashlib
-import uuid
 import datetime
 
 
@@ -48,6 +47,7 @@ def parse(sink, lines, vocabulary=None):
         else:
             organization_or_service['organization_id'] = parent_id
             sink.write_service(organization_or_service, location['id'])
+            write_service_at_location_to_sink(organization_or_service['id'], location['id'], sink)
             compile_taxonomy_terms(taxonomy_terms, organization_or_service['id'], service_taxonomy_terms)
 
         write_to_sink(addresses, location['id'],
@@ -98,7 +98,7 @@ organization_header_map = {
 def parse_address_fields(header, value, addresses):
     output_address_header = address_header_map.get(get_normalized_address_header(header), None)
     is_physical_address_type = header.startswith('Physical')
-    if output_address_header:
+    if output_address_header and value:
         index = 1 if is_physical_address_type else 0
         addresses[index][output_address_header] = value
         addresses[index]['type'] = 'physical_address' if is_physical_address_type else 'postal_address'
@@ -126,7 +126,7 @@ def parse_locations_fields(header, value, location):
         if output_location_header in ['latitude', 'longitude']:
             try:
                 value = float(value)
-            except:
+            except ValueError:
                 value = None
         location[output_location_header] = value
 
@@ -135,6 +135,7 @@ location_header_map = {
     'ResourceAgencyNum': 'organization_id',
     'PublicName': 'name',
     'AlternateName': 'alternate_name',
+    'AgencyDescription': 'description',
     'Latitude': 'latitude',
     'Longitude': 'longitude',
 }
@@ -246,8 +247,15 @@ def compute_hash(*args):
 
 
 def set_location_ids(location, addresses, phone_numbers, organization_or_service_id, parent_id):
-    location['id'] = compute_location_id(location, addresses, phone_numbers)
+    location['id'] = compute_location_id(location, phone_numbers)
     location['organization_id'] = pick_location_organization_id(organization_or_service_id, parent_id)
+
+
+def write_service_at_location_to_sink(service_id, location_id, sink):
+    sink.write_service_at_location({
+        'id': compute_hash(service_id, location_id),
+        'service_id': service_id,
+        'location_id': location_id})
 
 
 def compile_taxonomy_terms(taxonomy_terms, service_id, service_taxonomy_terms):
@@ -270,15 +278,16 @@ def write_location_to_sink(location, unique_location_ids, sink):
         unique_location_ids[location['id']] = 1
 
 
-def compute_location_id(location, addresses, phone_numbers):
-    return compute_hash(compute_address_id(get_array_element_if_it_exists(addresses, 0)),
-                        compute_address_id(get_array_element_if_it_exists(addresses, 1)),
-                        compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 0)),
+def compute_location_id(location, phone_numbers):
+    return compute_hash(compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 0)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 1)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 2)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 3)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 4)),
                         compute_phone_number_id(get_array_element_if_it_exists(phone_numbers, 5)),
+                        location.get('name', ''),
+                        location.get('alternate_name', ''),
+                        # leave out description, so two locations with identical fields except description will be combined into one
                         str(location.get('latitude', '')),
                         str(location.get('longitude', ''))
                         )
@@ -288,7 +297,7 @@ def get_array_element_if_it_exists(array, index):
     return array[index] if index < len(array) else None
 
 
-def compute_address_id(address):
+def compute_address_id(address, location_id):
     return compute_hash(
         address.get('address_1', ''),
         address.get('address_2', ''),
@@ -298,6 +307,11 @@ def compute_address_id(address):
         address.get('state_province', ''),
         address.get('postal_code', ''),
         address.get('country', ''),
+        address.get('type', ''),
+        # In order for two address records to be generated for two locations with the same address,
+        # which they need to be so that each address record can refer to each of the two locations,
+        # the location id has to be included in the computation of the address id.
+        location_id,
         )
 
 
@@ -314,10 +328,11 @@ def write_to_sink(addresses, location_id, phone_numbers, unique_phone_ids, taxon
 
 
 def write_addresses_to_sink(addresses, location_id, sink):
-    for i, address in enumerate(addresses):
-        if not address:
+    for address in addresses:
+        all_fields_are_blank = not any(address.values())
+        if all_fields_are_blank:
             continue
-        address['id'] = str(uuid.uuid4())
+        address['id'] = compute_address_id(address, location_id)
         address['location_id'] = location_id
         sink.write_address(address)
 

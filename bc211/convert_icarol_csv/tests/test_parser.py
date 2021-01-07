@@ -3,66 +3,13 @@ import string
 from django.test import TestCase
 from common.testhelpers.random_test_values import (a_latitude, a_longitude, a_phone_number, a_string,
                                                    a_website_address, an_email_address, an_integer)
-from bc211.convert_icarol_csv.tests.helpers import Bc211CsvDataBuilder
-from bc211.convert_icarol_csv.parser import CsvMissingIdParseException, compute_hash, parse, phone_header_with_index_one
-
+from bc211.convert_icarol_csv.tests.helpers import Bc211CsvDataBuilder, TestDataSink
+from bc211.convert_icarol_csv.parser import CsvMissingIdParseException, parse, phone_header_with_index_one
 logging.disable(logging.ERROR)
 
 
 # TODO test that entities are unique accross organizations
 # TODO test unicode characters
-
-class TestDataSink:
-    def __init__(self):
-        self.organizations = []
-        self.services = []
-        self.locations = []
-        self.services_at_location = []
-        self.addresses = []
-        self.phone_numbers = []
-        self.taxonomy_terms = []
-        self.services_taxonomy = []
-
-    def write_organization(self, organization):
-        self.organizations.append(organization)
-
-    def write_service(self, service, location_id):
-        self.services.append(service)
-        the_id = compute_hash(service['id'], location_id)
-        self.services_at_location.append({'id': the_id, 'service_id': service['id'], 'location_id': location_id})
-
-    def write_location(self, location):
-        self.locations.append(location)
-
-    def write_address(self, address):
-        self.addresses.append(address)
-
-    def write_phone_number(self, phone_number):
-        self.phone_numbers.append(phone_number)
-
-    def write_taxonomy_term(self, terms):
-        self.taxonomy_terms.append(terms)
-
-    def write_service_taxonomy_terms(self, service_taxonomy_terms):
-        self.services_taxonomy += service_taxonomy_terms
-
-    def first_organization(self):
-        return self.organizations[0]
-
-    def first_service(self):
-        return self.services[0]
-
-    def first_location(self):
-        return self.locations[0]
-
-    def first_address(self):
-        return self.addresses[0]
-
-    def second_address(self):
-        return self.addresses[1]
-
-    def first_phone_number(self):
-        return self.phone_numbers[0]
 
 
 class ParseOrganizationsTests(TestCase):
@@ -396,7 +343,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_taxonomy_term_with_space(self):
         the_term = 'Fire Services; Fire Stations'
@@ -412,7 +358,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_third_taxonomy_term_column(self):
         the_term = a_string()
@@ -420,7 +365,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-why')
 
     def test_parse_airs_taxonomy_term_column(self):
         the_term = a_string()
@@ -428,7 +372,6 @@ class ParseTaxonomyTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.taxonomy_terms), 1)
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_term)
-        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'AIRS')
 
     def test_can_pass_in_vocabulary_to_parser(self):
         the_vocabulary = a_string()
@@ -522,9 +465,21 @@ class ParseTaxonomyTests(TestCase):
         self.assertEqual(parsed_data.taxonomy_terms[0]['name'], the_first_term)
         self.assertEqual(parsed_data.taxonomy_terms[1]['name'], the_second_term)
 
-    def test_all_upper_case_term_is_part_of_taxonomy_called_bc211_what(self):
+    def test_all_upper_case_term_in_TaxonomyTerm_column_is_part_of_taxonomy_called_bc211_what(self):
+        the_term = a_string(from_character_string=string.ascii_uppercase)
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerm', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+
+    def test_all_upper_case_term_in_TaxonomyTerms_column_is_part_of_taxonomy_called_bc211_what(self):
         the_term = a_string(from_character_string=string.ascii_uppercase)
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
+
+    def test_all_upper_case_term_in_TaxonomyTermsNotDeactivated_column_is_part_of_taxonomy_called_bc211_what(self):
+        the_term = a_string(from_character_string=string.ascii_uppercase)
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTermsNotDeactivated', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-what')
 
@@ -541,6 +496,12 @@ class ParseTaxonomyTests(TestCase):
         data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyTerms', the_term).build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'bc211-who')
+
+    def test_term_from_TaxonomyCodes_column_is_part_of_taxonomy_called_airs(self):
+        the_term = a_string()
+        data = (Bc211CsvDataBuilder().as_service().with_field('TaxonomyCodes', the_term).build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(parsed_data.taxonomy_terms[0]['vocabulary'], 'AIRS')
 
     def test_set_parent_name_to_empty_string(self):
         the_term = a_string()
@@ -615,15 +576,15 @@ class AreTwoLocationsConsideredDuplicateTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_public_names_id_are_duplicates(self):
+    def test_two_locations_with_different_public_names_id_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('PublicName', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 1)
+        self.assertEqual(len(parsed_data.locations), 2)
 
-    def test_two_locations_with_different_alternate_names_are_duplicates(self):
+    def test_two_locations_with_different_alternate_names_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('AlternateName', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 1)
+        self.assertEqual(len(parsed_data.locations), 2)
 
     def test_two_locations_with_different_descriptions_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('AgencyDescription', a_string()).build()
@@ -640,50 +601,50 @@ class AreTwoLocationsConsideredDuplicateTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.locations), 2)
 
-    def test_two_locations_with_different_address_line_1_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_1_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress1', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_address_line_2_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_2_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress2', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_address_line_3_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_3_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress3', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_address_line_4_are_not_duplicates(self):
+    def test_two_locations_with_different_address_line_4_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingAddress4', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_mailing_city_are_not_duplicates(self):
+    def test_two_locations_with_different_mailing_city_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingCity', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_province_are_not_duplicates(self):
+    def test_two_locations_with_different_province_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingStateProvince', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_postal_code_are_not_duplicates(self):
+    def test_two_locations_with_different_postal_code_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingPostalCode', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_mailing_country_are_not_duplicates(self):
+    def test_two_locations_with_different_mailing_country_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('MailingCountry', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
-    def test_two_locations_with_different_physical_address_are_not_duplicates(self):
+    def test_two_locations_with_different_physical_address_are_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('PhysicalAddress1', a_string()).build()
         parsed_data = parse(TestDataSink(), data)
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
 
     def test_two_locations_with_different_phone_number_are_not_duplicates(self):
         data = self.builder.duplicate_last_row().with_field('Phone1Number', a_phone_number()).build()
@@ -718,9 +679,8 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
 
-        self.assertEqual(len(parsed_data.locations), 2)
+        self.assertEqual(len(parsed_data.locations), 1)
         self.assertEqual(parsed_data.locations[0]['organization_id'], the_organization_id)
-        self.assertEqual(parsed_data.locations[1]['organization_id'], the_organization_id)
 
     def test_an_organization_with_two_services(self):
         the_organization_id = a_string()
@@ -776,13 +736,15 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 build())
         parsed_data = parse(TestDataSink(), data)
 
-        the_location_id = parsed_data.first_location()['id']
+        self.assertEqual(len(parsed_data.locations), 3)
+        first_location_id = parsed_data.locations[1]['id']
+        second_location_id = parsed_data.locations[2]['id']
 
         self.assertEqual(len(parsed_data.services_at_location), 2)
         self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_first_service_id)
         self.assertEqual(parsed_data.services_at_location[1]['service_id'], the_second_service_id)
-        self.assertEqual(parsed_data.services_at_location[0]['location_id'], the_location_id)
-        self.assertEqual(parsed_data.services_at_location[1]['location_id'], the_location_id)
+        self.assertEqual(parsed_data.services_at_location[0]['location_id'], first_location_id)
+        self.assertEqual(parsed_data.services_at_location[1]['location_id'], second_location_id)
 
     def test_service_at_two_locations(self):
         the_organization_id = a_string()
@@ -802,6 +764,9 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 with_field('ResourceAgencyNum', the_service_id).
                 with_field('PublicName', the_service_name).
                 with_field('ParentAgencyNum', the_organization_id).
+                # for the locations to count as different, the lat/long has to be different
+                with_field('Latitude', a_latitude()).
+                with_field('AgencyDescription', a_string()).
                 with_field('MailingAddress1', the_address_line).
                 with_field('MailingCity', the_city_line).
                 with_field('MailingStateProvince', the_province).
@@ -810,14 +775,18 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
                 with_field('ResourceAgencyNum', the_service_id).
                 with_field('PublicName', the_service_name).
                 with_field('ParentAgencyNum', the_organization_id).
+                with_field('Latitude', a_latitude()).
+                with_field('AgencyDescription', a_string()).
                 with_field('MailingAddress1', a_string()).
                 with_field('MailingCity', a_string()).
                 with_field('MailingStateProvince', a_string()).
                 build())
 
         parsed_data = parse(TestDataSink(), data)
-        first_location_id = parsed_data.locations[0]['id']
-        second_location_id = parsed_data.locations[1]['id']
+        self.assertEqual(len(parsed_data.locations), 3)
+        # location at offset 0 is for the organization
+        first_location_id = parsed_data.locations[1]['id']
+        second_location_id = parsed_data.locations[2]['id']
 
         self.assertEqual(len(parsed_data.services_at_location), 2)
         self.assertEqual(parsed_data.services_at_location[0]['service_id'], the_service_id)
@@ -933,6 +902,7 @@ class HumanServiceOneToManyRelationshipsTests(TestCase):
 
         self.assertEqual(len(parsed_data.locations), 2)
         self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertNotEqual(parsed_data.addresses[0]['id'], parsed_data.addresses[1]['id'])
         self.assertEqual(parsed_data.addresses[0]['location_id'], the_first_location_id)
         self.assertEqual(parsed_data.addresses[1]['location_id'], the_second_location_id)
     # Phone numbers uniquely identified by their phone number field
@@ -1037,3 +1007,17 @@ class ParseAddressTests(TestCase):
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(parsed_data.first_address()['address_1'], the_postal_address_line)
         self.assertEqual(parsed_data.second_address()['address_1'], the_physical_address_line)
+
+    def test_can_have_same_address_as_physical_and_postal(self):
+        the_address_line = a_string()
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('MailingAddress1', the_address_line).
+                with_field('PhysicalAddress1', the_address_line).
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.addresses), 2)
+        self.assertEqual(parsed_data.first_address()['address_1'], the_address_line)
+        self.assertEqual(parsed_data.second_address()['address_1'], the_address_line)
+        self.assertEqual(parsed_data.first_address()['location_id'], parsed_data.second_address()['location_id'])
+        self.assertNotEqual(parsed_data.first_address()['id'], parsed_data.second_address()['id'])
