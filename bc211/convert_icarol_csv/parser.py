@@ -19,7 +19,7 @@ def parse(sink, lines, vocabulary=None):
 
     for row in reader:
         line += 1
-        if not row:
+        if not row or is_inactive(headers, row):
             continue
 
         organization_or_service = {}
@@ -55,6 +55,16 @@ def parse(sink, lines, vocabulary=None):
                       taxonomy_terms, unique_taxonomy_term_ids,
                       service_taxonomy_terms, sink)
     return sink
+
+
+def is_inactive(headers, values):
+    value_map = {key: value for (key, value) in zip(headers, values)}
+    inactive_provinces = ['YT', 'WA', 'WI', 'TX', 'TN']
+    return (
+            value_map.get('AgencyStatus', None) == 'Inactive' or
+            value_map.get('MailingStateProvince', None) in inactive_provinces or
+            value_map.get('PhysicalStateProvince', None) in inactive_provinces
+            )
 
 
 def parse_row(header, value, organization_or_service, location, addresses, phone_numbers, taxonomy_terms, vocabulary):
