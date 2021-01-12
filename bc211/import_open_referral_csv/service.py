@@ -18,8 +18,8 @@ def import_services_file(root_folder, collector, counters):
 
 
 def read_file(path, collector, counters):
-    with open(path, 'r') as file:
-        reader = csv.reader(file)
+    with open(path, 'r', newline='') as file:
+        reader = csv.reader(file, quoting=csv.QUOTE_ALL, delimiter=',')
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
             raise InvalidFileCsvImportException(
