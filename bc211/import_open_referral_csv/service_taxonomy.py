@@ -19,7 +19,7 @@ def import_services_taxonomy_file(root_folder, collector):
 
 
 def read_file(path, collector):
-    with open(path, 'r') as file:
+    with open(path, 'r', newline='') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):

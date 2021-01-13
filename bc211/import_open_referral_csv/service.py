@@ -18,7 +18,7 @@ def import_services_file(root_folder, collector, counters):
 
 
 def read_file(path, collector, counters):
-    with open(path, 'r') as file:
+    with open(path, 'r', newline='') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):

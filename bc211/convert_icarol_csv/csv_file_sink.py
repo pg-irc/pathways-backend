@@ -30,8 +30,8 @@ class CsvFileSink:
 
     def make_writer(self, path, filename, columns):
         full_path = path + '/' + filename + '.csv'
-        writable_file_handle = open(full_path, 'w')
-        writer = csv.writer(writable_file_handle)
+        writable_file_handle = open(full_path, 'w', newline='')
+        writer = csv.writer(writable_file_handle, quoting=csv.QUOTE_ALL, delimiter=',')
         writer.writerow(columns)
         return writer
 
