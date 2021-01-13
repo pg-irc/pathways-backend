@@ -92,10 +92,10 @@ def create_location_address_active_record(row, address, location_id, counters):
                 address_type=address_type_active_record
         ).save()
         counters.count_location_address()
-    except ValidationError:
+    except ValidationError as error:
         LOGGER.warning(
-            'ValidationError in row with location id "%s" and address "%s"', location_id, address
-        )
+            'ValidationError in row with location id "%s" and address "%s": %s',
+            location_id, address, error)
 
 
 def get_active_record_or_raise(active_record_id, model):
