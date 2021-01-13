@@ -380,7 +380,7 @@ class EndToEndTest(TestCase):
         import_taxonomy_terms(open_referral_csv_data, counters)
         result_from_db = TaxonomyTerm.objects.all()
         self.assertEqual(len(result_from_db), 1)
-        self.assertEqual(result_from_db[0].taxonomy_term_id, taxonomy_term_id)
+        self.assertEqual(result_from_db[0].id, taxonomy_term_id)
         self.assertEqual(result_from_db[0].name, bc211_what_taxonomy_term.lower())
         self.assertEqual(result_from_db[0].taxonomy_id, 'bc211-what')
 
@@ -393,6 +393,6 @@ class EndToEndTest(TestCase):
         import_service_taxonomy(open_referral_csv_data, collector)
         result_from_db = Service.objects.all()[0].taxonomy_terms.all()
         self.assertEqual(len(result_from_db), 1)
-        self.assertEqual(result_from_db[0].taxonomy_term_id, taxonomy_term_id)
+        self.assertEqual(result_from_db[0].id, taxonomy_term_id)
         self.assertEqual(result_from_db[0].taxonomy_id, 'bc211-what')
         self.assertEqual(result_from_db[0].name, bc211_what_taxonomy_term.lower())
