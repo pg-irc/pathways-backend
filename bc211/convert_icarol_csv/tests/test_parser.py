@@ -69,7 +69,7 @@ class ParseOrganizationsTests(TestCase):
         self.assertEqual(parsed_data[0]['name'], first_name)
         self.assertEqual(parsed_data[1]['name'], second_name)
 
-    def test_records_with_status_inactive_are_not_converted(self):
+    def test_records_with_status_inactive_are_marked(self):
         data = (Bc211CsvDataBuilder().as_organization().with_field('AgencyStatus', 'Inactive').build())
         parsed_data = parse(TestDataSink(), data)
         self.assertEqual(len(parsed_data.organizations), 1)
@@ -92,7 +92,7 @@ class ParseOrganizationsTests(TestCase):
         self.assertEqual(len(parsed_data.organizations), 1)
         self.assertEqual(parsed_data.organizations[0]['description'], 'DEL bla bla')
 
-    def test_records_with_province_YT_are_not_converted(self):
+    def test_records_with_province_YT_are_marked_as_inactive(self):
         data = (Bc211CsvDataBuilder().
                 as_organization().with_field('MailingStateProvince', 'YT').next_row().
                 as_organization().with_field('PhysicalStateProvince', 'YT').
@@ -102,7 +102,7 @@ class ParseOrganizationsTests(TestCase):
         self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0 ')
         self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
 
-    def test_records_with_province_WA_are_not_converted(self):
+    def test_records_with_province_WA_are_marked_as_inactive(self):
         data = (Bc211CsvDataBuilder().
                 as_organization().with_field('MailingStateProvince', 'WA').next_row().
                 as_organization().with_field('PhysicalStateProvince', 'WA').
@@ -122,7 +122,7 @@ class ParseOrganizationsTests(TestCase):
         self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
         self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
 
-    def test_records_with_province_TX_are_not_converted(self):
+    def test_records_with_province_TX_are_marked_as_inactive(self):
         data = (Bc211CsvDataBuilder().
                 as_organization().with_field('MailingStateProvince', 'TX').next_row().
                 as_organization().with_field('PhysicalStateProvince', 'TX').
@@ -132,7 +132,7 @@ class ParseOrganizationsTests(TestCase):
         self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
         self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
 
-    def test_records_with_province_TN_are_not_converted(self):
+    def test_records_with_province_TN_are_marked_as_inactive(self):
         data = (Bc211CsvDataBuilder().
                 as_organization().with_field('MailingStateProvince', 'TN').next_row().
                 as_organization().with_field('PhysicalStateProvince', 'TN').
