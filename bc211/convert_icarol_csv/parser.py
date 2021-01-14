@@ -19,7 +19,7 @@ def parse(sink, lines, vocabulary=None):
 
     for row in reader:
         line += 1
-        if is_inactive(headers, row):
+        if not row:
             continue
 
         organization_or_service = {}
@@ -57,33 +57,14 @@ def parse(sink, lines, vocabulary=None):
     return sink
 
 
-def is_inactive(headers, values):
-    if not values:
-        return True
-
-    value_map = {key: value for (key, value) in zip(headers, values)}
-
-    if value_map.get('AgencyStatus', None) == 'Inactive':
-        return True
-
-    # BC211's convention for marking records as inactive is DEL + number or DEL + whitespace + number
-    desciption = value_map.get('AgencyDescription', '').strip()
-    if re.search(r'^DEL[0-9\s]', desciption, flags=re.IGNORECASE):
-        return True
-
-    inactive_provinces = ['YT', 'WA', 'WI', 'TX', 'TN']
-    return (
-            value_map.get('MailingStateProvince', None) in inactive_provinces or
-            value_map.get('PhysicalStateProvince', None) in inactive_provinces
-            )
-
-
 def parse_row(header, value, organization_or_service, location, addresses, phone_numbers, taxonomy_terms, vocabulary):
     parse_organization_and_service_fields(header, value, organization_or_service)
     parse_locations_fields(header, value, location)
     parse_address_fields(header, value, addresses)
     parse_phone_number_fields(header, value, phone_numbers)
     parse_taxonomy_fields(header, value, taxonomy_terms, vocabulary)
+    if is_inactive(header, value):
+        mark_as_inactive(organization_or_service)
 
 
 def parse_organization_and_service_fields(header, value, organization_or_service):
@@ -91,8 +72,43 @@ def parse_organization_and_service_fields(header, value, organization_or_service
     if output_header:
         if output_header == 'last_verified_on-x':
             organization_or_service[output_header] = fix_date_time_string_if_exists(value)
+        elif output_header == 'description':
+            old_description = organization_or_service.get('description', '')
+            new_description = value
+            organization_or_service[output_header] = transfer_inactive_mark_if_present(old_description,
+                                                                                       new_description)
         else:
             organization_or_service[output_header] = value
+
+
+def is_inactive(header, value):
+    if header == 'AgencyStatus' and value == 'Inactive':
+        return True
+
+    if header == 'MailingStateProvince' or header == 'PhysicalStateProvince':
+        inactive_provinces = ['YT', 'WA', 'WI', 'TX', 'TN']
+        return value in inactive_provinces
+
+
+def mark_as_inactive(organization_or_service):
+    description = organization_or_service.get('description', '')
+    if is_marked_inactive(description):
+        return
+    organization_or_service['description'] = mark_description_inactive(description)
+
+
+def transfer_inactive_mark_if_present(old_description, new_description):
+    if is_marked_inactive(old_description) and not is_marked_inactive(new_description):
+        return mark_description_inactive(new_description)
+    return new_description
+
+
+def is_marked_inactive(description):
+    return re.search(r'^DEL[0-9\s]',  description, flags=re.IGNORECASE)
+
+
+def mark_description_inactive(description):
+    return 'DEL0 ' + description
 
 
 def fix_date_time_string_if_exists(date_time_string):
