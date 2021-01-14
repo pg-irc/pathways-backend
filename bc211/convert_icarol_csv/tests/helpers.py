@@ -1,6 +1,7 @@
 import random
 import copy
 from common.testhelpers.random_test_values import an_integer
+from bc211.convert_icarol_csv.parser import compute_hash
 
 
 class Bc211CsvDataBuilder:
@@ -42,9 +43,15 @@ class Bc211CsvDataBuilder:
         self.data[-1]['ParentAgencyNum'] = str(an_integer(min=1))
         return self
 
+    def get_keys(self):
+        keys = [row.keys() for row in self.data]
+        flat_keys = [item for sublist in keys for item in sublist]
+        unique_keys = {key for key in flat_keys}
+        return list(unique_keys)
+
     def build(self):
         result = []
-        shuffled_keys = list(self.data[0].keys())
+        shuffled_keys = self.get_keys()
         random.shuffle(shuffled_keys)
         line = ''
         for key in shuffled_keys:
@@ -54,6 +61,60 @@ class Bc211CsvDataBuilder:
             line = ''
             for key in shuffled_keys:
                 value = row.get(key, '')
-                line += value + ','
+                line += str(value) + ','
             result.append(line)
         return result
+
+
+class TestDataSink:
+    def __init__(self):
+        self.organizations = []
+        self.services = []
+        self.locations = []
+        self.services_at_location = []
+        self.addresses = []
+        self.phone_numbers = []
+        self.taxonomy_terms = []
+        self.services_taxonomy = []
+
+    def write_organization(self, organization):
+        self.organizations.append(organization)
+
+    def write_service(self, service, location_id):
+        self.services.append(service)
+
+    def write_service_at_location(self, service_at_location):
+        self.services_at_location.append(service_at_location)
+
+    def write_location(self, location):
+        self.locations.append(location)
+
+    def write_address(self, address):
+        self.addresses.append(address)
+
+    def write_phone_number(self, phone_number):
+        self.phone_numbers.append(phone_number)
+
+    def write_taxonomy_term(self, terms):
+        self.taxonomy_terms.append(terms)
+
+    def write_service_taxonomy_terms(self, service_taxonomy_terms):
+        self.services_taxonomy += service_taxonomy_terms
+
+    def first_organization(self):
+        return self.organizations[0]
+
+    def first_service(self):
+        return self.services[0]
+
+    def first_location(self):
+        return self.locations[0]
+
+    def first_address(self):
+        return self.addresses[0]
+
+    def second_address(self):
+        return self.addresses[1]
+
+    def first_phone_number(self):
+        return self.phone_numbers[0]
