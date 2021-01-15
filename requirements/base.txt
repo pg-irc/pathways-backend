@@ -11,7 +11,7 @@ django-model-utils==4.1.1
 django-cors-headers==3.6.0
 django-parler==2.2
 djangorestframework==3.12.2
-drf_yasg2==1.19.3
+drf_yasg2==1.19.4
 awesome-slugify==1.6.5
 polib==1.1.0
 
