@@ -154,7 +154,7 @@ python manage.py import_icarol_xml ~/path/to/AIRSXML_2252_Export_20170109050136_
 
 ```
 
-Importing from BC211 CSV is a two step process, where the first step converts the non-standard CSV into the (OpenReferral standard CSV)[https://github.com/openreferral/sample-HSDS-datapackage] and the second step imports from those files into the database. Currently the preferred method is to use the CSV, because that is the format that is most convenient for BC211 to work with.
+Importing from BC211 CSV is a two step process, where the first step converts the non-standard CSV into the [OpenReferral standard CSV](https://github.com/openreferral/sample-HSDS-datapackage) and the second step imports from those files into the database. Currently the preferred method is to use the CSV, because that is the format that is most convenient for BC211 to work with.
 
 ```
 mkdir tmp_folder
