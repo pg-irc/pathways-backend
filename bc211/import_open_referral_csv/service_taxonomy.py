@@ -19,7 +19,7 @@ def import_services_taxonomy_file(root_folder, collector):
 
 
 def read_file(path, collector):
-    with open(path, 'r') as file:
+    with open(path, 'r', newline='') as file:
         reader = csv.reader(file)
         headers = reader.__next__()
         if not headers_match_expected_format(headers, expected_headers):
@@ -62,4 +62,4 @@ def build_service_taxonomy_active_record(service_id, taxonomy_term):
 
 
 def get_taxonomy_term_active_record_or_raise(taxonomy_id):
-    return TaxonomyTerm.objects.get(taxonomy_term_id=taxonomy_id)
+    return TaxonomyTerm.objects.get(id=taxonomy_id)

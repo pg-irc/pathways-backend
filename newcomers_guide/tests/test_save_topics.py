@@ -61,15 +61,9 @@ class TestSavingTasks(TestCase):
     def test_saves_taxonomy_id(self):
         save_topics(self.one_topic, self.counts)
         record = Task.objects.all()[0]
-        self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
+        self.assertEqual({r.taxonomy_id for r in record.taxonomy_terms.all()}, {'colour', 'size'})
 
     def test_saves_taxonomy_term(self):
         save_topics(self.one_topic, self.counts)
         record = Task.objects.all()[0]
-        self.assertEqual(record.taxonomy_terms.all()[0].name, 'blue')
-
-    def test_saves_multiple_taxonomy_terms(self):
-        save_topics(self.one_topic, self.counts)
-        record = Task.objects.all()[0]
-        self.assertEqual(record.taxonomy_terms.all()[0].taxonomy_id, 'colour')
-        self.assertEqual(record.taxonomy_terms.all()[1].taxonomy_id, 'size')
+        self.assertEqual({r.name for r in record.taxonomy_terms.all()}, {'blue', 'large'})

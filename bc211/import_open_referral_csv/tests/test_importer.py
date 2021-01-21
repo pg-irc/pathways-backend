@@ -411,21 +411,21 @@ class TaxonomyImporterTests(TestCase):
         taxonomy_data = OpenReferralCsvTaxonomyBuilder().with_taxonomy_term_id(the_id).build()
         import_taxonomy(taxonomy_data, ImportCounters())
         taxonomy_terms = TaxonomyTerm.objects.all()
-        self.assertEqual(taxonomy_terms[0].taxonomy_term_id, the_id)
+        self.assertEqual(taxonomy_terms[0].id, the_id)
 
 
 class ServiceTaxonomyImporterTests(TestCase):
     def setUp(self):
         self.organization = OrganizationBuilder().create()
-        self.taxonomy_id = a_string()
-        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_term_id(self.taxonomy_id).create()
+        self.taxonomy_term_id = a_string()
+        self.taxonomy_term = TaxonomyTermBuilder().with_taxonomy_term_id(self.taxonomy_term_id).create()
         self.service_id = a_string()
         ServiceBuilder(self.organization).with_id(self.service_id).create()
 
     def test_can_import_one_taxonomy_term_into_service_record(self):
         service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                  with_service_id(self.service_id).
-                                 with_taxonomy_term_id(self.taxonomy_id).
+                                 with_taxonomy_term_id(self.taxonomy_term_id).
                                  build())
         csv_data = [service_taxonomy_data]
         read_and_import_rows(csv_data, InactiveRecordsCollector())
@@ -434,22 +434,21 @@ class ServiceTaxonomyImporterTests(TestCase):
         self.assertEqual(service_taxonomy_terms[0], self.taxonomy_term)
 
     def test_can_import_multiple_taxonomy_terms_into_the_same_service_record(self):
-        second_taxonomy_id = a_string()
-        second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_term_id(second_taxonomy_id).create()
+        second_taxonomy_term_id = a_string()
+        second_taxonomy_term = TaxonomyTermBuilder().with_taxonomy_term_id(second_taxonomy_term_id).create()
         first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                        with_service_id(self.service_id).
-                                       with_taxonomy_term_id(self.taxonomy_id).
+                                       with_taxonomy_term_id(self.taxonomy_term_id).
                                        build())
         second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                         with_service_id(self.service_id).
-                                        with_taxonomy_term_id(second_taxonomy_id).
+                                        with_taxonomy_term_id(second_taxonomy_term_id).
                                         build())
         csv_data = [first_service_taxonomy_data, second_service_taxonomy_data]
         read_and_import_rows(csv_data, InactiveRecordsCollector())
         service_active_record = Service.objects.get(pk=self.service_id)
         service_taxonomy_terms = service_active_record.taxonomy_terms.all()
-        self.assertEqual(service_taxonomy_terms[0], self.taxonomy_term)
-        self.assertEqual(service_taxonomy_terms[1], second_taxonomy_term)
+        self.assertEqual({self.taxonomy_term.id, second_taxonomy_term.id}, {r.id for r in service_taxonomy_terms})
 
     def test_does_not_import_a_second_taxonomy_term_when_the_service_id_is_different(self):
         second_service_id = a_string()
@@ -458,7 +457,7 @@ class ServiceTaxonomyImporterTests(TestCase):
         TaxonomyTermBuilder().with_taxonomy_term_id(second_taxonomy_id).create()
         first_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                        with_service_id(self.service_id).
-                                       with_taxonomy_term_id(self.taxonomy_id).
+                                       with_taxonomy_term_id(self.taxonomy_term_id).
                                        build())
         second_service_taxonomy_data = (OpenReferralCsvServiceTaxonomyBuilder().
                                         with_service_id(second_service_id).

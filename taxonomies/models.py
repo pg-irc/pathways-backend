@@ -5,12 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 from common.models import RequiredCharField
 
 
+# TODO remove
 def default_term_id():
     return str(uuid.uuid4())
 
 
 class TaxonomyTerm(models.Model):
-    taxonomy_term_id = RequiredCharField(unique=True, default=default_term_id, max_length=200,
+    id = RequiredCharField(primary_key=True, default=default_term_id, max_length=200,
                                          validators=[validate_slug])
     taxonomy_id = RequiredCharField(max_length=200, validators=[validate_slug])
     name = RequiredCharField(max_length=200, validators=[validate_slug])
