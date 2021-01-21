@@ -69,6 +69,79 @@ class ParseOrganizationsTests(TestCase):
         self.assertEqual(parsed_data[0]['name'], first_name)
         self.assertEqual(parsed_data[1]['name'], second_name)
 
+    def test_records_with_status_inactive_are_marked(self):
+        data = (Bc211CsvDataBuilder().as_organization().with_field('AgencyStatus', 'Inactive').build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 1)
+        self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
+
+    def test_records_with_description_marked_inactive_are_not_changed(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().with_field('AgencyDescription', 'DEL bla bla').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 1)
+        self.assertEqual(parsed_data.organizations[0]['description'], 'DEL bla bla')
+
+    def test_records_with_description_marked_inactive_are_not_changed_also_with_other_inactivating_field(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().
+                with_field('AgencyDescription', 'DEL bla bla').
+                with_field('AgencyStatus', 'Inactive').build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 1)
+        self.assertEqual(parsed_data.organizations[0]['description'], 'DEL bla bla')
+
+    def test_records_with_province_YT_are_marked_as_inactive(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().with_field('MailingStateProvince', 'YT').next_row().
+                as_organization().with_field('PhysicalStateProvince', 'YT').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 2)
+        self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0 ')
+        self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
+
+    def test_records_with_province_WA_are_marked_as_inactive(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().with_field('MailingStateProvince', 'WA').next_row().
+                as_organization().with_field('PhysicalStateProvince', 'WA').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 2)
+        self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
+        self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
+
+    def test_records_with_province_WI_are_not_converted(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().with_field('MailingStateProvince', 'WI').next_row().
+                as_organization().with_field('PhysicalStateProvince', 'WI').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 2)
+        self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
+        self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
+
+    def test_records_with_province_TX_are_marked_as_inactive(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().with_field('MailingStateProvince', 'TX').next_row().
+                as_organization().with_field('PhysicalStateProvince', 'TX').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 2)
+        self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
+        self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
+
+    def test_records_with_province_TN_are_marked_as_inactive(self):
+        data = (Bc211CsvDataBuilder().
+                as_organization().with_field('MailingStateProvince', 'TN').next_row().
+                as_organization().with_field('PhysicalStateProvince', 'TN').
+                build())
+        parsed_data = parse(TestDataSink(), data)
+        self.assertEqual(len(parsed_data.organizations), 2)
+        self.assertRegex(parsed_data.organizations[0]['description'], r'^DEL0')
+        self.assertRegex(parsed_data.organizations[1]['description'], r'^DEL0')
+
 
 class ParseServicesTests(TestCase):
     def test_parse_as_service_if_parent_agency_is_not_zero(self):
