@@ -35,7 +35,14 @@ def read_and_import_rows(reader, counters):
     for row in reader:
         if not row:
             continue
-        import_taxonomy(row, counters)
+        existing = get_existing_taxonomy_or_none(row)
+        if not existing:
+            import_taxonomy(row, counters)
+
+
+def get_existing_taxonomy_or_none(row):
+    result = TaxonomyTerm.objects.filter(id=row[0], name=row[1], taxonomy_id=row[4]).all()
+    return result[0] if result else None
 
 
 def import_taxonomy(row, counters):
