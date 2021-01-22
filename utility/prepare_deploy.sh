@@ -163,15 +163,6 @@ echo "importing organizationAsService open referral csv data into the database..
 ./manage.py import_open_referral_csv ./open_referral_csv_files_org_services --cityLatLongs $CityLatLongs
 checkForSuccess "import organizationAsService open referral data into the database"
 
-echo "converting additional schools CSV to open referral standard..."
-mkdir -p ./open_referral_csv_files_schools
-./manage.py convert_icarol_csv ../content/additionalSchools.csv ./open_referral_csv_files_schools
-checkForSuccess "convert additional schools data into open referral standard"
-
-echo "importing additional schools open referral csv data into the database..."
-./manage.py import_open_referral_csv ./open_referral_csv_files_schools --cityLatLongs $CityLatLongs
-checkForSuccess "import additional schools open referral data into the database"
-
 echo "converting additional libraries CSV to open referral standard..."
 mkdir -p ./open_referral_csv_files_libraries
 ./manage.py convert_icarol_csv ../content/additionalLibraries.csv ./open_referral_csv_files_libraries
