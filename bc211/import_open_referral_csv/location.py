@@ -1,6 +1,7 @@
 import csv
 import os
 import logging
+from django.utils import translation
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from human_services.locations.models import Location
@@ -42,6 +43,7 @@ def read_and_import_row(reader, collector, counters):
 
 def import_location(row, collector, counters):
     try:
+        translation.activate('en')
         location_id = parser.parse_required_field_with_double_escaped_html('location_id', row[0])
         organization_id = parser.parse_required_field_with_double_escaped_html(
             'organization_id',
