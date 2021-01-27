@@ -12,7 +12,7 @@ gunicorn==20.0.4
 # Static and Media Storage
 # ------------------------------------------------
 boto3==1.15.18
-django-storages==1.10.1
+django-storages==1.11.1
 
 
 # Email backends for Mailgun, Postmark, SendGrid and more

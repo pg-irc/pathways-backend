@@ -1,26 +1,26 @@
 # Package management
-wheel==0.35.1
+wheel==0.36.2
 
 # python 2 compatibility
 six==1.15.0
 
 # django
-django==3.1.2
+django==3.1.5
 django-environ==0.4.5
-django-model-utils==4.0.0
-django-cors-headers==3.5.0
+django-model-utils==4.1.1
+django-cors-headers==3.6.0
 django-parler==2.2
-djangorestframework==3.12.1
-drf_yasg2==1.19.3
+djangorestframework==3.12.2
+drf_yasg2==1.19.4
 awesome-slugify==1.6.5
 polib==1.1.0
 
 # authentication: Used in testing and user registration
 argon2-cffi==20.1.0
-django-allauth==0.43.0
+django-allauth==0.44.0
 
 # push notifications
-exponent-server-sdk==0.3.1
+exponent-server-sdk==1.0.0
 
 # postgreSQL database adapter
 # see http://initd.org/psycopg/docs/install.html#disabling-wheel-packages-for-psycopg-2-7
@@ -42,4 +42,4 @@ django-redis==4.12.1
 redis==3.5.3
 
 # front end tech: Used in Django Admin
-django-crispy-forms==1.9.2
+django-crispy-forms==1.10.0
