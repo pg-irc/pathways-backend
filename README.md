@@ -145,11 +145,21 @@ python manage.py runserver
 
 You should now be able to access the server at http://127.0.0.1:8000/v1/. The Django admin tool is at http://127.0.0.1:8000/v1/admin/, and the question and choice entities are available at http://127.0.0.1:8000/v1/questions/ and http://127.0.0.1:8000/v1/questions/1/choices/.
 
-Import BC-211 data
+## Import BC-211 data
+
+We suppport two input formats for service provider data, iCarol XML and BC211 CSV. To import the XML data, this is the command to run
 
 ```
 python manage.py import_icarol_xml ~/path/to/AIRSXML_2252_Export_20170109050136__211.xml
 
+```
+
+Importing from BC211 CSV is a two step process, where the first step converts the non-standard CSV into the [OpenReferral standard CSV](https://github.com/openreferral/sample-HSDS-datapackage) and the second step imports from those files into the database. Currently the preferred method is to use the CSV, because that is the format that is most convenient for BC211 to work with.
+
+```
+mkdir tmp_folder
+./manage.py convert_icarol_csv ~/path/to/iCarolExport-BC211-Resources-20201112_mod.csv temp_folder/
+./manage.py import_open_referral_csv temp_folder/
 ```
 
 ## Using different settings

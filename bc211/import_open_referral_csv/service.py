@@ -1,6 +1,7 @@
 import csv
 import os
 import logging
+from django.utils import translation
 from django.core.exceptions import ValidationError
 from bc211.import_open_referral_csv import parser
 from bc211.import_open_referral_csv.headers_match_expected_format import (
@@ -44,6 +45,7 @@ def read_and_import_rows(reader, collector, counters):
 
 def import_service(row, collector, counters):
     try:
+        translation.activate('en')
         service_id = parser.parse_required_field_with_double_escaped_html('service_id', row[0])
         organization_id = parser.parse_required_field_with_double_escaped_html(
             'organization_id',
