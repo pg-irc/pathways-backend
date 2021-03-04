@@ -2,14 +2,17 @@ from django.core import exceptions
 from django.test import TestCase
 import re
 
+topic_regex = r'.*Topic: *(\S.*)'
+
 
 def is_title(line):
-    if re.fullmatch(r'.*Topic: *\S.*', line):
+    if re.fullmatch(topic_regex, line):
         return True
     return False
 
+
 def get_title(line):
-    return ''
+    return re.match(topic_regex, line)[1]
 
 
 class TestSplitWinFile(TestCase):
@@ -23,5 +26,5 @@ class TestSplitWinFile(TestCase):
     def test_topic_title_cannot_be_empty(self):
         self.assertFalse(is_title('Topic: '))
 
-    def x_test_can_get_title_string(self):
+    def test_can_get_title_string(self):
         self.assertEqual(get_title('Topic: Places of Worship'), 'Places of Worship')
