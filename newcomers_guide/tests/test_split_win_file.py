@@ -1,9 +1,19 @@
 from django.test import TestCase
 import re
-from newcomers_guide.split_win_file import is_title, is_tag, get_title, get_tags, parse_string
+from newcomers_guide.split_win_file import is_chapter, is_title, is_tag, get_chapter, get_title, get_tags, parse_string
 
 
 class TestSplitWinFile(TestCase):
+
+    def test_can_identify_chapter_title(self):
+        self.assertTrue(is_chapter('8 CHAPTER 8 - Driving'))
+
+    def test_can_get_chapter_title(self):
+        self.assertEqual(get_chapter('8 CHAPTER 8 - Driving'), 'CHAPTER 8 - Driving')
+
+    def test_error_on_empty_chapter_title(self):
+        with self.assertRaises(RuntimeError):
+            get_chapter('8 CHAPTER 8')
 
     def test_can_identify_topic_title(self):
         self.assertTrue(is_title('2.28 Topic: Places of Worship'))
@@ -62,3 +72,8 @@ class TestSplitWinFile(TestCase):
         self.assertEqual(len(writer.topics), 2)
         self.assertEqual(writer.topics[0].name, 'Biking')
         self.assertEqual(writer.topics[1].name, 'Travel by plane')
+
+    def test_can_get_chapter_name(self):
+        line = '8 CHAPTER 8 - Driving\nTopic: Places of worship'
+        writer = parse_string(line)
+        self.assertEqual(writer.topics[0].chapter, 'CHAPTER 8 - Driving')

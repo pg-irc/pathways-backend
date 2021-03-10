@@ -1,5 +1,21 @@
 import re
 
+
+def is_chapter(line):
+    regex = r'[\d ]*CHAPTER.*'
+    if re.fullmatch(regex, line):
+        return True
+    return False
+
+
+def get_chapter(line):
+    regex = r'[\d ]*(CHAPTER.*)'
+    result = re.match(regex, line)[1].strip()
+    if len(result) < len('CHAPTER 8 - '):
+        raise RuntimeError(line)
+    return result
+
+
 def is_title(line):
     regex = r'[\d\. ]*Topic:.*'
     if re.fullmatch(regex, line):
