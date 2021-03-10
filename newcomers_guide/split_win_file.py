@@ -38,16 +38,17 @@ class Topic:
 class TopicWriter:
     def __init__(self):
         self.topics = []
+        self.clear()
+
+    def clear(self):
         self.name = ''
         self.tags = []
-        self.text = []
+        self.text = ''
 
     def parse(self, line):
         if is_title(line):
             self.save_current_topic()
             self.name = get_title(line)
-            self.tags = []
-            self.text = ''
         elif is_tag(line):
             self.tags = get_tags(line)
         else:
@@ -56,6 +57,7 @@ class TopicWriter:
     def save_current_topic(self):
         if self.name:
             self.topics.append(Topic(self.name, self.tags, self.text))
+            self.clear()
 
     def done(self):
         self.save_current_topic()

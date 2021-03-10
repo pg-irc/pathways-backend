@@ -34,7 +34,8 @@ class TestSplitWinFile(TestCase):
         self.assertEqual(get_tags('Tags: healthCare:disability'), ['healthCare:disability'])
 
     def test_can_get_multiple_tags(self):
-        self.assertEqual(get_tags('Tags: healthCare:disability housing:wantToBuy'), ['healthCare:disability', 'housing:wantToBuy'])
+        self.assertEqual(get_tags('Tags: healthCare:disability housing:wantToBuy'), ['healthCare:disability',
+                                                                                     'housing:wantToBuy'])
 
     def test_can_get_topic_from_line(self):
         line = '2.20 Topic: Places of Worship\nsome more text goes here'
@@ -55,7 +56,8 @@ class TestSplitWinFile(TestCase):
         self.assertEqual(writer.topics[0].text, 'some more text goes here')
 
     def test_can_get_two_topics_from_lines(self):
-        line = '2.10 Topic: Biking\nTags: transport:local\nBiking is fun\n2.11 Topic: Travel by plane\nTags: transport:long_distance\nPlanes fly fast\n'
+        line = ('2.10 Topic: Biking\nTags: transport:local\nBiking is fun\n2.11 Topic: Travel by plane\n'
+                'Tags: transport:long_distance\nPlanes fly fast\n')
         writer = parse_string(line)
         self.assertEqual(len(writer.topics), 2)
         self.assertEqual(writer.topics[0].name, 'Biking')
