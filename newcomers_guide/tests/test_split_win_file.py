@@ -77,3 +77,13 @@ class TestSplitWinFile(TestCase):
         line = '8 CHAPTER 8 - Driving\nTopic: Places of worship'
         writer = parse_string(line)
         self.assertEqual(writer.topics[0].chapter, 'CHAPTER 8 - Driving')
+
+    def test_chapter_name_applies_to_several_topics(self):
+        line = ('8 CHAPTER 8 - Driving\n'
+                '1.23 Topic: First topic\n'
+                'Some text\n'
+                '1.24 Topic: Second topic\n'
+                'Some more text')
+        writer = parse_string(line)
+        self.assertEqual(writer.topics[0].chapter, 'CHAPTER 8 - Driving')
+        self.assertEqual(writer.topics[1].chapter, 'CHAPTER 8 - Driving')

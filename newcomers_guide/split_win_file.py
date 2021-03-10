@@ -45,7 +45,8 @@ def get_tags(line):
 
 
 class Topic:
-    def __init__(self, name, tags, text):
+    def __init__(self, chapter, name, tags, text):
+        self.chapter = chapter
         self.name = name
         self.tags = tags
         self.text = text
@@ -54,6 +55,7 @@ class Topic:
 class TopicWriter:
     def __init__(self):
         self.topics = []
+        self.chapter = ''
         self.clear()
 
     def clear(self):
@@ -62,7 +64,9 @@ class TopicWriter:
         self.text = ''
 
     def parse(self, line):
-        if is_title(line):
+        if is_chapter(line):
+            self.chapter = get_chapter(line)
+        elif is_title(line):
             self.save_current_topic()
             self.name = get_title(line)
         elif is_tag(line):
@@ -72,7 +76,7 @@ class TopicWriter:
 
     def save_current_topic(self):
         if self.name:
-            self.topics.append(Topic(self.name, self.tags, self.text))
+            self.topics.append(Topic(self.chapter, self.name, self.tags, self.text))
             self.clear()
 
     def done(self):
