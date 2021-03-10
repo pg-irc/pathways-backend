@@ -87,3 +87,8 @@ class TestSplitWinFile(TestCase):
         writer = parse_string(line)
         self.assertEqual(writer.topics[0].chapter, 'CHAPTER 8 - Driving')
         self.assertEqual(writer.topics[1].chapter, 'CHAPTER 8 - Driving')
+
+    def test_compute_path(self):
+        line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
+        writer = parse_string(line)
+        self.assertEqual(writer.topics[0].file_path(), 'CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')

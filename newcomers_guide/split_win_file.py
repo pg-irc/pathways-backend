@@ -51,6 +51,9 @@ class Topic:
         self.tags = tags
         self.text = text
 
+    def file_path(self):
+        return f'{self.chapter}/topics/{self.name}/en.{self.name}.md'
+
 
 class TopicWriter:
     def __init__(self):
