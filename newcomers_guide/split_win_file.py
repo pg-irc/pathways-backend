@@ -75,7 +75,7 @@ class TopicWriter:
         elif is_tag(line):
             self.tags = get_tags(line)
         else:
-            self.text += line
+            self.text += line + '\n'
 
     def save_current_topic(self):
         if self.name:

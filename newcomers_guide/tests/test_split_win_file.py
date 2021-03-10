@@ -63,7 +63,13 @@ class TestSplitWinFile(TestCase):
         line = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here'
         writer = parse_string(line)
         self.assertEqual(len(writer.topics), 1)
-        self.assertEqual(writer.topics[0].text, 'some more text goes here')
+        self.assertEqual(writer.topics[0].text, 'some more text goes here\n')
+
+    def test_can_get_multiple_lines_of_text(self):
+        line = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here\nand here\nand then some more'
+        writer = parse_string(line)
+        self.assertEqual(len(writer.topics), 1)
+        self.assertEqual(writer.topics[0].text, 'some more text goes here\nand here\nand then some more\n')
 
     def test_can_get_two_topics_from_lines(self):
         line = ('2.10 Topic: Biking\nTags: transport:local\nBiking is fun\n2.11 Topic: Travel by plane\n'
