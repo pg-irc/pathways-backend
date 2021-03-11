@@ -104,3 +104,21 @@ class TestSplitWinFile(TestCase):
         line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
         writer = parse_string(line)
         self.assertEqual(writer.topics[0].file_name(), 'win/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')
+
+    def test_throw_error_on_empty_chapter(self):
+        line = '1.23 Topic: Topic name\nTags: first:tag second:tag\nSome text'
+        writer = parse_string(line)
+        with self.assertRaises(RuntimeError):
+            writer.topics[0].file_name()
+
+    def test_throw_error_on_slash_in_chapter(self):
+        line = '8 CHAPTER 8 - The Chapter/name\n1.23 Topic: This That\nSome text'
+        writer = parse_string(line)
+        with self.assertRaises(RuntimeError):
+            writer.topics[0].file_name()
+
+    def test_throw_error_on_slash_in_topic(self):
+        line = '8 CHAPTER 8 - The Chapter\n1.23 Topic: This/That\nSome text'
+        writer = parse_string(line)
+        with self.assertRaises(RuntimeError):
+            writer.topics[0].file_name()

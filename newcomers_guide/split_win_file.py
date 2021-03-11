@@ -51,10 +51,20 @@ class Topic:
         self.tags = tags
         self.text = text
 
+    def validate(self):
+        if self.chapter == '':
+            raise RuntimeError(f'{self.name}: Chapter is empty')
+        if self.chapter.find('/') != -1:
+            raise RuntimeError(f'{self.chapter}: Chapter name contains invalid / character')
+        if self.name.find('/') != -1:
+            raise RuntimeError(f'{self.name}: Topic name contains invalid / character')
+
     def file_path(self):
+        self.validate()
         return f'win/{self.chapter}/topics/{self.name}/'
 
     def file_name(self):
+        self.validate()
         return f'win/{self.chapter}/topics/{self.name}/en.{self.name}.md'
 
 
