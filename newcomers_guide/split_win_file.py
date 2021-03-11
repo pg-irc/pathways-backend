@@ -59,13 +59,18 @@ class Topic:
         if self.name.find('/') != -1:
             raise RuntimeError(f'{self.name}: Topic name contains invalid / character')
 
-    def file_path(self):
+    def file_path(self, root=''):
         self.validate()
-        return f'win/{self.chapter}/topics/{self.name}/'
+        return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/'
 
-    def file_name(self):
+    def file_name(self, root=''):
         self.validate()
-        return f'win/{self.chapter}/topics/{self.name}/en.{self.name}.md'
+        return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/en.{self.name}.md'
+
+    def clean_root(self, root):
+        if root == '' or root.endswith('/'):
+            return root
+        return root + '/'
 
 
 class WinFileParser:
