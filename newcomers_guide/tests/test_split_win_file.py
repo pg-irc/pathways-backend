@@ -7,6 +7,7 @@ class TestSplitWinFile(TestCase):
 
     def test_can_identify_chapter_title(self):
         self.assertTrue(is_chapter('8 CHAPTER 8 - Driving'))
+        self.assertTrue(is_chapter('1 CHAPTER 1 - Getting Started'))
 
     def test_can_get_chapter_title(self):
         self.assertEqual(get_chapter('8 CHAPTER 8 - Driving'), 'CHAPTER 8 - Driving')

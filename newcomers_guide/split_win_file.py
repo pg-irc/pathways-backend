@@ -69,15 +69,20 @@ class WinFileParser:
         self.tags = []
         self.text = ''
 
-    def parse(self, line):
+    def parse(self, stream, line):
+        log(stream, line)
         if is_chapter(line):
+            log(stream, 'is a chapter')
             self.chapter = get_chapter(line)
         elif is_title(line):
+            log(stream, 'is a title')
             self.save_current_topic()
             self.name = get_title(line)
         elif is_tag(line):
+            log(stream, 'is a tags line')
             self.tags = get_tags(line)
         else:
+            log(stream, 'is text')
             self.text += line + '\n'
 
     def save_current_topic(self):
@@ -90,18 +95,23 @@ class WinFileParser:
         return self
 
 
+def log(stream, string):
+    if stream:
+        stream.write(string)
+
+
 def parse_string(text):
     parser = WinFileParser()
     for line in text.split('\n'):
-        parser.parse(line)
+        parser.parse(None, line)
     return parser.done()
 
 
-def parse_file(path):
+def parse_file(stream, path):
     parser = WinFileParser()
     with open(path, 'r') as fp:
         line = fp.readline()
         while line:
-            parser.parse(line)
+            parser.parse(stream, line.strip())
             line = fp.readline()
     return parser.done()
