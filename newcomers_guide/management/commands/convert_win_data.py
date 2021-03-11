@@ -6,6 +6,19 @@ from newcomers_guide.split_win_file import parse_file
 # invoke as follows:
 # ./manage.py convert_win_data path/to/input/file.txt path/for/output
 
+# Expected input file format:
+
+# 1 CHAPTER 1 - Things to do right away
+# 1.23 Topic: The name of the topic
+# Tags: first:tag second:tag
+# Content of the topic bla bla bla
+# Content of the topic bla bla bla
+# Content of the topic bla bla bla
+# Content of the topic bla bla bla
+# Content of the topic bla bla bla
+# 1.23 Topic: The name of the next topic
+# etc...
+
 
 class Command(BaseCommand):
     help = 'Import Winnipeg Introduction for Newcomers (WIN) from single text file'
