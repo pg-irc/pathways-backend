@@ -4,7 +4,7 @@ from bc211.import_icarol_xml.import_counters import ImportCounters
 from newcomers_guide.split_win_file import parse_file
 
 # invoke as follows:
-# python manage.py import_win path/to/win/document
+# ./manage.py convert_win_data path/to/input/file.txt path/for/output
 
 
 class Command(BaseCommand):

@@ -49,89 +49,89 @@ class TestSplitWinFile(TestCase):
                                                                                      'housing:wantToBuy'])
 
     def test_can_get_topic_from_line(self):
-        line = '2.20 Topic: Places of Worship\nsome more text goes here'
-        writer = parse_string(line)
+        data = '2.20 Topic: Places of Worship\nsome more text goes here'
+        writer = parse_string(data)
         self.assertEqual(len(writer.topics), 1)
-        self.assertEqual(writer.topics[0].name, 'Places of Worship')
+        self.assertEqual(writer.topics[0].topic, 'Places of Worship')
 
     def test_can_get_tags_from_line(self):
-        line = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here'
-        writer = parse_string(line)
+        data = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here'
+        writer = parse_string(data)
         self.assertEqual(len(writer.topics), 1)
         self.assertEqual(writer.topics[0].tags, ['first:tag', 'second:tag'])
 
     def test_can_get_text_from_line(self):
-        line = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here'
-        writer = parse_string(line)
+        data = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here'
+        writer = parse_string(data)
         self.assertEqual(len(writer.topics), 1)
         self.assertEqual(writer.topics[0].text, 'some more text goes here\n')
 
     def test_can_get_multiple_lines_of_text(self):
-        line = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here\nand here\nand then some more'
-        writer = parse_string(line)
+        data = '2.20 Topic: Places of Worship\nTags: first:tag second:tag\nsome more text goes here\nand here\nand then some more'
+        writer = parse_string(data)
         self.assertEqual(len(writer.topics), 1)
         self.assertEqual(writer.topics[0].text, 'some more text goes here\nand here\nand then some more\n')
 
     def test_can_get_two_topics_from_lines(self):
-        line = ('2.10 Topic: Biking\nTags: transport:local\nBiking is fun\n2.11 Topic: Travel by plane\n'
+        data = ('2.10 Topic: Biking\nTags: transport:local\nBiking is fun\n2.11 Topic: Travel by plane\n'
                 'Tags: transport:long_distance\nPlanes fly fast\n')
-        writer = parse_string(line)
+        writer = parse_string(data)
         self.assertEqual(len(writer.topics), 2)
-        self.assertEqual(writer.topics[0].name, 'Biking')
-        self.assertEqual(writer.topics[1].name, 'Travel by plane')
+        self.assertEqual(writer.topics[0].topic, 'Biking')
+        self.assertEqual(writer.topics[1].topic, 'Travel by plane')
 
     def test_can_get_chapter_name(self):
-        line = '8 CHAPTER 8 - Driving\nTopic: Places of worship'
-        writer = parse_string(line)
+        data = '8 CHAPTER 8 - Driving\nTopic: Places of worship'
+        writer = parse_string(data)
         self.assertEqual(writer.topics[0].chapter, 'CHAPTER 8 - Driving')
 
     def test_chapter_name_applies_to_several_topics(self):
-        line = ('8 CHAPTER 8 - Driving\n'
+        data = ('8 CHAPTER 8 - Driving\n'
                 '1.23 Topic: First topic\n'
                 'Some text\n'
                 '1.24 Topic: Second topic\n'
                 'Some more text')
-        writer = parse_string(line)
+        writer = parse_string(data)
         self.assertEqual(writer.topics[0].chapter, 'CHAPTER 8 - Driving')
         self.assertEqual(writer.topics[1].chapter, 'CHAPTER 8 - Driving')
 
     def test_compute_file_path(self):
-        line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
-        writer = parse_string(line)
+        data = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
+        writer = parse_string(data)
         self.assertEqual(writer.topics[0].file_path(), 'CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/')
 
     def test_compute_file_name(self):
-        line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
-        writer = parse_string(line)
+        data = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
+        writer = parse_string(data)
         self.assertEqual(writer.topics[0].file_name(), 'CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')
 
     def test_throw_error_on_empty_chapter(self):
-        line = '1.23 Topic: Topic name\nTags: first:tag second:tag\nSome text'
-        writer = parse_string(line)
+        data = '1.23 Topic: Topic name\nTags: first:tag second:tag\nSome text'
+        writer = parse_string(data)
         with self.assertRaises(RuntimeError):
             writer.topics[0].file_name()
 
     def test_throw_error_on_slash_in_chapter(self):
-        line = '8 CHAPTER 8 - The Chapter/name\n1.23 Topic: This That\nSome text'
-        writer = parse_string(line)
+        data = '8 CHAPTER 8 - The Chapter/name\n1.23 Topic: This That\nSome text'
+        writer = parse_string(data)
         with self.assertRaises(RuntimeError):
             writer.topics[0].file_name()
 
     def test_throw_error_on_slash_in_topic(self):
-        line = '8 CHAPTER 8 - The Chapter\n1.23 Topic: This/That\nSome text'
-        writer = parse_string(line)
+        data = '8 CHAPTER 8 - The Chapter\n1.23 Topic: This/That\nSome text'
+        writer = parse_string(data)
         with self.assertRaises(RuntimeError):
             writer.topics[0].file_name()
 
     def test_prepend_root_to_path(self):
-        line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
-        writer = parse_string(line)
+        data = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
+        writer = parse_string(data)
         root = 'theRoot'
         self.assertEqual(writer.topics[0].file_path(root), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/')
         self.assertEqual(writer.topics[0].file_name(root), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')
 
     def test_can_pass_locale_for_output_filename(self):
-        line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
-        writer = parse_string(line)
+        data = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
+        writer = parse_string(data)
         root = 'theRoot'
         self.assertEqual(writer.topics[0].file_name(root, 'xy'), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/xy.Buying a new or used vehicle (car or truck).md')

@@ -45,27 +45,27 @@ def get_tags(line):
 
 
 class Topic:
-    def __init__(self, chapter, name, tags, text):
+    def __init__(self, chapter, topic, tags, text):
         self.chapter = chapter
-        self.name = name
+        self.topic = topic
         self.tags = tags
         self.text = text
 
     def validate(self):
         if self.chapter == '':
-            raise RuntimeError(f'{self.name}: Chapter is empty')
+            raise RuntimeError(f'{self.topic}: Chapter is empty')
         if self.chapter.find('/') != -1:
-            raise RuntimeError(f'{self.chapter}: Chapter name contains invalid / character')
-        if self.name.find('/') != -1:
-            raise RuntimeError(f'{self.name}: Topic name contains invalid / character')
+            raise RuntimeError(f'{self.chapter}: Chapter topic contains invalid / character')
+        if self.topic.find('/') != -1:
+            raise RuntimeError(f'{self.topic}: Topic topic contains invalid / character')
 
     def file_path(self, root=''):
         self.validate()
-        return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/'
+        return f'{self.clean_root(root)}{self.chapter}/topics/{self.topic}/'
 
     def file_name(self, root='', locale='en'):
         self.validate()
-        return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/{locale}.{self.name}.md'
+        return f'{self.clean_root(root)}{self.chapter}/topics/{self.topic}/{locale}.{self.topic}.md'
 
     def clean_root(self, root):
         if root == '' or root.endswith('/'):
@@ -80,7 +80,7 @@ class WinFileParser:
         self.clear()
 
     def clear(self):
-        self.name = ''
+        self.topic = ''
         self.tags = []
         self.text = ''
 
@@ -92,7 +92,7 @@ class WinFileParser:
         elif is_title(line):
             log(stream, 'is a title')
             self.save_current_topic()
-            self.name = get_title(line)
+            self.topic = get_title(line)
         elif is_tag(line):
             log(stream, 'is a tags line')
             self.tags = get_tags(line)
@@ -101,8 +101,8 @@ class WinFileParser:
             self.text += line + '\n'
 
     def save_current_topic(self):
-        if self.name:
-            self.topics.append(Topic(self.chapter, self.name, self.tags, self.text))
+        if self.topic:
+            self.topics.append(Topic(self.chapter, self.topic, self.tags, self.text))
             self.clear()
 
     def done(self):
