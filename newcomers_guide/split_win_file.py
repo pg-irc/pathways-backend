@@ -67,6 +67,10 @@ class Topic:
         self.validate()
         return f'{self.clean_root(root)}{self.chapter}/topics/{self.topic}/{locale}.{self.topic}.md'
 
+    def taxonomy_file_name(self, root=''):
+        self.validate()
+        return f'{self.clean_root(root)}{self.chapter}/topics/{self.topic}/taxonomy.txt'
+
     def clean_root(self, root):
         if root == '' or root.endswith('/'):
             return root
