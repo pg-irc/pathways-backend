@@ -21,7 +21,7 @@ class Command(BaseCommand):
         data = parse_file(self.stdout, path)
         self.stdout.write(f'parsed {len(data.topics)} topics')
         for topic in data.topics:
-            os.mkdir(topic.file_path())
+            os.makedirs(topic.file_path(), exist_ok=True)
             file_name = topic.file_name()
             self.stdout.write(f'writing data to {file_name}')
             with open(file_name, 'w') as fp:

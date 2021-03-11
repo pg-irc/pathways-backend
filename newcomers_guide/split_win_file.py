@@ -70,7 +70,7 @@ class WinFileParser:
         self.text = ''
 
     def parse(self, stream, line):
-        log(stream, line)
+        log(stream, f'"{line}"')
         if is_chapter(line):
             log(stream, 'is a chapter')
             self.chapter = get_chapter(line)
