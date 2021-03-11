@@ -31,3 +31,5 @@ class Command(BaseCommand):
             self.stdout.write(f'writing data to {file_name}')
             with open(file_name, 'w') as fp:
                 fp.write(topic.text)
+            with open(topic.taxonomy_file_name(path), 'w') as fp:
+                fp.write(topic.tags_for_writing())

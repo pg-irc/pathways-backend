@@ -76,6 +76,9 @@ class Topic:
             return root
         return root + '/'
 
+    def tags_for_writing(self):
+        return ', '.join(self.tags)
+
 
 class WinFileParser:
     def __init__(self):

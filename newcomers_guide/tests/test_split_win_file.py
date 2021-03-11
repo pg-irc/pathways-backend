@@ -141,3 +141,8 @@ class TestSplitWinFile(TestCase):
         writer = parse_string(data)
         root = 'theRoot'
         self.assertEqual(writer.topics[0].taxonomy_file_name(root), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/taxonomy.txt')
+
+    def test_can_get_taxonomy_terms_for_output(self):
+        data = '8 CHAPTER 8 - Driving\n1.23 Topic: The topic\nTags: healthCare:disability housing:wantToBuy'
+        writer = parse_string(data)
+        self.assertEqual(writer.topics[0].tags_for_writing(), 'healthCare:disability, housing:wantToBuy')
