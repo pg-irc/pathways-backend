@@ -92,19 +92,14 @@ class WinFileParser:
         self.text = ''
 
     def parse(self, stream, line):
-        log(stream, f'"{line}"')
         if is_chapter(line):
-            log(stream, 'is a chapter')
             self.chapter = get_chapter(line)
         elif is_title(line):
-            log(stream, 'is a title')
             self.save_current_topic()
             self.topic = get_title(line)
         elif is_tag(line):
-            log(stream, 'is a tags line')
             self.tags = get_tags(line)
         else:
-            log(stream, 'is text')
             self.text += line + '\n'
 
     def save_current_topic(self):
@@ -115,11 +110,6 @@ class WinFileParser:
     def done(self):
         self.save_current_topic()
         return self
-
-
-def log(stream, string):
-    if stream:
-        stream.write(string)
 
 
 def parse_string(text):
