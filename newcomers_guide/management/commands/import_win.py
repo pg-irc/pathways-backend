@@ -1,3 +1,4 @@
+import os
 from django.core.management.base import BaseCommand
 from bc211.import_icarol_xml.import_counters import ImportCounters
 from newcomers_guide.split_win_file import parse_file
@@ -18,5 +19,8 @@ class Command(BaseCommand):
         path = options['path']
         data = parse_file(path)
         for topic in data.topics:
-            file_path = topic.file_path()
-            
+            os.mkdir(topic.file_path())
+            file_name = topic.file_name()
+            self.stdout.write(f'writing data to {file_name}')
+            with open(file_name, 'w') as fp:
+                fp.write(topic.text)
