@@ -55,7 +55,7 @@ class Topic:
         return f'{self.chapter}/topics/{self.name}/en.{self.name}.md'
 
 
-class TopicWriter:
+class WinFileParser:
     def __init__(self):
         self.topics = []
         self.chapter = ''
@@ -88,7 +88,7 @@ class TopicWriter:
 
 
 def parse_string(text):
-    writer = TopicWriter()
+    parser = WinFileParser()
     for line in text.split('\n'):
-        writer.parse(line)
-    return writer.done()
+        parser.parse(line)
+    return parser.done()
