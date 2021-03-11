@@ -52,10 +52,10 @@ class Topic:
         self.text = text
 
     def file_path(self):
-        return f'{self.chapter}/topics/{self.name}/'
+        return f'win/{self.chapter}/topics/{self.name}/'
 
     def file_name(self):
-        return f'{self.chapter}/topics/{self.name}/en.{self.name}.md'
+        return f'win/{self.chapter}/topics/{self.name}/en.{self.name}.md'
 
 
 class WinFileParser:

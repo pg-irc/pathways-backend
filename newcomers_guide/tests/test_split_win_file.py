@@ -97,9 +97,9 @@ class TestSplitWinFile(TestCase):
     def test_compute_file_path(self):
         line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
         writer = parse_string(line)
-        self.assertEqual(writer.topics[0].file_path(), 'CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/')
+        self.assertEqual(writer.topics[0].file_path(), 'win/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/')
 
     def test_compute_file_name(self):
         line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
         writer = parse_string(line)
-        self.assertEqual(writer.topics[0].file_name(), 'CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')
+        self.assertEqual(writer.topics[0].file_name(), 'win/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')

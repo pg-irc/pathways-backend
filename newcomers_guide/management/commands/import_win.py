@@ -17,7 +17,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         path = options['path']
+        self.stdout.write(f'reading {path}')
         data = parse_file(path)
+        self.stdout.write(f'parsed {len(data.topics)} topics')
         for topic in data.topics:
             os.mkdir(topic.file_path())
             file_name = topic.file_name()
