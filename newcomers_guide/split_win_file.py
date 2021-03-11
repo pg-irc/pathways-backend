@@ -52,7 +52,10 @@ class Topic:
         self.text = text
 
     def file_path(self):
-        return f'{self.chapter}/topics/{self.name}/en.{self.name}.md'
+        return f'{self.chapter}/topics/{self.name}/'
+
+    def file_name(self):
+        return f'en.{self.name}.md'
 
 
 class WinFileParser:
@@ -91,4 +94,14 @@ def parse_string(text):
     parser = WinFileParser()
     for line in text.split('\n'):
         parser.parse(line)
+    return parser.done()
+
+
+def parse_file(path):
+    parser = WinFileParser()
+    with open(path) as fp:
+        line = fp.readline()
+        while line:
+            parser.parse(line)
+            line = fp.readline()
     return parser.done()
