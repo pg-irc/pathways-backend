@@ -63,9 +63,9 @@ class Topic:
         self.validate()
         return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/'
 
-    def file_name(self, root=''):
+    def file_name(self, root='', locale='en'):
         self.validate()
-        return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/en.{self.name}.md'
+        return f'{self.clean_root(root)}{self.chapter}/topics/{self.name}/{locale}.{self.name}.md'
 
     def clean_root(self, root):
         if root == '' or root.endswith('/'):

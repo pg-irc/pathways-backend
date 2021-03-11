@@ -129,3 +129,9 @@ class TestSplitWinFile(TestCase):
         root = 'theRoot'
         self.assertEqual(writer.topics[0].file_path(root), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/')
         self.assertEqual(writer.topics[0].file_name(root), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/en.Buying a new or used vehicle (car or truck).md')
+
+    def test_can_pass_locale_for_output_filename(self):
+        line = ('8 CHAPTER 8 - Driving\n1.23 Topic: Buying a new or used vehicle (car or truck)\nTags: explore:driving driving:cost\nThis is about driving\n')
+        writer = parse_string(line)
+        root = 'theRoot'
+        self.assertEqual(writer.topics[0].file_name(root, 'xy'), 'theRoot/CHAPTER 8 - Driving/topics/Buying a new or used vehicle (car or truck)/xy.Buying a new or used vehicle (car or truck).md')

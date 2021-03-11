@@ -26,7 +26,8 @@ class Command(BaseCommand):
         self.stdout.write(f'parsed {len(data.topics)} topics')
         for topic in data.topics:
             os.makedirs(topic.file_path(path), exist_ok=True)
-            file_name = topic.file_name(path)
+            locale = 'en'
+            file_name = topic.file_name(path, locale)
             self.stdout.write(f'writing data to {file_name}')
             with open(file_name, 'w') as fp:
                 fp.write(topic.text)
